@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "C:\\Program Files (x86)\\SketchUp\\SketchUp 2014\\Tools\\RubyStdLib\\minitest"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "C:\\Users\\Thomas\\AppData\\Roaming\\SketchUp\\SketchUp 2014\\SketchUp\\Gems\\gems\\minitest-5.2.1\\lib"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "."
+		}
+	]
+}
