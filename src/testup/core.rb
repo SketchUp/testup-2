@@ -16,12 +16,45 @@
 #-------------------------------------------------------------------------------
 
 
+require 'SKUI/core.rb'
+
+
 module TestUp
 
-### UI ### ---------------------------------------------------------------------
+
+  PATH_IMAGES     = File.join(PATH, 'images').freeze
+  PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
+
+
+  require File.join(PATH, 'test_window.rb')
+
+
+  ### UI ### -------------------------------------------------------------------
 
   unless file_loaded?(__FILE__)
     # Commands
+    cmd = UI::Command.new('TestUp 2') {
+      self.open_testup
+    }
+    cmd.tooltip = 'Open TestUp'
+    cmd.status_bar_text = 'Open TestUp for running tests.'
+    cmd.small_icon = File.join(PATH_IMAGES, 'bug.png')
+    cmd.large_icon = File.join(PATH_IMAGES, 'bug.png')
+    cmd_open_testup = cmd
+
+    # Commands
+    cmd = UI::Command.new('Reload TestUp') {
+      SKETCHUP_CONSOLE.clear
+      window_visible = @window && @window.visible?
+      @window.close if window_visible
+      @window = nil
+      self.open_testup if window_visible
+      puts "Reloaded #{self.reload} files!"
+    }
+    cmd.small_icon = File.join(PATH_IMAGES, 'arrow_refresh.png')
+    cmd.large_icon = File.join(PATH_IMAGES, 'arrow_refresh.png')
+    cmd_reload_testup = cmd
+
     cmd = UI::Command.new('Run Tests') {
       self.run_tests
     }
@@ -31,19 +64,37 @@ module TestUp
 
     # Menus
     menu = UI.menu('Plugins').add_submenu(PLUGIN_NAME)
+    menu.add_item(cmd_open_testup)
+    menu.add_separator
     menu.add_item(cmd_run_tests)
+    menu.add_separator
+    menu.add_item(cmd_reload_testup)
+
+    # Toolbar
+    toolbar = UI::Toolbar.new(PLUGIN_NAME)
+    toolbar.add_item(cmd_open_testup)
+    toolbar.add_separator
+    toolbar.add_item(cmd_reload_testup)
+    toolbar.restore
   end
 
 
-  SKETCHUP_CONSOLE.show
+  SKETCHUP_CONSOLE.show # DEBUG
 
 
   @paths_to_testsuites = [
-    File.join(__dir__, '..', '..', 'tests')
+    File.join(__dir__, '..', '..', 'tests') # TODO: Make configurable.
   ]
+  def self.paths_to_testsuites; @paths_to_testsuites; end
 
 
   ### Extension ### ------------------------------------------------------------
+
+  def self.open_testup
+    @window ||= TestUpWindow.new
+    @window.show
+  end
+
 
   def self.run_tests
     testsuites = self.discover_testsuites(@paths_to_testsuites)
@@ -107,7 +158,7 @@ module TestUp
     self.remove_old_tests(testcase_name.intern)
     begin
       load testcase_file
-    rescue LoadError # SyntaxError - ScriptError
+    rescue ScriptError
       raise #TODO
       return nil
     end

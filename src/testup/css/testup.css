@@ -1,0 +1,111 @@
+html
+{
+  font-size: 9pt;
+}
+
+#testsuites
+{
+  position: absolute;
+  top: 5px;
+  height: 40px;
+  left: 5px;
+  right: 5px;
+
+  background: ThreeDShadow;
+
+  overflow: hidden;
+}
+
+#testsuites .tab
+{
+  display: table-cell;
+  vertical-align: middle;
+  height: 40px;
+
+  white-space: nowrap;
+
+  padding: 0 1em;
+
+  background: ThreeDFace;
+  border: 1px solid #666;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+#testsuites .tab:hover
+{
+  background: ThreeDHighlight;
+}
+
+
+#testcases
+{
+  position: absolute;
+  top: 50px;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+
+  border: 1px inset ButtonFace;
+  background: Window;
+
+  overflow: auto;
+}
+
+#testcases .testcase
+{
+  border-bottom: 1px solid silver;
+  padding: 5px;
+}
+
+#testcases .testcase:hover
+{
+  background: #eee;
+}
+
+#testcases .testcase .title label
+{
+  display: inline-block;
+  width: 100%;
+  line-height: 1em;
+}
+
+#testcases .testcase .title input
+{
+  position: relative;
+  vertical-align: middle;
+}
+
+
+#testcases .testcase > .title
+{
+  font-weight: bold;
+}
+
+
+#testcases .testcase .test
+{
+  padding-left: 2em;
+}
+
+
+#testcases .title
+{
+  white-space: nowrap;
+  padding-left: 20px;
+  background: url(../images/not_run.png) no-repeat left center;
+}
+
+#testcases .suceeded > .title
+{
+  background-image: url(../images/accept.png);
+}
+
+#testcases .failed > .title
+{
+  background-image: url(../images/exclamation.png);
+}
+
+#testcases .error > .title
+{
+  background-image: url(../images/error.png);
+}
