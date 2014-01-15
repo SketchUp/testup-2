@@ -44,9 +44,22 @@ var TestUp = function() {
         var $tab = $('<div class="tab" />')
         $tab.text(suite_name);
         $testsuites.append($tab);
-
+      }
+      // Select first tab and display test cases for that suite.
+      $tabs = $('#testsuites .tab');
+      if ($tabs.length > 0)
+      {
+        var $tab = $tabs.first();
+        $tab.addClass('selected');
+        var first_testsuite = $tab.text();
+        var testcases = testsuites[first_testsuite];
         TestUp.update_testcases(testcases);
       }
+      else
+      {
+        $('#testcases').empty();
+      }
+
     },
 
 

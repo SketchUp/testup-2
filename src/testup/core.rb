@@ -99,7 +99,8 @@ module TestUp
   @run_in_console = false
 
   @paths_to_testsuites = [
-    File.join(__dir__, '..', '..', 'tests') # TODO: Make configurable.
+    File.join(__dir__, '..', '..', 'tests'), # TODO: Make configurable.
+    File.join(ENV['HOME'], 'SourceTree', 'SUbD', 'Ruby', 'tests')
   ]
 
 

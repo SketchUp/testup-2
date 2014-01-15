@@ -3,44 +3,61 @@ html
   font-size: 9pt;
 }
 
+
+/*******************************************************************************
+ * $TEST_SUITES
+ */
+
 #testsuites
 {
   position: absolute;
   top: 5px;
-  height: 40px;
+  height: 30px;
   left: 5px;
   right: 5px;
-
-  background: ThreeDShadow;
 
   overflow: hidden;
 }
 
+
 #testsuites .tab
 {
-  display: table-cell;
-  vertical-align: middle;
-  height: 40px;
+  display: inline-block;
+  height: 100%;
+  line-height: 30px;
 
   white-space: nowrap;
 
   padding: 0 1em;
+  margin-right: 1px;
 
   background: ThreeDFace;
   border: 1px solid #666;
+  border-bottom: none;
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
 }
+
 #testsuites .tab:hover
 {
   background: ThreeDHighlight;
 }
 
+#testsuites .tab.selected
+{
+  font-weight: bold;
+  background: ThreeDHighlight;
+}
+
+
+/*******************************************************************************
+ * $TEST_CASES
+ */
 
 #testcases
 {
   position: absolute;
-  top: 50px;
+  top: 35px;
   bottom: 5px;
   left: 5px;
   right: 5px;
@@ -94,6 +111,11 @@ html
   padding-left: 20px;
   background: url(../images/not_run.png) no-repeat left center;
 }
+
+
+/*******************************************************************************
+ * $TEST_CASE_STATUSES
+ */
 
 #testcases .suceeded > .title
 {
