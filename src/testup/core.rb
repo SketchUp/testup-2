@@ -16,6 +16,10 @@
 #-------------------------------------------------------------------------------
 
 
+require 'rubygems'
+gem 'minitest'
+require 'minitest'
+
 require 'SKUI/core.rb'
 
 
@@ -115,6 +119,7 @@ module TestUp
 
   def self.run_console_tests
     @run_in_console = true
+    SKETCHUP_CONSOLE.clear
     MiniTest.run
   ensure
     @run_in_console = false
@@ -196,11 +201,25 @@ module TestUp
   end
 
 
+  # Remove the old testcase class so changes can be made without reloading
+  # SketchUp. This is done because MiniTest is made to be run as a traditional
+  # Ruby script on a web server where the lifespan of objects isn't persistent
+  # as it is in SketchUp.
+  #
+  # TODO(thomthom): It might be better to remove all loaded tests in a separate
+  # pass. Currently if a test is renamed it won't be removed and will keep
+  # running since the discoverer only removes old tests if it overwrites them.
+  #
   # @param [Symbol] testcase
   # @return [Nil]
   def self.remove_old_tests(testcase)
     if Object.constants.include?(testcase)
       Object.send(:remove_const, testcase)
+      # Remove any previously loaded versions from MiniTest. Otherwise MiniTest
+      # will keep running them along with the new ones.
+      MiniTest::Runnable.runnables.delete_if { |klass|
+        klass.to_s == testcase.to_s
+      }
     end
     nil
   end
