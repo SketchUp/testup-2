@@ -42,7 +42,15 @@ module TestUp
     cmd.large_icon = File.join(PATH_IMAGES, 'bug.png')
     cmd_open_testup = cmd
 
-    # Commands
+    cmd = UI::Command.new('Run tests in Ruby Console') {
+      self.run_console_tests
+    }
+    cmd.tooltip = 'Run in Console'
+    cmd.status_bar_text = 'Run tests in Ruby Console.'
+    cmd.small_icon = File.join(PATH_IMAGES, 'console.png')
+    cmd.large_icon = File.join(PATH_IMAGES, 'console.png')
+    cmd_run_console_tests = cmd
+
     cmd = UI::Command.new('Reload TestUp') {
       SKETCHUP_CONSOLE.clear
       window_visible = @window && @window.visible?
@@ -65,6 +73,7 @@ module TestUp
     # Menus
     menu = UI.menu('Plugins').add_submenu(PLUGIN_NAME)
     menu.add_item(cmd_open_testup)
+    menu.add_item(cmd_run_console_tests)
     menu.add_separator
     menu.add_item(cmd_run_tests)
     menu.add_separator
@@ -73,6 +82,7 @@ module TestUp
     # Toolbar
     toolbar = UI::Toolbar.new(PLUGIN_NAME)
     toolbar.add_item(cmd_open_testup)
+    toolbar.add_item(cmd_run_console_tests)
     toolbar.add_separator
     toolbar.add_item(cmd_reload_testup)
     toolbar.restore
@@ -82,10 +92,17 @@ module TestUp
   SKETCHUP_CONSOLE.show # DEBUG
 
 
+  @run_in_console = false
+
   @paths_to_testsuites = [
     File.join(__dir__, '..', '..', 'tests') # TODO: Make configurable.
   ]
-  def self.paths_to_testsuites; @paths_to_testsuites; end
+
+
+  class << self
+    attr_accessor :paths_to_testsuites
+    attr_accessor :run_in_console
+  end
 
 
   ### Extension ### ------------------------------------------------------------
@@ -93,6 +110,14 @@ module TestUp
   def self.open_testup
     @window ||= TestUpWindow.new
     @window.show
+  end
+
+
+  def self.run_console_tests
+    @run_in_console = true
+    MiniTest.run
+  ensure
+    @run_in_console = false
   end
 
 
