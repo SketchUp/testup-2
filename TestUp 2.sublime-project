@@ -13,5 +13,21 @@
 			"follow_symlinks": true,
 			"path": "."
 		}
-	]
+	],
+  "settings":
+  {
+    "rulers": [80],
+
+    "show_encoding": true,
+    "show_line_endings": true,
+
+    "default_encoding": "UTF-8",
+
+    "tab_size": 2,
+    "translate_tabs_to_spaces": true,
+
+    "trim_trailing_white_space_on_save": true,
+
+    "ensure_newline_at_eof_on_save": true
+  }
 }
