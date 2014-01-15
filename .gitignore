@@ -1,3 +1,30 @@
+############
+## Filetypes
+############
+
 *.sublime-workspace
 
+
+############
+## Folders
+############
+
 tests_old/
+
+
+############
+## Windows
+############
+
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+
+########
+## OSX
+########
+
+.DS_Store
