@@ -33,6 +33,10 @@ class TC_Sketchup_Edge < TestUp::TestCase
     edge
   end
 
+  def p(*args)
+    # Mute the output.
+  end
+
 
   # ========================================================================== #
   # method Sketchup::Edges.faces
@@ -81,8 +85,8 @@ class TC_Sketchup_Edge < TestUp::TestCase
 
     assert_equal(0, edge.method(:faces).arity)
 
-    assert_raise ArgumentError do
-      edge.faces 1
+    assert_raises(ArgumentError) do
+      edge.faces(1)
     end
   end # test
 

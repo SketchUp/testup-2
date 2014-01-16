@@ -28,8 +28,10 @@ module TestUp
 
   PATH_IMAGES     = File.join(PATH, 'images').freeze
   PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
+  PATH_OLD_TESTUP = 'C:/src/thomthom-su2014-pc/src/googleclient/sketchup/source/testing/testup'.freeze
 
 
+  require File.join(PATH, 'compatibility.rb')
   require File.join(PATH, 'test_window.rb')
 
 
@@ -100,7 +102,8 @@ module TestUp
 
   @paths_to_testsuites = [
     File.join(__dir__, '..', '..', 'tests'), # TODO: Make configurable.
-    File.join(ENV['HOME'], 'SourceTree', 'SUbD', 'Ruby', 'tests')
+    File.join(ENV['HOME'], 'SourceTree', 'SUbD', 'Ruby', 'tests'),
+    File.join(PATH_OLD_TESTUP, 'tests')
   ]
 
 
@@ -121,7 +124,9 @@ module TestUp
   def self.run_console_tests
     @run_in_console = true
     SKETCHUP_CONSOLE.clear
-    MiniTest.run
+    self.discover_testsuites(@paths_to_testsuites)
+    #MiniTest.run(['-v'])
+    MiniTest.run()
   ensure
     @run_in_console = false
   end
@@ -187,18 +192,53 @@ module TestUp
   def self.load_testcase(testcase_file)
     testcase_name = File.basename(testcase_file, '.*')
     self.remove_old_tests(testcase_name.intern)
+    existing_test_classes = self.all_test_classes
     begin
       load testcase_file
-    rescue ScriptError
-      raise #TODO
+    rescue ScriptError => error
+      warn "ScriptError Loading #{testcase_name}"
+      warn self.format_load_backtrace(error)
+      return nil
+    rescue StandardError => error
+      warn "StandardError Loading #{testcase_name}"
+      warn self.format_load_backtrace(error)
       return nil
     end
-    testcase = Object.const_get(testcase_name.intern)
+    new_test_classes = self.all_test_classes - existing_test_classes
+    if new_test_classes.empty?
+      warn "'#{testcase_name}' - No test cases loaded."
+      #warn existing_test_classes.sort{|a,b|a.name<=>b.name}.join("\n")
+      return nil
+    elsif new_test_classes.size > 1
+      warn "'#{testcase_name}' - More than one test class loaded: #{new_test_classes.join(', ')}"
+      return nil
+    end
+    #testcase = Object.const_get(testcase_name.intern)
+    testcase = new_test_classes.first
     unless testcase.ancestors.include?(TestUp::TestCase)
-      # (?) raise error?
-      warn "Invalid testcase: #{testcase} (#{testcase.ancestors.inspect})"
+      #warn "Invalid testcase: #{testcase} (#{testcase.ancestors.inspect})"
+      testcase.extend(TestCaseExtendable)
     end
     testcase
+  end
+
+
+  def self.format_load_backtrace(error)
+    file_basename = File.basename(__FILE__)
+    index = error.backtrace.index { |line|
+      line =~ /testup\/#{file_basename}:\d+:in `load'/i
+    }
+    filtered_backtrace = error.backtrace[0..index]
+    error.message << "\n" << filtered_backtrace.join("\n")
+  end
+
+
+  def self.all_test_classes
+    klasses = []
+    ObjectSpace.each_object(Class){ |klass|
+      klasses << klass if klass.name =~ /^TC_/
+    }
+    klasses
   end
 
 

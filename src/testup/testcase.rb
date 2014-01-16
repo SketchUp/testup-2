@@ -4,15 +4,24 @@
 
 
 require File.join(__dir__, 'minitest_setup.rb')
+require File.join(__dir__, 'sketchup_test_utilities.rb')
 
 
 module TestUp
 
-  class TestCase < MiniTest::Unit::TestCase
+  module TestCaseExtendable
 
-    def self.test_methods
+    def test_methods
       tests = public_instance_methods(true).grep(/^test_/i).sort
     end
+
+  end # module TestCaseExtendable
+
+
+  class TestCase < Minitest::Test
+
+    include SketchUpTestUtilities
+    extend TestCaseExtendable
 
   end # class
 
