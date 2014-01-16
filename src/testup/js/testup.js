@@ -29,6 +29,20 @@ var TestUp = function() {
 
       var $testcase_list = $('<div id="testcases"/>');
       $body.append($testcase_list);
+
+      TestUp.init_tabs();
+    },
+
+
+    init_tabs :  function() {
+      $(document).on('click', '#testsuites .tab', function() {
+        $('#testsuites .tab').removeClass('selected');
+        var $tab = $(this);
+        $tab.addClass('selected');
+        var testcase_name = $tab.text();
+        var testcases = testsuites_[testcase_name];
+        TestUp.update_testcases(testcases);
+      });
     },
 
 
