@@ -52,6 +52,17 @@ module Minitest
 end # module Minitest
 
 
+# Intercept calls to exit. It won't exit Ruby, but cause errors to be output to
+# the console.
+module Minitest
+
+  def self.exit
+    warn 'EXIT! Minitest tried to exit.'
+  end
+
+end # module Minitest
+
+
 # Compatibility module for Minitest 5 which removed several assert_* methods
 # compared to the old test/unit framework our tests originally used.
 #
