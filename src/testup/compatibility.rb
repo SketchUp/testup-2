@@ -80,6 +80,10 @@ module Minitest
       assertions = *args
     end
 
+
+    alias :assert_raise :assert_raises
+
+
     # :call-seq:
     #   assert_nothing_raised( *args, &block )
     #
