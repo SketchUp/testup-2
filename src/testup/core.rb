@@ -95,7 +95,7 @@ module TestUp
   end
 
 
-  SKETCHUP_CONSOLE.show # DEBUG
+  SKETCHUP_CONSOLE.show # DBEUG
 
 
   @run_in_console = false
@@ -126,7 +126,15 @@ module TestUp
     SKETCHUP_CONSOLE.clear
     self.discover_testsuites(@paths_to_testsuites)
     #MiniTest.run(['-v'])
-    MiniTest.run()
+    testsuite = @window.bridge.call('$(".tab.selected").text')
+    testcases = @window.bridge.call('TestUp.selected_testcases')
+    puts "Running test suite: #{testsuite}"
+    puts "* #{testcases.join("\n* ")}"
+    arguments = [
+      '-v',
+      "-n /^(#{testcases.join('|')})#/"
+    ]
+    MiniTest.run(arguments)
   ensure
     @run_in_console = false
   end

@@ -46,6 +46,14 @@ var TestUp = function() {
     },
 
 
+    selected_testcases : function() {
+      var testcases = $(".testcase > .title").map(function() {
+        return $(this).text();
+      }).get();
+      return testcases;
+    },
+
+
     update_testsuites : function(testsuites) {
       testsuites_ = testsuites;
 
@@ -87,7 +95,7 @@ var TestUp = function() {
         var $testcase = $('<div class="testcase" />')
         var $title = $('<div class="title" />')
         var $label = $('<label/>');
-        var $checkbox = $('<input type="checkbox" />');
+        var $checkbox = $('<input type="checkbox" checked />');
         $label.text(testcase_name);
         $label.prepend($checkbox);
         $title.append($label);
@@ -109,7 +117,7 @@ var TestUp = function() {
         var $test = $('<div class="test" />')
         var $title = $('<div class="title" />')
         var $label = $('<label/>');
-        var $checkbox = $('<input type="checkbox" />');
+        var $checkbox = $('<input type="checkbox" checked />');
         $label.text(test_name);
         $label.prepend($checkbox);
         $title.append($label);
