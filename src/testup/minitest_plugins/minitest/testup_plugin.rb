@@ -10,10 +10,15 @@ puts 'MiniTest TestUp Extension discovered...' # DEBUG
 
 module Minitest
 
+  def self.plugin_testup_options opts, options # :nodoc:
+    opts.on '-t', '--testup', 'Run tests in TestUp GUI.' do
+      TestUp.run_in_gui = true
+    end
+  end
+
   def self.plugin_testup_init(options)
     puts 'MiniTest TestUp Extension loading...' # DEBUG
-
-    unless TestUp.run_in_console
+    if TestUp.run_in_gui
       # Disable the default reporters as otherwise they'll print lots of data to
       # the console while the test runs. No need for that.
       self.reporter.reporters.clear

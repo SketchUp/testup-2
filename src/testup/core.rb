@@ -32,6 +32,7 @@ module TestUp
 
 
   require File.join(PATH, 'compatibility.rb')
+  require File.join(PATH, 'sketchup_console.rb')
   require File.join(PATH, 'test_window.rb')
 
 
@@ -49,7 +50,7 @@ module TestUp
     cmd_open_testup = cmd
 
     cmd = UI::Command.new('Run tests in Ruby Console') {
-      self.run_console_tests
+      self.run_tests
     }
     cmd.tooltip = 'Run in Console'
     cmd.status_bar_text = 'Run tests in Ruby Console.'
@@ -69,6 +70,13 @@ module TestUp
     cmd.large_icon = File.join(PATH_IMAGES, 'arrow_refresh.png')
     cmd_reload_testup = cmd
 
+    cmd = UI::Command.new('Minitest Help') {
+      self.display_minitest_help
+    }
+    cmd.small_icon = File.join(PATH_IMAGES, 'help.png')
+    cmd.large_icon = File.join(PATH_IMAGES, 'help.png')
+    cmd_display_minitest_help = cmd
+
     cmd = UI::Command.new('Run Tests') {
       self.run_tests
     }
@@ -84,6 +92,8 @@ module TestUp
     menu.add_item(cmd_run_tests)
     menu.add_separator
     menu.add_item(cmd_reload_testup)
+    menu.add_separator
+    menu.add_item(cmd_display_minitest_help)
 
     # Toolbar
     toolbar = UI::Toolbar.new(PLUGIN_NAME)
@@ -91,6 +101,8 @@ module TestUp
     toolbar.add_item(cmd_run_console_tests)
     toolbar.add_separator
     toolbar.add_item(cmd_reload_testup)
+    toolbar.add_separator
+    toolbar.add_item(cmd_display_minitest_help)
     toolbar.restore
   end
 
@@ -98,10 +110,11 @@ module TestUp
   SKETCHUP_CONSOLE.show # DEBUG
 
 
-  @run_in_console = false
+  @run_in_gui = false
 
+  # TODO: Make configurable.
   @paths_to_testsuites = [
-    File.join(__dir__, '..', '..', 'tests'), # TODO: Make configurable.
+    File.join(__dir__, '..', '..', 'tests'),
     File.join(ENV['HOME'], 'SourceTree', 'SUbD', 'Ruby', 'tests'),
     File.join(PATH_OLD_TESTUP, 'tests')
   ]
@@ -109,7 +122,7 @@ module TestUp
 
   class << self
     attr_accessor :paths_to_testsuites
-    attr_accessor :run_in_console
+    attr_accessor :run_in_gui
     attr_accessor :window
   end
 
@@ -122,37 +135,31 @@ module TestUp
   end
 
 
-  def self.run_console_tests
-    @run_in_console = true
-    SKETCHUP_CONSOLE.clear
+  def self.run_tests
+    unless @window && @window.visible?
+      warn 'TestUp window not open.'
+      UI.beep
+      return
+    end
+    unless self.run_in_gui
+      SKETCHUP_CONSOLE.show
+      SKETCHUP_CONSOLE.clear
+    end
     self.discover_testsuites(@paths_to_testsuites)
-    #MiniTest.run(['-v'])
     testsuite = @window.bridge.call('$(".tab.selected").text')
-    testcases = @window.bridge.call('TestUp.selected_tests')
+    tests = @window.bridge.call('TestUp.selected_tests')
     puts "Running test suite: #{testsuite}"
-    puts "* #{testcases.join("\n* ")}"
-    arguments = [
-      '-v',
-      "-n /^(#{testcases.join('|')})$/"
-    ]
+    arguments = []
+    arguments << "-n /^(#{tests.join('|')})$/"
+    arguments << '--verbose' if true
+    arguments << '--testup' if self.run_in_gui
     MiniTest.run(arguments)
-  ensure
-    @run_in_console = false
   end
 
 
-  def self.run_tests
-    testsuites = self.discover_testsuites(@paths_to_testsuites)
-    puts '-' * 40
-    for testsuite, testcases in testsuites
-      puts "#{testsuite} (#{testcases.size} test cases)"
-      for testcase, tests in testcases
-        puts "* #{testcase} (#{tests.size} tests)"
-        puts "  * #{tests.join("\n  * ")}"
-      end
-    end
-    puts '-' * 40
-    nil
+  def self.display_minitest_help
+    SKETCHUP_CONSOLE.show
+    MiniTest.run(['--help'])
   end
 
 
