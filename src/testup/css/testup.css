@@ -76,7 +76,7 @@ html
 
 #testcases .testcase:hover
 {
-  background: #eee;
+  background: rgba(0, 128, 255, 0.03);
 }
 
 #testcases .testcase .title label

@@ -31,6 +31,7 @@ var TestUp = function() {
       $body.append($testcase_list);
 
       TestUp.init_tabs();
+      TestUp.init_testcase_checkboxes();
     },
 
 
@@ -46,10 +47,72 @@ var TestUp = function() {
     },
 
 
+    init_testcase_checkboxes :  function() {
+      // Toggle test cases on/off.
+      // * Check/uncheck tests belonging to the testcase.
+      $(document).on('change', '.testcase > .title input[type=checkbox]',
+        function()
+      {
+        var $checkbox = $(this);
+        var checked = $checkbox.prop('checked');
+        var $testcase = $checkbox.parents('.testcase');
+        var $tests = $testcase.find('input[type=checkbox]');
+        $tests.prop('checked', checked);
+      });
+
+      // Toggle tests on/off.
+      // * Remove checkmark from testcase when induvidual tests are checked.
+      $(document).on('change', '.test > .title input[type=checkbox]',
+        function()
+      {
+        var $checkbox = $(this);
+        var checked = $checkbox.prop('checked');
+        var $testcase = $checkbox.parents('.testcase');
+        var $title = $testcase.children('.title');
+        var $testcase_checkbox = $title.find('input[type=checkbox]');
+        $testcase_checkbox.prop('checked', false);
+      });
+    },
+
+
     selected_testcases : function() {
       var testcases = $(".testcase > .title").map(function() {
         return $(this).text();
       }).get();
+    },
+
+
+    selected_tests : function() {
+      var testcases = [];
+      $(".testcase > .title").each(function() {
+        var $testcase_title = $(this);
+        var testcase = $testcase_title.text();
+        var $checkbox = $testcase_title.find('input[type=checkbox]');
+        var checked = $checkbox.prop('checked');
+        if (checked)
+        {
+          // The hash at the end is require to denote the end of the test case
+          // name. Otherwise 'TC_Sketchup' would also run 'TC_Sketchup_Edge'
+          // because the names are regex'd.
+          testcases.push( testcase + '#.+' );
+        }
+        else
+        {
+          // Add induvidually selected tests.
+          var $testcase = $testcase_title.parents('.testcase');
+          $testcase.find('.test').each(function() {
+            var $test = $(this);
+            var $test_title = $test.children('.title');
+            var $checkbox = $test_title.find('input[type=checkbox]');
+            var test_method = $test_title.text();
+            var checked = $checkbox.prop('checked');
+            if (checked)
+            {
+              testcases.push( testcase + '#' + test_method);
+            }
+          });
+        }
+      });
       return testcases;
     },
 
