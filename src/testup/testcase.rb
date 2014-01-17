@@ -9,6 +9,7 @@ require File.join(__dir__, 'sketchup_test_utilities.rb')
 
 module TestUp
 
+  # Methods used by the test discoverer.
   module TestCaseExtendable
 
     def test_methods
@@ -18,6 +19,7 @@ module TestUp
   end # module TestCaseExtendable
 
 
+  # Inherit tests from this class to get access to utility methods for SketchUp.
   class TestCase < Minitest::Test
 
     include SketchUpTestUtilities
