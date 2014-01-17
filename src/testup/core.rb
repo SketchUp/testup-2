@@ -58,6 +58,8 @@ module TestUp
 
   @run_in_gui = false
 
+  @verbose_console_tests = true
+
   # TODO: Make configurable.
   @paths_to_testsuites = [
     File.join(__dir__, '..', '..', 'tests'),
@@ -69,15 +71,26 @@ module TestUp
   class << self
     attr_accessor :paths_to_testsuites
     attr_accessor :run_in_gui
+    attr_accessor :verbose_console_tests
     attr_accessor :window
   end
 
 
   ### Extension ### ------------------------------------------------------------
 
-  def self.open_testup
+  def self.toggle_testup
     @window ||= TestUpWindow.new
-    @window.show
+    @window.toggle
+  end
+
+
+  def self.toggle_run_in_gui
+    @run_in_gui = !@run_in_gui
+  end
+
+
+  def self.toggle_verbose_console_tests
+    @verbose_console_tests = !@verbose_console_tests
   end
 
 
@@ -97,7 +110,7 @@ module TestUp
     puts "Running test suite: #{testsuite}"
     arguments = []
     arguments << "-n /^(#{tests.join('|')})$/"
-    arguments << '--verbose' if true
+    arguments << '--verbose' if @verbose_console_tests
     arguments << '--testup' if self.run_in_gui
     MiniTest.run(arguments)
   end

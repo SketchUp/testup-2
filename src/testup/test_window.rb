@@ -46,6 +46,8 @@ module TestUp
       case callback
       when 'TestUp.on_ready'
         event_testup_ready()
+      when 'TestUp.on_run'
+        event_testup_run()
       end
     ensure
       super
@@ -57,6 +59,10 @@ module TestUp
 
       testsuites = TestUp.discover_testsuites(TestUp.paths_to_testsuites)
       self.bridge.call('TestUp.update_testsuites', testsuites)
+    end
+
+    def event_testup_run
+      TestUp.run_tests
     end
 
   end # class

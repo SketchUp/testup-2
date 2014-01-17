@@ -23,29 +23,50 @@ module TestUp
 
     # Commands
     cmd = UI::Command.new('TestUp 2') {
-      self.open_testup
+      self.toggle_testup
     }
     cmd.tooltip = 'Open TestUp'
     cmd.status_bar_text = 'Open TestUp for running tests.'
     cmd.small_icon = File.join(PATH_IMAGES, 'bug.png')
     cmd.large_icon = File.join(PATH_IMAGES, 'bug.png')
-    cmd_open_testup = cmd
+    cmd.set_validation_proc {
+      MF_CHECKED if self.window && self.window.visible?
+    }
+    cmd_toggle_testup = cmd
 
     cmd = UI::Command.new('Run tests in Ruby Console') {
-      self.run_tests
+      self.toggle_run_in_gui
     }
     cmd.tooltip = 'Run in Console'
-    cmd.status_bar_text = 'Run tests in Ruby Console.'
+    cmd.status_bar_text = 'Enable to output test results in the Ruby Console.'
     cmd.small_icon = File.join(PATH_IMAGES, 'console.png')
     cmd.large_icon = File.join(PATH_IMAGES, 'console.png')
-    cmd_run_console_tests = cmd
+    cmd.set_validation_proc {
+      MF_CHECKED if !self.run_in_gui
+    }
+    cmd_toggle_run_tests_in_console = cmd
+
+    cmd = UI::Command.new('Verbose Console Tests') {
+      self.toggle_verbose_console_tests
+    }
+    cmd.tooltip = 'Verbose Console Tests'
+    cmd.status_bar_text = 'Enable verbose test results in the Ruby Console.'
+    cmd.small_icon = File.join(PATH_IMAGES, 'verbose.png')
+    cmd.large_icon = File.join(PATH_IMAGES, 'verbose.png')
+    cmd.set_validation_proc {
+      flags = 0
+      flags |= MF_GRAYED if self.run_in_gui
+      flags |= MF_CHECKED if self.verbose_console_tests
+      flags
+    }
+    cmd_toggle_verbose_console_tests = cmd
 
     cmd = UI::Command.new('Reload TestUp') {
       SKETCHUP_CONSOLE.clear
       window_visible = @window && @window.visible?
       @window.close if window_visible
       @window = nil
-      self.open_testup if window_visible
+      @window.show if window_visible
       puts "Reloaded #{self.reload} files!"
     }
     cmd.small_icon = File.join(PATH_IMAGES, 'arrow_refresh.png')
@@ -68,8 +89,10 @@ module TestUp
 
     # Menus
     menu = UI.menu('Plugins').add_submenu(PLUGIN_NAME)
-    menu.add_item(cmd_open_testup)
-    menu.add_item(cmd_run_console_tests)
+    menu.add_item(cmd_toggle_testup)
+    menu.add_separator
+    menu.add_item(cmd_toggle_run_tests_in_console)
+    menu.add_item(cmd_toggle_verbose_console_tests)
     menu.add_separator
     menu.add_item(cmd_run_tests)
     menu.add_separator
@@ -79,8 +102,10 @@ module TestUp
 
     # Toolbar
     toolbar = UI::Toolbar.new(PLUGIN_NAME)
-    toolbar.add_item(cmd_open_testup)
-    toolbar.add_item(cmd_run_console_tests)
+    toolbar.add_item(cmd_toggle_testup)
+    toolbar.add_separator
+    toolbar.add_item(cmd_toggle_run_tests_in_console)
+    toolbar.add_item(cmd_toggle_verbose_console_tests)
     toolbar.add_separator
     toolbar.add_item(cmd_reload_testup)
     toolbar.add_separator

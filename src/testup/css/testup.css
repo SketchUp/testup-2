@@ -5,13 +5,84 @@ html
 
 
 /*******************************************************************************
+ * $TOOLBAR
+ */
+
+#toolbar
+{
+  position: absolute;
+  top: 0px;
+  height: 50px;
+  left: 0px;
+  right: 0px;
+
+  overflow: hidden;
+
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#1a000000',GradientType=0 ); /* IE6-9 */
+
+  border-bottom: 1px solid ThreeDShadow;
+}
+
+#toolbar > div
+{
+  display: inline-block;
+  height: 100%;
+  line-height: 50px;
+}
+
+#toolbar .button
+{
+  position: relative;
+  padding: 0 1em;
+  border-right: 1px solid ThreeDShadow;
+  z-index: 10;
+}
+
+#toolbar .button:hover
+{
+  background: rgba(255, 255, 255, 0.5);
+}
+
+#toolbar .button.pressed
+{
+  background: rgba(0, 0, 0, 0.2);
+}
+
+#toolbar .button img
+{
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+  padding-right: 0.2em;
+}
+
+#toolbar #logo
+{
+  position: absolute;
+  right: 0;
+  margin: 0 1em;
+}
+
+#toolbar #logo img
+{
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+}
+
+
+/*******************************************************************************
  * $TEST_SUITES
  */
 
 #testsuites
 {
   position: absolute;
-  top: 5px;
+  top: 55px;
   height: 30px;
   left: 5px;
   right: 5px;
@@ -36,6 +107,12 @@ html
   border-bottom: none;
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
+
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#1a000000',GradientType=0 ); /* IE6-9 */
 }
 
 #testsuites .tab:hover
@@ -47,6 +124,10 @@ html
 {
   font-weight: bold;
   background: ThreeDHighlight;
+
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }
 
 
@@ -57,12 +138,13 @@ html
 #testcases
 {
   position: absolute;
-  top: 35px;
+  top: 85px;
   bottom: 5px;
   left: 5px;
   right: 5px;
 
-  border: 1px inset ButtonFace;
+  /*border: 1px inset ButtonFace;*/
+  border: 1px solid #666;
   background: Window;
 
   overflow: auto;

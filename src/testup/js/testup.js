@@ -6,12 +6,17 @@
 
 var TestUp = function() {
 
+  var MOUSE_BUTTON_LEFT = 1;
+
+  var path_ = {};
   var testsuites_ = {};
 
   return {
 
 
     init :  function(testup_path) {
+      path_ = testup_path;
+
       $('<link/>', {
          rel: 'stylesheet',
          type: 'text/css',
@@ -26,8 +31,45 @@ var TestUp = function() {
       var $testcase_list = $('<div id="testcases"/>');
       $body.append($testcase_list);
 
+      TestUp.init_toolbar();
       TestUp.init_tabs();
       TestUp.init_testcase_checkboxes();
+    },
+
+
+    init_toolbar :  function() {
+      var $toolbar = $('<div id="toolbar"/>');
+
+      $(document).on('mousedown', '#toolbar .button', function() {
+        $(this).addClass('pressed');
+      });
+      $(document).on('mouseup, mouseout', '#toolbar .button', function() {
+        $(this).removeClass('pressed');
+      });
+      $(document).on('mouseover', '#toolbar .button', function(event) {
+        if (event.which == MOUSE_BUTTON_LEFT)
+        {
+          $(this).addClass('pressed');
+        }
+        else
+        {
+          $(this).removeClass('pressed');
+        }
+      });
+
+      var $run = $('<div class="button" id="run" />');
+      $run.text('Run');
+      $run.prepend( $('<img src="' + path_ + '/images/run.png" />') );
+      $run.on('click', function() {
+        Sketchup.callback('TestUp.on_run');
+      });
+      $toolbar.append($run);
+
+      var $logo = $('<div id="logo" />');
+      $logo.append( $('<img src="' + path_ + '/images/sketchup_logo.png" />') );
+      $toolbar.append($logo);
+
+      $('body').append($toolbar);
     },
 
 
@@ -191,4 +233,4 @@ var TestUp = function() {
 
 }(); // TestUp
 
-Sketchup.callback('TestUp.on_ready')
+Sketchup.callback('TestUp.on_ready');
