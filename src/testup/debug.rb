@@ -17,6 +17,12 @@
 
 module TestUp
 
+  def self.display_minitest_help
+    SKETCHUP_CONSOLE.show
+    MiniTest.run(['--help'])
+  rescue SystemExit
+  end
+
   # TestUp.reload
   def self.reload
     original_verbose = $VERBOSE
