@@ -65,7 +65,7 @@ module TestUp
       SKETCHUP_CONSOLE.clear
       window_visible = @window && @window.visible?
       @window.close if window_visible
-      @window = nil
+      @window = TestUpWindow.new
       @window.show if window_visible
       puts "Reloaded #{self.reload} files!"
     }
