@@ -32,9 +32,17 @@ module TestUp
       window.add_script(testup_script)
     end
 
+    def selected_testsuite
+      @bridge.call('TestUp.selected_testsuite')
+    end
+
+    def selected_tests
+      @bridge.call('TestUp.selected_tests')
+    end
+
     # Hack, as SKUI currently doesn't support subclassing of it's controls.
     def typename
-      SKUI::Window.to_s.split( '::' ).last
+      SKUI::Window.to_s.split('::').last
     end
 
     private
@@ -54,11 +62,16 @@ module TestUp
       nil
     end
 
+    def discover_tests
+      test_discoverer = TestDiscoverer.new(TestUp.paths_to_testsuites)
+      tests = test_discoverer.discover
+      self.bridge.call('TestUp.update_discovered_tests', tests)
+      nil
+    end
+
     def event_testup_ready
       self.bridge.call('TestUp.init', PATH)
-
-      testsuites = TestUp.discover_testsuites(TestUp.paths_to_testsuites)
-      self.bridge.call('TestUp.update_testsuites', testsuites)
+      discover_tests()
     end
 
     def event_testup_run

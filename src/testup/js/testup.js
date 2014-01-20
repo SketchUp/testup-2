@@ -113,10 +113,8 @@ var TestUp = function() {
     },
 
 
-    selected_testcases : function() {
-      var testcases = $(".testcase > .title").map(function() {
-        return $(this).text();
-      }).get();
+    selected_testsuite : function() {
+      return $("#testsuites .tab.selected").text();
     },
 
 
@@ -155,7 +153,7 @@ var TestUp = function() {
     },
 
 
-    update_testsuites : function(testsuites) {
+    update_discovered_tests : function(testsuites) {
       testsuites_ = testsuites;
 
       var $testsuites = $('#testsuites');
