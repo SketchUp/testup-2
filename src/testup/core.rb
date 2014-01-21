@@ -44,6 +44,7 @@ module TestUp
 
   require File.join(PATH, 'compatibility.rb')
   require File.join(PATH, 'debug.rb')
+  require File.join(PATH, 'settings.rb')
   require File.join(PATH, 'sketchup_console.rb')
   require File.join(PATH, 'test_discoverer.rb')
   require File.join(PATH, 'test_window.rb')
@@ -57,22 +58,20 @@ module TestUp
 
   ### Configuration ### --------------------------------------------------------
 
-  @run_in_gui = true
-
-  @verbose_console_tests = true
-
-  # TODO(thomthom): Make configurable.
-  @paths_to_testsuites = [
-    File.join(__dir__, '..', '..', 'tests'),
-    File.join(ENV['HOME'], 'SourceTree', 'SUbD', 'Ruby', 'tests'),
-    File.join(PATH_OLD_TESTUP, 'tests')
-  ]
+  defaults = {
+    :run_in_gui => true,
+    :verbose_console_tests => true,
+    :paths_to_testsuites => [
+      File.join(__dir__, '..', '..', 'tests'),
+      File.join(ENV['HOME'], 'SourceTree', 'SUbD', 'Ruby', 'tests'),
+      File.join(PATH_OLD_TESTUP, 'tests')
+    ]
+  }
+  @settings = Settings.new(PLUGIN_ID, defaults)
 
 
   class << self
-    attr_accessor :paths_to_testsuites
-    attr_accessor :run_in_gui
-    attr_accessor :verbose_console_tests
+    attr_reader :settings
     attr_accessor :window
   end
 
@@ -86,12 +85,12 @@ module TestUp
 
 
   def self.toggle_run_in_gui
-    @run_in_gui = !@run_in_gui
+    @settings[:run_in_gui] = !@settings[:run_in_gui]
   end
 
 
   def self.toggle_verbose_console_tests
-    @verbose_console_tests = !@verbose_console_tests
+    @settings[:verbose_console_tests] = !@settings[:verbose_console_tests]
   end
 
 
@@ -108,8 +107,8 @@ module TestUp
     puts "Running test suite: #{testsuite}"
     arguments = []
     arguments << "-n /^(#{tests.join('|')})$/"
-    arguments << '--verbose' if @verbose_console_tests
-    arguments << '--testup' if self.run_in_gui
+    arguments << '--verbose' if @settings[:verbose_console_tests]
+    arguments << '--testup' if @settings[:run_in_gui]
     MiniTest.run(arguments)
     #puts Reporter.results.pretty_inspect
     @window.update_results(Reporter.results)

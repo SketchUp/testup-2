@@ -68,10 +68,12 @@ module TestUp
       #puts( '>> TestWindow Callback' )
       callback, *arguments = params.split('||')
       case callback
-      when 'TestUp.open_source_file'
-        event_opent_source_file(arguments[0])
       when 'TestUp.on_run'
         event_testup_run()
+      when 'TestUp.on_open_source_file'
+        event_opent_source_file(arguments[0])
+      when 'TestUp.TestSuites.on_change'
+        event_change_testsuite(arguments[0])
       end
     ensure
       super
@@ -79,19 +81,28 @@ module TestUp
     end
 
     def discover_tests
-      test_discoverer = TestDiscoverer.new(TestUp.paths_to_testsuites)
+      paths = TestUp.settings[:paths_to_testsuites]
+      test_discoverer = TestDiscoverer.new(paths)
       tests = test_discoverer.discover
       self.bridge.call('TestUp.TestSuites.update', tests)
       nil
     end
 
     def event_testup_ready
-      self.bridge.call('TestUp.init', PATH)
+      config = {
+        :path => PATH,
+        :active_tab => TestUp.settings[:last_active_testsuite]
+      }
+      self.bridge.call('TestUp.init', config)
       discover_tests()
     end
 
     def event_testup_run
       TestUp.run_tests
+    end
+
+    def event_change_testsuite(testsuite)
+      TestUp.settings[:last_active_testsuite] = testsuite
     end
 
     def event_opent_source_file(location)

@@ -12,12 +12,12 @@ var TestUp = function() {
   return {
 
 
-    init :  function(testup_path) {
-      path_ = testup_path;
+    init :  function(config) {
+      path_ = config.path;
       init_error_catching();
       init_css(path_);
       TestUp.Toolbar.init(path_);
-      TestUp.TestSuites.init();
+      TestUp.TestSuites.init(config.active_tab);
       TestUp.TestCases.init();
     }
 

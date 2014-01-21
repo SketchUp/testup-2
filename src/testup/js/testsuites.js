@@ -9,12 +9,14 @@ var TestUp = TestUp || {};
 TestUp.TestSuites = function() {
 
   var testsuites_ = {};
+  var last_active_tab_ = null;
 
   // Public
   return {
 
 
-    init :  function() {
+    init :  function(active_tab) {
+      last_active_tab_ = active_tab;
       var $suite_list = $('<div id="testsuites"/>');
       $('body').append($suite_list);
 
@@ -23,6 +25,7 @@ TestUp.TestSuites = function() {
         var $tab = $(this);
         $tab.addClass('selected');
         var testcase_name = $tab.text();
+        Sketchup.callback('TestUp.TestSuites.on_change', testcase_name);
         var testcases = testsuites_[testcase_name];
         TestUp.TestCases.update(testcases);
       });
@@ -58,8 +61,11 @@ TestUp.TestSuites = function() {
     $tabs = $('#testsuites .tab');
     if ($tabs.length > 0)
     {
-      //var $tab = $tabs.first();
-      var $tab = $('#testsuites .tab:contains("TestUp")'); // DEBUG
+      var $tab = $('#testsuites .tab:contains("' + last_active_tab_ + '")');
+      if ($tab.length == 0)
+      {
+        $tab = $tabs.first();
+      }
       $tab.addClass('selected');
       var first_testsuite = $tab.text();
       var testcases = testsuites_[first_testsuite];

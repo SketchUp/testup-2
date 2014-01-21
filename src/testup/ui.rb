@@ -42,7 +42,7 @@ module TestUp
     cmd.small_icon = File.join(PATH_IMAGES, 'console.png')
     cmd.large_icon = File.join(PATH_IMAGES, 'console.png')
     cmd.set_validation_proc {
-      MF_CHECKED if !self.run_in_gui
+      MF_CHECKED if !self.settings[:run_in_gui]
     }
     cmd_toggle_run_tests_in_console = cmd
 
@@ -55,8 +55,8 @@ module TestUp
     cmd.large_icon = File.join(PATH_IMAGES, 'verbose.png')
     cmd.set_validation_proc {
       flags = 0
-      flags |= MF_GRAYED if self.run_in_gui
-      flags |= MF_CHECKED if self.verbose_console_tests
+      flags |= MF_GRAYED if self.settings[:run_in_gui]
+      flags |= MF_CHECKED if self.settings[:verbose_console_tests]
       flags
     }
     cmd_toggle_verbose_console_tests = cmd

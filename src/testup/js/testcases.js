@@ -214,7 +214,7 @@ TestUp.TestCases = function() {
       $location.text(failure.location);
       $location.on('click', function() {
         var location = $(this).attr('href');
-        Sketchup.callback('TestUp.open_source_file', location);
+        Sketchup.callback('TestUp.on_open_source_file', location);
         return false;
       });
       $failure.append($location);
