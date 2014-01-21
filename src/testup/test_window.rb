@@ -28,16 +28,27 @@ module TestUp
         :resizable       => true
       }
       super(options)
-      testup_script = File.join(PATH_JS_SCRIPTS, 'testup.js')
-      window.add_script(testup_script)
+      [
+        'testup.js',
+        'toolbar.js',
+        'testsuites.js',
+        'testcases.js'
+      ].each { |script_basename|
+        script = File.join(PATH_JS_SCRIPTS, script_basename)
+        window.add_script(script)
+      }
+      on(:scripts_loaded) {
+        puts 'All scripts loaded!'
+        event_testup_ready()
+      }
     end
 
     def selected_testsuite
-      @bridge.call('TestUp.selected_testsuite')
+      @bridge.call('TestUp.TestSuites.selected')
     end
 
     def selected_tests
-      @bridge.call('TestUp.selected_tests')
+      @bridge.call('TestUp.TestCases.selected_tests')
     end
 
     # Hack, as SKUI currently doesn't support subclassing of it's controls.
@@ -52,8 +63,6 @@ module TestUp
       #puts( '>> TestWindow Callback' )
       callback, *arguments = params.split('||')
       case callback
-      when 'TestUp.on_ready'
-        event_testup_ready()
       when 'TestUp.on_run'
         event_testup_run()
       end
@@ -65,7 +74,7 @@ module TestUp
     def discover_tests
       test_discoverer = TestDiscoverer.new(TestUp.paths_to_testsuites)
       tests = test_discoverer.discover
-      self.bridge.call('TestUp.update_discovered_tests', tests)
+      self.bridge.call('TestUp.TestSuites.update', tests)
       nil
     end
 
