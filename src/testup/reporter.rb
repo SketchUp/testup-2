@@ -28,8 +28,8 @@ class Reporter < MiniTest::StatisticsReporter
     io.puts
     io.puts separator
     io.puts
+    io.puts "     Tests: #{self.count}"
     io.puts "Assertions: #{self.assertions}"
-    io.puts "     Count: #{self.count}"
     io.puts "  Failures: #{self.failures}"
     io.puts "    Errors: #{self.errors}"
     io.puts "     Skips: #{self.skips}"
