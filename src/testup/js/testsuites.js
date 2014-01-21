@@ -58,7 +58,8 @@ TestUp.TestSuites = function() {
     $tabs = $('#testsuites .tab');
     if ($tabs.length > 0)
     {
-      var $tab = $tabs.first();
+      //var $tab = $tabs.first();
+      var $tab = $('#testsuites .tab:contains("TestUp")'); // DEBUG
       $tab.addClass('selected');
       var first_testsuite = $tab.text();
       var testcases = testsuites_[first_testsuite];

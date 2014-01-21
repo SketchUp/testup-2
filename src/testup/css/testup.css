@@ -181,12 +181,6 @@ html
 }
 
 
-#testcases .testcase .test
-{
-  padding-left: 2em;
-}
-
-
 #testcases .title
 {
   white-space: nowrap;
@@ -196,10 +190,41 @@ html
 
 
 /*******************************************************************************
+ * $TESTS
+ */
+
+
+#testcases .testcase .test
+{
+  padding-left: 2em;
+}
+
+#testcases .testcase .test .failures
+{
+  margin-left: 3em;
+}
+
+#testcases .testcase .test .failures .failure
+{
+  padding: 0.5em;
+  margin-bottom: 3px;
+}
+
+#testcases .testcase .test .failures .failure pre
+{
+  border: 1px solid silver;
+  color: #666;
+  background: #eee;
+  padding: 0.5em;
+  margin: 0.5em 0 0 0;
+}
+
+
+/*******************************************************************************
  * $TEST_CASE_STATUSES
  */
 
-#testcases .suceeded > .title
+#testcases .passed > .title
 {
   background-image: url(../images/accept.png);
 }
@@ -213,3 +238,9 @@ html
 {
   background-image: url(../images/error.png);
 }
+
+#testcases .skipped > .title
+{
+  background-image: url(../images/skip.png);
+}
+

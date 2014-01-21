@@ -57,7 +57,7 @@ module TestUp
 
   ### Configuration ### --------------------------------------------------------
 
-  @run_in_gui = false
+  @run_in_gui = true
 
   @verbose_console_tests = true
 
@@ -101,10 +101,8 @@ module TestUp
       UI.beep
       return
     end
-    unless self.run_in_gui
-      SKETCHUP_CONSOLE.show
-      SKETCHUP_CONSOLE.clear
-    end
+    SKETCHUP_CONSOLE.show
+    SKETCHUP_CONSOLE.clear
     testsuite = @window.selected_testsuite
     tests = @window.selected_tests
     puts "Running test suite: #{testsuite}"
@@ -113,6 +111,8 @@ module TestUp
     arguments << '--verbose' if @verbose_console_tests
     arguments << '--testup' if self.run_in_gui
     MiniTest.run(arguments)
+    #puts Reporter.results.pretty_inspect
+    @window.update_results(Reporter.results)
   end
 
 

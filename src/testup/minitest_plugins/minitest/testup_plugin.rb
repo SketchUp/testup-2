@@ -3,7 +3,7 @@
 # Original Author:: Thomas Thomassen
 
 
-require File.join(__dir__, '..', '..', 'xml_reporter.rb')
+require File.join(__dir__, '..', '..', 'reporter.rb')
 
 
 puts 'MiniTest TestUp Extension discovered...' # DEBUG
@@ -23,7 +23,7 @@ module Minitest
       # the console while the test runs. No need for that.
       self.reporter.reporters.clear
       # Add the reporters needed for TestUp.
-      self.reporter << TestUp::XmlReporter.new($stdout, options)
+      self.reporter << TestUp::Reporter.new($stdout, options)
     end
   end
 

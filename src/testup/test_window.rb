@@ -56,6 +56,11 @@ module TestUp
       SKUI::Window.to_s.split('::').last
     end
 
+    # @param [Array<Hash>] results
+    def update_results(results)
+      @bridge.call('TestUp.TestCases.update_results', results)
+    end
+
     private
 
     # Intecept callbacks from the SKUI window before passing it on to SKUI.
@@ -63,6 +68,8 @@ module TestUp
       #puts( '>> TestWindow Callback' )
       callback, *arguments = params.split('||')
       case callback
+      when 'TestUp.open_source_file'
+        event_opent_source_file(arguments[0])
       when 'TestUp.on_run'
         event_testup_run()
       end
@@ -85,6 +92,14 @@ module TestUp
 
     def event_testup_run
       TestUp.run_tests
+    end
+
+    def event_opent_source_file(location)
+      puts "TestUp.open_source_file(#{location})"
+      filename, line = location.split(':')
+      editor = File.join(ENV['ProgramW6432'], 'Sublime Text 3','sublime_text.exe')
+      command = %["#{editor}" "#{location}"]
+      system(command)
     end
 
   end # class

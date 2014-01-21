@@ -50,3 +50,13 @@ var TestUp = function() {
 
 
 }(); // TestUp
+
+
+function assert(value)
+{
+  if (!value)
+  {
+    var html = $('body').html();
+    debugger;
+  }
+}

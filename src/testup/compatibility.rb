@@ -94,6 +94,7 @@ module Minitest
       end
       begin
         line = __LINE__; yield
+        assert(true) # Compatibility
       rescue MiniTest::Skip
         raise
       rescue Exception => e

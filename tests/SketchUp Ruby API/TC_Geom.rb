@@ -53,5 +53,13 @@ class TC_Geom < TestUp::TestCase
     end
   end # test
 
+  def test_closest_points_dummy
+    assert(false, 'Oh noes!')
+  end # test
+
+  def test_closest_points_skipped_dummy
+    skip('not this time!')
+  end # test
+
 
 end # class
