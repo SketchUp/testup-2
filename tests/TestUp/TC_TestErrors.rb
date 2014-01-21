@@ -29,7 +29,7 @@ class TC_TestErrors < TestUp::TestCase
   end # test
 
   def test_error
-    raise 'Oh the humanity!'
+    raise ArgumentError, 'All your base are belong to us!'
   end # test
 
 
