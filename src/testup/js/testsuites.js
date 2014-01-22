@@ -24,10 +24,10 @@ TestUp.TestSuites = function() {
         $('#testsuites .tab').removeClass('selected');
         var $tab = $(this);
         $tab.addClass('selected');
-        var testcase_name = $tab.text();
-        Sketchup.callback('TestUp.TestSuites.on_change', testcase_name);
-        var testcases = testsuites_[testcase_name];
-        TestUp.TestCases.update(testcases);
+        var testsuite_name = $tab.text();
+        Sketchup.callback('TestUp.TestSuites.on_change', testsuite_name);
+        var testcases = testsuites_[testsuite_name];
+        TestUp.TestCases.update(testsuite_name, testcases);
       });
     },
 
@@ -67,15 +67,15 @@ TestUp.TestSuites = function() {
         $tab = $tabs.first();
       }
       $tab.addClass('selected');
-      var first_testsuite = $tab.text();
-      var testcases = testsuites_[first_testsuite];
-      TestUp.TestCases.update(testcases);
+      var testsuite_name = $tab.text();
+      var testcases = testsuites_[testsuite_name];
+      TestUp.TestCases.update(testsuite_name, testcases);
     }
     else
     {
       // TODO(thomthom): Merge with TestUp.update_testcases. Rename to
       // TestUp.TestCases.display(testsuite);
-      $('#testcases').empty();
+      //$('#testcases').empty();
     }
   }
 

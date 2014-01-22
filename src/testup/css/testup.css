@@ -150,6 +150,18 @@ html
   overflow: auto;
 }
 
+#testcases .testsuite
+{
+  /*border: 1px solid red;*/
+  display: none;
+}
+
+#testcases .testsuite.active
+{
+  /*background: #fdd;*/
+  display: block;
+}
+
 #testcases .testcase
 {
   border-bottom: 1px solid silver;

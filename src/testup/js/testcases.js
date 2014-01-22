@@ -43,9 +43,16 @@ TestUp.TestCases = function() {
     },
 
 
-    update : function(testcases) {
-      var $testcases = $('#testcases');
-      $testcases.empty();
+    update : function(testsuite_name, testcases) {
+      $('.testsuite').removeClass('active');
+      var $testsuite = testsuite_from_name(testsuite_name);
+      if ($testsuite.length)
+      {
+        $testsuite.addClass('active');
+        return;
+      }
+      //$testsuite.empty();
+      $testsuite = create_testsuite_view(testsuite_name)
       for (testcase_name in testcases)
       {
         var tests = testcases[testcase_name];
@@ -64,15 +71,15 @@ TestUp.TestCases = function() {
         var $tests = $('<div class="tests" />')
         $testcase.append($tests);
 
-        $testcases.append($testcase);
+        $testsuite.append($testcase);
 
         update_tests($testcase, tests);
       }
+      $testsuite.addClass('active');
     },
 
 
     update_results : function(results) {
-      var $testcases = $('#testcases');
       for (var i = 0; i < results.length; ++i)
       {
         update_test_result(results[i]);
@@ -83,7 +90,7 @@ TestUp.TestCases = function() {
 
     selected_tests : function() {
       var testcases = [];
-      $(".testcase > .title").each(function() {
+      $(".testsuite.active .testcase > .title").each(function() {
         var $testcase_title = $(this);
         var testcase = $testcase_title.text();
         var $checkbox = $testcase_title.find('input[type=checkbox]');
@@ -255,6 +262,32 @@ TestUp.TestCases = function() {
         $testcase.addClass('passed');
       }
     });
+  }
+
+
+  function testsuite_from_name(testsuite_name) {
+    var id_name = testsuite_name.replace(/[^a-z0-9]+/ig, '-');
+    var $testsuite = $('#suite_' + id_name);
+    /*if ($testsuite.length == 0)
+    {
+      debugger;
+      $testsuite = $('<div class="testsuite"/>').attr({
+        id: 'suite_' + id_name
+      });
+      $('#testcases').append($testsuite);
+    }*/
+    return $testsuite;
+  }
+
+
+  function create_testsuite_view(testsuite_name) {
+    var id_name = testsuite_name.replace(/[^a-z0-9]+/ig, '-');
+    assert( $('#suite_' + id_name).length == 0 );
+    $testsuite = $('<div class="testsuite"/>').attr({
+      id: 'suite_' + id_name
+    });
+    $('#testcases').append($testsuite);
+    return $testsuite;
   }
 
 
