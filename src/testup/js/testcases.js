@@ -202,7 +202,7 @@ TestUp.TestCases = function() {
     // Ensure old failure messages are removed.
     $test.find('.failures').detach();
 
-    if (result.skipped || result.failures.length == 0)
+    if (result.failures.length == 0)
     {
       return;
     }
