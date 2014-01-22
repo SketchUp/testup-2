@@ -6,6 +6,7 @@
 
 var TestUp = function() {
 
+  var debugger_ = false;
   var path_ = {};
 
   // Public
@@ -13,6 +14,7 @@ var TestUp = function() {
 
 
     init :  function(config) {
+      debugger_ = config.debugger;
       path_ = config.path;
       init_error_catching();
       init_css(path_);
@@ -37,12 +39,13 @@ var TestUp = function() {
 
   var debugger_activated = false;
   function init_error_catching() {
-    window.onerror = function(message, url, linenumber) {
-      if (!debugger_activated)
+    window.onerror = function(message, url, linenumber, error) {
+      if (!debugger_)
       {
-        // Trigger IE to request if an debugger should be attached.
+        // Trigger an request to attach debugger.
         debugger;
-        debugger_activated = true;
+        debugger_ = true;
+        Sketchup.callback('TestUp.on_script_debugger_attached');
       }
       return false;
     };
@@ -56,6 +59,7 @@ function assert(value)
 {
   if (!value)
   {
+    // Helper variable to extract the HTML content when breaking.
     var html = $('body').html();
     debugger;
   }

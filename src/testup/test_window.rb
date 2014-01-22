@@ -68,6 +68,8 @@ module TestUp
       #puts( '>> TestWindow Callback' )
       callback, *arguments = params.split('||')
       case callback
+      when 'TestUp.on_script_debugger_attached'
+        ScriptDebugger.attach
       when 'TestUp.on_run'
         event_testup_run()
       when 'TestUp.on_open_source_file'
@@ -90,8 +92,9 @@ module TestUp
 
     def event_testup_ready
       config = {
-        :path => PATH,
-        :active_tab => TestUp.settings[:last_active_testsuite]
+        :active_tab => TestUp.settings[:last_active_testsuite],
+        :debugger   => ScriptDebugger.attached?,
+        :path       => PATH
       }
       self.bridge.call('TestUp.init', config)
       discover_tests()
