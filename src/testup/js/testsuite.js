@@ -56,26 +56,8 @@ TestUp.TestSuite = function() {
     update : function($testsuite, testsuite_data) {
       for (testcase_name in testsuite_data)
       {
+        var $testcase = ensure_testcase_exist($testsuite, testcase_name);
         var tests = testsuite_data[testcase_name];
-
-        var $testcase = $('<div class="testcase" />').attr({
-          'class' : 'testcase',
-          'id' : testcase_name,
-        });
-
-        var $title = $('<div class="title" />')
-        var $label = $('<label/>');
-        var $checkbox = $('<input type="checkbox" checked />');
-        $label.text(testcase_name);
-        $label.prepend($checkbox);
-        $title.append($label);
-        $testcase.append($title);
-
-        var $tests = $('<div class="tests" />')
-        $testcase.append($tests);
-
-        $testsuite.append($testcase);
-
         TestUp.TestCase.update($testcase, tests);
       }
     },
@@ -114,6 +96,38 @@ TestUp.TestSuite = function() {
 
 
   // Private
+
+
+  function testcase_from_name(testcase_name) {
+    return $('#' + testcase_name);
+  }
+
+
+  function ensure_testcase_exist($testsuite, testcase_name) {
+    var $testcase = testcase_from_name(testcase_name);
+    if ($testcase.length == 0)
+    {
+      var $testcase = $('<div class="testcase" />').attr({
+        'class' : 'testcase',
+        'id' : testcase_name,
+      });
+
+      var $title = $('<div class="title" />')
+      var $label = $('<label/>');
+      var $checkbox = $('<input type="checkbox" checked />');
+      $label.text(testcase_name);
+      $label.prepend($checkbox);
+      $title.append($label);
+      $testcase.append($title);
+
+      var $tests = $('<div class="tests" />')
+      $testcase.append($tests);
+
+      $testsuite.append($testcase);
+    }
+    assert($testcase.length);
+    return $testcase;
+  }
 
 
 }(); // TestUp

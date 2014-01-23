@@ -75,6 +75,8 @@ module TestUp
         ScriptDebugger.attach
       when 'TestUp.on_run'
         event_testup_run()
+      when 'TestUp.on_discover'
+        event_discover()
       when 'TestUp.on_open_source_file'
         event_opent_source_file(arguments[0])
       when 'TestUp.TestSuites.on_change'
@@ -104,7 +106,12 @@ module TestUp
     end
 
     def event_testup_run
+      discover_tests()
       TestUp.run_tests
+    end
+
+    def event_discover
+      discover_tests()
     end
 
     def event_change_testsuite(testsuite)

@@ -18,8 +18,16 @@ TestUp.Test = function() {
     },
 
 
+    get_element_by_name : function(testname) {
+      var id = id_from_name(testname);
+      var selector_id = id.replace('.', '\\.');
+      var $test = $('#' + selector_id);
+      return $test;
+    },
+
+
     update_result : function(result) {
-      var $test = get_test_by_name(result.testname);
+      var $test = TestUp.Test.get_element_by_name(result.testname);
       assert($test.length);
       if (result.passed)
       {
@@ -53,14 +61,6 @@ TestUp.Test = function() {
 
 
   // Private
-
-  function get_test_by_name(testname) {
-    var id = id_from_name(testname);
-    var selector_id = id.replace('.', '\\.');
-    var $test = $('#' + selector_id);
-    assert($test.length > 0);
-    return $test;
-  }
 
 
   function id_from_name(testcase_name) {

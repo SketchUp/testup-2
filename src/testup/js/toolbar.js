@@ -45,6 +45,15 @@ TestUp.Toolbar = function() {
       });
       $toolbar.append($run);
 
+      var $discover = $('<div class="button" id="discover" />');
+      $discover.attr('title', 'Discover/rediscover tests');
+      $discover.text('Discover');
+      $discover.prepend( $('<img src="' + path + '/images/find.png" />') );
+      $discover.on('click', function() {
+        Sketchup.callback('TestUp.on_discover');
+      });
+      $toolbar.append($discover);
+
       var $logo = $('<div id="logo" />');
       $logo.append( $('<img src="' + path + '/images/sketchup_logo.png" />') );
       $toolbar.append($logo);
