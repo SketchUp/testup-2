@@ -14,7 +14,9 @@ TestUp.Toolbar = function() {
   return {
 
 
-    init :  function(path) {
+    init :  function(config) {
+      path = config.path;
+
       var $toolbar = $('<div id="toolbar"/>');
 
       $(document).on('mousedown', '#toolbar .button', function() {
@@ -36,6 +38,7 @@ TestUp.Toolbar = function() {
 
       var $run = $('<div class="button" id="run" />');
       $run.text('Run');
+      $run.attr('title', 'Run selected tests');
       $run.prepend( $('<img src="' + path + '/images/run.png" />') );
       $run.on('click', function() {
         Sketchup.callback('TestUp.on_run');

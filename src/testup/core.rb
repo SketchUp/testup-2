@@ -102,7 +102,7 @@ module TestUp
     end
     SKETCHUP_CONSOLE.show
     SKETCHUP_CONSOLE.clear
-    testsuite = @window.selected_testsuite
+    testsuite = @window.active_testsuite
     tests = @window.selected_tests
     puts "Running test suite: #{testsuite}"
     arguments = []

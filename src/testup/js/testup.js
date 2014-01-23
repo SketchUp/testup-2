@@ -18,9 +18,18 @@ var TestUp = function() {
       path_ = config.path;
       init_error_catching();
       init_css(path_);
-      TestUp.Toolbar.init(path_);
-      TestUp.TestSuites.init(config.active_tab);
-      TestUp.TestCases.init();
+      TestUp.Toolbar.init(config);
+      TestUp.Tabs.init();
+      TestUp.TestSuites.init(config);
+    },
+
+
+    update_results : function(results) {
+      for (var i = 0; i < results.length; ++i)
+      {
+        TestUp.Test.update_result(results[i]);
+      }
+      TestUp.TestSuite.update_results();
     }
 
 
@@ -39,7 +48,7 @@ var TestUp = function() {
 
   var debugger_activated = false;
   function init_error_catching() {
-    window.onerror = function(message, url, linenumber, error) {
+    window.onerror = function(message, location, linenumber, error) {
       if (!debugger_)
       {
         // Trigger an request to attach debugger.

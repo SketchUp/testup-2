@@ -31,8 +31,11 @@ module TestUp
       [
         'testup.js',
         'toolbar.js',
+        'tabs.js',
         'testsuites.js',
-        'testcases.js'
+        'testsuite.js',
+        'testcase.js',
+        'test.js'
       ].each { |script_basename|
         script = File.join(PATH_JS_SCRIPTS, script_basename)
         window.add_script(script)
@@ -43,12 +46,12 @@ module TestUp
       }
     end
 
-    def selected_testsuite
-      @bridge.call('TestUp.TestSuites.selected')
+    def active_testsuite
+      @bridge.call('TestUp.TestSuites.active')
     end
 
     def selected_tests
-      @bridge.call('TestUp.TestCases.selected_tests')
+      @bridge.call('TestUp.TestSuite.selected_tests')
     end
 
     # Hack, as SKUI currently doesn't support subclassing of it's controls.
@@ -58,7 +61,7 @@ module TestUp
 
     # @param [Array<Hash>] results
     def update_results(results)
-      @bridge.call('TestUp.TestCases.update_results', results)
+      @bridge.call('TestUp.update_results', results)
     end
 
     private

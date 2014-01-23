@@ -76,10 +76,10 @@ html
 
 
 /*******************************************************************************
- * $TEST_SUITES
+ * $TABS
  */
 
-#testsuites
+#tabs
 {
   position: absolute;
   top: 55px;
@@ -91,7 +91,7 @@ html
 }
 
 
-#testsuites .tab
+#tabs .tab
 {
   display: inline-block;
   height: 100%;
@@ -115,12 +115,12 @@ html
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#1a000000',GradientType=0 ); /* IE6-9 */
 }
 
-#testsuites .tab:hover
+#tabs .tab:hover
 {
   background: ThreeDHighlight;
 }
 
-#testsuites .tab.selected
+#tabs .tab.selected
 {
   font-weight: bold;
   background: ThreeDHighlight;
@@ -132,10 +132,10 @@ html
 
 
 /*******************************************************************************
- * $TEST_CASES
+ * $TESTSUITES
  */
 
-#testcases
+#testsuites
 {
   position: absolute;
   top: 85px;
@@ -150,50 +150,24 @@ html
   overflow: auto;
 }
 
-#testcases .testsuite
+
+/*******************************************************************************
+ * $TESTSUITE
+ */
+
+#testsuites .testsuite
 {
   /*border: 1px solid red;*/
   display: none;
 }
 
-#testcases .testsuite.active
+#testsuites .testsuite.active
 {
   /*background: #fdd;*/
   display: block;
 }
 
-#testcases .testcase
-{
-  border-bottom: 1px solid silver;
-  padding: 5px;
-}
-
-#testcases .testcase:hover
-{
-  background: rgba(0, 128, 255, 0.03);
-}
-
-#testcases .testcase .title label
-{
-  display: inline-block;
-  width: 100%;
-  line-height: 1em;
-}
-
-#testcases .testcase .title input
-{
-  position: relative;
-  vertical-align: middle;
-}
-
-
-#testcases .testcase > .title
-{
-  font-weight: bold;
-}
-
-
-#testcases .title
+#testsuites .title
 {
   white-space: nowrap;
   padding-left: 20px;
@@ -202,27 +176,62 @@ html
 
 
 /*******************************************************************************
+ * $TESTCASE
+ */
+
+#testsuites .testcase
+{
+  border-bottom: 1px solid silver;
+  padding: 5px;
+}
+
+#testsuites .testcase:hover
+{
+  background: rgba(0, 128, 255, 0.03);
+}
+
+#testsuites .testcase .title label
+{
+  display: inline-block;
+  width: 100%;
+  line-height: 1em;
+}
+
+#testsuites .testcase .title input
+{
+  position: relative;
+  vertical-align: middle;
+}
+
+
+#testsuites .testcase > .title
+{
+  font-weight: bold;
+}
+
+
+/*******************************************************************************
  * $TESTS
  */
 
 
-#testcases .testcase .test
+#testsuites .testcase .test
 {
   padding-left: 2em;
 }
 
-#testcases .testcase .test .failures
+#testsuites .testcase .test .failures
 {
   margin-left: 3em;
 }
 
-#testcases .testcase .test .failures .failure
+#testsuites .testcase .test .failures .failure
 {
   padding: 0.5em;
   margin-bottom: 3px;
 }
 
-#testcases .testcase .test .failures .failure pre
+#testsuites .testcase .test .failures .failure pre
 {
   border: 1px solid silver;
   color: #666;
@@ -233,25 +242,25 @@ html
 
 
 /*******************************************************************************
- * $TEST_CASE_STATUSES
+ * $TEST_STATUS
  */
 
-#testcases .passed > .title
+#testsuites .passed > .title
 {
   background-image: url(../images/accept.png);
 }
 
-#testcases .failed > .title
+#testsuites .failed > .title
 {
   background-image: url(../images/exclamation.png);
 }
 
-#testcases .error > .title
+#testsuites .error > .title
 {
   background-image: url(../images/error.png);
 }
 
-#testcases .skipped > .title
+#testsuites .skipped > .title
 {
   background-image: url(../images/skip.png);
 }
