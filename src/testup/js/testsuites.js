@@ -56,9 +56,9 @@ TestUp.TestSuites = function() {
 
 
     activate : function(testsuite_name) {
-      TestUp.Tabs.select(testsuite_name);
-      last_active_tab_ = testsuite_name;
-      var $testsuite = testsuite_from_name(testsuite_name);
+      var $tab = TestUp.Tabs.select(testsuite_name);
+      last_active_tab_ = $tab.text();
+      var $testsuite = testsuite_from_name(last_active_tab_);
       assert($testsuite.length);
       $('.testsuite').removeClass('active');
       $testsuite.addClass('active');

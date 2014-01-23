@@ -39,13 +39,14 @@ TestUp.Tabs = function() {
 
 
     select : function(tab_text) {
+      var $tab;
       if (tab_text == null)
       {
-        $("#tabs .tab").first();
+        $tab = $("#tabs .tab").first();
       }
       else
       {
-        var $tab = TestUp.Tabs.get(tab_text);
+        $tab = TestUp.Tabs.get(tab_text);
       }
       assert($tab.length);
       select_tab($tab);
