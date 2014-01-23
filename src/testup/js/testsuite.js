@@ -88,6 +88,15 @@ TestUp.TestSuite = function() {
           $testcase.prop('title', 'Passed');
           $testcase.addClass('passed');
         }
+
+        if (failed > 0 || errors > 0)
+        {
+          $testcase.find('.tests').slideDown('fast');
+        }
+        else
+        {
+          $testcase.find('.tests').slideUp('fast');
+        }
       });
     }
 

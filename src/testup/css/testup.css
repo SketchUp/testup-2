@@ -203,10 +203,15 @@ html
   vertical-align: middle;
 }
 
-
 #testsuites .testcase > .title
 {
   font-weight: bold;
+}
+
+
+#testsuites .tests
+{
+  display: none;
 }
 
 
