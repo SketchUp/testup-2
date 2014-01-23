@@ -67,6 +67,7 @@ TestUp.TestSuite = function() {
       var $testcases = $('.testsuite.active .testcase');
       $testcases.each(function() {
         var $testcase = $(this);
+        $testcase.removeClass('passed failed error skipped');
 
         var passed  = $testcase.find('.test.passed').length
         var failed  = $testcase.find('.test.failed').length
