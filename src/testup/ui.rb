@@ -69,6 +69,7 @@ module TestUp
       @window.show if window_visible
       puts "Reloaded #{self.reload} files!"
     }
+    cmd.tooltip = 'Reload TestUp'
     cmd.small_icon = File.join(PATH_IMAGES, 'arrow_refresh.png')
     cmd.large_icon = File.join(PATH_IMAGES, 'arrow_refresh.png')
     cmd_reload_testup = cmd
@@ -76,6 +77,7 @@ module TestUp
     cmd = UI::Command.new('Minitest Help') {
       self.display_minitest_help
     }
+    cmd.tooltip = 'Minitest Help'
     cmd.small_icon = File.join(PATH_IMAGES, 'help.png')
     cmd.large_icon = File.join(PATH_IMAGES, 'help.png')
     cmd_display_minitest_help = cmd
