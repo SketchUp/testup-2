@@ -41,7 +41,13 @@ TestUp.Toolbar = function() {
       $run.attr('title', 'Run selected tests');
       $run.prepend( $('<img src="' + path + '/images/run.png" />') );
       $run.on('click', function() {
-        Sketchup.callback('TestUp.on_run');
+        $('body').css('cursor', 'wait');
+        // Ugly hack to allow the WebDialog to display the waiting cursor as
+        // otherwise it'll not be set until after the tests are run.
+        setTimeout(function() {
+          Sketchup.callback('TestUp.on_run');
+          $('body').css('cursor', 'default');
+        }, 50);
       });
       $toolbar.append($run);
 

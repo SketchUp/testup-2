@@ -46,6 +46,7 @@ module TestUp
   require File.join(PATH, 'debug.rb')
   require File.join(PATH, 'settings.rb')
   require File.join(PATH, 'sketchup_console.rb')
+  require File.join(PATH, 'taskbar_progress.rb')
   require File.join(PATH, 'test_discoverer.rb')
   require File.join(PATH, 'test_window.rb')
   require File.join(PATH, 'ui.rb')
@@ -109,7 +110,13 @@ module TestUp
     arguments << "-n /^(#{tests.join('|')})$/"
     arguments << '--verbose' if @settings[:verbose_console_tests]
     arguments << '--testup' if @settings[:run_in_gui]
-    MiniTest.run(arguments)
+    progress = TaskbarProgress.new
+    begin
+      progress.set_state(TaskbarProgress::INDETERMINATE)
+      MiniTest.run(arguments)
+    ensure
+      progress.set_state(TaskbarProgress::NOPROGRESS)
+    end
     #puts Reporter.results.pretty_inspect
     @window.update_results(Reporter.results)
   end
