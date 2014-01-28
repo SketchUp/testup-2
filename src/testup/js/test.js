@@ -52,8 +52,8 @@ TestUp.Test = function() {
           $test.prop('title', 'Failed');
           $test.addClass('failed');
         }
-        update_failures($test, result);
       }
+      update_failures($test, result);
       $test.prop('title', $test.prop('title') + ' - ' + result.testname);
     },
 
