@@ -26,8 +26,9 @@ TestUp.TestSuites = function() {
       // Toggle test cases on/off.
       // * Check/uncheck tests belonging to the testcase.
       $(document).on('change', '.testcase > .title input[type=checkbox]',
-        function()
+        function(event)
       {
+        event.stopPropagation();
         var $checkbox = $(this);
         var checked = $checkbox.prop('checked');
         var $testcase = $checkbox.parents('.testcase');
@@ -38,14 +39,32 @@ TestUp.TestSuites = function() {
       // Toggle tests on/off.
       // * Remove checkmark from testcase when induvidual tests are checked.
       $(document).on('change', '.test > .title input[type=checkbox]',
-        function()
+        function(event)
       {
+        event.stopPropagation();
         var $checkbox = $(this);
         var checked = $checkbox.prop('checked');
         var $testcase = $checkbox.parents('.testcase');
         var $title = $testcase.children('.title');
         var $testcase_checkbox = $title.find('input[type=checkbox]');
         $testcase_checkbox.prop('checked', false);
+      });
+
+      // This is needed to block the roll up/down event of the parent title
+      // element from triggering when clicking the checkbox.
+      $(document).on('click', '#testsuites input[type=checkbox]',
+        function(event)
+      {
+        event.stopPropagation();
+      });
+
+      // Roll up/down
+      $(document).on('click', '#testsuites .title',
+        function(event)
+      {
+        var $parent = $(this).parent();
+        var $container = $parent.children('.container');
+        $container.slideToggle('fast');
       });
     },
 
@@ -75,6 +94,7 @@ TestUp.TestSuites = function() {
         TestUp.TestSuite.update($testsuite, testsuite_data);
       }
       TestUp.TestSuites.activate(last_active_tab_);
+      TestUp.TestSuite.update_results(false);
     },
 
 

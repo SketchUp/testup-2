@@ -203,7 +203,7 @@ html
   vertical-align: middle;
 }
 
-#testsuites .testcase > .title
+#testsuites .testcase > .title .name
 {
   font-weight: bold;
 }
@@ -270,3 +270,13 @@ html
   background-image: url(../images/skip.png);
 }
 
+
+/*******************************************************************************
+ * $METADATA
+ */
+
+#testsuites .metadata
+{
+  color: #999;
+  margin-left: 0.5em;
+}

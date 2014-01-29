@@ -46,6 +46,7 @@ TestUp.TestCase = function() {
         'class' : 'test',
         'id' : testcase_id + '\.' + test_name,
       });
+
       var $title = $('<div class="title" />')
       var $label = $('<label/>');
       var $checkbox = $('<input type="checkbox" checked />');
