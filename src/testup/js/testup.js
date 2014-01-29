@@ -21,15 +21,43 @@ var TestUp = function() {
       TestUp.Toolbar.init(config);
       TestUp.Tabs.init();
       TestUp.TestSuites.init(config);
+      TestUp.Statusbar.init();
     },
 
 
     update_results : function(results) {
+      var testsuite = TestUp.TestSuites.active();
+      var num_tests = results.length;
+      var total_time = 0;
+      var num_passed = 0;
+      var num_failed = 0;
+      var num_errors = 0;
+      var num_skipped = 0;
+
       for (var i = 0; i < results.length; ++i)
       {
-        TestUp.Test.update_result(results[i]);
+        var result = results[i];
+
+        total_time += result.time;
+        if (result.passed)  ++num_passed;
+        if (result.failed)  ++num_failed;
+        if (result.error)   ++num_errors;
+        if (result.skipped) ++num_skipped;
+
+        TestUp.Test.update_result(result);
       }
       TestUp.TestSuite.update_results();
+
+      var total_time_formatted = total_time.toFixed(3) + 's';
+      TestUp.Statusbar.text(
+        num_tests + ' tests from test suite "' + testsuite +
+        '" run in ' + total_time_formatted + '. ' +
+        num_passed  + ' passed, ' +
+        num_failed  + ' failed, ' +
+        num_errors  + ' errors, ' +
+        num_skipped + ' skipped' +
+        ' - ' + new Date().toLocaleTimeString()
+      );
     }
 
 

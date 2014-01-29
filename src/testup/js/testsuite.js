@@ -38,9 +38,9 @@ TestUp.TestSuite = function() {
           var $testcase = $testcase_title.parents('.testcase');
           $testcase.find('.test').each(function() {
             var $test = $(this);
-            var $test_title = $test.children('.title'); // TODO
+            var $test_title = $test.children('.title');
             var $checkbox = $test_title.find('input[type=checkbox]');
-            var test_method = $test_title.text();
+            var test_method = $test_title.find('.name').text();
             var checked = $checkbox.prop('checked');
             if (checked)
             {

@@ -33,6 +33,11 @@ TestUp.Tabs = function() {
     },
 
 
+    count : function() {
+      return $('#tabs .tab').length;
+    },
+
+
     get : function(tab_text) {
       return $('#tabs .tab:contains(' + tab_text + ')');
     },

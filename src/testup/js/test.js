@@ -53,6 +53,7 @@ TestUp.Test = function() {
           $test.addClass('failed');
         }
       }
+      update_metadata($test, result);
       update_failures($test, result);
       $test.prop('title', $test.prop('title') + ' - ' + result.testname);
     },
@@ -68,6 +69,30 @@ TestUp.Test = function() {
     // Convert "TC_TestCase#test_method_name" to
     //         "TC_TestCase.test_method_name".
     return testcase_name.replace('#', '.');
+  }
+
+
+  function update_metadata($test, result) {
+    var $title = $test.children('.title');
+    assert($title.length > 0);
+
+    var $name = $title.find('.name');
+    assert($name.length > 0);
+
+    var $metadata = $title.find('.metadata');
+    if ($metadata.length == 0)
+    {
+      $metadata = $('<div class="metadata">');
+      $metadata.append('(');
+      $metadata.append('Time: <span class="time">0</span>');
+      $metadata.append(')');
+
+      //$name.after($metadata)
+      var $label = $title.find('label');
+      $label.append($metadata)
+    }
+
+    $metadata.find('.time').text(result.time.toFixed(3));
   }
 
 

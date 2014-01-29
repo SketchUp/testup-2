@@ -49,9 +49,14 @@ TestUp.TestCase = function() {
 
       var $title = $('<div class="title" />')
       var $label = $('<label/>');
+
       var $checkbox = $('<input type="checkbox" checked />');
-      $label.text(test_name);
-      $label.prepend($checkbox);
+      $label.append($checkbox);
+
+      var $name = $('<span class="name" />');
+      $name.text(test_name);
+      $label.append($name);
+
       $title.append($label);
 
       $test.append($title);

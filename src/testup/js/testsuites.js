@@ -84,6 +84,11 @@ TestUp.TestSuites = function() {
     },
 
 
+    count : function() {
+      return TestUp.Tabs.count();
+    },
+
+
     update : function(testsuites) {
       testsuites_ = testsuites;
       for (testsuite_name in testsuites_)
@@ -95,13 +100,41 @@ TestUp.TestSuites = function() {
       }
       TestUp.TestSuites.activate(last_active_tab_);
       TestUp.TestSuite.update_results(false);
-    },
+      update_discovered_status(testsuites);
+    }
 
 
   };
 
 
   // Private
+
+
+  function update_discovered_status(testsuites)
+  {
+    var num_testsuites = 0;
+    var num_testcases = 0;
+    var num_tests = 0;
+
+    for (testsuite_name in testsuites)
+    {
+      var testsuite_data = testsuites[testsuite_name];
+      ++num_testsuites;
+      for (testcase_name in testsuite_data)
+      {
+        ++num_testcases;
+        var tests = testsuite_data[testcase_name];
+        num_tests += tests.length;
+      }
+    }
+
+    TestUp.Statusbar.text(
+      num_testsuites + ' test suites, ' +
+      num_testcases + ' test cases, ' +
+      num_tests + ' tests discovered - ' +
+      new Date().toLocaleTimeString()
+    );
+  }
 
 
   function ensure_testsuite_exists(testsuite_name) {

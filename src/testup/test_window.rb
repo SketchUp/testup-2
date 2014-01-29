@@ -35,7 +35,8 @@ module TestUp
         'testsuites.js',
         'testsuite.js',
         'testcase.js',
-        'test.js'
+        'test.js',
+        'statusbar.js'
       ].each { |script_basename|
         script = File.join(PATH_JS_SCRIPTS, script_basename)
         window.add_script(script)
