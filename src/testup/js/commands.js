@@ -1,0 +1,33 @@
+/*******************************************************************************
+ *
+ * module TestUp.Statusbar
+ *
+ ******************************************************************************/
+
+var TestUp = TestUp || {};
+
+TestUp.Commands = function() {
+
+  // Public
+  return {
+
+
+    run_tests :  function() {
+      $('body').css('cursor', 'wait');
+      // Ugly hack to allow the WebDialog to display the waiting cursor as
+      // otherwise it'll not be set until after the tests are run.
+      setTimeout(function() {
+        Sketchup.callback('TestUp.on_run');
+        $('body').css('cursor', 'default');
+      }, 50);
+    },
+
+
+    discover : function(text) {
+      Sketchup.callback('TestUp.on_discover');
+    }
+
+
+  };
+
+}(); // TestUp

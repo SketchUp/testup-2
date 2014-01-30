@@ -63,6 +63,21 @@ TestUp.TestSuite = function() {
     },
 
 
+    update_summary : function() {
+      var $testsuite = $('.testsuite.active');
+
+      var summary_tests   = $testsuite.find('.test').length
+      var summary_passed  = $testsuite.find('.test.passed').length
+      var summary_failed  = $testsuite.find('.test.failed').length
+      var summary_errors  = $testsuite.find('.test.error').length
+
+      $('#summary_total_tests').find('span').text(summary_tests);
+      $('#summary_passed_tests').find('span').text(summary_passed);
+      $('#summary_failed_tests').find('span').text(summary_failed);
+      $('#summary_errors').find('span').text(summary_errors);
+    },
+
+
     update_results : function(roll_up_down) {
       // This method is called when new tests are discovered, but then the view
       // should not be updated.
@@ -126,6 +141,7 @@ TestUp.TestSuite = function() {
           }
         }
       });
+      TestUp.TestSuite.update_summary();
     }
 
 

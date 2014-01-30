@@ -30,6 +30,7 @@ module TestUp
       super(options)
       [
         'testup.js',
+        'commands.js',
         'toolbar.js',
         'tabs.js',
         'testsuites.js',

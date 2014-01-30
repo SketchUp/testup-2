@@ -41,28 +41,61 @@ TestUp.Toolbar = function() {
       $run.attr('title', 'Run selected tests');
       $run.prepend( $('<img src="' + path + '/images/run.png" />') );
       $run.on('click', function() {
-        $('body').css('cursor', 'wait');
-        // Ugly hack to allow the WebDialog to display the waiting cursor as
-        // otherwise it'll not be set until after the tests are run.
-        setTimeout(function() {
-          Sketchup.callback('TestUp.on_run');
-          $('body').css('cursor', 'default');
-        }, 50);
+        TestUp.Commands.run_tests();
       });
       $toolbar.append($run);
 
       var $discover = $('<div class="button" id="discover" />');
-      $discover.attr('title', 'Discover/rediscover tests');
       $discover.text('Discover');
+      $discover.attr('title', 'Discover/rediscover tests');
       $discover.prepend( $('<img src="' + path + '/images/find.png" />') );
       $discover.on('click', function() {
-        Sketchup.callback('TestUp.on_discover');
+        TestUp.Commands.discover();
       });
       $toolbar.append($discover);
 
-      var $logo = $('<div id="logo" />');
-      $logo.append( $('<img src="' + path + '/images/sketchup_logo.png" />') );
-      $toolbar.append($logo);
+      var $preferences = $('<div/>').attr({
+        'class' : 'button panel',
+        'id'    : 'preferences',
+        'title' : 'Preferences'
+      });
+      $preferences.append( $('<img src="' + path + '/images/preferences.png" />') );
+      $preferences.on('click', function() {
+        alert('Not implemented!');
+      });
+      $toolbar.append($preferences);
+
+      var $errors = $('<div/>').attr({
+        'class' : 'panel',
+        'id'    : 'summary_error_tests',
+        'title' : 'Number of tests with errors'
+      });
+      $errors.append('<span>0</span>');
+      $toolbar.append($errors);
+
+      var $failed = $('<div/>').attr({
+        'class' : 'panel',
+        'id'    : 'summary_failed_tests',
+        'title' : 'Number of failed tests'
+      });
+      $failed.append('<span>0</span>');
+      $toolbar.append($failed);
+
+      var $passed = $('<div/>').attr({
+        'class' : 'panel',
+        'id'    : 'summary_passed_tests',
+        'title' : 'Number of passed tests'
+      });
+      $passed.append('<span>0</span>');
+      $toolbar.append($passed);
+
+      var $total = $('<div/>').attr({
+        'class' : 'panel',
+        'id'    : 'summary_total_tests',
+        'title' : 'Total number of tests'
+      });
+      $total.append('<span>0</span>');
+      $toolbar.append($total);
 
       $('body').append($toolbar);
     }

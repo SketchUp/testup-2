@@ -81,6 +81,7 @@ TestUp.TestSuites = function() {
       assert($testsuite.length);
       $('.testsuite').removeClass('active');
       $testsuite.addClass('active');
+      TestUp.TestSuite.update_summary();
     },
 
 

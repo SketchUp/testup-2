@@ -30,6 +30,8 @@ html
 #toolbar > div
 {
   display: inline-block;
+  text-align: center;
+  min-width: 50px;
   height: 100%;
   line-height: 50px;
 }
@@ -60,18 +62,39 @@ html
   padding-right: 0.2em;
 }
 
-#toolbar #logo
+#toolbar .panel
 {
-  position: absolute;
-  right: 0;
-  margin: 0 1em;
+  float: right;
+  border-right: none;
+  border-left: 1px solid ThreeDShadow;
 }
 
-#toolbar #logo img
+#toolbar .panel span
 {
-  vertical-align: middle;
-  position: relative;
-  top: -2px;
+  display: inline-block;
+  min-width: 40px;
+  height: 40px;
+  line-height: 40px;
+  font-family: 'Consolas', monospace;
+  font-size: 1.5em;
+  background: #222;
+  color: #999;
+  border-radius: 5px;
+}
+
+#toolbar #summary_passed_tests span
+{
+  color: #6a4;
+}
+
+#toolbar #summary_failed_tests span
+{
+  color: #a42;
+}
+
+#toolbar #summary_error_tests span
+{
+  color: #c92;
 }
 
 
