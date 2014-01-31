@@ -27,9 +27,6 @@ rescue Gem::LoadError
 end
 require 'minitest'
 
-# TODO(thomthom): Embed SKUI into project.
-require 'SKUI/core.rb'
-
 
 module TestUp
 
@@ -45,6 +42,12 @@ module TestUp
 
 
   ### Dependencies ### ---------------------------------------------------------
+
+  unless defined?(TestUp::SKUI)
+    skui_path = File.join(PATH, 'third-party', 'SKUI', 'src', 'SKUI')
+    require File.join(skui_path, 'embed_skui.rb')
+    ::SKUI.embed_in(self)
+  end
 
   require File.join(PATH, 'compatibility.rb')
   require File.join(PATH, 'debug.rb')
