@@ -327,6 +327,11 @@ html
   background-image: url(../images/skip.png);
 }
 
+#testsuites .missing > .title
+{
+  background-image: url(../images/help.png); /* TODO: Change */
+}
+
 
 /*******************************************************************************
  * $METADATA

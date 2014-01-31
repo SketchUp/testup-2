@@ -97,6 +97,15 @@ TestUp.Toolbar = function() {
       $total.append('<span>0</span>');
       $toolbar.append($total);
 
+      var $coverage = $('<div/>').attr({
+        'class' : 'panel',
+        'id'    : 'summary_coverage',
+        'title' : 'Percent coverage'
+      });
+      $coverage.hide();
+      $coverage.append('<span>0</span>');
+      $toolbar.append($coverage);
+
       $('body').append($toolbar);
     }
 

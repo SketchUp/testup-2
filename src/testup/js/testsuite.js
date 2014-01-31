@@ -56,7 +56,7 @@ TestUp.TestSuite = function() {
     update : function($testsuite, testsuite_data) {
       for (testcase_name in testsuite_data)
       {
-        var $testcase = ensure_testcase_exist($testsuite, testcase_name);
+        var $testcase = TestUp.TestCase.ensure_exist($testsuite, testcase_name);
         var tests = testsuite_data[testcase_name];
         TestUp.TestCase.update($testcase, tests);
       }
@@ -97,6 +97,7 @@ TestUp.TestSuite = function() {
         var failed  = $testcase.find('.test.failed').length
         var errors  = $testcase.find('.test.error').length
         var skipped = $testcase.find('.test.skipped').length
+        var missing = $testcase.find('.test.missing').length
 
         var $metadata = $testcase.find('> .title .metadata');
         $metadata.children('.size').text(tests);
@@ -116,6 +117,11 @@ TestUp.TestSuite = function() {
         else if (passed > 0)
         {
           $testcase.addClass('passed');
+        }
+
+        if (missing == tests)
+        {
+          $testcase.addClass('missing');
         }
 
         // Roll down all test cases that have failed tests.
@@ -149,51 +155,6 @@ TestUp.TestSuite = function() {
 
 
   // Private
-
-
-  function testcase_from_name(testcase_name) {
-    return $('#' + testcase_name);
-  }
-
-
-  function ensure_testcase_exist($testsuite, testcase_name) {
-    var $testcase = testcase_from_name(testcase_name);
-    if ($testcase.length == 0)
-    {
-      var $testcase = $('<div class="testcase" />').attr({
-        'class' : 'testcase',
-        'id' : testcase_name,
-      });
-
-      var $title = $('<div class="title" />')
-
-      var $checkbox = $('<input type="checkbox" checked />');
-      $title.append($checkbox);
-
-      var $name = $('<span class="name" />');
-      $name.text(testcase_name);
-      $title.append($name);
-
-      var $metadata = $('<span class="metadata" />');
-      $metadata.append('(');
-      $metadata.append('Tests: <span title="Tests" class="size">0</span>, ');
-      $metadata.append('Passed: <span title="Passed" class="passed">0</span>, ');
-      $metadata.append('Failed: <span title="Failed" class="failed">0</span>, ');
-      $metadata.append('Errors: <span title="Errors" class="errors">0</span>, ');
-      $metadata.append('Skipped: <span title="Skipped" class="skipped">0</span>');
-      $metadata.append(')');
-      $title.append($metadata);
-
-      $testcase.append($title);
-
-      var $tests = $('<div class="tests container" />')
-      $testcase.append($tests);
-
-      $testsuite.append($testcase);
-    }
-    assert($testcase.length);
-    return $testcase;
-  }
 
 
 }(); // TestUp

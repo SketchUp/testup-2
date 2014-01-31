@@ -132,7 +132,7 @@ module TestUp
 
       objShell = WIN32OLE.new('Shell.Application')
       parent_window = TestUp::Win32.get_sketchup_window
-      options = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_UAHINT
+      options = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_EDITBOX
 
       # http://msdn.microsoft.com/en-us/library/windows/desktop/bb774065(v=vs.85).aspx
       objFolder = objShell.BrowseForFolder(parent_window, message, options)

@@ -37,13 +37,36 @@ module TestUp
     @errors = []
   end
 
-  # @return [Hash]
+  # @return [Array]
   def discover
     @errors.clear
-    testcase_files = discover_testcase_source_files(@paths_to_testsuites)
     testsuites = {}
-    for testcase_file in testcase_files
-      suitename = get_testcase_suitename(testcase_file)
+    for testsuite_path in @paths_to_testsuites
+      testsuite_name = File.basename(testsuite_path)
+      if testsuites.key?(testsuite_name)
+        # TODO: raise custom error and catch later for display in UI.
+        raise "Duplicate testsuites: #{testsuite_name} - #{testsuite_path}"
+      end
+
+      testsuite = discover_testcases(testsuite_path)
+      coverage = Coverage.new(testsuite_path)
+      missing_tests = coverage.missing_tests(testsuite)
+
+      testsuites[testsuite_name] = {
+        :testcases => testsuite,
+        :coverage => coverage.percent(missing_tests),
+        :missing_coverage => missing_tests
+      }
+    end
+    testsuites
+  end
+
+  private
+
+  def discover_testcases(testsuite_path)
+    testcases = {}
+    testcase_source_files = discover_testcase_source_files(testsuite_path)
+    for testcase_file in testcase_source_files
       begin
         testcase = load_testcase(testcase_file)
       rescue TestCaseLoadError => error
@@ -52,13 +75,10 @@ module TestUp
       end
       next if testcase.nil?
       next if testcase.test_methods.empty?
-      testsuites[suitename] ||= {}
-      testsuites[suitename][testcase] = testcase.test_methods
+      testcases[testcase] = testcase.test_methods
     end
-    testsuites
+    testcases
   end
-
-  private
 
   # @param [String] testcase_filename
   # @return [String]
@@ -73,16 +93,11 @@ module TestUp
     parts[index - 1]
   end
 
-  # @param [Array<String>] test_suite_paths
+  # @param [Array<String>] testsuite_paths
   # @return [Array<String>] Path to all test case files found.
-  def discover_testcase_source_files(test_suite_paths)
-    all_testcase_files = []
-    for test_suite_path in test_suite_paths
-      testcase_filter = File.join(test_suite_path, '*/TC_*.rb')
-      testcases = Dir.glob(testcase_filter)
-      all_testcase_files.concat(testcases)
-    end
-    all_testcase_files
+  def discover_testcase_source_files(testsuite_path)
+    testcase_filter = File.join(testsuite_path, 'TC_*.rb')
+    Dir.glob(testcase_filter)
   end
 
   # @param [String] testcase_file

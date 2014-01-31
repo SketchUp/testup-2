@@ -26,8 +26,53 @@ TestUp.TestCase = function() {
         // Remove the first character of the name as the array from Ruby is
         // made out of Symbol objects. Don't want to display the colon.
         var test_name = tests[index].slice(1);
-        ensure_test_exist($testcase, test_name);
+        TestUp.Test.ensure_exist($testcase, test_name);
       }
+    },
+
+
+    ensure_exist : function($testsuite, testcase_name) {
+      var $testcase = TestUp.TestCase.from_name(testcase_name);
+      if ($testcase.length == 0)
+      {
+        var $testcase = $('<div class="testcase" />').attr({
+          'class' : 'testcase',
+          'id' : testcase_name,
+        });
+
+        var $title = $('<div class="title" />')
+
+        var $checkbox = $('<input type="checkbox" checked />');
+        $title.append($checkbox);
+
+        var $name = $('<span class="name" />');
+        $name.text(testcase_name);
+        $title.append($name);
+
+        var $metadata = $('<span class="metadata" />');
+        $metadata.append('(');
+        $metadata.append('Tests: <span title="Tests" class="size">0</span>, ');
+        $metadata.append('Passed: <span title="Passed" class="passed">0</span>, ');
+        $metadata.append('Failed: <span title="Failed" class="failed">0</span>, ');
+        $metadata.append('Errors: <span title="Errors" class="errors">0</span>, ');
+        $metadata.append('Skipped: <span title="Skipped" class="skipped">0</span>');
+        $metadata.append(')');
+        $title.append($metadata);
+
+        $testcase.append($title);
+
+        var $tests = $('<div class="tests container" />')
+        $testcase.append($tests);
+
+        $testsuite.append($testcase);
+      }
+      assert($testcase.length);
+      return $testcase;
+    },
+
+
+    from_name : function(testcase_name) {
+      return $('#' + testcase_name);
     }
 
 
@@ -35,42 +80,6 @@ TestUp.TestCase = function() {
 
 
   // Private
-
-  function ensure_test_exist($testcase, test_name) {
-    var full_name = full_test_name($testcase, test_name);
-    var $test = TestUp.Test.get_element_by_name(full_name);
-    if ($test.length == 0)
-    {
-      var testcase_id = $testcase.attr('id');
-      $test = $('<div/>').attr({
-        'class' : 'test',
-        'id' : testcase_id + '\.' + test_name,
-      });
-
-      var $title = $('<div class="title" />')
-      var $label = $('<label/>');
-
-      var $checkbox = $('<input type="checkbox" checked />');
-      $label.append($checkbox);
-
-      var $name = $('<span class="name" />');
-      $name.text(test_name);
-      $label.append($name);
-
-      $title.append($label);
-
-      $test.append($title);
-      $testcase.children('.tests').append($test);
-    }
-    assert($test.length);
-    return $test;
-  }
-
-
-  function full_test_name($testcase, test_name) {
-    var testcase_id = $testcase.attr('id');
-    return testcase_id + '#' + test_name;
-  }
 
 
 }(); // TestUp

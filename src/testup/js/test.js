@@ -17,6 +17,42 @@ TestUp.Test = function() {
       $('body').append($suite_list);
     },
 
+    ensure_exist : function($testcase, test_name) {
+      var full_name = TestUp.Test.full_name($testcase, test_name);
+      var $test = TestUp.Test.get_element_by_name(full_name);
+      if ($test.length == 0)
+      {
+        var testcase_id = $testcase.attr('id');
+        $test = $('<div/>').attr({
+          'class' : 'test',
+          'id' : testcase_id + '\.' + test_name,
+        });
+
+        var $title = $('<div class="title" />')
+        var $label = $('<label/>');
+
+        var $checkbox = $('<input type="checkbox" checked />');
+        $label.append($checkbox);
+
+        var $name = $('<span class="name" />');
+        $name.text(test_name);
+        $label.append($name);
+
+        $title.append($label);
+
+        $test.append($title);
+        $testcase.children('.tests').append($test);
+      }
+      assert($test.length);
+      return $test;
+    },
+
+
+    full_name : function($testcase, test_name) {
+      var testcase_id = $testcase.attr('id');
+      return testcase_id + '#' + test_name;
+    },
+
 
     get_element_by_name : function(testname) {
       var id = id_from_name(testname);

@@ -97,10 +97,16 @@ module TestUp
     end
 
     def discover_tests
-      paths = TestUp.settings[:paths_to_testsuites]
-      test_discoverer = TestDiscoverer.new(paths)
-      tests = test_discoverer.discover
-      self.bridge.call('TestUp.TestSuites.update', tests)
+      progress = TaskbarProgress.new
+      begin
+        progress.set_state(TaskbarProgress::INDETERMINATE)
+        paths = TestUp.settings[:paths_to_testsuites]
+        test_discoverer = TestDiscoverer.new(paths)
+        discoveries = test_discoverer.discover
+        self.bridge.call('TestUp.TestSuites.update', discoveries)
+      ensure
+        progress.set_state(TaskbarProgress::NOPROGRESS)
+      end
       nil
     end
 

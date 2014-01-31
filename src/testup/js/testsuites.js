@@ -75,9 +75,22 @@ TestUp.TestSuites = function() {
 
 
     activate : function(testsuite_name) {
+      // Change tab.
       var $tab = TestUp.Tabs.select(testsuite_name);
       last_active_tab_ = $tab.text();
       var $testsuite = testsuite_from_name(last_active_tab_);
+      // Update coverage.
+      var coverage = $testsuite.data('coverage');
+      if (coverage === undefined)
+      {
+        $('#summary_coverage').hide();
+      }
+      else
+      {
+        $('#summary_coverage span').text( Math.round(coverage) + '%' );
+        $('#summary_coverage').show();
+      }
+      // Display testsuite data.
       assert($testsuite.length);
       $('.testsuite').removeClass('active');
       $testsuite.addClass('active');
@@ -94,9 +107,11 @@ TestUp.TestSuites = function() {
       testsuites_ = testsuites;
       for (testsuite_name in testsuites_)
       {
-        var testsuite_data = testsuites_[testsuite_name];
+        var testsuite = testsuites_[testsuite_name];
+        var testsuite_data = testsuite.testcases;
         ensure_tab_exists(testsuite_name);
         $testsuite = ensure_testsuite_exists(testsuite_name);
+        update_missing_coverage($testsuite, testsuite);
         TestUp.TestSuite.update($testsuite, testsuite_data);
       }
       TestUp.TestSuites.activate(last_active_tab_);
@@ -111,6 +126,27 @@ TestUp.TestSuites = function() {
   // Private
 
 
+  function update_missing_coverage($testsuite, testsuite)
+  {
+    var missing = testsuite.missing_coverage;
+    if (Object.keys(missing).length > 0)
+    {
+      $testsuite.data('coverage', testsuite.coverage);
+    }
+    for (testcase_name in missing)
+    {
+      var tests = missing[testcase_name];
+      $testcase = TestUp.TestCase.ensure_exist($testsuite, testcase_name);
+      for (var i = 0; i < tests.length; ++i)
+      {
+        var test_name = tests[i];
+        var $test = TestUp.Test.ensure_exist($testcase, test_name);
+        $test.addClass('missing');
+      }
+    }
+  }
+
+
   function update_discovered_status(testsuites)
   {
     var num_testsuites = 0;
@@ -119,7 +155,8 @@ TestUp.TestSuites = function() {
 
     for (testsuite_name in testsuites)
     {
-      var testsuite_data = testsuites[testsuite_name];
+      var testsuite = testsuites[testsuite_name];
+      var testsuite_data = testsuite.testcases;
       ++num_testsuites;
       for (testcase_name in testsuite_data)
       {

@@ -25,6 +25,7 @@ var TestUp = function() {
     },
 
 
+    // TODO: Move to TestSuites.
     update_results : function(results) {
       var testsuite = TestUp.TestSuites.active();
       var num_tests = results.length;
