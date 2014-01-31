@@ -18,9 +18,13 @@
 
 # Third party dependencies.
 
-# TODO(thomthom): Install minitest if it's missing.
 require 'rubygems'
-gem 'minitest'
+begin
+  gem 'minitest'
+rescue Gem::LoadError
+  Gem.install('minitest')
+  gem 'minitest'
+end
 require 'minitest'
 
 # TODO(thomthom): Embed SKUI into project.
