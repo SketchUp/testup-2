@@ -18,7 +18,7 @@ module TestUp
   end
 
   def [](key)
-    @data[key]
+    @data[key] || @defaults[key]
   end
 
   def []=(key, value)

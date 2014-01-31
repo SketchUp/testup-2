@@ -85,6 +85,16 @@ module TestUp
   end
 
 
+  def self.reset_settings
+    # This will make the default values be used. (At least under Windows.)
+    # TODO: Confirm this works under OSX.
+    @settings[:editor] = nil
+    @settings[:run_in_gui] = nil
+    @settings[:verbose_console_tests] = nil
+    @settings[:paths_to_testsuites] = nil
+  end
+
+
   ### Extension ### ------------------------------------------------------------
 
   def self.toggle_testup
