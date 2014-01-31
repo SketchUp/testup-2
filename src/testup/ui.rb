@@ -118,4 +118,34 @@ module TestUp
     file_loaded(__FILE__)
   end
 
+
+  module SystemUI
+
+    BIF_RETURNONLYFSDIRS = 0x00000001
+    BIF_EDITBOX = 0x00000010
+    BIF_NEWDIALOGSTYLE = 0x00000040
+    BIF_UAHINT = 0x00000100
+
+    def self.select_folder(message = '')
+      require 'win32ole'
+      default_path = File.join(ENV['HOME'], 'Desktop').gsub('/', '\\')
+
+      objShell = WIN32OLE.new('Shell.Application')
+      parent_window = TestUp::Win32.get_sketchup_window
+      options = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_UAHINT
+
+      # http://msdn.microsoft.com/en-us/library/windows/desktop/bb774065(v=vs.85).aspx
+      objFolder = objShell.BrowseForFolder(parent_window, message, options)
+
+      return nil if objFolder.nil?
+      path = objFolder.Self.Path
+      unless File.exist?(path)
+        UI.messagebox("Unable to handle '#{path}'.")
+        return nil
+      end
+      File.expand_path(path)
+    end
+
+  end # module SystemUI
+
 end # module

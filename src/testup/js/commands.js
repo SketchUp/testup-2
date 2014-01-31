@@ -23,9 +23,15 @@ TestUp.Commands = function() {
     },
 
 
-    discover : function(text) {
+    discover : function() {
       Sketchup.callback('TestUp.on_discover');
+    },
+
+
+    preferences : function() {
+      Sketchup.callback('TestUp.on_preferences');
     }
+
 
 
   };

@@ -46,6 +46,9 @@ module TestUp
         puts 'All scripts loaded!'
         event_testup_ready()
       }
+      on(:close) {
+        @preferences_window.close unless @preferences_window.nil?
+      }
     end
 
     def active_testsuite
@@ -56,6 +59,7 @@ module TestUp
       @bridge.call('TestUp.TestSuite.selected_tests')
     end
 
+    # TODO: Fix this in SKUI.
     # Hack, as SKUI currently doesn't support subclassing of it's controls.
     def typename
       SKUI::Window.to_s.split('::').last
@@ -72,6 +76,7 @@ module TestUp
     def callback_handler(webdialog, params)
       #puts( '>> TestWindow Callback' )
       callback, *arguments = params.split('||')
+      #puts "#{callback}(#{arguments})"
       case callback
       when 'TestUp.on_script_debugger_attached'
         ScriptDebugger.attach
@@ -81,6 +86,8 @@ module TestUp
         event_discover()
       when 'TestUp.on_open_source_file'
         event_opent_source_file(arguments[0])
+      when 'TestUp.on_preferences'
+        event_on_open_preferences()
       when 'TestUp.TestSuites.on_change'
         event_change_testsuite(arguments[0])
       end
@@ -123,9 +130,13 @@ module TestUp
     def event_opent_source_file(location)
       puts "TestUp.open_source_file(#{location})"
       filename, line = location.split(':')
-      editor = File.join(ENV['ProgramW6432'], 'Sublime Text 3','sublime_text.exe')
-      command = %["#{editor}" "#{location}"]
-      system(command)
+      Editor.open_file(filename, line)
+    end
+
+    def event_on_open_preferences()
+      #@preferences_window ||= PreferencesWindow.new
+      @preferences_window = PreferencesWindow.new
+      @preferences_window.show
     end
 
   end # class

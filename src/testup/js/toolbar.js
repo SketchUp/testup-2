@@ -61,7 +61,7 @@ TestUp.Toolbar = function() {
       });
       $preferences.append( $('<img src="' + path + '/images/preferences.png" />') );
       $preferences.on('click', function() {
-        alert('Not implemented!');
+        TestUp.Commands.preferences();
       });
       $toolbar.append($preferences);
 

@@ -44,12 +44,15 @@ module TestUp
 
   require File.join(PATH, 'compatibility.rb')
   require File.join(PATH, 'debug.rb')
+  require File.join(PATH, 'editor.rb')
+  require File.join(PATH, 'preferences_window.rb')
   require File.join(PATH, 'settings.rb')
   require File.join(PATH, 'sketchup_console.rb')
   require File.join(PATH, 'taskbar_progress.rb')
   require File.join(PATH, 'test_discoverer.rb')
   require File.join(PATH, 'test_window.rb')
   require File.join(PATH, 'ui.rb')
+  require File.join(PATH, 'win32.rb')
 
 
   ### UI ### -------------------------------------------------------------------
@@ -60,10 +63,11 @@ module TestUp
   ### Configuration ### --------------------------------------------------------
 
   defaults = {
+    :editor => Editor.get_default,
     :run_in_gui => true,
     :verbose_console_tests => true,
     :paths_to_testsuites => [
-      File.join(__dir__, '..', '..', 'tests'),
+      File.expand_path(File.join(__dir__, '..', '..', 'tests')),
       File.join(ENV['HOME'], 'SourceTree', 'SUbD', 'Ruby', 'tests'),
       File.join(PATH_OLD_TESTUP, 'tests')
     ]
