@@ -201,6 +201,17 @@ html
   overflow: auto;
 }
 
+#command_bar
+{
+  padding: 5px;
+  border-bottom: 1px solid silver;
+}
+
+#command_bar a
+{
+  margin: 5px;
+}
+
 
 /*******************************************************************************
  * $TESTSUITE

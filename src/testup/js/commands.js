@@ -30,8 +30,19 @@ TestUp.Commands = function() {
 
     preferences : function() {
       Sketchup.callback('TestUp.on_preferences');
-    }
+    },
 
+
+    select_all : function() {
+      $('.testsuite.active .title input').prop('checked', true);
+      return false;
+    },
+
+
+    select_none : function() {
+      $('.testsuite.active .title input').prop('checked', false);
+      return false;
+    }
 
 
   };

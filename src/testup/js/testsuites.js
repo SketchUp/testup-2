@@ -21,6 +21,17 @@ TestUp.TestSuites = function() {
       last_active_tab_ = config.active_tab;
 
       var $testsuites = $('<div id="testsuites"/>');
+      var $command_bar = $('<div id="command_bar">');
+
+      var $command_select_all = $('<a href="#">Select All</a> ');
+      $command_select_all.on('click', TestUp.Commands.select_all);
+      $command_bar.append($command_select_all);
+
+      var $command_select_none = $('<a href="#">Select None</a> ');
+      $command_select_none.on('click', TestUp.Commands.select_none);
+      $command_bar.append($command_select_none);
+
+      $testsuites.append($command_bar);
       $('body').append($testsuites);
 
       // Toggle test cases on/off.
