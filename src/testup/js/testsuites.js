@@ -20,8 +20,8 @@ TestUp.TestSuites = function() {
     init :  function(config) {
       last_active_tab_ = config.active_tab;
 
-      var $suite_list = $('<div id="testsuites"/>');
-      $('body').append($suite_list);
+      var $testsuites = $('<div id="testsuites"/>');
+      $('body').append($testsuites);
 
       // Toggle test cases on/off.
       // * Check/uncheck tests belonging to the testcase.
@@ -128,6 +128,8 @@ TestUp.TestSuites = function() {
 
   function update_missing_coverage($testsuite, testsuite)
   {
+    //return false;
+    $testsuite.detach();
     var missing = testsuite.missing_coverage;
     if (Object.keys(missing).length > 0)
     {
@@ -144,6 +146,7 @@ TestUp.TestSuites = function() {
         $test.addClass('missing');
       }
     }
+    $('#testsuites').append($testsuite);
   }
 
 
@@ -179,10 +182,12 @@ TestUp.TestSuites = function() {
     var $testsuite = testsuite_from_name(testsuite_name);
     if ($testsuite.length == 0)
     {
-      $testsuite = $('<div/>').attr({
-        'class': 'testsuite',
-        'id': testsuite_id_from_name(testsuite_name)
-      });
+      var testsuite_id = testsuite_id_from_name(testsuite_name);
+      var html = '\
+        <div class="testsuite" id="' + testsuite_id + '">\
+        </div>\
+      ';
+      var $testsuite = $(html);
       $('#testsuites').append($testsuite);
     }
     return $testsuite;

@@ -23,24 +23,21 @@ TestUp.Test = function() {
       if ($test.length == 0)
       {
         var testcase_id = $testcase.attr('id');
-        $test = $('<div/>').attr({
-          'class' : 'test',
-          'id' : testcase_id + '\.' + test_name,
-        });
+        var test_id = testcase_id + '\.' + test_name;
 
-        var $title = $('<div class="title" />')
-        var $label = $('<label/>');
-
-        var $checkbox = $('<input type="checkbox" checked />');
-        $label.append($checkbox);
-
-        var $name = $('<span class="name" />');
-        $name.text(test_name);
-        $label.append($name);
-
-        $title.append($label);
-
-        $test.append($title);
+        var html = '\
+          <div class="test" id="' + test_id + '">\
+            <div class="title">\
+              <label>\
+                <input type="checkbox" checked />\
+                <span class="name">\
+                  ' + test_name + '\
+                </span>\
+              </label>\
+            </div>\
+          </div>\
+        ';
+        var $test = $(html);
         $testcase.children('.tests').append($test);
       }
       assert($test.length);

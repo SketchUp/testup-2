@@ -35,35 +35,27 @@ TestUp.TestCase = function() {
       var $testcase = TestUp.TestCase.from_name(testcase_name);
       if ($testcase.length == 0)
       {
-        var $testcase = $('<div class="testcase" />').attr({
-          'class' : 'testcase',
-          'id' : testcase_name,
-        });
-
-        var $title = $('<div class="title" />')
-
-        var $checkbox = $('<input type="checkbox" checked />');
-        $title.append($checkbox);
-
-        var $name = $('<span class="name" />');
-        $name.text(testcase_name);
-        $title.append($name);
-
-        var $metadata = $('<span class="metadata" />');
-        $metadata.append('(');
-        $metadata.append('Tests: <span title="Tests" class="size">0</span>, ');
-        $metadata.append('Passed: <span title="Passed" class="passed">0</span>, ');
-        $metadata.append('Failed: <span title="Failed" class="failed">0</span>, ');
-        $metadata.append('Errors: <span title="Errors" class="errors">0</span>, ');
-        $metadata.append('Skipped: <span title="Skipped" class="skipped">0</span>');
-        $metadata.append(')');
-        $title.append($metadata);
-
-        $testcase.append($title);
-
-        var $tests = $('<div class="tests container" />')
-        $testcase.append($tests);
-
+        var html = '\
+          <div class="testcase" id="' + testcase_name + '">\
+            <div class="title">\
+              <input type="checkbox" checked />\
+              <span class="name">\
+                ' + testcase_name + '\
+              </span>\
+              <span class="metadata">\
+                (\
+                Tests: <span title="Tests" class="size">0</span>,\
+                Passed: <span title="Passed" class="passed">0</span>,\
+                Failed: <span title="Failed" class="failed">0</span>,\
+                Errors: <span title="Errors" class="errors">0</span>,\
+                Skipped: <span title="Skipped" class="skipped">0</span>\
+                )\
+              </span>\
+            </div>\
+            <div class="tests container" />\
+          </div>\
+        ';
+        var $testcase = $(html);
         $testsuite.append($testcase);
       }
       assert($testcase.length);
