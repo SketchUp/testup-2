@@ -56,7 +56,7 @@ TestUp.TestCase = function() {
           </div>\
         ';
         var $testcase = $(html);
-        $testsuite.append($testcase);
+        insert_in_order($testsuite, $testcase, testcase_name);
       }
       assert($testcase.length);
       return $testcase;
@@ -72,6 +72,23 @@ TestUp.TestCase = function() {
 
 
   // Private
+
+  function insert_in_order($testsuite, $new_testcase, testcase_name)
+  {
+    var $testcases = $testsuite.find('.testcase');
+    for (var i = 0; i < $testcases.length; ++i)
+    {
+
+      var $testcase = $testcases.eq(i);
+      var name = $.trim( $testcase.find('> .title .name').text() );
+      if (testcase_name < name)
+      {
+        $new_testcase.insertBefore($testcase);
+        return;
+      }
+    }
+    $testsuite.append($new_testcase);
+  }
 
 
 }(); // TestUp
