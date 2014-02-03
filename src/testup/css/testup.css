@@ -194,22 +194,31 @@ html
   left: 5px;
   right: 5px;
 
-  /*border: 1px inset ButtonFace;*/
   border: 1px solid #666;
   background: Window;
-
-  overflow: auto;
 }
 
 #command_bar
 {
   padding: 5px;
+  height: 25px;
   border-bottom: 1px solid silver;
 }
 
 #command_bar a
 {
   margin: 5px;
+}
+
+#testsuite_container
+{
+  position: absolute;
+  top: 25px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+
+  overflow: auto;
 }
 
 

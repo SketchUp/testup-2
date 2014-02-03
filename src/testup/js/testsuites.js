@@ -32,6 +32,7 @@ TestUp.TestSuites = function() {
       $command_bar.append($command_select_none);
 
       $testsuites.append($command_bar);
+      $testsuites.append('<div id="testsuite_container" />');
       $('body').append($testsuites);
 
       // Toggle test cases on/off.
@@ -196,7 +197,7 @@ TestUp.TestSuites = function() {
         </div>\
       ';
       var $testsuite = $(html);
-      $('#testsuites').append($testsuite);
+      $('#testsuite_container').append($testsuite);
     }
     return $testsuite;
   }
