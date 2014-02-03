@@ -62,7 +62,7 @@ TestUp.Test = function() {
     update_result : function(result) {
       var $test = TestUp.Test.get_element_by_name(result.testname);
       assert($test.length);
-      $test.removeClass('passed failed error skipped');
+      $test.removeClass('passed failed error skipped missing');
       if (result.passed)
       {
         $test.prop('title', 'Passed');

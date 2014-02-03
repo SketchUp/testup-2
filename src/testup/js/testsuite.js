@@ -86,7 +86,7 @@ TestUp.TestSuite = function() {
       var $testcases = $('.testsuite.active .testcase');
       $testcases.each(function() {
         var $testcase = $(this);
-        $testcase.removeClass('passed failed error skipped');
+        $testcase.removeClass('passed failed error skipped missing');
 
         var $checkbox = $testcase.find('> .title input[type=checkbox]');
         var selected = $checkbox.prop('checked');
