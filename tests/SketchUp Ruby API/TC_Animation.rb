@@ -3,7 +3,7 @@
 # Original Author:: Thomas Thomassen
 
 
-require 'testup/testcase'
+require "testup/testcase"
 
 
 # interface class Animation
@@ -87,7 +87,6 @@ class TC_Animation < TestUp::TestCase
     END_OF_EXAMPLE
   end
 
-
   def test_introduction_api_example_2
     Sketchup.active_model.active_view.animation = nil
   end
@@ -106,7 +105,7 @@ class TC_Animation < TestUp::TestCase
   end
 
   def test_nextFrame
-    skip('Needs manual testing. Asynchronous callback.')
+    skip("Needs manual testing. Asynchronous callback.")
   end
 
 
@@ -123,8 +122,8 @@ class TC_Animation < TestUp::TestCase
   def test_pause
     # Needs Ruby API method to pause animations.
     skip(
-      'Needs manual testing. Asynchronous callback. ' <<
-      'Missing API method to pause animation.'
+      "Needs manual testing. Asynchronous callback. " <<
+      "Missing API method to pause animation."
     )
   end
 
@@ -142,8 +141,8 @@ class TC_Animation < TestUp::TestCase
   def test_resume
     # Needs Ruby API method to resume animations.
     skip(
-      'Needs manual testing. Asynchronous callback. ' <<
-      'Missing API method to resume animation.'
+      "Needs manual testing. Asynchronous callback. " <<
+      "Missing API method to resume animation."
     )
   end
 
@@ -168,7 +167,7 @@ class TC_Animation < TestUp::TestCase
     # This play_state will only be "STOPPED" if the stop method was
     # successfully called.
     assert_equal(:stopped, animation.play_state,
-      'The stop method was not called as expected.')
+      "The stop method was not called as expected.")
   end
 
 

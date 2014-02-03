@@ -3,7 +3,7 @@
 # Original Author:: Thomas Thomassen
 
 
-require 'testup/testcase'
+require "testup/testcase"
 
 
 # class Sketchup::Edge
@@ -52,7 +52,6 @@ class TC_Sketchup_Edge < TestUp::TestCase
     # => [#<Sketchup::Face:0x7614030>, #<Sketchup::Face:0x761fe20>]
   end # test
 
-
   def test_faces
     edge = create_test_edge_shared_by_two_faces()
 
@@ -61,18 +60,17 @@ class TC_Sketchup_Edge < TestUp::TestCase
     assert_equal(2, edge.faces.size)
 
     assert(edge.faces.all? { |object| object.is_a?(Sketchup::Face) },
-      'Returned array did not contain just faces.')
+      "Returned array did not contain just faces.")
 
     assert(edge.faces.all? { |entity| entity.valid? },
-      'Returned entities were not all valid.')
+      "Returned entities were not all valid.")
 
     assert(edge.faces.all? { |entity| entity.parent == edge.parent },
-      'Returned entities did not come from the correct parent.')
+      "Returned entities did not come from the correct parent.")
 
     assert(edge.faces.all? { |entity| entity.model == edge.model },
-      'Returned entities did not come from the correct model.')
+      "Returned entities did not come from the correct model.")
   end # test
-
 
   def test_faces_incorrect_number_of_arguments
     edge = create_test_edge_shared_by_two_faces()

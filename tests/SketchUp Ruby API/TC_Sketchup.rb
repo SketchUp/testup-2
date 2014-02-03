@@ -3,7 +3,7 @@
 # Original Author:: Thomas Thomassen
 
 
-require 'testup/testcase'
+require "testup/testcase"
 
 
 # module Sketchup
