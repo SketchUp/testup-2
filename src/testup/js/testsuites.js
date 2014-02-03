@@ -128,8 +128,6 @@ TestUp.TestSuites = function() {
 
   function update_missing_coverage($testsuite, testsuite)
   {
-    //return false;
-    $testsuite.detach();
     var missing = testsuite.missing_coverage;
     if (Object.keys(missing).length > 0)
     {
@@ -146,7 +144,6 @@ TestUp.TestSuites = function() {
         $test.addClass('missing');
       }
     }
-    $('#testsuites').append($testsuite);
   }
 
 
