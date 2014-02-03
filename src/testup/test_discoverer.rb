@@ -125,7 +125,8 @@ module TestUp
     # file and test class should be the same.
     # Because some of our older tests didn't conform to that we must inspect
     # what new classes was loaded.
-    new_test_classes = all_test_classes - existing_test_classes
+    new_classes = all_test_classes - existing_test_classes
+    new_test_classes = root_classes(new_classes)
     if new_test_classes.empty?
       # This happens if another test case loaded a test case with the same name.
       # Our old todo section has sections like that.
@@ -148,6 +149,12 @@ module TestUp
       testcase.extend(TestCaseExtendable)
     end
     testcase
+  end
+
+  # @param [Array<Class>] klasses
+  # @return [Array<Class>]
+  def root_classes(klasses)
+    klasses.select { |klass| !klass.name.include?('::') }
   end
 
   # @param [Exception] error
