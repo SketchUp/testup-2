@@ -113,15 +113,16 @@ TestUp.TestSuite = function() {
         {
           $testcase.addClass('error');
         }
+        else if (missing > 0)
+        {
+          $testcase.addClass('missing');
+        }
         else if (passed > 0)
         {
           $testcase.addClass('passed');
         }
 
-        if (missing == tests)
-        {
-          $testcase.addClass('missing');
-        }
+        var partially_missing = missing > 0 && missing != tests;
 
         // Roll down all test cases that have failed tests.
         // Roll up test cases only if they are selected. The user probably
@@ -130,12 +131,13 @@ TestUp.TestSuite = function() {
         {
           var selected_failed = $testcase.find('.test.failed :checked').length;
           var selected_errors = $testcase.find('.test.error :checked').length;
+          var selected_missing = $testcase.find('.test.missing :checked').length;
 
-          if (failed > 0 || errors > 0)
+          if (failed > 0 || errors > 0 || partially_missing)
           {
             // Only unroll if tests that ran failed. This allow the user to roll
             // up failed tests while focusing on a sub-set.
-            if (selected_failed > 0 || selected_errors > 0)
+            if (selected_failed > 0 || selected_errors > 0 || selected_missing > 0)
             {
               $testcase.find('.tests').slideDown('fast');
             }
