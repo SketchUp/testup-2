@@ -136,10 +136,6 @@ TestUp.TestSuite = function() {
               $testcase.find('.tests').slideDown('fast');
             }
           }
-          else if (selected)
-          {
-            $testcase.find('.tests').slideUp('fast');
-          }
         }
       });
       TestUp.TestSuite.update_summary();
