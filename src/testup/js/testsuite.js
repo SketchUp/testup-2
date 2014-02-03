@@ -12,12 +12,6 @@ TestUp.TestSuite = function() {
   return {
 
 
-    init :  function(active_tab) {
-      var $suite_list = $('<div id="testsuites"/>');
-      $('body').append($suite_list);
-    },
-
-
     selected_tests : function() {
       var testcases = [];
       $(".testsuite.active .testcase > .title .name").each(function() {
