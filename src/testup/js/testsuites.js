@@ -77,7 +77,7 @@ TestUp.TestSuites = function() {
     activate : function(testsuite_name) {
       // Change tab.
       var $tab = TestUp.Tabs.select(testsuite_name);
-      last_active_tab_ = $tab.text();
+      last_active_tab_ = $.trim( $tab.text() );
       var $testsuite = testsuite_from_name(last_active_tab_);
       // Update coverage.
       var coverage = $testsuite.data('coverage');
@@ -218,7 +218,7 @@ TestUp.TestSuites = function() {
 
   function tab_change() {
     var $tab = $(this);
-    var testsuite_name = $tab.text();
+    var testsuite_name = $.trim( $tab.text() );
     Sketchup.callback('TestUp.TestSuites.on_change', testsuite_name);
     var testsuite_data = testsuites_[testsuite_name];
     TestUp.TestSuites.activate(testsuite_name, testsuite_data);

@@ -60,7 +60,7 @@ TestUp.Tabs = function() {
 
 
     selected : function() {
-      return $("#tabs .tab.selected").text();
+      return $.trim( $("#tabs .tab.selected").text() );
     }
 
 

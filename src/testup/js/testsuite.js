@@ -22,7 +22,7 @@ TestUp.TestSuite = function() {
       var testcases = [];
       $(".testsuite.active .testcase > .title .name").each(function() {
         var $testcase_title = $(this);
-        var testcase = $testcase_title.text();
+        var testcase = $.trim( $testcase_title.text() );
         var $checkbox = $testcase_title.find('input[type=checkbox]');
         var checked = $checkbox.prop('checked');
         if (checked)
@@ -40,7 +40,7 @@ TestUp.TestSuite = function() {
             var $test = $(this);
             var $test_title = $test.children('.title');
             var $checkbox = $test_title.find('input[type=checkbox]');
-            var test_method = $test_title.find('.name').text();
+            var test_method = $.trim( $test_title.find('.name').text() );
             var checked = $checkbox.prop('checked');
             if (checked)
             {
@@ -86,7 +86,6 @@ TestUp.TestSuite = function() {
       var $testcases = $('.testsuite.active .testcase');
       $testcases.each(function() {
         var $testcase = $(this);
-        var testcase_name = $testcase.find('> .title .name').text(); // DEBUG
         $testcase.removeClass('passed failed error skipped');
 
         var $checkbox = $testcase.find('> .title input[type=checkbox]');
