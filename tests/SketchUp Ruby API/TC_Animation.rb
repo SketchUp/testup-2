@@ -85,12 +85,12 @@ class TC_Animation < TestUp::TestCase
       Sketchup.active_model.active_view.animation = FloatUpAnimation.new
     }
     END_OF_EXAMPLE
-  end # test
+  end
 
 
   def test_introduction_api_example_2
     Sketchup.active_model.active_view.animation = nil
-  end # test
+  end
 
 
   # ========================================================================== #
@@ -103,11 +103,11 @@ class TC_Animation < TestUp::TestCase
       view.show_frame
       return true
     end
-  end # test
+  end
 
   def test_nextFrame
     skip('Needs manual testing. Asynchronous callback.')
-  end # test
+  end
 
 
   # ========================================================================== #
@@ -118,7 +118,7 @@ class TC_Animation < TestUp::TestCase
     def pause
       # Insert handler code for whatever you need to do when it is paused.
     end
-  end # test
+  end
 
   def test_pause
     # Needs Ruby API method to pause animations.
@@ -126,7 +126,7 @@ class TC_Animation < TestUp::TestCase
       'Needs manual testing. Asynchronous callback. ' <<
       'Missing API method to pause animation.'
     )
-  end # test
+  end
 
 
   # ========================================================================== #
@@ -137,7 +137,7 @@ class TC_Animation < TestUp::TestCase
     def resume
       # Insert your handler code for whatever you need to do as you resume.
     end
-  end # test
+  end
 
   def test_resume
     # Needs Ruby API method to resume animations.
@@ -145,7 +145,7 @@ class TC_Animation < TestUp::TestCase
       'Needs manual testing. Asynchronous callback. ' <<
       'Missing API method to resume animation.'
     )
-  end # test
+  end
 
 
   # ========================================================================== #
@@ -156,7 +156,7 @@ class TC_Animation < TestUp::TestCase
     def stop
       # Insert your handler code for cleaning up after your animation.
     end
-  end # test
+  end
 
   def test_stop
     # Test that stop is called when an animation is stopped by the API
@@ -169,7 +169,7 @@ class TC_Animation < TestUp::TestCase
     # successfully called.
     assert_equal(:stopped, animation.play_state,
       'The stop method was not called as expected.')
-  end # test
+  end
 
 
 end # class

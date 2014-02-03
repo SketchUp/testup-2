@@ -43,24 +43,18 @@ class TC_Sketchup_Edge < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/edge#faces
 
   def test_faces_api_example
-    assert_nothing_raised do
-      entities = Sketchup.active_model.active_entities
-      face = entities.add_face([0,0,0], [100,0,0], [100,100,0], [0,100,0])
-      edge = face.edges.first
-      face.pushpull(100, true)
+    entities = Sketchup.active_model.active_entities
+    face = entities.add_face([0,0,0], [100,0,0], [100,100,0], [0,100,0])
+    edge = face.edges.first
+    face.pushpull(100, true)
 
-      p edge.faces
-      # => [#<Sketchup::Face:0x7614030>, #<Sketchup::Face:0x761fe20>]
-    end
+    p edge.faces
+    # => [#<Sketchup::Face:0x7614030>, #<Sketchup::Face:0x761fe20>]
   end # test
 
 
   def test_faces
     edge = create_test_edge_shared_by_two_faces()
-
-    assert_nothing_raised do
-      edge.faces
-    end
 
     assert_kind_of(Array, edge.faces)
 
