@@ -50,6 +50,7 @@ module TestUp
   end
 
   require File.join(PATH, 'compatibility.rb')
+  require File.join(PATH, 'coverage.rb')
   require File.join(PATH, 'debug.rb')
   require File.join(PATH, 'editor.rb')
   require File.join(PATH, 'preferences_window.rb')
