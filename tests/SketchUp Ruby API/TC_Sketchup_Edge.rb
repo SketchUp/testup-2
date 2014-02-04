@@ -33,10 +33,6 @@ class TC_Sketchup_Edge < TestUp::TestCase
     edge
   end
 
-  def p(*args)
-    # Mute the output.
-  end
-
 
   # ========================================================================== #
   # method Sketchup::Edges.faces
@@ -48,8 +44,8 @@ class TC_Sketchup_Edge < TestUp::TestCase
     edge = face.edges.first
     face.pushpull(100, true)
 
-    p edge.faces
-    # => [#<Sketchup::Face:0x7614030>, #<Sketchup::Face:0x761fe20>]
+    edge_faces = edge.faces
+    # edge_faces => [#<Sketchup::Face:0x7614030>, #<Sketchup::Face:0x761fe20>]
   end # test
 
   def test_faces
