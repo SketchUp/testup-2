@@ -133,9 +133,9 @@ TestUp.Test = function() {
     if ($metadata.length == 0)
     {
       $metadata = $('<div class="metadata">');
-      $metadata.append('(');
+      $metadata.append('( ');
       $metadata.append('Time: <span class="time">0</span>');
-      $metadata.append(')');
+      $metadata.append(' )');
 
       //$name.after($metadata)
       var $label = $title.find('label');
