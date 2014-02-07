@@ -50,6 +50,9 @@ module TestUp
 
   module SketchUpTestUtilities
 
+    SKETCHUP_UNIT_TOLERANCE  = 1.0e-3
+    SKETCHUP_FLOAT_TOLERANCE = 1.0e-10
+
     def start_with_empty_model
       model = Sketchup.active_model
       model.start_operation('TestUp Empty Model', true)
