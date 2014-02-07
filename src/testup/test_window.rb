@@ -135,8 +135,15 @@ module TestUp
 
     def event_opent_source_file(location)
       puts "TestUp.open_source_file(#{location})"
-      filename, line = location.split(':')
-      Editor.open_file(filename, line)
+      result = location.match(/^(.+):(\d+)?$/)
+      if result
+        filename = result[1]
+        line_number = result[2]
+      else
+        filename = location
+        line_number = 0
+      end
+      Editor.open_file(filename, line_number)
     end
 
     def event_on_open_preferences()
