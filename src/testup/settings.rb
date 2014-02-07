@@ -18,7 +18,7 @@ module TestUp
   end
 
   def [](key)
-    @data[key] || @defaults[key]
+    (@data[key].nil?) ? @defaults[key] : @data[key]
   end
 
   def []=(key, value)
