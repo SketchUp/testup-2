@@ -125,16 +125,11 @@ module TestUp
     when '^'
       'test_Operator_Not'
     else
-      case method_name[-1]
-      when '='
-        "test_Set_#{method_name[0...-1]}"
-      when '?'
-        "test_Is_#{method_name[0...-1]}"
-      when '!'
-        "test_Bang_#{method_name[0...-1]}"
-      else
-        "test_#{method_name}"
-      end
+      test_name = "test_#{method_name}"
+      test_name.gsub!("!", "_Bang")
+      test_name.gsub!("?", "_Query")
+      test_name.gsub!("=", "_Set")
+      test_name
     end
   end
 

@@ -38,7 +38,7 @@ TestUp.Test = function() {
           </div>\
         ';
         var $test = $(html);
-        $testcase.children('.tests').append($test);
+        insert_in_order($testcase, $test, test_name);
       }
       assert($test.length);
       return $test;
@@ -96,6 +96,23 @@ TestUp.Test = function() {
 
 
   // Private
+
+
+  function insert_in_order($testcase, $new_test, test_name)
+  {
+    var $tests = $testcase.find('.test');
+    for (var i = 0; i < $tests.length; ++i)
+    {
+      var $test = $tests.eq(i);
+      var name = $.trim( $test.find('> .title .name').text() );
+      if (test_name < name)
+      {
+        $new_test.insertBefore($test);
+        return;
+      }
+    }
+    $testcase.children('.tests').append($new_test);
+  }
 
 
   function id_from_name(testcase_name) {

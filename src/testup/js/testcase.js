@@ -78,7 +78,6 @@ TestUp.TestCase = function() {
     var $testcases = $testsuite.find('.testcase');
     for (var i = 0; i < $testcases.length; ++i)
     {
-
       var $testcase = $testcases.eq(i);
       var name = $.trim( $testcase.find('> .title .name').text() );
       if (testcase_name < name)
