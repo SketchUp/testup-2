@@ -756,7 +756,15 @@ class TC_Geom < TestUp::TestCase
     polygon = get_2d_polygon()
 
     result = Geom.point_in_polygon_2D(point, polygon, true)
-    assert_equal(true, result)
+    assert_equal(false, result)
+  end
+
+  def test_point_in_polygon_2D_outside_polygon_reverse
+    point = Geom::Point3d.new(9, 5, 0)
+    polygon = get_2d_polygon()
+
+    result = Geom.point_in_polygon_2D(point, polygon.reverse, true)
+    assert_equal(false, result)
   end
 
   def test_point_in_polygon_2D_on_border_should_be_true
