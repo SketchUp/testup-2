@@ -37,9 +37,6 @@ module TestUp
   PATH_IMAGES     = File.join(PATH, 'images').freeze
   PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
 
-  # TEMP constant.
-  PATH_OLD_TESTUP = 'C:/src/thomthom-su2014-pc/src/googleclient/sketchup/source/testing/testup'.freeze
-
 
   ### Dependencies ### ---------------------------------------------------------
 
@@ -49,7 +46,6 @@ module TestUp
     ::SKUI.embed_in(self)
   end
 
-  require File.join(PATH, 'compatibility.rb')
   require File.join(PATH, 'coverage.rb')
   require File.join(PATH, 'debug.rb')
   require File.join(PATH, 'editor.rb')
@@ -70,14 +66,14 @@ module TestUp
 
   ### Configuration ### --------------------------------------------------------
 
+  tests_path = File.join(__dir__, '..', '..', 'tests')
   defaults = {
     :editor => Editor.get_default,
     :run_in_gui => true,
     :verbose_console_tests => true,
     :paths_to_testsuites => [
-      File.expand_path(File.join(__dir__, '..', '..', 'tests')),
-      File.join(ENV['HOME'], 'SourceTree', 'SUbD', 'Ruby', 'tests'),
-      File.join(PATH_OLD_TESTUP, 'tests')
+      File.expand_path(File.join(tests_path, 'SketchUp Ruby API')),
+      File.expand_path(File.join(tests_path, 'TestUp'))
     ]
   }
   @settings = Settings.new(PLUGIN_ID, defaults)
