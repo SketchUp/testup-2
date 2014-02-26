@@ -2,7 +2,7 @@ module TestUp
  class TaskbarProgress
 
   # Load the C Extension if the platform support it.
-  if defined?(Sketchup) && Sketchup.platform == :platform_win
+  if RUBY_PLATFORM =~ /mswin|mingw/
     # Guard required because when debugging from Visual Studio the extensions is
     # pre-loaded.
     unless defined?(CEXT_VERSION)

@@ -133,15 +133,12 @@ module TestUp
     arguments << "-n /^(#{tests.join('|')})$/"
     arguments << '--verbose' if @settings[:verbose_console_tests]
     arguments << '--testup' if @settings[:run_in_gui]
-    # TODO(thomthom): Add support for LayOut in the progressbar library.
-    if defined?(Sketchup)
-      progress = TaskbarProgress.new
-      begin
-        progress.set_state(TaskbarProgress::INDETERMINATE)
-        MiniTest.run(arguments)
-      ensure
-        progress.set_state(TaskbarProgress::NOPROGRESS)
-      end
+    progress = TaskbarProgress.new
+    begin
+      progress.set_state(TaskbarProgress::INDETERMINATE)
+      MiniTest.run(arguments)
+    ensure
+      progress.set_state(TaskbarProgress::NOPROGRESS)
     end
     #puts Reporter.results.pretty_inspect
     @window.update_results(Reporter.results)
