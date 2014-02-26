@@ -32,7 +32,10 @@ module TestUp
 
   ### Constants ### ------------------------------------------------------------
 
-  SKETCHUP_CONSOLE.show # DEBUG
+  # TODO(thomthom): Open the LayOut Ruby Console.
+  if defined?(Sketchup)
+    SKETCHUP_CONSOLE.show # DEBUG
+  end
 
   PATH_IMAGES     = File.join(PATH, 'images').freeze
   PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
@@ -40,21 +43,23 @@ module TestUp
 
   ### Dependencies ### ---------------------------------------------------------
 
-  unless defined?(TestUp::SKUI)
-    skui_path = File.join(PATH, 'third-party', 'SKUI', 'src', 'SKUI')
-    require File.join(skui_path, 'embed_skui.rb')
-    ::SKUI.embed_in(self)
+  if defined?(UI::WebDialog)
+    if !defined?(TestUp::SKUI)
+      skui_path = File.join(PATH, 'third-party', 'SKUI', 'src', 'SKUI')
+      require File.join(skui_path, 'embed_skui.rb')
+      ::SKUI.embed_in(self)
+    end
+    require File.join(PATH, 'preferences_window.rb')
+    require File.join(PATH, 'test_window.rb')
   end
 
+  require File.join(PATH, 'console.rb')
   require File.join(PATH, 'coverage.rb')
   require File.join(PATH, 'debug.rb')
   require File.join(PATH, 'editor.rb')
-  require File.join(PATH, 'preferences_window.rb')
   require File.join(PATH, 'settings.rb')
-  require File.join(PATH, 'sketchup_console.rb')
   require File.join(PATH, 'taskbar_progress.rb')
   require File.join(PATH, 'test_discoverer.rb')
-  require File.join(PATH, 'test_window.rb')
   require File.join(PATH, 'ui.rb')
   require File.join(PATH, 'win32.rb')
 
@@ -119,8 +124,8 @@ module TestUp
       UI.beep
       return
     end
-    SKETCHUP_CONSOLE.show
-    SKETCHUP_CONSOLE.clear
+    TESTUP_CONSOLE.show
+    TESTUP_CONSOLE.clear
     testsuite = @window.active_testsuite
     tests = @window.selected_tests
     puts "Running test suite: #{testsuite}"
@@ -128,12 +133,15 @@ module TestUp
     arguments << "-n /^(#{tests.join('|')})$/"
     arguments << '--verbose' if @settings[:verbose_console_tests]
     arguments << '--testup' if @settings[:run_in_gui]
-    progress = TaskbarProgress.new
-    begin
-      progress.set_state(TaskbarProgress::INDETERMINATE)
-      MiniTest.run(arguments)
-    ensure
-      progress.set_state(TaskbarProgress::NOPROGRESS)
+    # TODO(thomthom): Add support for LayOut in the progressbar library.
+    if defined?(Sketchup)
+      progress = TaskbarProgress.new
+      begin
+        progress.set_state(TaskbarProgress::INDETERMINATE)
+        MiniTest.run(arguments)
+      ensure
+        progress.set_state(TaskbarProgress::NOPROGRESS)
+      end
     end
     #puts Reporter.results.pretty_inspect
     @window.update_results(Reporter.results)
@@ -141,9 +149,3 @@ module TestUp
 
 
 end # module
-
-#-------------------------------------------------------------------------------
-
-file_loaded(__FILE__)
-
-#-------------------------------------------------------------------------------

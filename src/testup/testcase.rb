@@ -4,7 +4,10 @@
 
 
 require File.join(__dir__, 'minitest_setup.rb')
-require File.join(__dir__, 'sketchup_test_utilities.rb')
+
+if defined?(Sketchup)
+  require File.join(__dir__, 'sketchup_test_utilities.rb')
+end
 
 
 module TestUp
@@ -22,8 +25,11 @@ module TestUp
   # Inherit tests from this class to get access to utility methods for SketchUp.
   class TestCase < Minitest::Test
 
-    include SketchUpTestUtilities
     extend TestCaseExtendable
+
+    if defined?(Sketchup)
+      include SketchUpTestUtilities
+    end
 
   end # class
 

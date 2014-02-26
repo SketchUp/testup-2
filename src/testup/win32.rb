@@ -34,25 +34,25 @@ module TestUp
   end
 
 
-  # TestUp::Win32.get_sketchup_window
+  # TestUp::Win32.get_main_window_handle
   #
   # Returns the window handle of the SketchUp window for the input queue of the
   # calling ruby method.
   #
   # @return [Integer] Returns a window handle on success or +nil+ on failure
-  def self.get_sketchup_window
+  def self.get_main_window_handle
     thread_id = Kernel32.GetCurrentThreadId()
-    sketchup_hwnd = 0
+    main_hwnd = 0
     param = 0
 
     enumWindowsProc = Closure::BlockCaller.new(TYPE_INT,
       [TYPE_VOIDP, TYPE_VOIDP]) { |hwnd, lparam|
-        sketchup_hwnd = User32.GetAncestor(hwnd, GA_ROOTOWNER)
+        main_hwnd = User32.GetAncestor(hwnd, GA_ROOTOWNER)
         next FALSE
     }
 
     User32.EnumThreadWindows(thread_id, enumWindowsProc, param)
-    sketchup_hwnd
+    main_hwnd
   end
 
  end # module Win32

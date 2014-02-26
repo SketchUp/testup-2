@@ -70,7 +70,7 @@ module TestUp
 
 
   def self.display_minitest_help
-    SKETCHUP_CONSOLE.show
+    TESTUP_CONSOLE.show
     MiniTest.run(['--help'])
   rescue SystemExit
   end

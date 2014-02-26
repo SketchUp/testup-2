@@ -15,8 +15,10 @@
 #
 #-------------------------------------------------------------------------------
 
-require 'sketchup.rb'
-require 'extensions.rb'
+if defined?(Sketchup)
+  require 'sketchup.rb'
+  require 'extensions.rb'
+end
 
 #-------------------------------------------------------------------------------
 
@@ -37,20 +39,21 @@ module TestUp
 
   ### EXTENSION ### ------------------------------------------------------------
 
-  unless file_loaded?(__FILE__)
-    loader = File.join( PATH, 'core.rb' )
-    ex = SketchupExtension.new(PLUGIN_NAME, loader)
-    ex.description = 'Test suite utility for SketchUp.'
-    ex.version     = PLUGIN_VERSION
-    ex.copyright   = 'Trimble Navigation Limited © 2014'
-    ex.creator     = 'SketchUp'
-    Sketchup.register_extension(ex, true)
+  loader = File.join( PATH, 'core.rb' )
+  if defined?(Sketchup)
+    if !file_loaded?(__FILE__)
+      ex = SketchupExtension.new(PLUGIN_NAME, loader)
+      ex.description = 'Test suite utility for SketchUp.'
+      ex.version     = PLUGIN_VERSION
+      ex.copyright   = 'Trimble Navigation Limited © 2014'
+      ex.creator     = 'SketchUp'
+      Sketchup.register_extension(ex, true)
+      file_loaded(__FILE__)
+    end
+  else
+    # LayOut doesn't have an SketchupExtensions class so the extension is loaded
+    # directly. This should be updated if LayOut add a similar mechanism.
+    require loader
   end
 
 end # module TestUp
-
-#-------------------------------------------------------------------------------
-
-file_loaded(__FILE__)
-
-#-------------------------------------------------------------------------------

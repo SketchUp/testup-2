@@ -62,7 +62,7 @@ module TestUp
     cmd_toggle_verbose_console_tests = cmd
 
     cmd = UI::Command.new('Reload TestUp') {
-      SKETCHUP_CONSOLE.clear
+      TESTUP_CONSOLE.clear
       window_visible = @window && @window.visible?
       @window.close if window_visible
       @window = TestUpWindow.new
@@ -131,7 +131,7 @@ module TestUp
       default_path = File.join(ENV['HOME'], 'Desktop').gsub('/', '\\')
 
       objShell = WIN32OLE.new('Shell.Application')
-      parent_window = TestUp::Win32.get_sketchup_window
+      parent_window = TestUp::Win32.get_main_window_handle
       options = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_EDITBOX
 
       # http://msdn.microsoft.com/en-us/library/windows/desktop/bb774065(v=vs.85).aspx

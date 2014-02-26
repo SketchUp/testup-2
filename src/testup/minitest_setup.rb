@@ -5,7 +5,9 @@
 
 # Load required extensions to the Sketchup::Console class in order to run the
 # tests in the SketchUp console.
-require File.join(__dir__, 'sketchup_console.rb')
+require File.join(__dir__, 'console.rb')
+$stdout = TestUp::TESTUP_CONSOLE
+$stderr = TestUp::TESTUP_CONSOLE
 
 
 # Load MiniTest. This is a modification from minitest/autoload.rb which doesn't
