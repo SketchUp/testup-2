@@ -122,7 +122,7 @@ module TestUp
 
     def event_testup_run
       discover_tests()
-      TestUp.run_tests
+      TestUp.run_tests_gui
     end
 
     def event_discover

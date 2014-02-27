@@ -83,7 +83,7 @@ module TestUp
     cmd_display_minitest_help = cmd
 
     cmd = UI::Command.new('Run Tests') {
-      self.run_tests
+      self.run_tests_gui
     }
     cmd.tooltip = 'Discover and run all tests.'
     cmd.status_bar_text = 'Discover and run all tests.'

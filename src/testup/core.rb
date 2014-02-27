@@ -33,7 +33,7 @@ module TestUp
   ### Constants ### ------------------------------------------------------------
 
   # TODO(thomthom): Open the LayOut Ruby Console.
-  if defined?(Sketchup)
+  if defined?(SKETCHUP_CONSOLE)
     SKETCHUP_CONSOLE.show # DEBUG
   end
 
@@ -118,16 +118,36 @@ module TestUp
   end
 
 
-  def self.run_tests
+  def self.run_tests_gui
     unless @window && @window.visible?
       warn 'TestUp window not open.'
       UI.beep
       return
     end
-    TESTUP_CONSOLE.show
-    TESTUP_CONSOLE.clear
     testsuite = @window.active_testsuite
     tests = @window.selected_tests
+    self.run_tests(tests, testsuite)
+    #puts Reporter.results.pretty_inspect
+    @window.update_results(Reporter.results)
+  end
+
+  # @example Run a test case:
+  #   TestUp.run_tests(["TC_Edge#"])
+  #
+  # @example Run single test:
+  #   TestUp.run_tests(["TC_Edge#start"])
+  #
+  # @example Run single test:
+  #   tests = [
+  #     "TC_Face#",
+  #     "TC_Edge#start", "TC_Edge#end"
+  #   ]
+  #   TestUp.run_tests(tests)
+  #
+  # @param [Array<String>] list of tests or test cases to run.
+  def self.run_tests(tests, testsuite = "Untitled")
+    TESTUP_CONSOLE.show
+    TESTUP_CONSOLE.clear
     puts "Running test suite: #{testsuite}"
     arguments = []
     arguments << "-n /^(#{tests.join('|')})$/"
@@ -140,8 +160,6 @@ module TestUp
     ensure
       progress.set_state(TaskbarProgress::NOPROGRESS)
     end
-    #puts Reporter.results.pretty_inspect
-    @window.update_results(Reporter.results)
   end
 
 
