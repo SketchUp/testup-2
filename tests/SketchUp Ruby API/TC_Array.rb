@@ -4,7 +4,7 @@
 
 require "testup/testcase"
 
-# interface class Array
+# class Array
 # http://www.sketchup.com/intl/developer/docs/ourdoc/array
 class TC_Array < TestUp::TestCase
 
@@ -379,7 +379,7 @@ class TC_Array < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#normalize
   def test_normalize_api_example
     array = [1, 2, 3]
-    # This will return a Float
+    # This will return a new Array
     normal_vector = array.normalize
   end
 
@@ -420,7 +420,7 @@ class TC_Array < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#normalize!
   def test_normalize_Bang_api_example
     array = [1, 2, 3]
-    # # This will modify array, and also return a new Array
+    # This will modify array, and also return a new Array
     array.normalize!
   end
 
@@ -474,7 +474,7 @@ class TC_Array < TestUp::TestCase
   def test_offset_api_example
     array = [10, 10, 10]
     vector = Geom::Vector3d.new(0, 0, 1)
-    # This will return an Array
+    # This will return a new Array
     point = array.offset(vector)
   end
 
@@ -733,7 +733,7 @@ class TC_Array < TestUp::TestCase
   def test_project_to_line_api_example
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [10, 10, 10]
-    # This will return an Array
+    # This will return a new Array
     point_on_line = array.project_to_line(line)
   end
 
@@ -792,7 +792,7 @@ class TC_Array < TestUp::TestCase
   def test_project_to_plane_api_example
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [10, 10, 10]
-    # This will return an Array
+    # This will return a new Array
     point_on_plane = array.project_to_plane(plane)
   end
 
@@ -852,7 +852,7 @@ class TC_Array < TestUp::TestCase
     point1 = Geom::Point3d.new(10, 20, 30)
     transform = Geom::Transformation.new(point1)
     array = [1, 2, 3]
-    # This will return an Array
+    # This will return a new Array
     point2 = array.transform(transform)
   end
 
