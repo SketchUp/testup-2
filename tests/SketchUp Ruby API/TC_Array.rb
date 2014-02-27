@@ -29,29 +29,29 @@ class TC_Array < TestUp::TestCase
   # class Array
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array
 
-  # TODO: Add undo tests
+  # TODO(Paul): Add undo tests
 
   # ========================================================================== #
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array
   def test_introduction_api_example
     # An array of 3 values can represent a 1" long vector pointing straight
     # up in the z-direction.
-    my_array = [0, 0, 1]
+    array = [0, 0, 1]
 
-    # An array of 3 values can also represent a point 1" above the origin
-    # in the z direction. (Note that this is the exact same array.)
-    my_array = [0, 0, 1]
+    # An array of 3 values can also represent a point 1" above the origin in
+    # the z direction. (Note that this is the exact same array.)
+    array = [0, 0, 1]
 
-    # How it is interpreted is based on context. For example, this code
-    # will create a construction point at position 0, 0, 1, since in this
-    # context a Point3d is expected.
+    # How it is interpreted is based on context. For example, this code will
+    # create a construction point at position 0, 0, 1, since in this context
+    # a Point3d is expected.
     entities = Sketchup.active_model.entities
-    cp = entities.add_cpoint(my_array)
+    construction_point = entities.add_cpoint(my_array)
 
-    # Whereas this will move our construction point 1" upward, since
-    # in this context a Vector3d is expected.
-    translation = Geom::Transformation.new(my_array)
-    entities.transform_entities(translation, cp)
+    # Whereas this will move our construction point 1" upward, since in this
+    # context a Vector3d is expected.
+    transformation = Geom::Transformation.new(my_array)
+    entities.transform_entities(translation, construction_point)
   end
 
   # ========================================================================== #
@@ -324,7 +324,7 @@ class TC_Array < TestUp::TestCase
   def test_dot_api_example
     vector = Geom::Vector3d.new(0, 1, 0)
     array = [1, 0, 0]
-    # This will return a Float
+    # This will return a Float value, in this case 22.0
     result = array.dot(vector)
   end
 
@@ -379,7 +379,7 @@ class TC_Array < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#normalize
   def test_normalize_api_example
     array = [1, 2, 3]
-    # This will return a new Array
+    # This will return a new Vector3d
     normal_vector = array.normalize
   end
 
@@ -420,7 +420,7 @@ class TC_Array < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#normalize!
   def test_normalize_Bang_api_example
     array = [1, 2, 3]
-    # This will modify array, and also return a new Array
+    # This will modify array in place
     array.normalize!
   end
 
@@ -530,7 +530,7 @@ class TC_Array < TestUp::TestCase
   def test_offset_Bang_api_example
     array = [10, 10, 10]
     vector = Geom::Vector3d.new(0, 0, 1)
-    # This will modify array, and also return a new Array
+    # This will modify array in place
     array.offset!(vector)
   end
 
@@ -1003,7 +1003,7 @@ class TC_Array < TestUp::TestCase
     point = Geom::Point3d.new(10, 20, 30)
     transform = Geom::Transformation.new(point)
     array = [1, 2, 3]
-    # This will modify array, and also return a new Array
+    # This will modify array in place
     array.transform!(transform)
   end
 
@@ -1053,7 +1053,7 @@ class TC_Array < TestUp::TestCase
   def test_vector_to_api_example
     point = Geom::Point3d.new(10, 20, 30)
     array = [1, 2, 3]
-    # This will return a new Array
+    # This will return a new Vector3d
     vector = array.vector_to(point)
   end
 
@@ -1097,8 +1097,13 @@ class TC_Array < TestUp::TestCase
   # method Array.x
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#x
   def test_x_api_example
-    # This will initialize array.x, array.y, and array.z to the specified values
     array = [1, 2, 3]
+    # This will return a Fixnum, in this case 1
+    x = array.x
+
+    array = [1.0, 2.0, 3.0]
+    # This will return a Float, in this case 1.0
+    x = array.x
   end
 
   def test_x
@@ -1111,7 +1116,9 @@ class TC_Array < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#x=
   def test_x_Set_api_example
     array = [1, 2, 3]
-    # This will set the x value
+    # This will initialize the x value as a Float
+    array.x = 2.5
+    # This will initialize the x value as a Fixnum
     array.x = 5
   end
 
@@ -1150,7 +1157,12 @@ class TC_Array < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#y
   def test_y_api_example
     array = [1, 2, 3]
-    # This will initialize array.x, array.y, and array.z to the specified values
+    # This will return a Fixnum, in this case 2
+    y = array.y
+
+    array = [1.0, 2.0, 3.0]
+    # This will return a Float, in this case 2.0
+    y = array.y
   end
 
   def test_y
@@ -1163,7 +1175,9 @@ class TC_Array < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#y=
   def test_y_Set_api_example
     array = [1, 2, 3]
-    # This will initialize the y values
+    # This will initialize the y value as a Float
+    array.y = 2.5
+    # This will initialize the y value as a Fixnum
     array.y = 5
   end
 
@@ -1201,8 +1215,13 @@ class TC_Array < TestUp::TestCase
   # method Array.z
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#z
   def test_z_api_example
-    # This will initialize array.x, array.y, and array.z to the specified values
     array = [1, 2, 3]
+    # This will return a Fixnum, in this case 3
+    z = array.z
+
+    array = [1.0, 2.0, 3.0]
+    # This will return a Float, in this case 3.0
+    z = array.z
   end
 
   def test_z
@@ -1215,7 +1234,9 @@ class TC_Array < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#z=
   def test_z_Set_api_example
     array = [1, 2, 3]
-    # This will initialize the z value
+    # This will initialize the z value as a Float
+    array.z = 2.5
+    # This will initialize the z value as a Fixnum
     array.z = 5
   end
 
