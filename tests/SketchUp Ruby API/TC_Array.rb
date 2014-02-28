@@ -29,8 +29,6 @@ class TC_Array < TestUp::TestCase
   # class Array
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array
 
-  # TODO(Paul): Add undo tests
-
   # ========================================================================== #
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array
   def test_introduction_api_example
@@ -88,36 +86,36 @@ class TC_Array < TestUp::TestCase
     array1 = [0, 1, 0]
     array2 = [1, 0, 0]
   
-    result = array2.cross(array1)
+    cross_product = array2.cross(array1)
     expected = Geom::Vector3d.new(0, 0, 1)
-    assert_equal(expected, result)
+    assert_equal(expected, cross_product)
   end
 
   def test_cross_two_arrays_z_unit_down
     array1 = [0, 1, 0]
     array2 = [1, 0, 0]
   
-    result = array1.cross(array2)
+    cross_product = array1.cross(array2)
     expected = Geom::Vector3d.new(0, 0, -1)
-    assert_equal(expected, result)
+    assert_equal(expected, cross_product)
   end
 
   def test_cross_array_vector_z_unit
     vector = Geom::Vector3d.new(0, 1, 0)
     array = [1, 0, 0]
   
-    result = array.cross(vector)
+    cross_product = array.cross(vector)
     expected = Geom::Vector3d.new(0, 0, 1)
-    assert_equal(expected, result)
+    assert_equal(expected, cross_product)
   end
 
   def test_cross_array_vector_zero
     vector = Geom::Vector3d.new(1, 0, 0)
     array = [1, 0, 0]
   
-    result = array.cross(vector)
+    cross_product = array.cross(vector)
     expected = Geom::Vector3d.new(0, 0, 0)
-    assert_equal(expected, result)
+    assert_equal(expected, cross_product)
   end
 
   # ========================================================================== #
@@ -213,36 +211,36 @@ class TC_Array < TestUp::TestCase
   def test_distance_to_line_x_to_z
     array = [0, 0, 1]
     line = [Geom::Point3d.new(-1, 0, 0), Geom::Vector3d.new(1, 0, 0)]
-    result = array.distance_to_line(line)
-    assert_equal(1, result)
+    distance_to_line = array.distance_to_line(line)
+    assert_equal(1, distance_to_line)
   end
 
   def test_distance_to_line_y_to_x
     array = [0, 1, 0]
     line = [Geom::Point3d.new(-1, 0, 0), Geom::Vector3d.new(1, 0, 0)]
-    result = array.distance_to_line(line)
-    assert_equal(1, result)
+    distance_to_line = array.distance_to_line(line)
+    assert_equal(1, distance_to_line)
   end
 
   def test_distance_to_line_x_to_y
     array = [1, 0, 0]
     line = [Geom::Point3d.new(0,-1,0), Geom::Vector3d.new(0, 1, 0)]
-    result = array.distance_to_line(line)
-    assert_equal(1, result)
+    distance_to_line = array.distance_to_line(line)
+    assert_equal(1, distance_to_line)
   end
 
   def test_distance_to_line_point_to_origin
     array = [1, 1, 1]
     line = [Geom::Point3d.new(-1, 0, 0), Geom::Vector3d.new(1, 0, 0)]
-    result = array.distance_to_line(line)
-    assert_equal(Math.sqrt(2), result)
+    distance_to_line = array.distance_to_line(line)
+    assert_equal(Math.sqrt(2), distance_to_line)
   end
 
   def test_distance_to_line_zero_distance
     array = [2,2,2]
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(2,2,2)]
-    result = array.distance_to_line(line)
-    assert_equal(0, result)
+    distance_to_line = array.distance_to_line(line)
+    assert_equal(0, distance_to_line)
   end
 
 
@@ -279,36 +277,36 @@ class TC_Array < TestUp::TestCase
   def test_distance_to_plane_xyplane_to_zpoint
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [0, 0, 1]
-    result = array.distance_to_plane(plane)
-    assert_equal(1, result)
+    distance_to_plane = array.distance_to_plane(plane)
+    assert_equal(1, distance_to_plane)
   end
 
   def test_distance_to_plane_yzplane_to_xpoint
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(1, 0, 0)]
     array = [1, 0, 0]
-    result = array.distance_to_plane(plane)
-    assert_equal(1, result)
+    distance_to_plane = array.distance_to_plane(plane)
+    assert_equal(1, distance_to_plane)
   end
 
   def test_distance_to_plane_xzplane_to_ypoint
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 1, 0)]
     array = [0, 1, 0]
-    result = array.distance_to_plane(plane)
-    assert_equal(1, result)
+    distance_to_plane = array.distance_to_plane(plane)
+    assert_equal(1, distance_to_plane)
   end
 
   def test_distance_to_plane_xyplane_to_origin
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [0, 0, 0]
-    result = array.distance_to_plane(plane)
-    assert_equal(0, result)
+    distance_to_plane = array.distance_to_plane(plane)
+    assert_equal(0, distance_to_plane)
   end
 
   def test_distance_to_plane_xyplane_to_point
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [1, 1, 1]
-    result = array.distance_to_plane(plane)
-    assert_equal(1, result)
+    distance_to_plane = array.distance_to_plane(plane)
+    assert_equal(1, distance_to_plane)
   end
 
   def test_distance_to_plane_when_already_on_plane
@@ -324,8 +322,8 @@ class TC_Array < TestUp::TestCase
   def test_dot_api_example
     vector = Geom::Vector3d.new(0, 1, 0)
     array = [1, 0, 0]
-    # This will return a Float value, in this case 22.0
-    result = array.dot(vector)
+    # This will return a Float, in this case 22.0
+    dot_product = array.dot(vector)
   end
 
   def test_dot_bad_params
@@ -351,17 +349,17 @@ class TC_Array < TestUp::TestCase
   def test_dot_two_arrays
     array1 = [2, 3, 4]
     array2 = [1, 2, 3]
-    result = array1.dot(array2)
+    dot_product = array1.dot(array2)
     expected = ArrayUtils::dot_product(array1, array2)
-    assert_in_delta(expected, result, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected, dot_product, SKETCHUP_FLOAT_TOLERANCE)
   end
 
   def test_dot_two_arrays_orthogonal
     array1 = [1, 0, 0]
     array2 = [0, 1, 0]
-    result = array1.dot(array2)
+    dot_product = array1.dot(array2)
     expected = ArrayUtils::dot_product(array1, array2)
-    assert_in_delta(expected, result, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected, dot_product, SKETCHUP_FLOAT_TOLERANCE)
   end
 
   def test_dot_array_vector
@@ -369,9 +367,9 @@ class TC_Array < TestUp::TestCase
     array2 = [1, 2, 3]
     vector2 = Geom::Vector3d.new(array2[0], array2[1], array2[2])
 
-    result = array1.dot(vector2)
+    dot_product = array1.dot(vector2)
     expected = ArrayUtils::dot_product(array1, array2)
-    assert_in_delta(expected, result, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected, dot_product, SKETCHUP_FLOAT_TOLERANCE)
   end
 
   # ========================================================================== #
@@ -420,7 +418,7 @@ class TC_Array < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#normalize!
   def test_normalize_Bang_api_example
     array = [1, 2, 3]
-    # This will modify array in place
+    # This will modify 'array' in place
     array.normalize!
   end
 
@@ -466,7 +464,6 @@ class TC_Array < TestUp::TestCase
     assert_in_delta(expected_y_normal, vector.y, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected_z_normal, vector.z, SKETCHUP_FLOAT_TOLERANCE)
   end
-
 
   # ========================================================================== #
   # method Array.offset
@@ -530,7 +527,7 @@ class TC_Array < TestUp::TestCase
   def test_offset_Bang_api_example
     array = [10, 10, 10]
     vector = Geom::Vector3d.new(0, 0, 1)
-    # This will modify array in place
+    # This will modify 'array' in place
     array.offset!(vector)
   end
 
@@ -587,7 +584,7 @@ class TC_Array < TestUp::TestCase
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [10, 10, 10]
     # This will return a true or false value
-    status = array.on_line?(line)
+    on_line = array.on_line?(line)
   end
 
   def test_on_line_Query_bad_params
@@ -613,52 +610,52 @@ class TC_Array < TestUp::TestCase
   def test_on_line_Query_true
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [0, 0, 1]
-    status = array.on_line?(line)
-    assert_equal(true, status)
+    on_line = array.on_line?(line)
+    assert_equal(true, on_line)
   end
 
   def test_on_line_Query_far_point
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
 
     array = [0, 0, 99999999]
-    status = array.on_line?(line)
-    assert_equal(true, status)
+    on_line = array.on_line?(line)
+    assert_equal(true, on_line)
   end
   
   def test_on_line_Query_false
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
 
     array = [1, 0, 1]
-    status = array.on_line?(line)
-    assert_equal(false, status)
+    on_line = array.on_line?(line)
+    assert_equal(false, on_line)
 
     array = [0, 1, 1]
-    status = array.on_line?(line)
-    assert_equal(false, status)
+    on_line = array.on_line?(line)
+    assert_equal(false, on_line)
 
     array = [1, 1, 1]
-    status = array.on_line?(line)
-    assert_equal(false, status)
+    on_line = array.on_line?(line)
+    assert_equal(false, on_line)
   end
 
   def test_on_line_Query_tolerance
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
 
     array = [0, 0.001, 0]
-    status = array.on_line?(line)
-    assert_equal(false, status)
+    on_line = array.on_line?(line)
+    assert_equal(false, on_line)
 
     array = [0.001, 0, 0]
-    status = array.on_line?(line)
-    assert_equal(false, status)
+    on_line = array.on_line?(line)
+    assert_equal(false, on_line)
   end
 
   def test_on_line_Query_true_from_at_origin
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(1, 1, 1)]
 
     array = [0, 0, 0]
-    status = array.on_line?(line)
-    assert_equal(true, status)
+    on_line = array.on_line?(line)
+    assert_equal(true, on_line)
   end
 
   # ========================================================================== #
@@ -668,7 +665,7 @@ class TC_Array < TestUp::TestCase
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [10, 10, 10]
     # This will return a true or false value
-    status = array.on_plane?(plane)
+    on_plane = array.on_plane?(plane)
   end
 
   def test_on_plane_Query_bad_params
@@ -695,36 +692,36 @@ class TC_Array < TestUp::TestCase
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
 
     array = [1, 2, 0]
-    result = array.on_plane?(plane)
-    assert_equal(true, result)
+    on_plane = array.on_plane?(plane)
+    assert_equal(true, on_plane)
   end
 
   def test_on_plane_Query_far_point_true
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [99999999, 999999999, 0]
-    result = array.on_plane?(plane)
-    assert_equal(true, result)
+    on_plane = array.on_plane?(plane)
+    assert_equal(true, on_plane)
   end
 
   def test_on_plane_Query_just_outside_tolerance
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [1, 2, 0.001]
-    result = array.on_plane?(plane)
-    assert_equal(false, result)
+    on_plane = array.on_plane?(plane)
+    assert_equal(false, on_plane)
   end
 
   def test_on_plane_Query_inside_tolerance
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [1, 2, 0.0001]
-    result = array.on_plane?(plane)
-    assert_equal(true, result)
+    on_plane = array.on_plane?(plane)
+    assert_equal(true, on_plane)
   end
 
   def test_on_plane_Query_true_point_on_origin
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [0.0, 0.0, 0.0]
-    result = array.on_plane?(plane)
-    assert_equal(true, result)
+    on_plane = array.on_plane?(plane)
+    assert_equal(true, on_plane)
   end
 
   # ========================================================================== #
@@ -885,12 +882,12 @@ class TC_Array < TestUp::TestCase
   end
 
   def test_transform_point_translation
-    array = [1, 2, 3]
+    array1 = [1, 2, 3]
     point = Geom::Point3d.new(1, 1, 1)
     transform = Geom::Transformation.new(point)
-    expected = Geom::Point3d.new(array.x+point.x, array.y+point.y, array.z+point.z)
-    result = array.transform(transform)
-    assert_equal(expected, result)
+    expected = Geom::Point3d.new(array1.x+point.x, array1.y+point.y, array1.z+point.z)
+    array2 = array1.transform(transform)
+    assert_equal(expected, array2)
   end
 
   def test_transform_vector_translation
@@ -898,8 +895,8 @@ class TC_Array < TestUp::TestCase
     vector = Geom::Vector3d.new(1, 1, 1)
     transform = Geom::Transformation.new(vector)
     expected = Geom::Point3d.new(array.x+vector.x, array.y+vector.y, array.z+vector.z)
-    result = array.transform(transform)
-    assert_equal(expected, result)
+    array2 = array.transform(transform)
+    assert_equal(expected, array2)
   end
 
   def test_transform_4_x_4_array_rotate_90_x_axis
@@ -910,8 +907,8 @@ class TC_Array < TestUp::TestCase
                  0, -1, 0, 0,
                  0, 0, 0, 1]
     transform = Geom::Transformation.new(array_4x4)
-    result = array.transform(transform)
-    assert_equal(expected, result)
+    array2 = array.transform(transform)
+    assert_equal(expected, array2)
   end
 
   def test_transform_4_x_4_array_scale_2x
@@ -922,16 +919,16 @@ class TC_Array < TestUp::TestCase
                  0, 0, 1, 0,
                  0, 0, 0, 0.5]
     transform = Geom::Transformation.new(array_4x4)
-    result = array.transform(transform)
-    assert_equal(expected, result)
+    array2 = array.transform(transform)
+    assert_equal(expected, array2)
   end
 
   def test_transform_uniform_scale
     array = [1, 2, 3]
     expected = [2, 4, 6]
     transform = Geom::Transformation.new(2)
-    result = array.transform(transform)
-    assert_equal(expected, result)
+    array2 = array.transform(transform)
+    assert_equal(expected, array2)
   end
 
   def test_transform_new_origin_zaxis
@@ -942,8 +939,8 @@ class TC_Array < TestUp::TestCase
 
     expected = [-9, 52, 353]
     transform = Geom::Transformation.new(origin, zaxis)
-    result = array.transform(transform)
-    assert_equal(expected, result)
+    array2 = array.transform(transform)
+    assert_equal(expected, array2)
   end
 
   def test_transform_new_origin_xaxis_yaxis
@@ -955,8 +952,8 @@ class TC_Array < TestUp::TestCase
 
     expected = [21, 32, 303]
     transform = Geom::Transformation.new(origin, xaxis, yaxis)
-    result = array.transform(transform)
-    assert_equal(expected, result)
+    array2 = array.transform(transform)
+    assert_equal(expected, array2)
   end
 
   def test_transform_rotate_pi_radiens_around_y_axis
@@ -967,10 +964,10 @@ class TC_Array < TestUp::TestCase
 
     expected = [-8, 20, -24]
     transform = Geom::Transformation.new(origin, axis, Math::PI)
-    result = array.transform(transform)
-    assert_in_delta(expected.x, result.x, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected.y, result.y, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected.z, result.z, SKETCHUP_FLOAT_TOLERANCE)
+    array2 = array.transform(transform)
+    assert_in_delta(expected.x, array2.x, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected.y, array2.y, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected.z, array2.z, SKETCHUP_FLOAT_TOLERANCE)
   end
 
   def test_transform_3_axes_and_origin
@@ -983,8 +980,8 @@ class TC_Array < TestUp::TestCase
 
     expected = [31, 12, 23]
     transform = Geom::Transformation.new(xaxis, yaxis, zaxis, origin)
-    result = array.transform(transform)
-    assert_equal(expected, result)
+    array2 = array.transform(transform)
+    assert_equal(expected, array2)
   end
 
   def test_transform_original_array_unchanged
@@ -1003,7 +1000,7 @@ class TC_Array < TestUp::TestCase
     point = Geom::Point3d.new(10, 20, 30)
     transform = Geom::Transformation.new(point)
     array = [1, 2, 3]
-    # This will modify array in place
+    # This will modify 'array' in place
     array.transform!(transform)
   end
 
@@ -1042,8 +1039,8 @@ class TC_Array < TestUp::TestCase
     point = Geom::Point3d.new(1, 1, 1)
     transform = Geom::Transformation.new(point)
     expected = Geom::Point3d.new(array.x+point.x, array.y+point.y, array.z+point.z)
-    result = array.transform!(transform)
-    point = Geom::Point3d.new(result.x, result.y, result.z)
+    array2 = array.transform!(transform)
+    point = Geom::Point3d.new(array2.x, array2.y, array2.z)
     assert_equal(expected, point)
   end
 
