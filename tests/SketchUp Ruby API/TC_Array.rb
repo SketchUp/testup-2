@@ -44,12 +44,12 @@ class TC_Array < TestUp::TestCase
     # create a construction point at position 0, 0, 1, since in this context
     # a Point3d is expected.
     entities = Sketchup.active_model.entities
-    construction_point = entities.add_cpoint(my_array)
+    construction_point = entities.add_cpoint(array)
 
     # Whereas this will move our construction point 1" upward, since in this
     # context a Vector3d is expected.
-    transformation = Geom::Transformation.new(my_array)
-    entities.transform_entities(translation, construction_point)
+    transformation = Geom::Transformation.new(array)
+    entities.transform_entities(transformation, construction_point)
   end
 
   # ========================================================================== #
@@ -89,6 +89,7 @@ class TC_Array < TestUp::TestCase
     cross_product = array2.cross(array1)
     expected = Geom::Vector3d.new(0, 0, 1)
     assert_equal(expected, cross_product)
+    assert(cross_product.kind_of?(Geom::Vector3d))
   end
 
   def test_cross_two_arrays_z_unit_down
@@ -149,7 +150,7 @@ class TC_Array < TestUp::TestCase
   end
 
   def test_distance_point
-    point = Geom::Point3d.new 0, 0, 0
+    point = Geom::Point3d.new(0, 0, 0)
 
     distance = [1, 0, 0].distance(point)
     assert_equal(1, distance)
@@ -394,9 +395,9 @@ class TC_Array < TestUp::TestCase
     y = 9999
     z = 99999
     length = Geom::Vector3d.new(x, y, z).length
-    expected_x_normal = x/length
-    expected_y_normal = y/length
-    expected_z_normal = z/length
+    expected_x_normal = x / length
+    expected_y_normal = y / length
+    expected_z_normal = z / length
 
     array = [x, y, z]
     vector = array.normalize
@@ -435,9 +436,9 @@ class TC_Array < TestUp::TestCase
     y = 9999
     z = 99999
     length = Geom::Vector3d.new(x, y, z).length
-    expected_x_normal = x/length
-    expected_y_normal = y/length
-    expected_z_normal = z/length
+    expected_x_normal = x / length
+    expected_y_normal = y / length
+    expected_z_normal = z / length
 
     array = [x, y, z]
     array.normalize!
@@ -453,9 +454,9 @@ class TC_Array < TestUp::TestCase
     y = 2
     z = 3
     length = Geom::Vector3d.new(x, y, z).length
-    expected_x_normal = x/length
-    expected_y_normal = y/length
-    expected_z_normal = z/length
+    expected_x_normal = x / length
+    expected_y_normal = y / length
+    expected_z_normal = z / length
 
     array = [x, y, z]
     vector = array.normalize!
@@ -507,7 +508,7 @@ class TC_Array < TestUp::TestCase
     array = [10, 11, 12]
     vector = Geom::Vector3d.new(2.123, 4.567, 6.789)
     point = array.offset(vector)
-    expected = Geom::Point3d.new(array.x+vector.x, array.y+vector.y, array.z+vector.z)
+    expected = Geom::Point3d.new(array.x + vector.x, array.y + vector.y, array.z + vector.z)
     assert_in_delta(expected.x, point.x, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected.y, point.y, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected.z, point.z, SKETCHUP_FLOAT_TOLERANCE)
@@ -562,7 +563,7 @@ class TC_Array < TestUp::TestCase
   def test_offset_Bang_all_axes
     array = [10, 11, 12]
     vector = Geom::Vector3d.new(2.123, 4.567, 6.789)
-    expected = [array.x+vector.x, array.y+vector.y, array.z+vector.z]
+    expected = [array.x + vector.x, array.y + vector.y, array.z + vector.z]
     array.offset!(vector)
     assert_in_delta(expected.x, array.x, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected.y, array.y, SKETCHUP_FLOAT_TOLERANCE)
@@ -779,7 +780,7 @@ class TC_Array < TestUp::TestCase
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [0, 0, 2]
     point = array.project_to_line(line)
-    expected = Geom::Point3d.new 0, 0, 2
+    expected = Geom::Point3d.new(0, 0, 2)
     assert_equal(expected, point)
   end
 
@@ -885,7 +886,7 @@ class TC_Array < TestUp::TestCase
     array1 = [1, 2, 3]
     point = Geom::Point3d.new(1, 1, 1)
     transform = Geom::Transformation.new(point)
-    expected = Geom::Point3d.new(array1.x+point.x, array1.y+point.y, array1.z+point.z)
+    expected = Geom::Point3d.new(array1.x + point.x, array1.y + point.y, array1.z + point.z)
     array2 = array1.transform(transform)
     assert_equal(expected, array2)
   end
@@ -894,7 +895,7 @@ class TC_Array < TestUp::TestCase
     array = [1, 2, 3]
     vector = Geom::Vector3d.new(1, 1, 1)
     transform = Geom::Transformation.new(vector)
-    expected = Geom::Point3d.new(array.x+vector.x, array.y+vector.y, array.z+vector.z)
+    expected = Geom::Point3d.new(array.x + vector.x, array.y + vector.y, array.z + vector.z)
     array2 = array.transform(transform)
     assert_equal(expected, array2)
   end
@@ -956,7 +957,7 @@ class TC_Array < TestUp::TestCase
     assert_equal(expected, array2)
   end
 
-  def test_transform_rotate_pi_radiens_around_y_axis
+  def test_transform_rotate_pi_radians_around_y_axis
     array = [10, 20, 30]
 
     origin = Geom::Point3d.new(1, 2, 3)
@@ -1028,7 +1029,7 @@ class TC_Array < TestUp::TestCase
     array = [10, 10, 10]
     point = Geom::Point3d.new(1, 1, 1)
     transform = Geom::Transformation.new(point)
-    expected = Geom::Point3d.new(array.x+point.x, array.y+point.y, array.z+point.z)
+    expected = Geom::Point3d.new(array.x + point.x, array.y + point.y, array.z + point.z)
     array.transform!(transform)
     point = Geom::Point3d.new(array.x, array.y, array.z)
     assert_equal(expected, point)
@@ -1038,7 +1039,7 @@ class TC_Array < TestUp::TestCase
     array = [10, 10, 10]
     point = Geom::Point3d.new(1, 1, 1)
     transform = Geom::Transformation.new(point)
-    expected = Geom::Point3d.new(array.x+point.x, array.y+point.y, array.z+point.z)
+    expected = Geom::Point3d.new(array.x + point.x, array.y + point.y, array.z + point.z)
     array2 = array.transform!(transform)
     point = Geom::Point3d.new(array2.x, array2.y, array2.z)
     assert_equal(expected, point)
