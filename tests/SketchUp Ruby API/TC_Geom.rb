@@ -35,13 +35,13 @@ class TC_Geom < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/geom
 
   def test_introduction_api_example_1
-    line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
-    line = [Geom::Point3d.new(0, 0, 0), Geom::Point3d.new(0, 0, 100)]
+    line1 = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
+    line2 = [Geom::Point3d.new(0, 0, 0), Geom::Point3d.new(0, 0, 100)]
   end
 
   def test_introduction_api_example_2
-    plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
-    plane = [0, 0, 1, 0]
+    plane1 = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
+    plane2 = [0, 0, 1, 0]
   end
 
 
