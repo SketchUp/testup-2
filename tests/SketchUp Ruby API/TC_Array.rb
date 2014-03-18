@@ -89,7 +89,7 @@ class TC_Array < TestUp::TestCase
     cross_product = array2.cross(array1)
     expected = Geom::Vector3d.new(0, 0, 1)
     assert_equal(expected, cross_product)
-    assert(cross_product.kind_of?(Geom::Vector3d), "Unexpected Type")
+    assert_kind_of(Geom::Vector3d, cross_product)
   end
 
   def test_cross_two_arrays_z_unit_down
@@ -99,7 +99,7 @@ class TC_Array < TestUp::TestCase
     cross_product = array1.cross(array2)
     expected = Geom::Vector3d.new(0, 0, -1)
     assert_equal(expected, cross_product)
-    assert(cross_product.kind_of?(Geom::Vector3d), "Unexpected Type")
+    assert_kind_of(Geom::Vector3d, cross_product)
   end
 
   def test_cross_array_vector_z_unit
@@ -109,7 +109,7 @@ class TC_Array < TestUp::TestCase
     cross_product = array.cross(vector)
     expected = Geom::Vector3d.new(0, 0, 1)
     assert_equal(expected, cross_product)
-    assert(cross_product.kind_of?(Geom::Vector3d), "Unexpected Type")
+    assert_kind_of(Geom::Vector3d, cross_product)
   end
 
   def test_cross_array_vector_zero
@@ -119,7 +119,7 @@ class TC_Array < TestUp::TestCase
     cross_product = array.cross(vector)
     expected = Geom::Vector3d.new(0, 0, 0)
     assert_equal(expected, cross_product)
-    assert(cross_product.kind_of?(Geom::Vector3d), "Unexpected Type")
+    assert_kind_of(Geom::Vector3d, cross_product)
   end
 
   # ========================================================================== #
@@ -157,7 +157,7 @@ class TC_Array < TestUp::TestCase
 
     distance = [1, 0, 0].distance(point)
     assert_equal(1, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
 
     distance = [0, 1, 0].distance(point)
     assert_equal(1, distance)
@@ -174,7 +174,7 @@ class TC_Array < TestUp::TestCase
     array2 = [0, 0, 0]
     distance = array1.distance(array2)
     assert_equal(1, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   def test_distance_of_zero
@@ -219,7 +219,7 @@ class TC_Array < TestUp::TestCase
     line = [Geom::Point3d.new(-1, 0, 0), Geom::Vector3d.new(1, 0, 0)]
     distance = array.distance_to_line(line)
     assert_equal(1, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   def test_distance_to_line_y_to_x
@@ -227,7 +227,7 @@ class TC_Array < TestUp::TestCase
     line = [Geom::Point3d.new(-1, 0, 0), Geom::Vector3d.new(1, 0, 0)]
     distance = array.distance_to_line(line)
     assert_equal(1, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   def test_distance_to_line_x_to_y
@@ -235,7 +235,7 @@ class TC_Array < TestUp::TestCase
     line = [Geom::Point3d.new(0,-1,0), Geom::Vector3d.new(0, 1, 0)]
     distance = array.distance_to_line(line)
     assert_equal(1, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   def test_distance_to_line_point_to_origin
@@ -243,7 +243,7 @@ class TC_Array < TestUp::TestCase
     line = [Geom::Point3d.new(-1, 0, 0), Geom::Vector3d.new(1, 0, 0)]
     distance = array.distance_to_line(line)
     assert_equal(Math.sqrt(2), distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   def test_distance_to_line_zero_distance
@@ -251,7 +251,7 @@ class TC_Array < TestUp::TestCase
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(2,2,2)]
     distance = array.distance_to_line(line)
     assert_equal(0, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
 
@@ -290,7 +290,7 @@ class TC_Array < TestUp::TestCase
     array = [0, 0, 1]
     distance = array.distance_to_plane(plane)
     assert_equal(1, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   def test_distance_to_plane_yzplane_to_xpoint
@@ -298,7 +298,7 @@ class TC_Array < TestUp::TestCase
     array = [1, 0, 0]
     distance = array.distance_to_plane(plane)
     assert_equal(1, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   def test_distance_to_plane_xzplane_to_ypoint
@@ -306,7 +306,7 @@ class TC_Array < TestUp::TestCase
     array = [0, 1, 0]
     distance = array.distance_to_plane(plane)
     assert_equal(1, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   def test_distance_to_plane_xyplane_to_origin
@@ -314,7 +314,7 @@ class TC_Array < TestUp::TestCase
     array = [0, 0, 0]
     distance = array.distance_to_plane(plane)
     assert_equal(0, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   def test_distance_to_plane_xyplane_to_point
@@ -322,7 +322,7 @@ class TC_Array < TestUp::TestCase
     array = [1, 1, 1]
     distance = array.distance_to_plane(plane)
     assert_equal(1, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   def test_distance_to_plane_when_already_on_plane
@@ -330,7 +330,7 @@ class TC_Array < TestUp::TestCase
     array = [500, 1000, 0]
     distance = array.distance_to_plane(plane)
     assert_equal(0, distance)
-    assert(distance.kind_of?(Length), "Unexpected Type")
+    assert_kind_of(Length, distance)
   end
 
   # ========================================================================== #
@@ -420,7 +420,7 @@ class TC_Array < TestUp::TestCase
     assert_in_delta(expected_x_normal, vector.x, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected_y_normal, vector.y, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected_z_normal, vector.z, SKETCHUP_FLOAT_TOLERANCE)
-    assert(vector.kind_of?(Geom::Vector3d), "Unexpected Type")
+    assert_kind_of(Geom::Vector3d, vector)
   end
 
   def test_normalize_original_array_unchanged
@@ -463,7 +463,7 @@ class TC_Array < TestUp::TestCase
     assert_in_delta(expected_x_normal, vector.x, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected_y_normal, vector.y, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected_z_normal, vector.z, SKETCHUP_FLOAT_TOLERANCE)
-    assert(vector.kind_of?(Geom::Vector3d), "Unexpected Type")
+    assert_kind_of(Geom::Vector3d, vector)
   end
 
   def test_normalize_Bang_check_return_vector
@@ -481,7 +481,7 @@ class TC_Array < TestUp::TestCase
     assert_in_delta(expected_x_normal, vector.x, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected_y_normal, vector.y, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected_z_normal, vector.z, SKETCHUP_FLOAT_TOLERANCE)
-    assert(length.kind_of?(Geom::Vector3d), "Unexpected Type")
+    assert_kind_of(Geom::Vector3d, vector)
   end
 
   # ========================================================================== #
@@ -520,7 +520,7 @@ class TC_Array < TestUp::TestCase
     array2 = array.offset(vector)
     expected = Geom::Point3d.new(array2.x, array2.y, array2.z)
     assert_equal(expected, array2)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_offset_all_axes
@@ -531,7 +531,7 @@ class TC_Array < TestUp::TestCase
     assert_in_delta(expected.x, array2.x, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected.y, array2.y, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected.z, array2.z, SKETCHUP_FLOAT_TOLERANCE)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_offset_original_array_unchanged
@@ -596,7 +596,7 @@ class TC_Array < TestUp::TestCase
     expected = [array.x, array.y, array.z]
     point = array.offset!(vector)
     assert_equal(expected, point)
-    assert(point.kind_of?(Geom::Point3d), "Unexpected Type")
+    assert_kind_of(Geom::Point3d, point)
   end
 
   # ========================================================================== #
@@ -781,7 +781,7 @@ class TC_Array < TestUp::TestCase
     array = [0, 2, 0]
     point = array.project_to_line(line)
     assert_equal([0, 0, 0], point)
-    assert(point.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, point)
   end
 
   def test_project_to_line_y_axis
@@ -789,7 +789,7 @@ class TC_Array < TestUp::TestCase
     array = [2, 0, 0]
     point = array.project_to_line(line)
     assert_equal([0, 0, 0], point)
-    assert(point.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, point)
   end
 
   def test_project_to_line_z_axis
@@ -797,7 +797,7 @@ class TC_Array < TestUp::TestCase
     array = [0, 2, 0]
     point = array.project_to_line(line)
     assert_equal([0, 0, 0], point)
-    assert(point.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, point)
   end
 
   def test_project_to_line_with_point_already_on_line
@@ -806,7 +806,7 @@ class TC_Array < TestUp::TestCase
     point = array.project_to_line(line)
     expected = Geom::Point3d.new(0, 0, 2)
     assert_equal(expected, point)
-    assert(point.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, point)
   end
 
   # ========================================================================== #
@@ -843,9 +843,8 @@ class TC_Array < TestUp::TestCase
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [1, 2, 3]
     point = array.project_to_plane(plane)
-    puts point.class
     assert_equal([1, 2, 0], point)
-    assert(point.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, point)
   end
 
   def test_project_to_plane_y_z_plane
@@ -853,7 +852,7 @@ class TC_Array < TestUp::TestCase
     array = [1, 2, 3]
     point = array.project_to_plane(plane)
     assert_equal([0, 2, 3], point)
-    assert(point.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, point)
   end
 
   def test_project_to_plane_x_z_plane
@@ -861,7 +860,7 @@ class TC_Array < TestUp::TestCase
     array = [1, 2, 3]
     point = array.project_to_plane(plane)
     assert_equal([1, 0, 3], point)
-    assert(point.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, point)
   end
 
   def test_project_to_plane_with_point_already_on_plane
@@ -870,7 +869,7 @@ class TC_Array < TestUp::TestCase
     point = array.project_to_plane(plane)
     expected = Geom::Point3d.new(2, 2, 0)
     assert_equal(expected, point)
-    assert(point.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, point)
   end
 
   # ========================================================================== #
@@ -910,7 +909,7 @@ class TC_Array < TestUp::TestCase
     expected = Geom::Point3d.new(array.x, array.y, array.z)
     array2 = array.transform(transform)
     assert_equal(expected, array2)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_transform_point_translation
@@ -920,7 +919,7 @@ class TC_Array < TestUp::TestCase
     expected = Geom::Point3d.new(array1.x + point.x, array1.y + point.y, array1.z + point.z)
     array2 = array1.transform(transform)
     assert_equal(expected, array2)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_transform_vector_translation
@@ -930,7 +929,7 @@ class TC_Array < TestUp::TestCase
     expected = Geom::Point3d.new(array.x + vector.x, array.y + vector.y, array.z + vector.z)
     array2 = array.transform(transform)
     assert_equal(expected, array2)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_transform_4_x_4_array_rotate_90_x_axis
@@ -943,7 +942,7 @@ class TC_Array < TestUp::TestCase
     transform = Geom::Transformation.new(array_4x4)
     array2 = array.transform(transform)
     assert_equal(expected, array2)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_transform_4_x_4_array_scale_2x
@@ -956,7 +955,7 @@ class TC_Array < TestUp::TestCase
     transform = Geom::Transformation.new(array_4x4)
     array2 = array.transform(transform)
     assert_equal(expected, array2)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_transform_uniform_scale
@@ -965,7 +964,7 @@ class TC_Array < TestUp::TestCase
     transform = Geom::Transformation.new(2)
     array2 = array.transform(transform)
     assert_equal(expected, array2)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_transform_new_origin_zaxis
@@ -978,7 +977,7 @@ class TC_Array < TestUp::TestCase
     transform = Geom::Transformation.new(origin, zaxis)
     array2 = array.transform(transform)
     assert_equal(expected, array2)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_transform_new_origin_xaxis_yaxis
@@ -992,7 +991,7 @@ class TC_Array < TestUp::TestCase
     transform = Geom::Transformation.new(origin, xaxis, yaxis)
     array2 = array.transform(transform)
     assert_equal(expected, array2)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_transform_rotate_pi_radians_around_y_axis
@@ -1007,7 +1006,7 @@ class TC_Array < TestUp::TestCase
     assert_in_delta(expected.x, array2.x, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected.y, array2.y, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected.z, array2.z, SKETCHUP_FLOAT_TOLERANCE)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_transform_3_axes_and_origin
@@ -1022,7 +1021,7 @@ class TC_Array < TestUp::TestCase
     transform = Geom::Transformation.new(xaxis, yaxis, zaxis, origin)
     array2 = array.transform(transform)
     assert_equal(expected, array2)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   def test_transform_original_array_unchanged
@@ -1083,7 +1082,7 @@ class TC_Array < TestUp::TestCase
     array2 = array.transform!(transform)
     point = Geom::Point3d.new(array2.x, array2.y, array2.z)
     assert_equal(expected, point)
-    assert(array2.kind_of?(Array), "Unexpected Type")
+    assert_kind_of(Array, array2)
   end
 
   # ========================================================================== #
@@ -1122,7 +1121,7 @@ class TC_Array < TestUp::TestCase
     vector = array.vector_to(point)
     expected = Geom::Vector3d.new(0, 0, 0)
     assert_equal(expected, vector)
-    assert(vector.kind_of?(Geom::Vector3d), "Unexpected Type")
+    assert_kind_of(Geom::Vector3d, vector)
   end
 
   def test_vector_to_different_points
@@ -1131,7 +1130,7 @@ class TC_Array < TestUp::TestCase
     vector = array.vector_to(point)
     expected = Geom::Vector3d.new(9, 18, 27)
     assert_equal(expected, vector)
-    assert(vector.kind_of?(Geom::Vector3d), "Unexpected Type")
+    assert_kind_of(Geom::Vector3d, vector)
   end
 
   # ========================================================================== #
