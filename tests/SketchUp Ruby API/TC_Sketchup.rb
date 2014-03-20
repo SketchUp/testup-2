@@ -20,8 +20,8 @@ class TC_Sketchup < TestUp::TestCase
 
 
   # ========================================================================== #
-  # method Sketchup::Edges.faces
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/edge#faces
+  # method Sketchup.platform
+  # http://www.sketchup.com/intl/developer/docs/ourdoc/sketchup#platform
 
   def test_platform
     result = Sketchup.platform
