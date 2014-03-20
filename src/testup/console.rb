@@ -10,6 +10,8 @@ module TestUp
   # TODO(thomthom): Add LayOut console class.
   if defined?(Sketchup)
     BASE_CONSOLE_CLASS = Sketchup::Console
+  elsif defined?(Layout)
+    BASE_CONSOLE_CLASS = Layout::Console
   end
 
   # In order to run in the SketchUp Ruby console there needs to be more methods

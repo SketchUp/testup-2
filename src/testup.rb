@@ -18,6 +18,8 @@
 if defined?(Sketchup)
   require 'sketchup.rb'
   require 'extensions.rb'
+elsif defined?(Layout)
+  require 'layout.rb'
 end
 
 #-------------------------------------------------------------------------------

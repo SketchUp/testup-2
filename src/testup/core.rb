@@ -32,10 +32,13 @@ module TestUp
 
   ### Constants ### ------------------------------------------------------------
 
-  # TODO(thomthom): Open the LayOut Ruby Console.
+  # <debug>
   if defined?(SKETCHUP_CONSOLE)
-    SKETCHUP_CONSOLE.show # DEBUG
+    SKETCHUP_CONSOLE.show
+  elsif defined?(LAYOUT_CONSOLE)
+    LAYOUT_CONSOLE.show
   end
+  # /<debug>
 
   PATH_IMAGES     = File.join(PATH, 'images').freeze
   PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
@@ -60,27 +63,43 @@ module TestUp
   require File.join(PATH, 'settings.rb')
   require File.join(PATH, 'taskbar_progress.rb')
   require File.join(PATH, 'test_discoverer.rb')
-  require File.join(PATH, 'ui.rb')
+  if defined?(Sketchup)
+    require File.join(PATH, 'ui.rb')
+  end
   require File.join(PATH, 'win32.rb')
 
 
   ### UI ### -------------------------------------------------------------------
 
-  self.init_ui
+  if defined?(Sketchup)
+    self.init_ui
+  end
 
 
   ### Configuration ### --------------------------------------------------------
 
   tests_path = File.join(__dir__, '..', '..', 'tests')
-  defaults = {
-    :editor => Editor.get_default,
-    :run_in_gui => true,
-    :verbose_console_tests => true,
-    :paths_to_testsuites => [
-      File.expand_path(File.join(tests_path, 'SketchUp Ruby API')),
-      File.expand_path(File.join(tests_path, 'TestUp'))
-    ]
-  }
+  if defined?(Sketchup)
+    defaults = {
+      :editor => Editor.get_default,
+      :run_in_gui => true,
+      :verbose_console_tests => true,
+      :paths_to_testsuites => [
+        File.expand_path(File.join(tests_path, 'SketchUp Ruby API')),
+        File.expand_path(File.join(tests_path, 'TestUp'))
+      ]
+    }
+  elsif defined?(Layout)
+    defaults = {
+      :editor => Editor.get_default,
+      :run_in_gui => false,
+      :verbose_console_tests => true,
+      :paths_to_testsuites => [
+        File.expand_path(File.join(tests_path, 'LayOut Ruby API'))#,
+        #File.expand_path(File.join(tests_path, 'TestUp'))
+      ]
+    }
+  end
   @settings = Settings.new(PLUGIN_ID, defaults)
 
 
@@ -148,7 +167,17 @@ module TestUp
   def self.run_tests(tests, testsuite = "Untitled")
     TESTUP_CONSOLE.show
     TESTUP_CONSOLE.clear
+    puts "Discovering tests...\n"
+    self.discover_tests
     puts "Running test suite: #{testsuite}"
+    # If tests end with a `#` it means the whole test case should be run.
+    # Automatically fix the regex.
+    tests = tests.map { |pattern|
+      if pattern =~ /\#$/
+        pattern << ".+"
+      end
+      pattern
+    }
     arguments = []
     arguments << "-n /^(#{tests.join('|')})$/"
     arguments << '--verbose' if @settings[:verbose_console_tests]
@@ -160,6 +189,26 @@ module TestUp
     ensure
       progress.set_state(TaskbarProgress::NOPROGRESS)
     end
+  end
+
+
+  # TODO(thomthom): Merge this with TestWindow.discover_tests.
+  require "pp"
+  def self.discover_tests
+    #progress = TaskbarProgress.new
+    begin
+      #progress.set_state(TaskbarProgress::INDETERMINATE)
+      paths = TestUp.settings[:paths_to_testsuites]
+      puts "Paths: #{paths}\n"
+      test_discoverer = TestDiscoverer.new(paths)
+      discoveries = test_discoverer.discover
+      #if defined?(Layout)
+      #  pp(discoveries)
+      #end
+    ensure
+      #progress.set_state(TaskbarProgress::NOPROGRESS)
+    end
+    nil
   end
 
 

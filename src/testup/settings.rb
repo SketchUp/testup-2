@@ -13,7 +13,11 @@ module TestUp
     # Cache data so we don't have to query the registry or plist all the time.
     # Some of these settings are queried by context menu handlers.
     @data = Hash.new { |hash, key|
-      Sketchup.read_default(@settings_id, key.to_s, @defaults[key])
+      if defined?(Sketchup)
+        Sketchup.read_default(@settings_id, key.to_s, @defaults[key])
+      else
+        @defaults[key]
+      end
     }
   end
 
@@ -22,7 +26,9 @@ module TestUp
   end
 
   def []=(key, value)
-    Sketchup.write_default(@settings_id, key.to_s, value)
+    if defined?(Sketchup)
+      Sketchup.write_default(@settings_id, key.to_s, value)
+    end
     @data[key] = value
   end
 
