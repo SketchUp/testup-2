@@ -31,7 +31,7 @@ module TestUp
     cmd.large_icon = File.join(PATH_IMAGES, 'bug.png')
     cmd.set_validation_proc {
       MF_CHECKED if self.window && self.window.visible?
-    }
+    } if defined?(Sketchup)
     cmd_toggle_testup = cmd
 
     cmd = UI::Command.new('Run tests in Ruby Console') {
@@ -43,7 +43,7 @@ module TestUp
     cmd.large_icon = File.join(PATH_IMAGES, 'console.png')
     cmd.set_validation_proc {
       MF_CHECKED if !self.settings[:run_in_gui]
-    }
+    } if defined?(Sketchup)
     cmd_toggle_run_tests_in_console = cmd
 
     cmd = UI::Command.new('Verbose Console Tests') {
@@ -58,7 +58,7 @@ module TestUp
       flags |= MF_GRAYED if self.settings[:run_in_gui]
       flags |= MF_CHECKED if self.settings[:verbose_console_tests]
       flags
-    }
+    } if defined?(Sketchup)
     cmd_toggle_verbose_console_tests = cmd
 
     cmd = UI::Command.new('Reload TestUp') {
@@ -89,30 +89,54 @@ module TestUp
     cmd.status_bar_text = 'Discover and run all tests.'
     cmd_run_tests = cmd
 
+    cmd = UI::Command.new('Run Layout Tests') {
+      tests = ["TC_Layout#"]
+      self.run_tests(tests, "All Layout Tests")
+    }
+    cmd.tooltip = 'Run Layout Tests'
+    cmd.small_icon = File.join(PATH_IMAGES, 'layout-16.png')
+    cmd.large_icon = File.join(PATH_IMAGES, 'layout-24.png')
+    cmd_run_layout_tests = cmd
+
+    cmd = UI::Command.new('Run Tests') {
+      self.run_tests_gui
+    }
+    cmd.tooltip = 'Discover and run all tests.'
+    cmd.status_bar_text = 'Discover and run all tests.'
+    cmd_run_tests = cmd
+
     # Menus
-    menu = UI.menu('Plugins').add_submenu(PLUGIN_NAME)
-    menu.add_item(cmd_toggle_testup)
-    menu.add_separator
-    menu.add_item(cmd_toggle_run_tests_in_console)
-    menu.add_item(cmd_toggle_verbose_console_tests)
-    menu.add_separator
-    menu.add_item(cmd_run_tests)
-    menu.add_separator
-    menu.add_item(cmd_reload_testup)
-    menu.add_separator
-    menu.add_item(cmd_display_minitest_help)
+    if defined?(Sketchup)
+      menu = UI.menu('Plugins').add_submenu(PLUGIN_NAME)
+      menu.add_item(cmd_toggle_testup)
+      menu.add_separator
+      menu.add_item(cmd_toggle_run_tests_in_console)
+      menu.add_item(cmd_toggle_verbose_console_tests)
+      menu.add_separator
+      menu.add_item(cmd_run_tests)
+      menu.add_separator
+      menu.add_item(cmd_reload_testup)
+      menu.add_separator
+      menu.add_item(cmd_display_minitest_help)
+    end
 
     # Toolbar
-    toolbar = UI::Toolbar.new(PLUGIN_NAME)
-    toolbar.add_item(cmd_toggle_testup)
-    toolbar.add_separator
-    toolbar.add_item(cmd_toggle_run_tests_in_console)
-    toolbar.add_item(cmd_toggle_verbose_console_tests)
-    toolbar.add_separator
-    toolbar.add_item(cmd_reload_testup)
-    toolbar.add_separator
-    toolbar.add_item(cmd_display_minitest_help)
-    toolbar.restore
+    if defined?(Sketchup)
+      toolbar = UI::Toolbar.new(PLUGIN_NAME)
+      toolbar.add_item(cmd_toggle_testup)
+      toolbar.add_separator
+      toolbar.add_item(cmd_toggle_run_tests_in_console)
+      toolbar.add_item(cmd_toggle_verbose_console_tests)
+      toolbar.add_separator
+      toolbar.add_item(cmd_reload_testup)
+      toolbar.add_separator
+      toolbar.add_item(cmd_display_minitest_help)
+      toolbar.restore
+    elsif defined?(Layout)
+      puts "Loading LayOut toolbar..."
+      toolbar = UI::plugins_toolbar
+      toolbar.add_item(cmd_run_layout_tests)
+    end
 
     # Ensure this method is run only once.
     file_loaded(__FILE__)

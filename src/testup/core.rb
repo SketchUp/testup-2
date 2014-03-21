@@ -63,17 +63,13 @@ module TestUp
   require File.join(PATH, 'settings.rb')
   require File.join(PATH, 'taskbar_progress.rb')
   require File.join(PATH, 'test_discoverer.rb')
-  if defined?(Sketchup)
-    require File.join(PATH, 'ui.rb')
-  end
+  require File.join(PATH, 'ui.rb')
   require File.join(PATH, 'win32.rb')
 
 
   ### UI ### -------------------------------------------------------------------
 
-  if defined?(Sketchup)
-    self.init_ui
-  end
+  self.init_ui
 
 
   ### Configuration ### --------------------------------------------------------
