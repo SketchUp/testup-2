@@ -68,7 +68,7 @@ TestUp.TestSuite = function() {
       $('#summary_total_tests').find('span').text(summary_tests);
       $('#summary_passed_tests').find('span').text(summary_passed);
       $('#summary_failed_tests').find('span').text(summary_failed);
-      $('#summary_errors').find('span').text(summary_errors);
+      $('#summary_error_tests').find('span').text(summary_errors);
     },
 
 
