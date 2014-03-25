@@ -19,14 +19,14 @@ module Minitest
   def self.plugin_testup_init(options)
     puts 'MiniTest TestUp Extension loading...' # DEBUG
     if TestUp.settings[:run_in_gui]
-      puts 'MiniTest TestUp Extension in GUI mode!' # DEBUG
+      puts 'MiniTest TestUp Extension in GUI mode' # DEBUG
       # Disable the default reporters as otherwise they'll print lots of data to
       # the console while the test runs. No need for that.
       self.reporter.reporters.clear
       # Add the reporters needed for TestUp.
       self.reporter << TestUp::Reporter.new($stdout, options)
     else
-      puts 'MiniTest TestUp Extension in console mode!' # DEBUG
+      puts 'MiniTest TestUp Extension in console mode' # DEBUG
     end
   end
 
