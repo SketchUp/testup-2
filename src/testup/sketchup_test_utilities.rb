@@ -52,6 +52,8 @@ module TestUp
 
     SKETCHUP_UNIT_TOLERANCE  = 1.0e-3
     SKETCHUP_FLOAT_TOLERANCE = 1.0e-10
+    SKETCHUP_RANGE_MAX = -1.0e30
+    SKETCHUP_RANGE_MIN =  1.0e30
 
     def start_with_empty_model
       model = Sketchup.active_model
