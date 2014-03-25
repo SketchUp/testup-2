@@ -195,12 +195,8 @@ module TestUp
     begin
       #progress.set_state(TaskbarProgress::INDETERMINATE)
       paths = TestUp.settings[:paths_to_testsuites]
-      #puts "Paths: #{paths}\n"
       test_discoverer = TestDiscoverer.new(paths)
       discoveries = test_discoverer.discover
-      #if defined?(Layout)
-      #  pp(discoveries)
-      #end
     ensure
       #progress.set_state(TaskbarProgress::NOPROGRESS)
     end
