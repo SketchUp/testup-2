@@ -230,14 +230,18 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   def test_add_invalid_argument_nil
     boundingbox = Geom::BoundingBox.new
-    assert_raises(TypeError, "Argument with nil") do
+    # Ideally it should be TypeError, but to preserve backwards compatibility
+    # the actual implementation is used.
+    assert_raises(ArgumentError, "Argument with nil") do
       boundingbox.add(nil)
     end
   end
 
   def test_add_invalid_argument_string
     boundingbox = Geom::BoundingBox.new
-    assert_raises(TypeError, "Argument with string") do
+    # Ideally it should be TypeError, but to preserve backwards compatibility
+    # the actual implementation is used.
+    assert_raises(ArgumentError, "Argument with string") do
       boundingbox.add("FooBar")
     end
   end
@@ -245,7 +249,9 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   def test_add_invalid_argument_vector
     boundingbox = Geom::BoundingBox.new
     vector = Geom::Vector3d.new(1, 2, 3)
-    assert_raises(TypeError, "Argument with vector") do
+    # Ideally it should be TypeError, but to preserve backwards compatibility
+    # the actual implementation is used.
+    assert_raises(ArgumentError, "Argument with vector") do
       boundingbox.add(vector)
     end
   end
@@ -444,21 +450,27 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   def test_contains_Query_invalid_argument_vector
     boundingbox = Geom::BoundingBox.new
     vector = Geom::Vector3d.new(1, 2, 3)
-    assert_raises(TypeError) do
+    # Ideally it should be TypeError, but to preserve backwards compatibility
+    # the actual implementation is used.
+    assert_raises(ArgumentError) do
       boundingbox.contains?(vector)
     end
   end
 
   def test_contains_Query_invalid_argument_string
     boundingbox = Geom::BoundingBox.new
-    assert_raises(TypeError) do
+    # Ideally it should be TypeError, but to preserve backwards compatibility
+    # the actual implementation is used.
+    assert_raises(ArgumentError) do
       boundingbox.contains?("Hello World")
     end
   end
 
   def test_contains_Query_invalid_argument_number
     boundingbox = Geom::BoundingBox.new
-    assert_raises(TypeError) do
+    # Ideally it should be TypeError, but to preserve backwards compatibility
+    # the actual implementation is used.
+    assert_raises(ArgumentError) do
       boundingbox.contains?(123)
     end
   end
@@ -902,6 +914,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox1.add([100, 200, -400], [200, 400, 300])
     boundingbox2 = Geom::BoundingBox.new
     boundingbox2.add([150, 350, 100], [200, 400, 500])
+    # The returned boundingbox is a result of the intersection of the two.
     boundingbox = boundingbox1.intersect(boundingbox2)
   end
 
@@ -994,6 +1007,48 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     assert_equal(true, boundingbox.empty?, "Not empty boundingbox")
   end
 
+  def test_intersect_not_intersecting_overlap_xy
+    boundingbox1 = Geom::BoundingBox.new
+    boundingbox1.add([100, 200, -400], [200, 400, 300])
+    boundingbox2 = Geom::BoundingBox.new
+    boundingbox2.add([150, 300, 400], [400, 600, 500])
+
+    boundingbox = boundingbox1.intersect(boundingbox2)
+    assert_kind_of(Geom::BoundingBox, boundingbox)
+    assert_equal(0.0, boundingbox.width, "Width")
+    assert_equal(0.0, boundingbox.height, "Height")
+    assert_equal(0.0, boundingbox.depth, "Depth")
+    assert_equal(true, boundingbox.empty?, "Not empty boundingbox")
+  end
+
+  def test_intersect_not_intersecting_overlap_xz
+    boundingbox1 = Geom::BoundingBox.new
+    boundingbox1.add([100, 200, -400], [200, 400, 300])
+    boundingbox2 = Geom::BoundingBox.new
+    boundingbox2.add([150, 500, 200], [400, 600, 500])
+
+    boundingbox = boundingbox1.intersect(boundingbox2)
+    assert_kind_of(Geom::BoundingBox, boundingbox)
+    assert_equal(0.0, boundingbox.width, "Width")
+    assert_equal(0.0, boundingbox.height, "Height")
+    assert_equal(0.0, boundingbox.depth, "Depth")
+    assert_equal(true, boundingbox.empty?, "Not empty boundingbox")
+  end
+
+  def test_intersect_not_intersecting_overlap_yz
+    boundingbox1 = Geom::BoundingBox.new
+    boundingbox1.add([100, 200, -400], [200, 400, 300])
+    boundingbox2 = Geom::BoundingBox.new
+    boundingbox2.add([300, 300, 200], [400, 600, 500])
+
+    boundingbox = boundingbox1.intersect(boundingbox2)
+    assert_kind_of(Geom::BoundingBox, boundingbox)
+    assert_equal(0.0, boundingbox.width, "Width")
+    assert_equal(0.0, boundingbox.height, "Height")
+    assert_equal(0.0, boundingbox.depth, "Depth")
+    assert_equal(true, boundingbox.empty?, "Not empty boundingbox")
+  end
+
   def test_intersect_invalid_argument_number
     boundingbox = Geom::BoundingBox.new
     boundingbox.add([100, 200, -400], [200, 400, 100])
@@ -1068,7 +1123,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   def test_min_api_example
     boundingbox = Geom::BoundingBox.new
     boundingbox.add([100, 200, -400], [700, 900, 800], [200, 400, 100])
-    # This will return a point Point3d(700, 900, 800).
+    # This will return a point Point3d(100, 200, -400).
     point = boundingbox.min
   end
 
