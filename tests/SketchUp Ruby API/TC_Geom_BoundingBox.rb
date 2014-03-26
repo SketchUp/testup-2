@@ -951,7 +951,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     assert_equal(true, boundingbox.empty?, "Not empty boundingbox")
   end
 
-  def test_intersect_not_intersecting_border
+  def test_intersect_border_x
     boundingbox1 = Geom::BoundingBox.new
     boundingbox1.add([100, 200, -400], [200, 400, 300])
     boundingbox2 = Geom::BoundingBox.new
@@ -960,9 +960,88 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox = boundingbox1.intersect(boundingbox2)
     assert_kind_of(Geom::BoundingBox, boundingbox)
     assert_equal(0.0, boundingbox.width, "Width")
+    assert_equal(200.0, boundingbox.height, "Height")
+    assert_equal(700.0, boundingbox.depth, "Depth")
+    assert_equal(false, boundingbox.empty?, "Empty boundingbox")
+  end
+
+  def test_intersect_border_y
+    boundingbox1 = Geom::BoundingBox.new
+    boundingbox1.add([100, 200, -400], [200, 400, 300])
+    boundingbox2 = Geom::BoundingBox.new
+    boundingbox2.add([100, 400, -400], [200, 600, 300])
+
+    boundingbox = boundingbox1.intersect(boundingbox2)
+    assert_kind_of(Geom::BoundingBox, boundingbox)
+    assert_equal(100.0, boundingbox.width, "Width")
+    assert_equal(0.0, boundingbox.height, "Height")
+    assert_equal(700.0, boundingbox.depth, "Depth")
+    assert_equal(false, boundingbox.empty?, "Empty boundingbox")
+  end
+
+  def test_intersect_border_z
+    boundingbox1 = Geom::BoundingBox.new
+    boundingbox1.add([100, 200, -400], [200, 400, 300])
+    boundingbox2 = Geom::BoundingBox.new
+    boundingbox2.add([100, 200,  300], [200, 400, 500])
+
+    boundingbox = boundingbox1.intersect(boundingbox2)
+    assert_kind_of(Geom::BoundingBox, boundingbox)
+    assert_equal(100.0, boundingbox.width, "Width")
+    assert_equal(200.0, boundingbox.height, "Height")
+    assert_equal(0.0, boundingbox.depth, "Depth")
+    assert_equal(false, boundingbox.empty?, "Empty boundingbox")
+  end
+
+  def test_intersect_border_x_tolerance
+    # At the time of writing the tests, SketchUp doesn't perform intersection
+    # with tolerance.
+    half_tolerance = SKETCHUP_UNIT_TOLERANCE / 2.0
+    boundingbox1 = Geom::BoundingBox.new
+    boundingbox1.add([100, 200, -400], [200, 400, 300])
+    boundingbox2 = Geom::BoundingBox.new
+    boundingbox2.add([200 + half_tolerance, 200, -400], [500, 400, 300])
+
+    boundingbox = boundingbox1.intersect(boundingbox2)
+    assert_kind_of(Geom::BoundingBox, boundingbox)
+    assert_equal(0.0, boundingbox.width, "Width")
     assert_equal(0.0, boundingbox.height, "Height")
     assert_equal(0.0, boundingbox.depth, "Depth")
-    assert_equal(true, boundingbox.empty?, "Not empty boundingbox")
+    assert_equal(true, boundingbox.empty?, "Empty boundingbox")
+  end
+
+  def test_intersect_border_y_tolerance
+    # At the time of writing the tests, SketchUp doesn't perform intersection
+    # with tolerance.
+    half_tolerance = SKETCHUP_UNIT_TOLERANCE / 2.0
+    boundingbox1 = Geom::BoundingBox.new
+    boundingbox1.add([100, 200, -400], [200, 400, 300])
+    boundingbox2 = Geom::BoundingBox.new
+    boundingbox2.add([100, 400 + half_tolerance, -400], [200, 600, 300])
+
+    boundingbox = boundingbox1.intersect(boundingbox2)
+    assert_kind_of(Geom::BoundingBox, boundingbox)
+    assert_equal(0.0, boundingbox.width, "Width")
+    assert_equal(0.0, boundingbox.height, "Height")
+    assert_equal(0.0, boundingbox.depth, "Depth")
+    assert_equal(true, boundingbox.empty?, "Empty boundingbox")
+  end
+
+  def test_intersect_border_z_tolerance
+    # At the time of writing the tests, SketchUp doesn't perform intersection
+    # with tolerance.
+    half_tolerance = SKETCHUP_UNIT_TOLERANCE / 2.0
+    boundingbox1 = Geom::BoundingBox.new
+    boundingbox1.add([100, 200, -400], [200, 400, 300])
+    boundingbox2 = Geom::BoundingBox.new
+    boundingbox2.add([100, 200,  300 + half_tolerance], [200, 400, 500])
+
+    boundingbox = boundingbox1.intersect(boundingbox2)
+    assert_kind_of(Geom::BoundingBox, boundingbox)
+    assert_equal(0.0, boundingbox.width, "Width")
+    assert_equal(0.0, boundingbox.height, "Height")
+    assert_equal(0.0, boundingbox.depth, "Depth")
+    assert_equal(true, boundingbox.empty?, "Empty boundingbox")
   end
 
   def test_intersect_not_intersecting_overlap_x
