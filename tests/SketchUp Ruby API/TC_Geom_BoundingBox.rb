@@ -44,18 +44,19 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   def test_add_api_example
     model = Sketchup.active_model
     boundingbox = model.bounds
-    point = Geom::Point3d.new(100, 200, 300)
-    boundingbox.add(point)
+    point1 = Geom::Point3d.new(100, 200, 300)
+    point2 = Geom::Point3d.new(200, 400, 200)
+    boundingbox.add(point1, point2)
   end
 
   def test_add_point
     boundingbox = Geom::BoundingBox.new
-    boundingbox.add( Geom::Point3d.new(100, 200, 300) )
+    boundingbox.add(Geom::Point3d.new(100, 200, 300))
 
-    result = boundingbox.add( Geom::Point3d.new(200, 400, 200) )
+    result = boundingbox.add( Geom::Point3d.new(200, 400, 200))
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(100, 200, 200), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new(200, 400, 300), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(100, 200, 200), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(200, 400, 300), boundingbox.corner(7))
   end
 
   def test_add_points
@@ -65,8 +66,8 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add(point1, point2)
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(100, 200, 200), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new(200, 400, 300), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(100, 200, 200), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(200, 400, 300), boundingbox.corner(7))
   end
 
   def test_add_array_of_points
@@ -76,8 +77,8 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add([point1, point2])
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(100, 200, 200), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new(200, 400, 300), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(100, 200, 200), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(200, 400, 300), boundingbox.corner(7))
   end
 
   def test_add_vertex
@@ -89,8 +90,8 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add(edge.end)
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(100, 200, 200), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new(200, 400, 300), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(100, 200, 200), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(200, 400, 300), boundingbox.corner(7))
   end
 
   def test_add_vertices
@@ -101,8 +102,8 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add(edge.start, edge.end)
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(100, 200, 200), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new(200, 400, 300), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(100, 200, 200), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(200, 400, 300), boundingbox.corner(7))
   end
 
   def test_add_array_of_vertices
@@ -113,8 +114,8 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add(edge.vertices)
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(100, 200, 200), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new(200, 400, 300), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(100, 200, 200), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(200, 400, 300), boundingbox.corner(7))
   end
 
   def test_add_boundingbox
@@ -130,8 +131,8 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add(boundingbox2)
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(-200, 100, -100), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new( 300, 600,  300), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(-200, 100, -100), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new( 300, 600,  300), boundingbox.corner(7))
   end
 
   def test_add_boundingboxes
@@ -152,8 +153,8 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add(boundingbox2, boundingbox3)
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(-200, -100, -100), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new( 500,  600,  800), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(-200, -100, -100), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new( 500,  600,  800), boundingbox.corner(7))
   end
 
   def test_add_array_of_boundingboxes
@@ -174,18 +175,18 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add([boundingbox2, boundingbox3])
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(-200, -100, -100), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new( 500,  600,  800), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(-200, -100, -100), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new( 500,  600,  800), boundingbox.corner(7))
   end
 
   def test_add_array_as_point
     boundingbox = Geom::BoundingBox.new
-    boundingbox.add( Geom::Point3d.new(100, 200, 300) )
+    boundingbox.add(Geom::Point3d.new(100, 200, 300))
 
     result = boundingbox.add( [200, 400, 200] )
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(100, 200, 200), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new(200, 400, 300), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(100, 200, 200), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(200, 400, 300), boundingbox.corner(7))
   end
 
   def test_add_array_as_points
@@ -195,8 +196,8 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add(point1, point2)
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(100, 200, 200), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new(200, 400, 300), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(100, 200, 200), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(200, 400, 300), boundingbox.corner(7))
   end
 
   def test_add_array_of_array_as_points
@@ -206,8 +207,8 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add([point1, point2])
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(100, 200, 200), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new(200, 400, 300), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(100, 200, 200), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(200, 400, 300), boundingbox.corner(7))
   end
 
   def test_add_boundingbox_and_point_and_array_as_point
@@ -223,8 +224,8 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
     result = boundingbox.add(boundingbox2, point3, point4)
     assert_equal(boundingbox, result)
-    assert_equal( Geom::Point3d.new(100, 200, 300), boundingbox.corner(0) )
-    assert_equal( Geom::Point3d.new(400, 500, 600), boundingbox.corner(7) )
+    assert_equal(Geom::Point3d.new(100, 200, 300), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(400, 500, 600), boundingbox.corner(7))
   end
 
   def test_add_invalid_argument_nil
@@ -481,8 +482,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox.add([100, 200, -400], [200, 400, 100])
 
     expected = Geom::Point3d.new(100, 200, -400)
-    result = boundingbox.corner(0)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(0))
   end
 
   def test_corner_right_front_bottom
@@ -490,8 +490,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox.add([100, 200, -400], [200, 400, 100])
 
     expected = Geom::Point3d.new(200, 200, -400)
-    result = boundingbox.corner(1)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(1))
   end
 
   def test_corner_left_back_bottom
@@ -499,8 +498,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox.add([100, 200, -400], [200, 400, 100])
 
     expected = Geom::Point3d.new(100, 400, -400)
-    result = boundingbox.corner(2)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(2))
   end
 
   def test_corner_right_back_bottom
@@ -508,8 +506,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox.add([100, 200, -400], [200, 400, 100])
 
     expected = Geom::Point3d.new(200, 400, -400)
-    result = boundingbox.corner(3)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(3))
   end
 
   def test_corner_left_front_top
@@ -517,8 +514,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox.add([100, 200, -400], [200, 400, 100])
 
     expected = Geom::Point3d.new(100, 200, 100)
-    result = boundingbox.corner(4)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(4))
   end
 
   def test_corner_right_front_top
@@ -526,8 +522,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox.add([100, 200, -400], [200, 400, 100])
 
     expected = Geom::Point3d.new(200, 200, 100)
-    result = boundingbox.corner(5)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(5))
   end
 
   def test_corner_left_back_top
@@ -535,8 +530,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox.add([100, 200, -400], [200, 400, 100])
 
     expected = Geom::Point3d.new(100, 400, 100)
-    result = boundingbox.corner(6)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(6))
   end
 
   def test_corner_right_back_top
@@ -544,8 +538,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox.add([100, 200, -400], [200, 400, 100])
 
     expected = Geom::Point3d.new(200, 400, 100)
-    result = boundingbox.corner(7)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(7))
   end
 
   def test_corner_empty_boundingbox_left_front_bottom
@@ -554,8 +547,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     expected = Geom::Point3d.new(
       SKETCHUP_RANGE_MIN, SKETCHUP_RANGE_MIN, SKETCHUP_RANGE_MIN
     )
-    result = boundingbox.corner(0)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(0))
   end
 
   def test_corner_empty_boundingbox_right_front_bottom
@@ -564,8 +556,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     expected = Geom::Point3d.new(
       SKETCHUP_RANGE_MAX, SKETCHUP_RANGE_MIN, SKETCHUP_RANGE_MIN
     )
-    result = boundingbox.corner(1)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(1))
   end
 
   def test_corner_empty_boundingbox_left_back_bottom
@@ -574,8 +565,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     expected = Geom::Point3d.new(
       SKETCHUP_RANGE_MIN, SKETCHUP_RANGE_MAX, SKETCHUP_RANGE_MIN
     )
-    result = boundingbox.corner(2)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(2))
   end
 
   def test_corner_empty_boundingbox_right_back_bottom
@@ -584,8 +574,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     expected = Geom::Point3d.new(
       SKETCHUP_RANGE_MAX, SKETCHUP_RANGE_MAX, SKETCHUP_RANGE_MIN
     )
-    result = boundingbox.corner(3)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(3))
   end
 
   def test_corner_empty_boundingbox_left_front_top
@@ -594,8 +583,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     expected = Geom::Point3d.new(
       SKETCHUP_RANGE_MIN, SKETCHUP_RANGE_MIN, SKETCHUP_RANGE_MAX
     )
-    result = boundingbox.corner(4)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(4))
   end
 
   def test_corner_empty_boundingbox_right_front_top
@@ -604,8 +592,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     expected = Geom::Point3d.new(
       SKETCHUP_RANGE_MAX, SKETCHUP_RANGE_MIN, SKETCHUP_RANGE_MAX
     )
-    result = boundingbox.corner(5)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(5))
   end
 
   def test_corner_empty_boundingbox_left_back_top
@@ -614,8 +601,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     expected = Geom::Point3d.new(
       SKETCHUP_RANGE_MIN, SKETCHUP_RANGE_MAX, SKETCHUP_RANGE_MAX
     )
-    result = boundingbox.corner(6)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(6))
   end
 
   def test_corner_empty_boundingbox_right_back_top
@@ -624,8 +610,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     expected = Geom::Point3d.new(
       SKETCHUP_RANGE_MAX, SKETCHUP_RANGE_MAX, SKETCHUP_RANGE_MAX
     )
-    result = boundingbox.corner(7)
-    assert_equal(expected, result)
+    assert_equal(expected, boundingbox.corner(7))
   end
 
   def test_corner_float_argument
@@ -695,7 +680,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   def test_depth_api_example
     boundingbox = Geom::BoundingBox.new
     boundingbox.add([100, 200, -400], [200, 400, 100])
-    # This will return a point a Length of 500.0.
+    # This will return a Length of 500.0.
     length = boundingbox.depth
   end
 
@@ -773,7 +758,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox = Geom::BoundingBox.new
     boundingbox.add([100, 200, -400], [200, 400, 100])
     # This will return false.
-    length = boundingbox.empty?
+    boundingbox.empty?
   end
 
   def test_empty_Query_with_points_added
@@ -1148,7 +1133,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     boundingbox = Geom::BoundingBox.new
     boundingbox.add([100, 200, -400], [200, 400, 100])
     # This will return true.
-    length = boundingbox.valid?
+    boundingbox.valid?
   end
 
   def test_valid_Query_with_points_added
