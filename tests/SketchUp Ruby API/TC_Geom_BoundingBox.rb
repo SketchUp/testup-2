@@ -228,6 +228,23 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     assert_equal(Geom::Point3d.new(400, 500, 600), boundingbox.corner(7))
   end
 
+  def test_add_array_of_boundingbox_and_point_and_array_as_point
+    boundingbox = Geom::BoundingBox.new
+
+    boundingbox2 = Geom::BoundingBox.new
+    point1 = Geom::Point3d.new(100, 200, 300)
+    point2 = Geom::Point3d.new(200, 300, 400)
+    boundingbox2.add(point1, point2)
+
+    point3 = Geom::Point3d.new(300, 400, 500)
+    point4 = [400, 500, 600]
+
+    result = boundingbox.add([boundingbox2, point3, point4])
+    assert_equal(boundingbox, result)
+    assert_equal(Geom::Point3d.new(100, 200, 300), boundingbox.corner(0))
+    assert_equal(Geom::Point3d.new(400, 500, 600), boundingbox.corner(7))
+  end
+
   def test_add_invalid_argument_nil
     boundingbox = Geom::BoundingBox.new
     # Ideally it should be TypeError, but to preserve backwards compatibility
