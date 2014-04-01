@@ -39,7 +39,9 @@ TestUp.Tabs = function() {
 
 
     get : function(tab_text) {
-      return $('#tabs .tab:contains(' + tab_text + ')');
+      return $('#tabs .tab').filter(function() {
+          return $.trim( $(this).text() ) === tab_text;
+      });
     },
 
 
