@@ -50,7 +50,6 @@ class TC_Ruby_Unicode < TestUp::TestCase
   end
 
   def test_FILE_encoding_is_valid
-    expected = Encoding.find("UTF-8")
     result = get_FILE_from_unicode_path()
     assert_equal(true, result.valid_encoding?)
   end
@@ -88,6 +87,62 @@ class TC_Ruby_Unicode < TestUp::TestCase
     file.force_encoding("UTF-8")
     result = File.exist?(file)
     assert_equal(true, result)
+  end
+
+
+  # ========================================================================== #
+  # Dir
+
+  def test_dir_entries
+    path = File.dirname(__FILE__)
+    test_path = File.join(path, "TC_Ruby_Unicode")
+
+    expected = [".", "..", "test", "てすと"]
+    result = Dir::entries(test_path)
+    expected.size.times { |i|
+      assert_equal(expected[i], result[i])
+    }
+  end
+
+  def test_dir_entries_force_utf8_encoding
+    path = File.dirname(__FILE__)
+    path.force_encoding("UTF-8")
+    test_path = File.join(path, "TC_Ruby_Unicode")
+
+    expected = [".", "..", "test", "てすと"]
+    result = Dir::entries(test_path)
+    expected.size.times { |i|
+      assert_equal(expected[i], result[i])
+    }
+  end
+
+  def test_dir_glob
+    path = File.dirname(__FILE__)
+    test_path = File.join(path, "TC_Ruby_Unicode")
+    filter = File.join(test_path, "*")
+
+    expected = []
+    expected << File.join(test_path, "test")
+    expected << File.join(test_path, "てすと")
+    result = Dir::glob(filter)
+    expected.size.times { |i|
+      assert_equal(expected[i], result[i])
+    }
+  end
+
+  def test_dir_glob_force_utf8_encoding
+    path = File.dirname(__FILE__)
+    path.force_encoding("UTF-8")
+    test_path = File.join(path, "TC_Ruby_Unicode")
+    filter = File.join(test_path, "*")
+
+    expected = []
+    expected << File.join(test_path, "test")
+    expected << File.join(test_path, "てすと")
+    result = Dir::glob(filter)
+    expected.size.times { |i|
+      assert_equal(expected[i], result[i])
+    }
   end
 
 
