@@ -93,7 +93,7 @@ class TC_Ruby_Unicode < TestUp::TestCase
   # ========================================================================== #
   # Dir
 
-  def test_dir_entries
+  def test_Dir_entries
     path = File.dirname(__FILE__)
     test_path = File.join(path, "TC_Ruby_Unicode")
 
@@ -104,7 +104,7 @@ class TC_Ruby_Unicode < TestUp::TestCase
     }
   end
 
-  def test_dir_entries_force_utf8_encoding
+  def test_Dir_entries_force_utf8_encoding
     path = File.dirname(__FILE__)
     path.force_encoding("UTF-8")
     test_path = File.join(path, "TC_Ruby_Unicode")
@@ -116,7 +116,7 @@ class TC_Ruby_Unicode < TestUp::TestCase
     }
   end
 
-  def test_dir_glob
+  def test_Dir_glob
     path = File.dirname(__FILE__)
     test_path = File.join(path, "TC_Ruby_Unicode")
     filter = File.join(test_path, "*")
@@ -130,7 +130,7 @@ class TC_Ruby_Unicode < TestUp::TestCase
     }
   end
 
-  def test_dir_glob_force_utf8_encoding
+  def test_Dir_glob_force_utf8_encoding
     path = File.dirname(__FILE__)
     path.force_encoding("UTF-8")
     test_path = File.join(path, "TC_Ruby_Unicode")
@@ -143,6 +143,24 @@ class TC_Ruby_Unicode < TestUp::TestCase
     expected.size.times { |i|
       assert_equal(expected[i], result[i])
     }
+  end
+
+
+  # ========================================================================== #
+  # File
+
+  def test_File_open_read_unicode_path
+    testfile = get_unicode_support_file("test.rb")
+    File.open(testfile, "r") { |file|
+      result = file.read
+      assert_equal(13, result.size)
+    }
+  end
+
+  def test_File_read_unicode_path
+    testfile = get_unicode_support_file("test.rb")
+    result = File.read(testfile)
+    assert_equal(13, result.size)
   end
 
 
