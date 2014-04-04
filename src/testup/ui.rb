@@ -88,11 +88,7 @@ module TestUp
     cmd.tooltip = 'Discover and run all tests.'
     cmd.status_bar_text = 'Discover and run all tests.'
     cmd_run_tests = cmd
-
-    cmd = UI::Command.new('Run Layout Tests') {
-      tests = ["TC_Layout#"]
-      self.run_tests(tests, "All Layout Tests")
-    }
+    
     cmd.tooltip = 'Run Layout Tests'
     cmd.small_icon = File.join(PATH_IMAGES, 'layout-16.png')
     cmd.large_icon = File.join(PATH_IMAGES, 'layout-24.png')
@@ -131,11 +127,7 @@ module TestUp
       toolbar.add_item(cmd_reload_testup)
       toolbar.add_separator
       toolbar.add_item(cmd_display_minitest_help)
-      toolbar.restore
-    elsif defined?(Layout)
-      puts "Loading LayOut toolbar..."
-      toolbar = UI::plugins_toolbar
-      toolbar.add_item(cmd_run_layout_tests)
+      toolbar.restore   
     end
 
     # Ensure this method is run only once.
