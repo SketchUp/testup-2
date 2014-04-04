@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class TC_Ruby_Unicode < TESTCASE
 
   def get_FILE_from_unicode_path

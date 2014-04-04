@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
 # License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen
@@ -43,9 +45,9 @@ class TC_Ruby_Unicode < TESTCASE
   end
 
 
-  if !defined?(get_FILE_from_unicode_path)
+  if !method_defined?(:get_FILE_from_unicode_path)
     def get_FILE_from_unicode_path
-      assert(false, "Unable to load support file from unicode path.")
+      assert(false, "Unicode test file not loaded.")
     end
   end
 
