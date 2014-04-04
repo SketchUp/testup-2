@@ -10,13 +10,26 @@ require "tempfile"
 # </workaround>
 
 
-require "testup/testcase"
-#require_relative "TC_Ruby_Unicode/てすと/support.rb"
-path = File.dirname(__FILE__)
-load File.join(path, "TC_Ruby_Unicode/てすと/support.rb")
+# Allow these tests to be run outsid eof TestUp
+if defined?(TestUp)
+  require "testup/testcase"
+  TESTCASE = TestUp::TestCase
+else
+  require "test/unit"
+  TESTCASE = Test::Unit::TestCase
+end
 
 
-class TC_Ruby_Unicode < TestUp::TestCase
+begin
+  #require_relative "TC_Ruby_Unicode/てすと/support.rb"
+  path = File.dirname(__FILE__)
+  load File.join(path, "TC_Ruby_Unicode/てすと/support.rb")
+rescue LoadError => error
+  puts "Unable to load support file from unicode path."
+end
+
+
+class TC_Ruby_Unicode < TESTCASE
 
   def setup
     @loaded_features = $LOADED_FEATURES.dup
@@ -29,6 +42,14 @@ class TC_Ruby_Unicode < TestUp::TestCase
     end
   end
 
+
+  if !defined?(get_FILE_from_unicode_path)
+    def get_FILE_from_unicode_path
+      assert(false, "Unable to load support file from unicode path.")
+    end
+  end
+
+
   def get_unicode_support_file(file)
     path = File.dirname(__FILE__)
     File.join(path, "TC_Ruby_Unicode", "てすと", file)
@@ -37,6 +58,15 @@ class TC_Ruby_Unicode < TestUp::TestCase
   def get_ascii_support_file(file)
     path = File.dirname(__FILE__)
     File.join(path, "TC_Ruby_Unicode", "test", file)
+  end
+
+  def get_test_c_extension
+    case RUBY_VERSION.to_f
+    when 2.0
+      "SUEX_HelloWorld"
+    when 2.2
+      "HelloRuby220"
+    end
   end
 
 
@@ -207,6 +237,14 @@ class TC_Ruby_Unicode < TestUp::TestCase
   # Unicode
 
   # require .rb
+  def test_require_relative_rb_unicode_path
+    testfile = "TC_Ruby_Unicode/てすと/test.rb"
+    result = require_relative(testfile)
+    assert(result, "`require` failed to load file: #{testfile}")
+  end
+
+
+  # require .rb
   def test_require_rb_unicode_path
     testfile = get_unicode_support_file("test.rb")
     result = require(testfile)
@@ -227,13 +265,13 @@ class TC_Ruby_Unicode < TestUp::TestCase
 
   # require .so
   def test_require_so_unicode_path
-    testfile = get_unicode_support_file("SUEX_HelloWorld")
+    testfile = get_unicode_support_file(get_test_c_extension())
     result = require(testfile)
     assert(result, "`require` failed to load file: #{testfile}")
   end
 
   def test_require_so_unicode_path_encoding
-    testfile = get_unicode_support_file("SUEX_HelloWorld")
+    testfile = get_unicode_support_file(get_test_c_extension())
     loaded_features_size = $LOADED_FEATURES.size
     result = require testfile
     assert(result, "`Sketchup::require` failed to load file: #{testfile}")
@@ -251,21 +289,13 @@ class TC_Ruby_Unicode < TestUp::TestCase
     assert(result, "`load` failed to load file: #{testfile}")
   end
 
-  # load .so
-  def test_load_so_unicode_path
-    skip("Ruby cannot `load` C Extensions?")
-    testfile = get_unicode_support_file("SUEX_HelloWorld")
-    result = load(testfile)
-    assert(result, "`load` failed to load file: #{testfile}")
-  end
-
 
   # Sketchup::require .rb
   def test_Sketchup_require_rb_unicode_path
     testfile = get_unicode_support_file("test.rb")
     result = Sketchup::require(testfile)
     assert(result, "`Sketchup::require` failed to load file: #{testfile}")
-  end
+  end if defined?(Sketchup)
 
   def test_Sketchup_require_rb_unicode_path_encoding
     testfile = get_unicode_support_file("test.rb")
@@ -277,17 +307,17 @@ class TC_Ruby_Unicode < TestUp::TestCase
     expected = Encoding.find("UTF-8")
     result = $LOADED_FEATURES.last.encoding
     assert_equal(expected, result)
-  end
+  end if defined?(Sketchup)
 
   # Sketchup::require .so
   def test_Sketchup_require_so_unicode_path
-    testfile = get_unicode_support_file("SUEX_HelloWorld")
+    testfile = get_unicode_support_file(get_test_c_extension())
     result = Sketchup::require(testfile)
     assert(result, "`Sketchup::require` failed to load file: #{testfile}")
-  end
+  end if defined?(Sketchup)
 
   def test_Sketchup_require_so_unicode_path_encoding
-    testfile = get_unicode_support_file("SUEX_HelloWorld")
+    testfile = get_unicode_support_file(get_test_c_extension())
     loaded_features_size = $LOADED_FEATURES.size
     result = Sketchup::require testfile
     assert(result, "`Sketchup::require` failed to load file: #{testfile}")
@@ -296,14 +326,14 @@ class TC_Ruby_Unicode < TestUp::TestCase
     expected = Encoding.find("UTF-8")
     result = $LOADED_FEATURES.last.encoding
     assert_equal(expected, result)
-  end
+  end if defined?(Sketchup)
 
   # Sketchup::require .rbs
   def test_Sketchup_require_rbs_unicode_path
     testfile = get_unicode_support_file("scrambled")
     result = Sketchup::require(testfile)
     assert(result, "`Sketchup::require` failed to load file: #{testfile}")
-  end
+  end if defined?(Sketchup)
 
   def test_Sketchup_require_rbs_unicode_path_encoding
     testfile = get_unicode_support_file("scrambled")
@@ -315,32 +345,32 @@ class TC_Ruby_Unicode < TestUp::TestCase
     expected = Encoding.find("UTF-8")
     result = $LOADED_FEATURES.last.encoding
     assert_equal(expected, result)
-  end
+  end if defined?(Sketchup)
 
   # Sketchup::load .rb
   def test_Sketchup_load_rb_unicode_path
     testfile = get_unicode_support_file("test.rb")
     result = Sketchup::load(testfile)
     assert(result, "`Sketchup::load` failed to load file: #{testfile}")
-  end
-
-  # Sketchup::load .so
-  def test_Sketchup_load_so_unicode_path
-    skip("Ruby cannot `load` C Extensions?")
-    testfile = get_unicode_support_file("SUEX_HelloWorld")
-    result = Sketchup::load(testfile)
-    assert(result, "`Sketchup::load` failed to load file: #{testfile}")
-  end
+  end if defined?(Sketchup)
 
   # Sketchup::load .rbs
   def test_Sketchup_load_rbs_unicode_path
     testfile = get_unicode_support_file("scrambled")
     result = Sketchup::load(testfile)
     assert(result, "`Sketchup::load` failed to load file: #{testfile}")
-  end
+  end if defined?(Sketchup)
 
 
   # ASCII
+
+  # require .rb
+  def test_require_relative_rb_ascii_path
+    testfile = "TC_Ruby_Unicode/test/test.rb"
+    result = require_relative(testfile)
+    assert(result, "`require` failed to load file: #{testfile}")
+  end
+
 
   # require .rb
   def test_require_rb_ascii_path
@@ -363,13 +393,13 @@ class TC_Ruby_Unicode < TestUp::TestCase
 
   # require .so
   def test_require_so_ascii_path
-    testfile = get_ascii_support_file("SUEX_HelloWorld")
+    testfile = get_ascii_support_file(get_test_c_extension())
     result = require(testfile)
     assert(result, "`require` failed to load file: #{testfile}")
   end
 
   def test_require_so_ascii_path_encoding
-    testfile = get_ascii_support_file("SUEX_HelloWorld")
+    testfile = get_ascii_support_file(get_test_c_extension())
     loaded_features_size = $LOADED_FEATURES.size
     result = require testfile
     assert(result, "`Sketchup::require` failed to load file: #{testfile}")
@@ -387,21 +417,13 @@ class TC_Ruby_Unicode < TestUp::TestCase
     assert(result, "`load` failed to load file: #{testfile}")
   end
 
-  # load .so
-  def test_load_so_ascii_path
-    skip("Ruby cannot `load` C Extensions?")
-    testfile = get_ascii_support_file("SUEX_HelloWorld")
-    result = load(testfile)
-    assert(result, "`load` failed to load file: #{testfile}")
-  end
-
 
   # Sketchup::require .rb
   def test_Sketchup_require_rb_ascii_path
     testfile = get_ascii_support_file("test.rb")
     result = Sketchup::require(testfile)
     assert(result, "`Sketchup::require` failed to load file: #{testfile}")
-  end
+  end if defined?(Sketchup)
 
   def test_Sketchup_require_rb_ascii_path_encoding
     testfile = get_ascii_support_file("test.rb")
@@ -413,17 +435,17 @@ class TC_Ruby_Unicode < TestUp::TestCase
     expected = Encoding.find("UTF-8")
     result = $LOADED_FEATURES.last.encoding
     assert_equal(expected, result)
-  end
+  end if defined?(Sketchup)
 
   # Sketchup::require .so
   def test_Sketchup_require_so_ascii_path
-    testfile = get_ascii_support_file("SUEX_HelloWorld")
+    testfile = get_ascii_support_file(get_test_c_extension())
     result = Sketchup::require(testfile)
     assert(result, "`Sketchup::require` failed to load file: #{testfile}")
-  end
+  end if defined?(Sketchup)
 
   def test_Sketchup_require_so_ascii_path_encoding
-    testfile = get_ascii_support_file("SUEX_HelloWorld")
+    testfile = get_ascii_support_file(get_test_c_extension())
     loaded_features_size = $LOADED_FEATURES.size
     result = Sketchup::require testfile
     assert(result, "`Sketchup::require` failed to load file: #{testfile}")
@@ -432,14 +454,14 @@ class TC_Ruby_Unicode < TestUp::TestCase
     expected = Encoding.find("UTF-8")
     result = $LOADED_FEATURES.last.encoding
     assert_equal(expected, result)
-  end
+  end if defined?(Sketchup)
 
   # Sketchup::require .rbs
   def test_Sketchup_require_rbs_ascii_path
     testfile = get_ascii_support_file("scrambled")
     result = Sketchup::require(testfile)
     assert(result, "`Sketchup::require` failed to load file: #{testfile}")
-  end
+  end if defined?(Sketchup)
 
   def test_Sketchup_require_rbs_ascii_path_encoding
     testfile = get_ascii_support_file("scrambled")
@@ -451,29 +473,21 @@ class TC_Ruby_Unicode < TestUp::TestCase
     expected = Encoding.find("UTF-8")
     result = $LOADED_FEATURES.last.encoding
     assert_equal(expected, result)
-  end
+  end if defined?(Sketchup)
 
   # Sketchup::load .rb
   def test_Sketchup_load_rb_ascii_path
     testfile = get_ascii_support_file("test.rb")
     result = Sketchup::load(testfile)
     assert(result, "`Sketchup::load` failed to load file: #{testfile}")
-  end
-
-  # Sketchup::load .so
-  def test_Sketchup_load_so_ascii_path
-    skip("Ruby cannot `load` C Extensions?")
-    testfile = get_ascii_support_file("SUEX_HelloWorld")
-    result = Sketchup::load(testfile)
-    assert(result, "`Sketchup::load` failed to load file: #{testfile}")
-  end
+  end if defined?(Sketchup)
 
   # Sketchup::load .rbs
   def test_Sketchup_load_rbs_ascii_path
     testfile = get_ascii_support_file("scrambled")
     result = Sketchup::load(testfile)
     assert(result, "`Sketchup::load` failed to load file: #{testfile}")
-  end
+  end if defined?(Sketchup)
 
 
 end # class

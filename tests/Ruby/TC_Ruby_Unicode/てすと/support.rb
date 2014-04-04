@@ -1,6 +1,4 @@
-require "testup/testcase"
-
-class TC_Ruby_Unicode < TestUp::TestCase
+class TC_Ruby_Unicode < TESTCASE
 
   def get_FILE_from_unicode_path
     __FILE__
