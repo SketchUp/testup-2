@@ -66,8 +66,12 @@ class TC_Ruby_Unicode < TESTCASE
     case RUBY_VERSION.to_f
     when 2.0
       "SUEX_HelloWorld"
+    when 2.1
+      "HelloRuby210"
     when 2.2
       "HelloRuby220"
+    else
+      assert(false, "No test C-Extension for Ruby #{RUBY_VERSION}")
     end
   end
 
