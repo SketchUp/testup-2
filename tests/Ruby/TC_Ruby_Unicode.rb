@@ -63,7 +63,7 @@ class TC_Ruby_Unicode < TESTCASE
   end
 
   def get_test_c_extension
-    "Empty.so"
+    "Empty"
   end
 
 
