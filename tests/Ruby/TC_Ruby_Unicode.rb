@@ -125,6 +125,12 @@ class TC_Ruby_Unicode < TESTCASE
     assert_equal(true, result)
   end
 
+  def test_FILE_encoding_expect_UTF8_local
+    expected = Encoding.find("UTF-8")
+    result = __FILE__.encoding
+    assert_equal(expected, result)
+  end
+
 
   # ========================================================================== #
   # Dir
@@ -140,13 +146,12 @@ class TC_Ruby_Unicode < TESTCASE
     }
   end
 
-  def test_Dir_entries_force_utf8_encoding
+  def test_Dir_entries_explicit_utf8_encoding
     path = File.dirname(__FILE__)
-    path.force_encoding("UTF-8")
     test_path = File.join(path, "TC_Ruby_Unicode")
 
     expected = [".", "..", "test", "てすと"]
-    result = Dir::entries(test_path)
+    result = Dir::entries(test_path, encoding: "UTF-8")
     expected.size.times { |i|
       assert_equal(expected[i], result[i])
     }
