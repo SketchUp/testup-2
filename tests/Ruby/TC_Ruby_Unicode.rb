@@ -63,16 +63,7 @@ class TC_Ruby_Unicode < TESTCASE
   end
 
   def get_test_c_extension
-    case RUBY_VERSION.to_f
-    when 2.0
-      "SUEX_HelloWorld"
-    when 2.1
-      "HelloRuby210"
-    when 2.2
-      "HelloRuby220"
-    else
-      assert(false, "No test C-Extension for Ruby #{RUBY_VERSION}")
-    end
+    "Empty.so"
   end
 
 
