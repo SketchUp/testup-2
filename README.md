@@ -6,7 +6,7 @@ Requirements
 
 1. Windows (OSX currently need Ruby API improvements)
 
-2. Visual C++ Redistributable Packages for Visual Studio 2013
+2. Visual C++ Redistributable Packages for Visual Studio 2013  
 http://www.microsoft.com/en-us/download/details.aspx?id=40784
 
 Setup for Contributing
