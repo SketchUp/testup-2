@@ -65,19 +65,19 @@ class TC_Array < TestUp::TestCase
   def test_cross_bad_params
     array = [1, 2, 3]
   
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.cross("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.cross(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.cross(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.cross(Geom::Point3d.new(1, 2, 3))
     end
   end
@@ -135,19 +135,19 @@ class TC_Array < TestUp::TestCase
   def test_distance_bad_params
     array = [1, 2, 3]
   
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.distance("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.distance(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.distance(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.distance(Geom::Vector3d.new(1, 2, 3))
     end
   end
@@ -346,19 +346,19 @@ class TC_Array < TestUp::TestCase
   def test_dot_bad_params
     array = [1, 2, 3]
   
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.dot("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.dot(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.dot(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.dot(Geom::Point3d.new(1, 2, 3))
     end
   end
@@ -497,19 +497,19 @@ class TC_Array < TestUp::TestCase
   def test_offset_bad_params
     array1 = [1, 2, 3]
   
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset(Geom::Point3d.new(1, 2, 3))
     end
   end
@@ -555,19 +555,19 @@ class TC_Array < TestUp::TestCase
   def test_offset_Bang_bad_params
     array1 = [1, 2, 3]
   
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset!("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset!(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset!(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset!(Geom::Point3d.new(1, 2, 3))
     end
   end
@@ -596,7 +596,7 @@ class TC_Array < TestUp::TestCase
     expected = [array.x, array.y, array.z]
     point = array.offset!(vector)
     assert_equal(expected, point)
-    assert_kind_of(Geom::Point3d, point)
+    assert_kind_of(Array, point)
   end
 
   # ========================================================================== #
@@ -1098,19 +1098,19 @@ class TC_Array < TestUp::TestCase
   def test_vector_to_bad_params
     array1 = [1, 2, 3]
   
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.vector_to("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.vector_to(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.vector_to(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.vector_to(Geom::Vector3d.new(1, 2, 3))
     end
   end
@@ -1179,15 +1179,15 @@ class TC_Array < TestUp::TestCase
   def test_x_Set_bad_params
     array1 = [1, 2, 3]
   
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.x = "Boom!"
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.x = nil
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.x = Geom::Vector3d.new(1, 2, 3)
     end
   end
@@ -1224,15 +1224,15 @@ class TC_Array < TestUp::TestCase
   def test_y_Set_bad_params
     array1 = [1, 2, 3]
   
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.y = "Boom!"
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.y = nil
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.y = Geom::Vector3d.new(1, 2, 3)
     end
   end
@@ -1283,15 +1283,15 @@ class TC_Array < TestUp::TestCase
   def test_z_Set_bad_params
     array1 = [1, 2, 3]
   
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.z = "Boom!"
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.z = nil
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.z = Geom::Vector3d.new(1, 2, 3)
     end
   end
