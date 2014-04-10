@@ -44,7 +44,7 @@ module TestUp
     arguments = self.arguments
     arguments.gsub!('{FILE}', file)
     arguments.gsub!('{LINE}', line)
-    command = %["#{editor}" #{arguments}]
+    command = %["#{editor}" "#{arguments}"]
     system(command)
   end
 
