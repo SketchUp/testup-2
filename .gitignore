@@ -3,13 +3,20 @@
 ############
 
 *.sublime-workspace
-
+*.vcxproj.user
+*.opensdf
+*.sdf
+*.suo
 
 ############
 ## Folders
 ############
 
 tests_old/
+Debug/
+Release/
+ipch/
+xcuserdata/
 
 
 ############
