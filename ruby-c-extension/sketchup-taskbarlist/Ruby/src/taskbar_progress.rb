@@ -1,25 +1,13 @@
-module TestUp
- class TaskbarProgress
-
-  # Load the C Extension if the platform support it.
-  if RUBY_PLATFORM =~ /mswin|mingw/
-    # Guard required because when debugging from Visual Studio the extensions is
-    # pre-loaded.
-    unless defined?(CEXT_VERSION)
-      pointer_size = ['a'].pack('P').size * 8
-      begin
-        if pointer_size > 32
-          require_relative('lib/x64/TaskbarProgress')
-        else
-          require_relative('lib/x86/TaskbarProgress')
-        end
-      rescue LoadError => error
-        # Soft fail when the lib cannot be loaded. It's just extra visuals.
-        puts error.message
-        puts error.backtrace.join("\n")
-      end
-    end
+# Load the C Extension if the platform support it.
+if Sketchup.platform == :platform_win
+  # Guard required because when debugging from Visual Studio the extensions is
+  # pre-loaded.
+  unless defined?(TaskbarProgress::CEXT_VERSION)
+    require_relative('lib/TaskbarProgress')
   end
+end
+
+class TaskbarProgress
 
   # If the platform is not supported add noop methods to avoid errors.
   unless defined?(CEXT_VERSION)
@@ -69,5 +57,4 @@ module TestUp
     total
   end
 
- end # class
-end # module
+end # class
