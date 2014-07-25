@@ -44,6 +44,14 @@ module TestUp
   PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
 
 
+  ### Accessors ### ------------------------------------------------------------
+
+  class << self
+    attr_reader :settings
+    attr_accessor :window
+  end
+
+
   ### Dependencies ### ---------------------------------------------------------
 
   if defined?(UI::WebDialog)
@@ -64,24 +72,28 @@ module TestUp
   require File.join(PATH, 'taskbar_progress.rb')
   require File.join(PATH, 'test_discoverer.rb')
   require File.join(PATH, 'ui.rb')
-  require File.join(PATH, 'win32.rb')
-
-
-  ### UI ### -------------------------------------------------------------------
-
-  self.init_ui
+  if RUBY_PLATFORM =~ /mswin|mingw/
+    require File.join(PATH, 'win32.rb')
+  end
 
 
   ### Configuration ### --------------------------------------------------------
 
   tests_path = File.join(__dir__, '..', '..', 'tests')
+  if RUBY_PLATFORM =~ /mswin|mingw/
+    sketchup_tests_path = File.join(__dir__, '..', '..', 'tests')
+  else
+    #tests_path = "/Users/tthomas2/src/thomthom-trunk-mac/src/googleclient/sketchup/source/sketchup/ruby/tests"
+    sketchup_tests_path = File.join(ENV["HOME"], "src", "thomthom-trunk-mac",
+      "src", "googleclient", "sketchup", "source", "sketchup", "ruby", "tests")
+  end
   if defined?(Sketchup)
     defaults = {
       :editor => Editor.get_default,
       :run_in_gui => true,
       :verbose_console_tests => true,
       :paths_to_testsuites => [
-        File.expand_path(File.join(tests_path, 'SketchUp Ruby API')),
+        File.expand_path(File.join(sketchup_tests_path, 'SketchUp Ruby API')),
         File.expand_path(File.join(tests_path, 'TestUp'))
       ]
     }
@@ -99,10 +111,9 @@ module TestUp
   @settings = Settings.new(PLUGIN_ID, defaults)
 
 
-  class << self
-    attr_reader :settings
-    attr_accessor :window
-  end
+  ### UI ### -------------------------------------------------------------------
+
+  self.init_ui
 
 
   def self.reset_settings
