@@ -6,22 +6,35 @@
 module TestUp
  module Editor
 
+  # Legacy setting when it all was stored in a single string.
   EXTRACT_PATTERN = /^"([^"]+)"\s+"([^"]+)"$/
 
   def self.application
-    result = TestUp.settings[:editor].match(EXTRACT_PATTERN)
-    return nil if result.nil?
-    result[1]
+    setting = TestUp.settings[:editor]
+    if setting.is_a?(String)
+      # Legacy setting when it all was stored in a single string.
+      result = TestUp.settings[:editor].match(EXTRACT_PATTERN)
+      return nil if result.nil?
+      result[1]
+    else
+      setting[0]
+    end
   end
 
   def self.arguments
-    result = TestUp.settings[:editor].match(EXTRACT_PATTERN)
-    return nil if result.nil?
-    result[2]
+    setting = TestUp.settings[:editor]
+    if setting.is_a?(String)
+      # Legacy setting when it all was stored in a single string.
+      result = TestUp.settings[:editor].match(EXTRACT_PATTERN)
+      return nil if result.nil?
+      result[2]
+    else
+      setting[1]
+    end
   end
 
   def self.change(application, arguments)
-    TestUp.settings[:editor] = %["#{application}" "#{arguments}"]
+    TestUp.settings[:editor] = [application, arguments]
   end
 
   def self.reset
@@ -39,8 +52,8 @@ module TestUp
       # http://www.sublimetext.com/docs/3/osx_command_line.html
       application = "subl"
     end
-    arguments = '{FILE}:{LINE}'
-    %["#{application}" "#{arguments}"]
+    arguments = '"{FILE}:{LINE}"'
+    [application, arguments]
   end
 
   # @param [String] file

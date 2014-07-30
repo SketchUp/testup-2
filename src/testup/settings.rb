@@ -27,6 +27,8 @@ module TestUp
 
   def []=(key, value)
     if defined?(Sketchup)
+      # Due to a bug in SketchUp double quotes needs to be escaped.
+      value = value.gsub(/"/, '\\"') if value.is_a?(String)
       Sketchup.write_default(@settings_id, key.to_s, value)
     end
     @data[key] = value
