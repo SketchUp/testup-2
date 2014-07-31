@@ -89,7 +89,8 @@ module TestUp
   end
   if defined?(Sketchup)
     defaults = {
-      :editor => Editor.get_default,
+      :editor_application => Editor.get_default[0],
+      :editor_arguments => Editor.get_default[1],
       :run_in_gui => true,
       :verbose_console_tests => true,
       :paths_to_testsuites => [
@@ -99,7 +100,8 @@ module TestUp
     }
   elsif defined?(Layout)
     defaults = {
-      :editor => Editor.get_default,
+      :editor_application => Editor.get_default[0],
+      :editor_arguments => Editor.get_default[1],
       :run_in_gui => false,
       :verbose_console_tests => true,
       :paths_to_testsuites => [
@@ -120,6 +122,8 @@ module TestUp
     # This will make the default values be used. (At least under Windows.)
     # TODO: Confirm this works under OSX.
     @settings[:editor] = nil
+    @settings[:editor_application] = nil
+    @settings[:editor_arguments] = nil
     @settings[:run_in_gui] = nil
     @settings[:verbose_console_tests] = nil
     @settings[:paths_to_testsuites] = nil

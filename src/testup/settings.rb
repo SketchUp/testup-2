@@ -22,13 +22,12 @@ module TestUp
   end
 
   def [](key)
-    (@data[key].nil?) ? @defaults[key] : @data[key]
+    value = (@data[key].nil?) ? @defaults[key] : @data[key]
+    (value.is_a?(String) || value.is_a?(Array)) ? value.dup : value
   end
 
   def []=(key, value)
     if defined?(Sketchup)
-      # Due to a bug in SketchUp double quotes needs to be escaped.
-      value = escape_quotes(value)
       Sketchup.write_default(@settings_id, key.to_s, value)
     end
     @data[key] = value
@@ -36,19 +35,6 @@ module TestUp
 
   def inspect
     to_s
-  end
-
-  private
-
-  def escape_quotes(value)
-    # TODO(thomthom): Include Hash? Likely value to store.
-    if value.is_a?(String)
-      value.gsub(/"/, '\\"')
-    elsif value.is_a?(Array)
-      value.map { |sub_value| escape_quotes(sub_value) }
-    else
-      value
-    end
   end
 
  end # class

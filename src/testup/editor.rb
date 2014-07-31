@@ -10,35 +10,44 @@ module TestUp
   EXTRACT_PATTERN = /^"([^"]+)"\s+"([^"]+)"$/
 
   def self.application
-    setting = TestUp.settings[:editor]
-    if setting.is_a?(String)
+    setting = TestUp.settings[:editor_application]
+    if setting.nil?
+      setting = TestUp.settings[:editor]
+      return nil unless setting.is_a?(String)
       # Legacy setting when it all was stored in a single string.
-      result = TestUp.settings[:editor].match(EXTRACT_PATTERN)
+      result = string.match(EXTRACT_PATTERN)
       return nil if result.nil?
       result[1]
     else
-      setting[0]
+      setting
     end
   end
 
   def self.arguments
-    setting = TestUp.settings[:editor]
-    if setting.is_a?(String)
+    setting = TestUp.settings[:editor_arguments]
+    if setting.nil?
+      setting = TestUp.settings[:editor]
+      return nil unless setting.is_a?(String)
       # Legacy setting when it all was stored in a single string.
-      result = TestUp.settings[:editor].match(EXTRACT_PATTERN)
+      result = setting.match(EXTRACT_PATTERN)
       return nil if result.nil?
       result[2]
     else
-      setting[1]
+      setting
     end
   end
 
   def self.change(application, arguments)
-    TestUp.settings[:editor] = [application, arguments]
+    TestUp.settings[:editor] = nil
+    TestUp.settings[:editor_application] = application
+    TestUp.settings[:editor_arguments] = arguments
+    nil
   end
 
   def self.reset
-    TestUp.settings[:editor] = self.get_default
+    application, arguments = self.get_default
+    self.change(application, arguments)
+    [application, arguments]
   end
 
   # @return [String]
