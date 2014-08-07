@@ -42,6 +42,11 @@ module TestUp
     @errors.clear
     testsuites = {}
     for testsuite_path in @paths_to_testsuites
+      if !File.directory?(testsuite_path)
+        warn "WARNING: Not a valid directory: #{testsuite_path}"
+        next
+      end
+
       testsuite_name = File.basename(testsuite_path)
       if testsuites.key?(testsuite_name)
         # TODO: raise custom error and catch later for display in UI.
