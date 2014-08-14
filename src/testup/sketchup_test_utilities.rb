@@ -79,9 +79,12 @@ module TestUp
 
     def open_new_model
       model = Sketchup.active_model
-      if model.respond_to?(:close) && Sketchup.platform == :platform_win
+      if model.respond_to?(:close)
         # Suppress dialog boxes due to model changes.
         model.close(true)
+        if Sketchup.platform == :platform_osx
+          Sketchup.file_new
+        end
       else
         Sketchup.file_new
       end
@@ -89,8 +92,11 @@ module TestUp
 
     def discard_model_changes
       model = Sketchup.active_model
-      if model.respond_to?(:close) && Sketchup.platform == :platform_win
+      if model.respond_to?(:close)
         model.close(true)
+        if Sketchup.platform == :platform_osx
+          Sketchup.file_new
+        end
       end
     end
 
