@@ -83,7 +83,7 @@ module TestUp
   if RUBY_PLATFORM =~ /mswin|mingw/
     sketchup_tests_path = File.join(__dir__, '..', '..', 'tests')
   else
-    #tests_path = "/Users/tthomas2/src/thomthom-trunk-mac/src/googleclient/sketchup/source/sketchup/ruby/tests"
+    # Hard coded for now until we have a way to select folder in OSX.
     sketchup_tests_path = File.join(ENV["HOME"], "src", "thomthom-trunk-mac",
       "src", "googleclient", "sketchup", "source", "sketchup", "ruby", "tests")
   end
@@ -95,6 +95,7 @@ module TestUp
       :verbose_console_tests => true,
       :paths_to_testsuites => [
         File.expand_path(File.join(sketchup_tests_path, 'SketchUp Ruby API')),
+        File.expand_path(File.join(sketchup_tests_path, 'Bugs')),
         File.expand_path(File.join(tests_path, 'TestUp'))
       ]
     }
