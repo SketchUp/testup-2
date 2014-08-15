@@ -56,6 +56,20 @@ module TestUp
       lbl_paths.position(5, 5)
       self.add_control(lbl_paths)
 
+      btn_move_up = SKUI::Button.new('Up') { |control|
+        list = control.window[:paths]
+        list.move_selected_up()
+      }
+      btn_move_up.position(5, 180)
+      self.add_control(btn_move_up)
+
+      btn_move_down = SKUI::Button.new('Down') { |control|
+        list = control.window[:paths]
+        list.move_selected_down()
+      }
+      btn_move_down.position(85, 180)
+      self.add_control(btn_move_down)
+
       btn_edit_path = SKUI::Button.new('Edit') { |control|
         list = control.window[:paths]
         if list.value.nil?
