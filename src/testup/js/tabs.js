@@ -55,8 +55,14 @@ TestUp.Tabs = function() {
       {
         $tab = TestUp.Tabs.get(tab_text);
       }
-      assert($tab.length);
-      select_tab($tab);
+      if ($tab.length)
+      {
+        select_tab($tab);
+      }
+      else
+      {
+        $tab = $("#tabs .tab").first();
+      }
       return $tab;
     },
 
