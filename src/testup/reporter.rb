@@ -1,6 +1,9 @@
-# Copyright:: Copyright 2014 Trimble Navigation Ltd.
-# License:: The MIT License (MIT)
-# Original Author:: Thomas Thomassen
+#-------------------------------------------------------------------------------
+#
+# Copyright 2013-2014 Trimble Navigation Ltd.
+# License: The MIT License (MIT)
+#
+#-------------------------------------------------------------------------------
 
 
 require 'pp'

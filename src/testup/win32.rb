@@ -1,3 +1,11 @@
+#-------------------------------------------------------------------------------
+#
+# Copyright 2013-2014 Trimble Navigation Ltd.
+# License: The MIT License (MIT)
+#
+#-------------------------------------------------------------------------------
+
+
 require 'fiddle'
 require 'fiddle/types'
 require 'fiddle/import'

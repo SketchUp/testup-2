@@ -1,17 +1,7 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2014, Trimble Navigation Limited
-#
-# This software is provided as an example of using the Ruby interface
-# to SketchUp.
-#
-# Permission to use, copy, modify, and distribute this software for
-# any purpose and without fee is hereby granted, provided that the above
-# copyright notice appear in all copies.
-#
-# THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
-# IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+# Copyright 2013-2014 Trimble Navigation Ltd.
+# License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
 
@@ -38,7 +28,7 @@ module TestUp
   elsif defined?(LAYOUT_CONSOLE)
     LAYOUT_CONSOLE.show
   end
-  # /<debug>
+  # </debug>
 
   PATH_IMAGES     = File.join(PATH, 'images').freeze
   PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
