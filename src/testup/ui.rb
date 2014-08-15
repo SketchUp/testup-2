@@ -88,7 +88,7 @@ module TestUp
     cmd.tooltip = 'Discover and run all tests.'
     cmd.status_bar_text = 'Discover and run all tests.'
     cmd_run_tests = cmd
-    
+
     cmd.tooltip = 'Run Layout Tests'
     cmd.small_icon = File.join(PATH_IMAGES, 'layout-16.png')
     cmd.large_icon = File.join(PATH_IMAGES, 'layout-24.png')
@@ -127,7 +127,7 @@ module TestUp
       toolbar.add_item(cmd_reload_testup)
       toolbar.add_separator
       toolbar.add_item(cmd_display_minitest_help)
-      toolbar.restore   
+      toolbar.restore
     end
 
     # Ensure this method is run only once.
@@ -137,18 +137,49 @@ module TestUp
 
   module SystemUI
 
+    def self.select_directory(options)
+      if defined?(UI) && UI.respond_to?(:select_directory)
+        result = UI.select_directory(options)
+        if options && options[:select_multiple]
+          result.map! { |path| File.expand_path(path) }
+        else
+          result = File.expand_path(result)
+        end
+        result
+      else
+        if options
+          message = options[:message] || ""
+        else
+          message = ""
+        end
+        self.select_directory_fallback(message)
+      end
+    end
+
     BIF_RETURNONLYFSDIRS = 0x00000001
     BIF_EDITBOX = 0x00000010
     BIF_NEWDIALOGSTYLE = 0x00000040
     BIF_UAHINT = 0x00000100
 
-    def self.select_folder(message = '')
+    def self.select_directory_fallback(options)
+      unless RUBY_PLATFORM =~ /mswin|mingw/
+        warn "select_directory_fallback not implemented for this platform"
+        return nil
+      end
+
       require 'win32ole'
       default_path = File.join(ENV['HOME'], 'Desktop').gsub('/', '\\')
 
       objShell = WIN32OLE.new('Shell.Application')
       parent_window = TestUp::Win32.get_main_window_handle
       options = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_EDITBOX
+
+      message = ""
+      select_multiple = false
+      if options
+        message = options[:message] || message
+        select_multiple = options[:select_multiple] || select_multiple
+      end
 
       # http://msdn.microsoft.com/en-us/library/windows/desktop/bb774065(v=vs.85).aspx
       objFolder = objShell.BrowseForFolder(parent_window, message, options)
@@ -159,7 +190,13 @@ module TestUp
         UI.messagebox("Unable to handle '#{path}'.")
         return nil
       end
-      File.expand_path(path)
+      directory = File.expand_path(path)
+
+      if select_multiple
+        [directory]
+      else
+        directory
+      end
     end
 
   end # module SystemUI

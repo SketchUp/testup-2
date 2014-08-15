@@ -56,9 +56,25 @@ module TestUp
       lbl_paths.position(5, 5)
       self.add_control(lbl_paths)
 
+      btn_edit_path = SKUI::Button.new('Edit') { |control|
+        list = control.window[:paths]
+        if list.value.nil?
+          UI.beep
+          next
+        end
+        directory = list.value.first
+        path = SystemUI.select_directory(directory: directory)
+        unless path.nil?
+          index = list.index(directory)
+          list.rename(index, path)
+        end
+      }
+      btn_edit_path.position(-170, 180)
+      self.add_control(btn_edit_path)
+
       btn_remove_path = SKUI::Button.new('Remove') { |control|
         list = control.window[:paths]
-        for item in list.value
+        for item in list.value.dup
           list.remove_item( item )
         end
       }
@@ -67,10 +83,15 @@ module TestUp
 
       btn_add_path = SKUI::Button.new('Add') { |control|
         message = 'Select folder that includes the test cases.'
-        path = SystemUI.select_folder(message)
-        unless path.nil?
+        paths = SystemUI.select_directory(
+          select_multiple: true,
+          message: message
+        )
+        unless paths.nil?
           list = control.window[:paths]
-          list.add_item(path)
+          paths.each { |path|
+            list.add_item(path)
+          }
         end
       }
       btn_add_path.position(-5, 180)
