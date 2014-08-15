@@ -147,12 +147,7 @@ module TestUp
         end
         result
       else
-        if options
-          message = options[:message] || ""
-        else
-          message = ""
-        end
-        self.select_directory_fallback(message)
+        self.select_directory_fallback(options)
       end
     end
 
@@ -170,10 +165,6 @@ module TestUp
       require 'win32ole'
       default_path = File.join(ENV['HOME'], 'Desktop').gsub('/', '\\')
 
-      objShell = WIN32OLE.new('Shell.Application')
-      parent_window = TestUp::Win32.get_main_window_handle
-      options = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_EDITBOX
-
       message = ""
       select_multiple = false
       if options
@@ -181,8 +172,12 @@ module TestUp
         select_multiple = options[:select_multiple] || select_multiple
       end
 
+      objShell = WIN32OLE.new('Shell.Application')
+      parent_window = TestUp::Win32.get_main_window_handle
+      dialog_options = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_EDITBOX
+
       # http://msdn.microsoft.com/en-us/library/windows/desktop/bb774065(v=vs.85).aspx
-      objFolder = objShell.BrowseForFolder(parent_window, message, options)
+      objFolder = objShell.BrowseForFolder(parent_window, message, dialog_options)
 
       return nil if objFolder.nil?
       path = objFolder.Self.Path
