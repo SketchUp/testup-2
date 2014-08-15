@@ -70,6 +70,14 @@ module TestUp
       @bridge.call('TestUp.update_results', results)
     end
 
+    # Clears and reloads the test suites.
+    def reload
+      return false unless visible?
+      self.bridge.call('TestUp.reset')
+      discover_tests()
+      true
+    end
+
     private
 
     # Intecept callbacks from the SKUI window before passing it on to SKUI.

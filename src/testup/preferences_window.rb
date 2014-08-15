@@ -161,7 +161,10 @@ module TestUp
         paths = control.window[:paths].items
         application = control.window[:application].value
         arguments = control.window[:arguments].value
-        TestUp.settings[:paths_to_testsuites] = paths
+        if TestUp.settings[:paths_to_testsuites] != paths
+          TestUp.settings[:paths_to_testsuites] = paths
+          TestUp.window.reload
+        end
         Editor.change(application, arguments)
         control.window.close
       }

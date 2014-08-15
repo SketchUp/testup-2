@@ -25,6 +25,11 @@ var TestUp = function() {
     },
 
 
+    reset :  function(config) {
+      TestUp.TestSuites.reset();
+    },
+
+
     // TODO: Move to TestSuites.
     update_results : function(results) {
       var testsuite = TestUp.TestSuites.active();

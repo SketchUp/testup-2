@@ -115,6 +115,14 @@ TestUp.TestSuites = function() {
     },
 
 
+    reset : function() {
+      $('#testsuite_container').empty();
+      $('#tabs').empty();
+      testsuites_ = {};
+      last_active_tab_ = null;
+    },
+
+
     update : function(testsuites) {
       testsuites_ = testsuites;
       for (testsuite_name in testsuites_)
