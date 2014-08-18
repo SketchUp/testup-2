@@ -110,6 +110,33 @@ module TestUp
       end
     end
 
+    def disable_read_only_flag_for_test_models
+      source = caller_locations(1,1)[0].absolute_path
+      path = File.dirname(source)
+      basename = File.basename(source, ".*")
+      support_path = File.join(path, basename)
+      skp_model_filter = File.join(support_path, '*.skp')
+      @read_only_files = []
+      Dir.glob(skp_model_filter) { |file|
+        if !File.writable?(file)
+          @read_only_files << file
+          FileUtils.chmod("a+w", file)
+        end
+      }
+    end
+
+    def restore_read_only_flag_for_test_models
+      source = caller_locations(1,1)[0].absolute_path
+      path = File.dirname(source)
+      basename = File.basename(source, ".*")
+      support_path = File.join(path, basename)
+      skp_model_filter = File.join(support_path, '*.skp')
+      @read_only_files.each { |file|
+        FileUtils.chmod("a-w", file)
+      }
+      @read_only_files.clear
+    end
+
   end # module
 
 end # module
