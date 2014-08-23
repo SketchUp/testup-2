@@ -182,7 +182,18 @@ TestUp.Test = function() {
       $failure.append($location);
 
       var $message = $('<pre/>');
-      $message.text(failure.message);
+
+      // Create links from file paths.
+      var pattern = /^(\s*)(.+\.rb[s]?:\d+)/gm;
+      var replacement = "$1<a href='$2' title='Click to open file in editor'>$2</a>";
+      var html_message = failure.message.replace(pattern, replacement);
+      $message.html(html_message);
+      $message.children('a').on('click', function() {
+        var location = $(this).attr('href');
+        Sketchup.callback('TestUp.on_open_source_file', location);
+        return false;
+      });
+
       $failure.append($message);
 
       $failures.append($failure);

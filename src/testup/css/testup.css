@@ -323,6 +323,11 @@ html
   margin: 0.5em 0 0 0;
 }
 
+#testsuites .testcase .test .failures .failure pre a
+{
+  text-decoration: none;
+}
+
 .test .metadata
 {
   display: inline-block;
