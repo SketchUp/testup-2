@@ -112,6 +112,7 @@ module TestUp
   def self.reset_settings
     # This will make the default values be used. (At least under Windows.)
     # TODO: Confirm this works under OSX.
+    @settings[:debugger_output_enabled] = nil
     @settings[:editor] = nil
     @settings[:editor_application] = nil
     @settings[:editor_arguments] = nil
@@ -207,16 +208,18 @@ module TestUp
   # TODO(thomthom): Merge this with TestWindow.discover_tests.
   require "pp"
   def self.discover_tests
-    #progress = TaskbarProgress.new
-    begin
-      #progress.set_state(TaskbarProgress::INDETERMINATE)
-      paths = TestUp.settings[:paths_to_testsuites]
-      test_discoverer = TestDiscoverer.new(paths)
-      discoveries = test_discoverer.discover
-    ensure
-      #progress.set_state(TaskbarProgress::NOPROGRESS)
-    end
-    nil
+    Debugger.time("TestUp.discover_tests") {
+      progress = TaskbarProgress.new
+      begin
+        progress.set_state(TaskbarProgress::INDETERMINATE)
+        paths = TestUp.settings[:paths_to_testsuites]
+        test_discoverer = TestDiscoverer.new(paths)
+        discoveries = test_discoverer.discover
+      ensure
+        progress.set_state(TaskbarProgress::NOPROGRESS)
+      end
+      discoveries
+    }
   end
 
 

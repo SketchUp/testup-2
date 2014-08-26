@@ -57,7 +57,9 @@ module TestUp
 
     # @param [Array<Hash>] results
     def update_results(results)
-      @bridge.call('TestUp.update_results', results)
+      Debugger.time("JS:TestUp.update_results") {
+        @bridge.call('TestUp.update_results', results)
+      }
     end
 
     # Clears and reloads the test suites.
@@ -95,16 +97,10 @@ module TestUp
     end
 
     def discover_tests
-      progress = TaskbarProgress.new
-      begin
-        progress.set_state(TaskbarProgress::INDETERMINATE)
-        paths = TestUp.settings[:paths_to_testsuites]
-        test_discoverer = TestDiscoverer.new(paths)
-        discoveries = test_discoverer.discover
-        self.bridge.call('TestUp.TestSuites.update', discoveries)
-      ensure
-        progress.set_state(TaskbarProgress::NOPROGRESS)
-      end
+      discoveries = TestUp.discover_tests
+      Debugger.time("JS:TestUp.TestSuites.update") {
+        self.bridge.call("TestUp.TestSuites.update", discoveries)
+      }
       nil
     end
 

@@ -34,7 +34,7 @@ module TestUp
 
     # TestUp::Debugger.output
     def self.output(value)
-      return nil unless @debugger_output_enabled
+      return nil unless TestUp.settings[:debugger_output_enabled]
       require 'Win32API'
       @OutputDebugString ||=
         Win32API.new('kernel32', 'OutputDebugString', 'P', 'V')
@@ -42,11 +42,21 @@ module TestUp
     end
 
     def self.debugger_output?
-      @debugger_output_enabled
+      TestUp.settings[:debugger_output_enabled]
     end
 
+    # TestUp::Debugger.debugger_output = true
     def self.debugger_output=(value)
-      @debugger_output_enabled = value ? true : false
+      TestUp.settings[:debugger_output_enabled] = value ? true : false
+    end
+
+    def self.time(title, &block)
+      start = Time.now
+      block.call
+    ensure
+      lapsed_time = Time.now - start
+      self.output("TestUp::Debugger.time: #{title} #{lapsed_time}s")
+      nil
     end
 
   end # module Debug
