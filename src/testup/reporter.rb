@@ -13,7 +13,7 @@ require File.join(__dir__, 'minitest_setup.rb')
 module TestUp
 class Reporter < MiniTest::StatisticsReporter
 
-  @@results = {}
+  @@results = []
 
   def self.results
     @@results
@@ -45,6 +45,7 @@ class Reporter < MiniTest::StatisticsReporter
   def record(result)
     super
     @@results << process_results(result)
+    TestUp.update_testing_progress(@@results.size)
   end
 
   private

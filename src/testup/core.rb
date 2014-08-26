@@ -147,9 +147,19 @@ module TestUp
     end
     testsuite = @window.active_testsuite
     tests = @window.selected_tests
+    # Number of tests is currently incorrect as the list include stubs from the
+    # manifest.
+    @num_tests_being_run = tests.size
     self.run_tests(tests, testsuite)
     #puts Reporter.results.pretty_inspect
     @window.update_results(Reporter.results)
+  end
+
+  def self.update_testing_progress(num_tests_run)
+    progress = TaskbarProgress.new
+    progress.set_value(num_tests_run, @num_tests_being_run)
+    #puts "Test Progres: #{num_tests_run} of #{@num_tests_being_run}"
+    nil
   end
 
   # @example Run a test case:
@@ -186,7 +196,7 @@ module TestUp
     arguments << '--testup' if @settings[:run_in_gui]
     progress = TaskbarProgress.new
     begin
-      progress.set_state(TaskbarProgress::INDETERMINATE)
+      progress.set_state(TaskbarProgress::NORMAL)
       MiniTest.run(arguments)
     ensure
       progress.set_state(TaskbarProgress::NOPROGRESS)
