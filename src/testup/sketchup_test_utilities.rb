@@ -63,7 +63,7 @@ module TestUp
       model.start_operation('TestUp Empty Model', true)
       while model.close_active; end
       for entity in model.entities.to_a
-        entity.locked = false if entity.respond_to?(:locked=)
+        entity.locked = false if entity.respond_to?(:locked=) && entity.locked?
       end
       model.entities.clear!
       model.materials.current = nil
