@@ -34,10 +34,19 @@ module TestUp
 
     # TestUp::Debugger.output
     def self.output(value)
+      return nil unless @debugger_output_enabled
       require 'Win32API'
       @OutputDebugString ||=
         Win32API.new('kernel32', 'OutputDebugString', 'P', 'V')
-      @OutputDebugString.call("#{value}\0")
+      @OutputDebugString.call("#{value}\n\0")
+    end
+
+    def self.debugger_output?
+      @debugger_output_enabled
+    end
+
+    def self.debugger_output=(value)
+      @debugger_output_enabled = value ? true : false
     end
 
   end # module Debug
