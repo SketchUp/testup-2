@@ -64,6 +64,18 @@ TestUp.TestSuite = function() {
     },
 
 
+    create_html : function(testsuite_data) {
+      var html = '';
+      for (testcase_name in testsuite_data)
+      {
+        var tests = testsuite_data[testcase_name];
+        var tests_html = TestUp.TestCase.create_tests_html(testcase_name, tests);
+        html += TestUp.TestCase.create_html(testcase_name, tests_html);
+      }
+      return html;
+    },
+
+
     update_summary : function() {
       var $testsuite = $('.testsuite.active');
 

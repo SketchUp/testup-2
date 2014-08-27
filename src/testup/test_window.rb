@@ -90,16 +90,26 @@ module TestUp
         event_on_open_preferences()
       when 'TestUp.TestSuites.on_change'
         event_change_testsuite(arguments[0])
+      when 'TestUp.Console.output'
+        event_console_output(arguments[0])
       end
     ensure
       super
       nil
     end
 
-    def discover_tests
+    def discover_tests(first_run = false)
       discoveries = TestUp.discover_tests
-      Debugger.time("JS:TestUp.TestSuites.update") {
-        self.bridge.call("TestUp.TestSuites.update", discoveries)
+      js_command = "TestUp.TestSuites.update"
+      js_command = "#{js_command}_first_run" if first_run
+      Debugger.time("JS:#{js_command}") {
+        progress = TaskbarProgress.new
+        begin
+          progress.set_state(TaskbarProgress::INDETERMINATE)
+          self.bridge.call(js_command, discoveries)
+        ensure
+          progress.set_state(TaskbarProgress::NOPROGRESS)
+        end
       }
       nil
     end
@@ -111,7 +121,7 @@ module TestUp
         :path       => PATH
       }
       self.bridge.call('TestUp.init', config)
-      discover_tests()
+      discover_tests(true)
     end
 
     def event_testup_run
@@ -125,6 +135,10 @@ module TestUp
 
     def event_change_testsuite(testsuite)
       TestUp.settings[:last_active_testsuite] = testsuite
+    end
+
+    def event_console_output(value)
+      puts value
     end
 
     def event_opent_source_file(location)

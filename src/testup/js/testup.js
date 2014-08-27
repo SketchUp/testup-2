@@ -71,6 +71,11 @@ var TestUp = function() {
         num_skipped + ' skipped' +
         ' - ' + new Date().toLocaleTimeString()
       );
+    },
+
+
+    debug : function(output) {
+      Sketchup.callback('TestUp.Console.output', output);
     }
 
 

@@ -144,6 +144,29 @@ TestUp.TestSuites = function() {
       TestUp.TestSuites.activate(last_active_tab_);
       TestUp.TestSuite.update_results(false);
       update_discovered_status(testsuites);
+    },
+
+
+    // Because building the HTML content using the DOM is so TERRIBLY slow in IE
+    // we must resort to building the content using HTML strings instead.
+    // Is is not ideal as there is now a lot of duplicate code!
+    update_first_run : function(testsuites) {
+      //TestUp.debug('TestUp.TestSuites.update_first_run_hack');
+      testsuites_ = testsuites;
+      for (testsuite_name in testsuites_)
+      {
+        var testsuite = testsuites_[testsuite_name];
+        var testsuite_data = testsuite.testcases;
+        ensure_tab_exists(testsuite_name);
+        $testsuite = ensure_testsuite_exists(testsuite_name);
+        // TODO: Merge coverage.
+        //update_missing_coverage($testsuite, testsuite);
+        var html = TestUp.TestSuite.create_html(testsuite_data);
+        $testsuite.html(html);
+      }
+      TestUp.TestSuites.activate(last_active_tab_);
+      TestUp.TestSuite.update_results(false);
+      update_discovered_status(testsuites);
     }
 
 

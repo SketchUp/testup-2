@@ -30,25 +30,31 @@ TestUp.Test = function() {
       if ($test.length == 0)
       {
         var testcase_id = $testcase.attr('id');
-        var test_id = testcase_id + '\.' + test_name;
-
-        var html = '\
-          <div class="test" id="' + test_id + '">\
-            <div class="title">\
-              <label>\
-                <input type="checkbox" checked />\
-                <span class="name">\
-                  ' + test_name + '\
-                </span>\
-              </label>\
-            </div>\
-          </div>\
-        ';
+        var html = TestUp.Test.create_html(testcase_id, test_name)
         var $test = $(html);
         insert_in_order($testcase, $test, test_name);
       }
       assert($test.length);
       return $test;
+    },
+
+
+    create_html : function(testcase_id, test_name) {
+      var test_id = testcase_id + '\.' + test_name;
+
+      var html = '\
+        <div class="test" id="' + test_id + '">\
+          <div class="title">\
+            <label>\
+              <input type="checkbox" checked />\
+              <span class="name">\
+                ' + test_name + '\
+              </span>\
+            </label>\
+          </div>\
+        </div>\
+      ';
+      return html;
     },
 
 
