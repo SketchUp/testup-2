@@ -43,8 +43,17 @@ TestUp.TestCase = function() {
       {
         // Remove the first character of the name as the array from Ruby is
         // made out of Symbol objects. Don't want to display the colon.
-        var test_name = tests[index].slice(1);
-        html += TestUp.Test.create_html(testcase_id, test_name);
+        var test_name = tests[index];
+        var missing = true;
+        if (test_name.substr(0, 1) == ":")
+        {
+          // Currently we rely on the test names that have been discovered to
+          // be prefixed with ":". If they are not they are assumed to be
+          // from the coverage.manifest.
+          test_name = test_name.slice(1);
+          missing = false;
+        }
+        html += TestUp.Test.create_html(testcase_id, test_name, missing);
       }
       return html;
     },

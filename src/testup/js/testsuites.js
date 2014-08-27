@@ -156,13 +156,16 @@ TestUp.TestSuites = function() {
       for (testsuite_name in testsuites_)
       {
         var testsuite = testsuites_[testsuite_name];
-        var testsuite_data = testsuite.testcases;
         ensure_tab_exists(testsuite_name);
         $testsuite = ensure_testsuite_exists(testsuite_name);
+
         // TODO: Merge coverage.
+        var testsuite_data = merge_missing_coverage(testsuite);
         //update_missing_coverage($testsuite, testsuite);
+
         var html = TestUp.TestSuite.create_html(testsuite_data);
         $testsuite.html(html);
+        //update_missing_coverage($testsuite, testsuite);
       }
       TestUp.TestSuites.activate(last_active_tab_);
       TestUp.TestSuite.update_results(false);
@@ -179,7 +182,9 @@ TestUp.TestSuites = function() {
   function update_missing_coverage($testsuite, testsuite)
   {
     var missing = testsuite.missing_coverage;
-    if (Object.keys(missing).length > 0)
+    // If this testsuite has a coverage manifest, store the computed percent
+    // coverage with the testsuite.
+    if (Object.keys(missing).length > 0) // Hmm... Is this correct?
     {
       $testsuite.data('coverage', testsuite.coverage);
     }
@@ -194,6 +199,46 @@ TestUp.TestSuites = function() {
         $test.addClass('missing');
       }
     }
+  }
+
+
+  function merge_missing_coverage(testsuite)
+  {
+    var missing = testsuite.missing_coverage;
+    if (missing === undefined || Object.keys(missing).length == 0)
+    {
+      return testsuite.testcases;
+    }
+
+    // Merge and sort testcase names.
+    var testcase_names = Object.keys(testsuite.testcases);
+    testcase_names = testcase_names.concat(Object.keys(missing));
+    testcase_names = testcase_names.sort();
+    var testcases = {};
+    for (var i = 0; i < testcase_names.length; ++i)
+    {
+      var testcase_name = testcase_names[i];
+      // Avoid duplicates.
+      if (testcase_name in testcases)
+      {
+        continue;
+      }
+
+      // Merge and sort the testcase's tests.
+      var tests = [];
+      if (testcase_name in testsuite.testcases)
+      {
+        tests = tests.concat(testsuite.testcases[testcase_name])
+      }
+      if (testcase_name in missing)
+      {
+        // Note: these names doesn't have the ":" prefix which the
+        // testsuite.testcase has.
+        tests = tests.concat(missing[testcase_name])
+      }
+      testcases[testcase_name] = tests.sort();
+    }
+    return testcases;
   }
 
 

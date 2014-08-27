@@ -39,11 +39,12 @@ TestUp.Test = function() {
     },
 
 
-    create_html : function(testcase_id, test_name) {
+    create_html : function(testcase_id, test_name, missing) {
       var test_id = testcase_id + '\.' + test_name;
+      var extra_classes = (missing) ? ' missing' : '';
 
       var html = '\
-        <div class="test" id="' + test_id + '">\
+        <div class="test' + extra_classes + '" id="' + test_id + '">\
           <div class="title">\
             <label>\
               <input type="checkbox" checked />\
