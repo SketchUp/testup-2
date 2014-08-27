@@ -71,6 +71,8 @@ var TestUp = function() {
         num_skipped + ' skipped' +
         ' - ' + new Date().toLocaleTimeString()
       );
+      // Restore the wait cursor.
+      $('body').css('cursor', 'default');
     },
 
 

@@ -237,4 +237,16 @@ module TestUp
   end
 
 
+  def self.defer(&block)
+    done = false
+    UI.start_timer(0, false) {
+      # Any modal dialog would cause this timer to repeat. We avoid this
+      # potential problem by breaking out early if we already have run.
+      next if done
+      done = true
+      block.call
+    }
+  end
+
+
 end # module

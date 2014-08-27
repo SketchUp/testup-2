@@ -25,7 +25,10 @@ TestUp.Commands = function() {
       // otherwise it'll not be set until after the tests are run.
       setTimeout(function() {
         Sketchup.callback('TestUp.on_run');
-        $('body').css('cursor', 'default');
+        // The cursor is now restored in TestUp.update_results since the
+        // execution of the Ruby command is also deferred to avoid the
+        // "Slow running script" dialog warning.
+        //$('body').css('cursor', 'default');
       }, 50);
     },
 

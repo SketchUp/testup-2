@@ -125,8 +125,12 @@ module TestUp
     end
 
     def event_testup_run
-      discover_tests()
-      TestUp.run_tests_gui
+      # To avoid the "Slow running script" dialog in IE the call to execute
+      # the tests is deferred.
+      TestUp.defer {
+        discover_tests()
+        TestUp.run_tests_gui
+      }
     end
 
     def event_discover
