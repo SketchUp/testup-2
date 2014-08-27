@@ -198,15 +198,15 @@ module TestUp
     progress = TaskbarProgress.new
     begin
       progress.set_state(TaskbarProgress::NORMAL)
-      MiniTest.run(arguments)
+      self.suppress_warning_dialogs {
+        MiniTest.run(arguments)
+      }
     ensure
       progress.set_state(TaskbarProgress::NOPROGRESS)
     end
   end
 
 
-  # TODO(thomthom): Merge this with TestWindow.discover_tests.
-  require "pp"
   def self.discover_tests
     Debugger.time("TestUp.discover_tests") {
       progress = TaskbarProgress.new
@@ -220,6 +220,20 @@ module TestUp
       end
       discoveries
     }
+  end
+
+
+  def self.suppress_warning_dialogs(&block)
+    if Test.respond_to?(:suppress_warnings=)
+      cache = Test.suppress_warnings?
+      Test.suppress_warnings = true
+    end
+    block.call
+  ensure
+    if Test.respond_to?(:suppress_warnings=)
+      Test.suppress_warnings = cache
+    end
+    nil
   end
 
 

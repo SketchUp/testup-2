@@ -111,6 +111,7 @@ module TestUp
     end
 
     def disable_read_only_flag_for_test_models
+      return false if Test.respond_to?(:suppress_warnings=)
       source = caller_locations(1,1)[0].absolute_path
       path = File.dirname(source)
       basename = File.basename(source, ".*")
@@ -123,9 +124,11 @@ module TestUp
           FileUtils.chmod("a+w", file)
         end
       }
+      true
     end
 
     def restore_read_only_flag_for_test_models
+      return false if Test.respond_to?(:suppress_warnings=)
       source = caller_locations(1,1)[0].absolute_path
       path = File.dirname(source)
       basename = File.basename(source, ".*")
@@ -135,6 +138,7 @@ module TestUp
         FileUtils.chmod("a-w", file)
       }
       @read_only_files.clear
+      true
     end
 
   end # module
