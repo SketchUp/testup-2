@@ -158,14 +158,9 @@ TestUp.TestSuites = function() {
         var testsuite = testsuites_[testsuite_name];
         ensure_tab_exists(testsuite_name);
         $testsuite = ensure_testsuite_exists(testsuite_name);
-
-        // TODO: Merge coverage.
         var testsuite_data = merge_missing_coverage(testsuite);
-        //update_missing_coverage($testsuite, testsuite);
-
         var html = TestUp.TestSuite.create_html(testsuite_data);
         $testsuite.html(html);
-        //update_missing_coverage($testsuite, testsuite);
       }
       TestUp.TestSuites.activate(last_active_tab_);
       TestUp.TestSuite.update_results(false);
