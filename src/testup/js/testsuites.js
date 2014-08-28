@@ -179,7 +179,7 @@ TestUp.TestSuites = function() {
     var missing = testsuite.missing_coverage;
     // If this testsuite has a coverage manifest, store the computed percent
     // coverage with the testsuite.
-    if (Object.keys(missing).length > 0) // Hmm... Is this correct?
+    if (missing && Object.keys(missing).length > 0) // Hmm... Is this correct?
     {
       $testsuite.data('coverage', testsuite.coverage);
     }
@@ -200,6 +200,10 @@ TestUp.TestSuites = function() {
   function merge_missing_coverage(testsuite)
   {
     var missing = testsuite.missing_coverage;
+    if (missing && Object.keys(missing).length > 0) // Hmm... Is this correct?
+    {
+      $testsuite.data('coverage', testsuite.coverage);
+    }
     if (missing === undefined || Object.keys(missing).length == 0)
     {
       return testsuite.testcases;
