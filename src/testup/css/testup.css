@@ -361,7 +361,25 @@ html
 
 #testsuites .missing > .title
 {
-  background-image: url(../images/help.png); /* TODO: Change */
+  background-image: url(../images/missing.png);
+}
+
+/* Partially missing testcases */
+#testsuites .missing.passed > .title
+{
+  background-image: url(../images/missing_accept.png);
+}
+#testsuites .missing.failed > .title
+{
+  background-image: url(../images/missing_exclamation.png);
+}
+#testsuites .missing.error > .title
+{
+  background-image: url(../images/missing_error.png);
+}
+#testsuites .missing.partial > .title
+{
+  background-image: url(../images/missing_not_run.png);
 }
 
 

@@ -99,7 +99,7 @@ TestUp.TestSuite = function() {
       var $testcases = $('.testsuite.active .testcase');
       $testcases.each(function() {
         var $testcase = $(this);
-        $testcase.removeClass('passed failed error skipped missing');
+        $testcase.removeClass('passed failed error skipped missing partial');
 
         var $checkbox = $testcase.find('> .title input[type=checkbox]');
         var selected = $checkbox.prop('checked');
@@ -118,6 +118,7 @@ TestUp.TestSuite = function() {
         $metadata.children('.errors').text(errors);
         $metadata.children('.skipped').text(skipped);
 
+        // Pick the most severe status from the tests for the testcase.
         if (failed > 0)
         {
           $testcase.addClass('failed');
@@ -126,16 +127,24 @@ TestUp.TestSuite = function() {
         {
           $testcase.addClass('error');
         }
-        else if (missing > 0)
-        {
-          $testcase.addClass('missing');
-        }
         else if (passed > 0)
         {
           $testcase.addClass('passed');
         }
 
+        // Always add missing class to a test case as it doesn't exclude the
+        // other statuses.
+        if (missing > 0)
+        {
+          $testcase.addClass('missing');
+        }
+
+        // Mark test cases with partial coverage that hasn't been run yet.
         var partially_missing = missing > 0 && missing != tests;
+        if (partially_missing && failed == 0 && errors == 0 && passed == 0)
+        {
+          $testcase.addClass('partial');
+        }
 
         // Roll down all test cases that have failed tests.
         // Roll up test cases only if they are selected. The user probably
@@ -144,13 +153,12 @@ TestUp.TestSuite = function() {
         {
           var selected_failed = $testcase.find('.test.failed :checked').length;
           var selected_errors = $testcase.find('.test.error :checked').length;
-          var selected_missing = $testcase.find('.test.missing :checked').length;
 
-          if (failed > 0 || errors > 0 || partially_missing)
+          if (failed > 0 || errors > 0)
           {
             // Only unroll if tests that ran failed. This allow the user to roll
             // up failed tests while focusing on a sub-set.
-            if (selected_failed > 0 || selected_errors > 0 || selected_missing > 0)
+            if (selected_failed > 0 || selected_errors > 0)
             {
               $testcase.find('.tests').slideDown('fast');
             }
