@@ -33,7 +33,7 @@ module TestUp
         window.add_script(script)
       }
       on(:scripts_loaded) {
-        puts 'All scripts loaded!'
+        #puts 'All scripts loaded!'
         event_testup_ready()
       }
       on(:close) {
