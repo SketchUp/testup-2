@@ -22,6 +22,9 @@ module TestUp
 
   ### Constants ### ------------------------------------------------------------
 
+  # Set to true to expose more debug tools in the UI when developing TestUp.
+  DEBUG = false
+
   # <debug>
   if defined?(SKETCHUP_CONSOLE)
     SKETCHUP_CONSOLE.show
