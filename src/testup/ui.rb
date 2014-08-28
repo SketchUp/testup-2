@@ -12,13 +12,13 @@ module TestUp
     return if file_loaded?(__FILE__)
 
     # Commands
-    cmd = UI::Command.new('TestUp 2') {
+    cmd = UI::Command.new('Open TestUp') {
       self.toggle_testup
     }
     cmd.tooltip = 'Open TestUp'
     cmd.status_bar_text = 'Open TestUp for running tests.'
-    cmd.small_icon = File.join(PATH_IMAGES, 'bug.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'bug.png')
+    cmd.small_icon = File.join(PATH_IMAGES, 'testup-16.png')
+    cmd.large_icon = File.join(PATH_IMAGES, 'testup-24.png')
     cmd.set_validation_proc {
       MF_CHECKED if self.window && self.window.visible?
     } if defined?(Sketchup)
