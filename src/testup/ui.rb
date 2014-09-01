@@ -165,7 +165,7 @@ module TestUp
       end
 
       objShell = WIN32OLE.new('Shell.Application')
-      parent_window = TestUp::Win32.get_main_window_handle
+      parent_window = TestUp::Win32Helper.get_main_window_handle
       dialog_options = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_EDITBOX
 
       # http://msdn.microsoft.com/en-us/library/windows/desktop/bb774065(v=vs.85).aspx

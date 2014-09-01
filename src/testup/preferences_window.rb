@@ -60,6 +60,27 @@ module TestUp
       btn_move_down.position(85, 180)
       self.add_control(btn_move_down)
 
+      p4paths = Perforce.find_p4_paths
+      if p4paths.is_a?(Array) && !p4paths.empty?
+        btn_p4 = SKUI::Button.new('P4 Clients') { |control|
+          @p4window = Perforce::P4Window.new
+          @p4window.on(:close) {
+            paths = @p4window.result
+            unless paths.nil?
+              lst_paths.clear
+              lst_paths.add_item(paths)
+            end
+          }
+          @p4window.show
+        }
+        on(:close) {
+          @p4window.close if @p4window && @p4window.visible?
+        }
+        btn_p4.position(-255, 180)
+        btn_p4.tooltip = "Switch P4 client tests"
+        self.add_control(btn_p4)
+      end
+
       btn_edit_path = SKUI::Button.new('Edit') { |control|
         list = control.window[:paths]
         if list.value.nil?

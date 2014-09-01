@@ -61,6 +61,7 @@ module TestUp
   require File.join(PATH, 'coverage.rb')
   require File.join(PATH, 'debug.rb')
   require File.join(PATH, 'editor.rb')
+  require File.join(PATH, 'p4.rb')
   require File.join(PATH, 'settings.rb')
   require File.join(PATH, 'taskbar_progress.rb')
   require File.join(PATH, 'test_discoverer.rb')

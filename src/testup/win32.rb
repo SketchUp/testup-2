@@ -12,7 +12,7 @@ require 'fiddle/import'
 
 
 module TestUp
- module Win32
+ module Win32Helper
 
   include Fiddle
 
@@ -42,7 +42,7 @@ module TestUp
   end
 
 
-  # TestUp::Win32.get_main_window_handle
+  # TestUp::Win32Helper.get_main_window_handle
   #
   # Returns the window handle of the SketchUp window for the input queue of the
   # calling ruby method.
@@ -63,5 +63,5 @@ module TestUp
     main_hwnd
   end
 
- end # module Win32
+ end # module Win32Helper
 end # module TestUp
