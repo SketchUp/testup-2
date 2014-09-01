@@ -33,8 +33,14 @@ module TestUp
         window.add_script(script)
       }
       on(:scripts_loaded) {
-        #puts 'All scripts loaded!'
-        event_testup_ready()
+        Debugger.output('All scripts loaded!')
+        # Deferring this event seems to avoid a strange CommunicationError error
+        # issue with SKUI. Not sure why, but when done here one end up with
+        # lots of nested calls to Bridge.pump_message calls which eventually
+        # fail.
+        TestUp.defer {
+          event_testup_ready()
+        }
       }
       on(:close) {
         @preferences_window.close unless @preferences_window.nil?
@@ -142,7 +148,7 @@ module TestUp
     end
 
     def event_console_output(value)
-      puts value
+      Debugger.output(value)
     end
 
     def event_opent_source_file(location)
