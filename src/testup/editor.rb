@@ -62,7 +62,7 @@ module TestUp
     else
       # OSX
       # http://www.sublimetext.com/docs/3/osx_command_line.html
-      application = "subl"
+      application = "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"
     end
     arguments = '"{FILE}:{LINE}"'
     [application, arguments]

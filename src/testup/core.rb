@@ -74,13 +74,6 @@ module TestUp
   ### Configuration ### --------------------------------------------------------
 
   tests_path = File.join(__dir__, '..', '..', 'tests')
-  if RUBY_PLATFORM =~ /mswin|mingw/
-    sketchup_tests_path = File.join(__dir__, '..', '..', 'tests')
-  else
-    # Hard coded for now until we have a way to select folder in OSX.
-    sketchup_tests_path = File.join(ENV["HOME"], "src", "thomthom-trunk-mac",
-      "src", "googleclient", "sketchup", "source", "sketchup", "ruby", "tests")
-  end
   if defined?(Sketchup)
     defaults = {
       :editor_application => Editor.get_default[0],
@@ -88,9 +81,8 @@ module TestUp
       :run_in_gui => true,
       :verbose_console_tests => true,
       :paths_to_testsuites => [
-        File.expand_path(File.join(sketchup_tests_path, 'SketchUp Ruby API')),
-        File.expand_path(File.join(sketchup_tests_path, 'Bugs')),
-        File.expand_path(File.join(tests_path, 'TestUp'))
+        File.expand_path(File.join(tests_path, 'TestUp')),
+        File.expand_path(File.join(tests_path, 'SketchUp Ruby API'))
       ]
     }
   elsif defined?(Layout)
@@ -100,8 +92,7 @@ module TestUp
       :run_in_gui => false,
       :verbose_console_tests => true,
       :paths_to_testsuites => [
-        File.expand_path(File.join(tests_path, 'LayOut Ruby API'))#,
-        #File.expand_path(File.join(tests_path, 'TestUp'))
+        # ...
       ]
     }
   end
