@@ -24,6 +24,12 @@ $LOAD_PATH << "C:/Users/YourUserName/Documents/testup-2/src"
 require "testup2.rb"
 ```
 
+Credits
+-------
+
+Thanks to Mark James for making his excellent icon set "Silk" available. Portions of the set is used in this project. Some file names has been renamed and some icons where mixed to create new status indicators for test result.
+http://www.famfamfam.com/lab/icons/silk/
+
 License
 -------
 
