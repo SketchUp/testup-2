@@ -20,7 +20,7 @@ module TestUp
 
   # Plugin information
   PLUGIN_ID       = 'TestUp2'.freeze
-  PLUGIN_NAME     = 'TestUp²'.freeze
+  PLUGIN_NAME     = 'TestUp'.freeze
   PLUGIN_VERSION  = '2.0.0'.freeze
 
   # Resource paths
