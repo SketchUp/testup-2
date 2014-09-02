@@ -4,10 +4,7 @@ TestUp 2 for SketchUp
 Requirements
 ------------
 
-1. Windows (OSX currently need Ruby API improvements)
-
-2. Visual C++ Redistributable Packages for Visual Studio 2013
-http://www.microsoft.com/en-us/download/details.aspx?id=40784
+1. SketchUp 2014 or newer.
 
 Setup for Contributing
 ----------------------
