@@ -76,6 +76,13 @@ var TestUp = function() {
     },
 
 
+    escape_html : function(string) {
+      var html = string.replace(/&/g, "&amp;");
+      html = html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return html;
+    },
+
+
     debug : function(output) {
       Sketchup.callback('TestUp.Console.output', output);
     }

@@ -190,10 +190,13 @@ TestUp.Test = function() {
 
       var $message = $('<pre/>');
 
+      // Escape HTML characters.
+      var message = TestUp.escape_html(failure.message);
+
       // Create links from file paths.
       var pattern = /^(\s*)(.+\.rb[s]?:\d+)/gm;
       var replacement = "$1<a href='$2' title='Click to open file in editor'>$2</a>";
-      var html_message = failure.message.replace(pattern, replacement);
+      var html_message = message.replace(pattern, replacement);
       $message.html(html_message);
       $message.children('a').on('click', function() {
         var location = $(this).attr('href');
