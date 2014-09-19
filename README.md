@@ -21,7 +21,7 @@ _No **not** push directly to the main repository._
 # This adds the source directory to Ruby's search path and
 # loads TestUp 2.
 $LOAD_PATH << "C:/Users/YourUserName/Documents/testup-2/src"
-require "testup2.rb"
+require "testup.rb"
 ```
 
 Credits
