@@ -19,7 +19,7 @@ module TestUp
     if RUBY_PLATFORM =~ /mswin|mingw/
       self.get_p4_info_windows
     else
-      raise NotImplementedError
+      self.get_p4_info_osx
     end
   end
 
@@ -38,6 +38,19 @@ module TestUp
   end
 
 
+  def self.get_p4_info_osx
+    path = File.expand_path('~/.bash_profile')
+    content = File.read(path)
+    result = content.match(/^\s*export\s+P4CONFIG\s*=\s*(\S*)\s*$/)
+    return nil if result.nil?
+    {
+      :p4config => result[1]
+    }
+  #rescue
+    #return nil
+  end
+
+
   # TestUp::Perforce.find_p4_paths
   def self.find_p4_paths
     p4info = self.get_p4_info
@@ -46,7 +59,7 @@ module TestUp
     # Look in the user home directory and computer root.
     search_locations = [File.expand_path("/")]
     if ENV.key?("HOME")
-      search_locations << ENV["HOME"]
+      search_locations << File.expand_path(ENV["HOME"])
     else
       puts "Warning: Missing 'HOME' environment variable."
     end
@@ -55,15 +68,17 @@ module TestUp
     client_roots = ["src", "source"]
 
     # Now search for client directories.
+    locations = []
     search_locations.each { |location|
       client_roots.each { |client_root|
         filter = "#{location}/#{client_root}/*/#{p4info[:p4config]}"
-        return Dir.glob(filter).map { |file|
+        matches = Dir.glob(filter).map { |file|
           File.dirname(file)
         }
+        locations.concat(matches)
       }
     }
-    nil
+    locations.empty? ? nil : locations
   end
 
 
