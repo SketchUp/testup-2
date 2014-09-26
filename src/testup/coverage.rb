@@ -91,6 +91,7 @@ module TestUp
 
   def method_test_name(method_name)
     case method_name
+
     when '+'
       'test_Operator_Plus'
     when '-'
@@ -101,32 +102,44 @@ module TestUp
       'test_Operator_Divide'
     when '%'
       'test_Operator_Modulo'
-    when '[]'
-      'test_Operator_Get'
-    when '[]='
-      'test_Operator_Set'
-    when '<<'
-      'test_Operator_Shovel'
+    when '**'
+      'test_Operator_Pow'
+
     when '=='
       'test_Operator_Equal'
-    when '<'
-      'test_Operator_LessThan'
+    when '!='
+      'test_Operator_NotEqual'
     when '>'
       'test_Operator_GreaterThan'
-    when '<='
-      'test_Operator_LessThanOrEqual'
+    when '<'
+      'test_Operator_LessThan'
     when '>='
       'test_Operator_GreaterThanOrEqual'
+    when '<='
+      'test_Operator_LessThanOrEqual'
     when '<=>'
       'test_Operator_Sort'
     when '==='
       'test_Operator_CaseEquality'
-    when '|'
-      'test_Operator_Or'
+
     when '&'
       'test_Operator_And'
+    when '|'
+      'test_Operator_Or'
     when '^'
+      'test_Operator_Xor'
+    when '~'
       'test_Operator_Not'
+    when '<<'
+      'test_Operator_LeftShift'
+    when '<<'
+      'test_Operator_RightShift'
+
+    when '[]'
+      'test_Operator_Get'
+    when '[]='
+      'test_Operator_Set'
+
     else
       test_name = "test_#{method_name}"
       test_name.gsub!("!", "_Bang")
