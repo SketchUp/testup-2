@@ -16,14 +16,8 @@ $stderr = TestUp::TESTUP_CONSOLE
 # Load MiniTest. This is a modification from minitest/autoload.rb which doesn't
 # run the tests when SketchUp exits because MiniTest.autoload uses at_exit {}.
 
-begin
-  require "rubygems"
-  gem "minitest"
-rescue Gem::LoadError
-  # do nothing
-  raise # For now we want to raise it so we know something is wrong.
-end
-
+require "rubygems"
+gem "minitest"
 require "minitest"
 require "minitest/spec"
 require "minitest/mock"
