@@ -110,10 +110,12 @@ TestUp.TestSuites = function() {
         $('#summary_coverage').show();
       }
       // Display testsuite data.
-      assert($testsuite.length);
-      $('.testsuite').removeClass('active');
-      $testsuite.addClass('active');
-      TestUp.TestSuite.update_summary();
+      if ($testsuite.length > 0)
+      {
+        $('.testsuite').removeClass('active');
+        $testsuite.addClass('active');
+        TestUp.TestSuite.update_summary();
+      }
     },
 
 
