@@ -40,6 +40,7 @@ module TestUp
 
   def self.get_p4_info_osx
     path = File.expand_path('~/.bash_profile')
+    return nil unless File.exist?(path)
     content = File.read(path)
     result = content.match(/^\s*export\s+P4CONFIG\s*=\s*(\S*)\s*$/)
     return nil if result.nil?
