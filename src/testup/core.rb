@@ -146,9 +146,12 @@ module TestUp
     # Number of tests is currently incorrect as the list include stubs from the
     # manifest.
     @num_tests_being_run = tests.size
-    self.run_tests(tests, testsuite)
-    #puts Reporter.results.pretty_inspect
-    @window.update_results(Reporter.results)
+    if self.run_tests(tests, testsuite)
+      #puts Reporter.results.pretty_inspect
+      @window.update_results(Reporter.results)
+    else
+      @window.update_results({})
+    end
   end
 
   def self.update_testing_progress(num_tests_run)
@@ -175,6 +178,10 @@ module TestUp
   def self.run_tests(tests, testsuite = "Untitled")
     TESTUP_CONSOLE.show
     TESTUP_CONSOLE.clear
+    if tests.empty?
+      puts "No tests selected to run."
+      return false
+    end
     puts "Discovering tests...\n"
     self.discover_tests
     puts "Running test suite: #{testsuite}"
@@ -199,6 +206,7 @@ module TestUp
     ensure
       progress.set_state(TaskbarProgress::NOPROGRESS)
     end
+    true
   end
 
 
