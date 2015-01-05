@@ -107,6 +107,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_add_array_of_vertices
+    skip("Improved in SU2015") if Sketchup.version.to_i < 15
     boundingbox = Geom::BoundingBox.new
     point1 = Geom::Point3d.new(100, 200, 300)
     point2 = Geom::Point3d.new(200, 400, 200)
@@ -158,6 +159,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_add_array_of_boundingboxes
+    skip("Improved in SU2015") if Sketchup.version.to_i < 15
     boundingbox = Geom::BoundingBox.new
     point1 = Geom::Point3d.new(100, 200, 300)
     point2 = Geom::Point3d.new(200, 400, 200)
@@ -229,6 +231,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_add_array_of_boundingbox_and_point_and_array_as_point
+    skip("Improved in SU2015") if Sketchup.version.to_i < 15
     boundingbox = Geom::BoundingBox.new
 
     boundingbox2 = Geom::BoundingBox.new
@@ -670,17 +673,19 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_corner_invalid_argument_negative_index
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     boundingbox = Geom::BoundingBox.new
     boundingbox.add([100, 200, -400], [200, 400, 100])
-    assert_raises(RangeError) do
+    assert_raises(IndexError) do
       boundingbox.corner(-1)
     end
   end
 
   def test_corner_invalid_argument_index_out_max_bounds
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     boundingbox = Geom::BoundingBox.new
     boundingbox.add([100, 200, -400], [200, 400, 100])
-    assert_raises(RangeError) do
+    assert_raises(IndexError) do
       boundingbox.corner(8)
     end
   end
@@ -1011,6 +1016,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_intersect_border_x_tolerance
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     # At the time of writing the tests, SketchUp doesn't perform intersection
     # with tolerance.
     half_tolerance = SKETCHUP_UNIT_TOLERANCE / 2.0
@@ -1028,6 +1034,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_intersect_border_y_tolerance
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     # At the time of writing the tests, SketchUp doesn't perform intersection
     # with tolerance.
     half_tolerance = SKETCHUP_UNIT_TOLERANCE / 2.0
@@ -1045,6 +1052,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_intersect_border_z_tolerance
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     # At the time of writing the tests, SketchUp doesn't perform intersection
     # with tolerance.
     half_tolerance = SKETCHUP_UNIT_TOLERANCE / 2.0
@@ -1062,6 +1070,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_intersect_not_intersecting_overlap_x
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     boundingbox1 = Geom::BoundingBox.new
     boundingbox1.add([100, 200, -400], [200, 400, 300])
     boundingbox2 = Geom::BoundingBox.new
@@ -1076,6 +1085,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_intersect_not_intersecting_overlap_y
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     boundingbox1 = Geom::BoundingBox.new
     boundingbox1.add([100, 200, -400], [200, 400, 300])
     boundingbox2 = Geom::BoundingBox.new
@@ -1090,6 +1100,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_intersect_not_intersecting_overlap_z
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     boundingbox1 = Geom::BoundingBox.new
     boundingbox1.add([100, 200, -400], [200, 400, 300])
     boundingbox2 = Geom::BoundingBox.new
@@ -1104,6 +1115,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_intersect_not_intersecting_overlap_xy
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     boundingbox1 = Geom::BoundingBox.new
     boundingbox1.add([100, 200, -400], [200, 400, 300])
     boundingbox2 = Geom::BoundingBox.new
@@ -1118,6 +1130,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_intersect_not_intersecting_overlap_xz
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     boundingbox1 = Geom::BoundingBox.new
     boundingbox1.add([100, 200, -400], [200, 400, 300])
     boundingbox2 = Geom::BoundingBox.new
@@ -1132,6 +1145,7 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   end
 
   def test_intersect_not_intersecting_overlap_yz
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     boundingbox1 = Geom::BoundingBox.new
     boundingbox1.add([100, 200, -400], [200, 400, 300])
     boundingbox2 = Geom::BoundingBox.new

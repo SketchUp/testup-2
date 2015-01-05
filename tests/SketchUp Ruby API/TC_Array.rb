@@ -64,20 +64,20 @@ class TC_Array < TestUp::TestCase
 
   def test_cross_bad_params
     array = [1, 2, 3]
-  
-    assert_raises(TypeError) do
+
+    assert_raises(ArgumentError) do
       array.cross("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.cross(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.cross(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.cross(Geom::Point3d.new(1, 2, 3))
     end
   end
@@ -85,7 +85,7 @@ class TC_Array < TestUp::TestCase
   def test_cross_two_arrays_z_unit_up
     array1 = [0, 1, 0]
     array2 = [1, 0, 0]
-  
+
     cross_product = array2.cross(array1)
     expected = Geom::Vector3d.new(0, 0, 1)
     assert_equal(expected, cross_product)
@@ -95,7 +95,7 @@ class TC_Array < TestUp::TestCase
   def test_cross_two_arrays_z_unit_down
     array1 = [0, 1, 0]
     array2 = [1, 0, 0]
-  
+
     cross_product = array1.cross(array2)
     expected = Geom::Vector3d.new(0, 0, -1)
     assert_equal(expected, cross_product)
@@ -105,7 +105,7 @@ class TC_Array < TestUp::TestCase
   def test_cross_array_vector_z_unit
     vector = Geom::Vector3d.new(0, 1, 0)
     array = [1, 0, 0]
-  
+
     cross_product = array.cross(vector)
     expected = Geom::Vector3d.new(0, 0, 1)
     assert_equal(expected, cross_product)
@@ -115,7 +115,7 @@ class TC_Array < TestUp::TestCase
   def test_cross_array_vector_zero
     vector = Geom::Vector3d.new(1, 0, 0)
     array = [1, 0, 0]
-  
+
     cross_product = array.cross(vector)
     expected = Geom::Vector3d.new(0, 0, 0)
     assert_equal(expected, cross_product)
@@ -134,20 +134,20 @@ class TC_Array < TestUp::TestCase
 
   def test_distance_bad_params
     array = [1, 2, 3]
-  
-    assert_raises(TypeError) do
+
+    assert_raises(ArgumentError) do
       array.distance("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.distance(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.distance(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.distance(Geom::Vector3d.new(1, 2, 3))
     end
   end
@@ -196,7 +196,7 @@ class TC_Array < TestUp::TestCase
 
   def test_distance_to_line_bad_params
     array = [1, 2, 3]
-  
+
     assert_raises(TypeError) do
       array.distance_to_line("Boom!")
     end
@@ -267,7 +267,7 @@ class TC_Array < TestUp::TestCase
 
   def test_distance_to_plane_bad_params
     array = [1, 2, 3]
-  
+
     assert_raises(TypeError) do
       array.distance_to_plane("Boom!")
     end
@@ -345,20 +345,20 @@ class TC_Array < TestUp::TestCase
 
   def test_dot_bad_params
     array = [1, 2, 3]
-  
-    assert_raises(TypeError) do
+
+    assert_raises(ArgumentError) do
       array.dot("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.dot(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.dot(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array.dot(Geom::Point3d.new(1, 2, 3))
     end
   end
@@ -399,7 +399,7 @@ class TC_Array < TestUp::TestCase
 
   def test_normalize_bad_params
     array = [1, 2, 3]
-  
+
     assert_raises(ArgumentError) do
       array.normalize("Boom!")
     end
@@ -415,12 +415,12 @@ class TC_Array < TestUp::TestCase
     expected_z_normal = z / length
 
     array = [x, y, z]
-    vector = array.normalize
-    assert_in_delta(1.0, vector.length, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected_x_normal, vector.x, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected_y_normal, vector.y, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected_z_normal, vector.z, SKETCHUP_FLOAT_TOLERANCE)
-    assert_kind_of(Geom::Vector3d, vector)
+    new_array = array.normalize
+    assert_kind_of(Array, new_array)
+    assert_equal(3, new_array.size)
+    assert_in_delta(expected_x_normal, new_array.x, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected_y_normal, new_array.y, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected_z_normal, new_array.z, SKETCHUP_FLOAT_TOLERANCE)
   end
 
   def test_normalize_original_array_unchanged
@@ -441,9 +441,18 @@ class TC_Array < TestUp::TestCase
 
   def test_normalize_Bang_bad_params
     array = [1, 2, 3]
-  
+
     assert_raises(ArgumentError) do
       array.normalize!("Boom!")
+    end
+  end
+
+  def test_normalize_Bang_frozen
+    array = [1, 2, 3]
+    array.freeze
+
+    assert_raises(RuntimeError) do
+      array.normalize!
     end
   end
 
@@ -457,13 +466,11 @@ class TC_Array < TestUp::TestCase
     expected_z_normal = z / length
 
     array = [x, y, z]
-    array.normalize!
-    vector = Geom::Vector3d.new(array.x, array.y, array.z)
-    assert_in_delta(1.0, vector.length, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected_x_normal, vector.x, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected_y_normal, vector.y, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected_z_normal, vector.z, SKETCHUP_FLOAT_TOLERANCE)
-    assert_kind_of(Geom::Vector3d, vector)
+    vector = array.normalize!
+    assert_same(array, vector)
+    assert_in_delta(expected_x_normal, array.x, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected_y_normal, array.y, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected_z_normal, array.z, SKETCHUP_FLOAT_TOLERANCE)
   end
 
   def test_normalize_Bang_check_return_vector
@@ -477,11 +484,10 @@ class TC_Array < TestUp::TestCase
 
     array = [x, y, z]
     vector = array.normalize!
-    assert_in_delta(1.0, vector.length, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected_x_normal, vector.x, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected_y_normal, vector.y, SKETCHUP_FLOAT_TOLERANCE)
-    assert_in_delta(expected_z_normal, vector.z, SKETCHUP_FLOAT_TOLERANCE)
-    assert_kind_of(Geom::Vector3d, vector)
+    assert_same(array, vector)
+    assert_in_delta(expected_x_normal, array.x, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected_y_normal, array.y, SKETCHUP_FLOAT_TOLERANCE)
+    assert_in_delta(expected_z_normal, array.z, SKETCHUP_FLOAT_TOLERANCE)
   end
 
   # ========================================================================== #
@@ -496,20 +502,20 @@ class TC_Array < TestUp::TestCase
 
   def test_offset_bad_params
     array1 = [1, 2, 3]
-  
-    assert_raises(TypeError) do
+
+    assert_raises(ArgumentError) do
       array1.offset("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset(Geom::Point3d.new(1, 2, 3))
     end
   end
@@ -552,22 +558,31 @@ class TC_Array < TestUp::TestCase
     array.offset!(vector)
   end
 
+  def test_offset_Bang_frozen
+    array = [1, 2, 3]
+    array.freeze
+
+    assert_raises(RuntimeError) do
+      array.offset!(X_AXIS)
+    end
+  end
+
   def test_offset_Bang_bad_params
     array1 = [1, 2, 3]
-  
-    assert_raises(TypeError) do
+
+    assert_raises(ArgumentError) do
       array1.offset!("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset!(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset!(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.offset!(Geom::Point3d.new(1, 2, 3))
     end
   end
@@ -596,7 +611,7 @@ class TC_Array < TestUp::TestCase
     expected = [array.x, array.y, array.z]
     point = array.offset!(vector)
     assert_equal(expected, point)
-    assert_kind_of(Geom::Point3d, point)
+    assert_kind_of(Array, point)
   end
 
   # ========================================================================== #
@@ -611,7 +626,7 @@ class TC_Array < TestUp::TestCase
 
   def test_on_line_Query_bad_params
     array1 = [1, 2, 3]
-  
+
     assert_raises(TypeError) do
       array1.on_line?("Boom!")
     end
@@ -643,7 +658,7 @@ class TC_Array < TestUp::TestCase
     on_line = array.on_line?(line)
     assert_equal(true, on_line)
   end
-  
+
   def test_on_line_Query_false
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
 
@@ -692,7 +707,7 @@ class TC_Array < TestUp::TestCase
 
   def test_on_plane_Query_bad_params
     array1 = [1, 2, 3]
-  
+
     assert_raises(TypeError) do
       array1.on_plane?("Boom!")
     end
@@ -758,7 +773,7 @@ class TC_Array < TestUp::TestCase
 
   def test_project_to_line_bad_params
     array1 = [1, 2, 3]
-  
+
     assert_raises(TypeError) do
       array1.project_to_line("Boom!")
     end
@@ -821,7 +836,7 @@ class TC_Array < TestUp::TestCase
 
   def test_project_to_plane_bad_params
     array = [1, 2, 3]
-  
+
     assert_raises(TypeError) do
       array.project_to_plane("Boom!")
     end
@@ -885,21 +900,9 @@ class TC_Array < TestUp::TestCase
 
   def test_transform_bad_params
     array1 = [1, 2, 3]
-  
+
     assert_raises(TypeError) do
       array1.transform("Boom!")
-    end
-
-    assert_raises(TypeError) do
-      array1.transform(1.0)
-    end
-
-    assert_raises(TypeError) do
-      array1.transform(5)
-    end
-
-    assert_raises(TypeError) do
-      array1.transform(Geom::Point3d.new(1, 2, 3))
     end
   end
 
@@ -918,6 +921,15 @@ class TC_Array < TestUp::TestCase
     transform = Geom::Transformation.new(point)
     expected = Geom::Point3d.new(array1.x + point.x, array1.y + point.y, array1.z + point.z)
     array2 = array1.transform(transform)
+    assert_equal(expected, array2)
+    assert_kind_of(Array, array2)
+  end
+
+  def test_transform_point_translation_shorthand
+    array1 = [1, 2, 3]
+    point = Geom::Point3d.new(1, 1, 1)
+    expected = Geom::Point3d.new(array1.x + point.x, array1.y + point.y, array1.z + point.z)
+    array2 = array1.transform(point)
     assert_equal(expected, array2)
     assert_kind_of(Array, array2)
   end
@@ -963,6 +975,22 @@ class TC_Array < TestUp::TestCase
     expected = [2, 4, 6]
     transform = Geom::Transformation.new(2)
     array2 = array.transform(transform)
+    assert_equal(expected, array2)
+    assert_kind_of(Array, array2)
+  end
+
+  def test_transform_uniform_scale_shorthand_integer
+    array = [1, 2, 3]
+    expected = [2, 4, 6]
+    array2 = array.transform(2)
+    assert_equal(expected, array2)
+    assert_kind_of(Array, array2)
+  end
+
+  def test_transform_uniform_scale_shorthand_float
+    array = [1, 2, 3]
+    expected = [2, 4, 6]
+    array2 = array.transform(2.0)
     assert_equal(expected, array2)
     assert_kind_of(Array, array2)
   end
@@ -1044,23 +1072,20 @@ class TC_Array < TestUp::TestCase
     array.transform!(transform)
   end
 
+  def test_transform_Bang_frozen
+    array = [1, 2, 3]
+    array.freeze
+
+    assert_raises(RuntimeError) do
+      array.transform!(2)
+    end
+  end
+
   def test_transform_Bang_bad_params
     array1 = [1, 2, 3]
-  
+
     assert_raises(TypeError) do
       array1.transform!("Boom!")
-    end
-
-    assert_raises(TypeError) do
-      array1.transform!(1.0)
-    end
-
-    assert_raises(TypeError) do
-      array1.transform!(5)
-    end
-
-    assert_raises(TypeError) do
-      array1.transform!(Geom::Point3d.new(1, 2, 3))
     end
   end
 
@@ -1097,20 +1122,20 @@ class TC_Array < TestUp::TestCase
 
   def test_vector_to_bad_params
     array1 = [1, 2, 3]
-  
-    assert_raises(TypeError) do
+
+    assert_raises(ArgumentError) do
       array1.vector_to("Boom!")
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.vector_to(1.0)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.vector_to(5)
     end
 
-    assert_raises(TypeError) do
+    assert_raises(ArgumentError) do
       array1.vector_to(Geom::Vector3d.new(1, 2, 3))
     end
   end
@@ -1176,22 +1201,6 @@ class TC_Array < TestUp::TestCase
     assert_equal(-100.999, array.x)
   end
 
-  def test_x_Set_bad_params
-    array1 = [1, 2, 3]
-  
-    assert_raises(TypeError) do
-      array1.x = "Boom!"
-    end
-
-    assert_raises(TypeError) do
-      array1.x = nil
-    end
-
-    assert_raises(TypeError) do
-      array1.x = Geom::Vector3d.new(1, 2, 3)
-    end
-  end
-
   # ========================================================================== #
   # method Array.y
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#y
@@ -1219,22 +1228,6 @@ class TC_Array < TestUp::TestCase
     array.y = 2.5
     # This will initialize the y value as a Fixnum
     array.y = 5
-  end
-
-  def test_y_Set_bad_params
-    array1 = [1, 2, 3]
-  
-    assert_raises(TypeError) do
-      array1.y = "Boom!"
-    end
-
-    assert_raises(TypeError) do
-      array1.y = nil
-    end
-
-    assert_raises(TypeError) do
-      array1.y = Geom::Vector3d.new(1, 2, 3)
-    end
   end
 
   def test_y_Set_edge_cases
@@ -1278,22 +1271,6 @@ class TC_Array < TestUp::TestCase
     array.z = 2.5
     # This will initialize the z value as a Fixnum
     array.z = 5
-  end
-
-  def test_z_Set_bad_params
-    array1 = [1, 2, 3]
-  
-    assert_raises(TypeError) do
-      array1.z = "Boom!"
-    end
-
-    assert_raises(TypeError) do
-      array1.z = nil
-    end
-
-    assert_raises(TypeError) do
-      array1.z = Geom::Vector3d.new(1, 2, 3)
-    end
   end
 
   def test_z_Set_edge_cases

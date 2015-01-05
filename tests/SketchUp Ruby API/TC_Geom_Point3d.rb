@@ -71,6 +71,7 @@ class TC_Geom_Point3d < TestUp::TestCase
   end
 
   def test_vector_to_inputpoint
+    skip("Fixed in SU2015") if Sketchup.version.to_i < 15
     point1 = Geom::Point3d.new(2, 4, 5)
     point2 = Sketchup::InputPoint.new([4, 5, 8])
     expected = Geom::Vector3d.new(2, 1, 3)

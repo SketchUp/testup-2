@@ -2,6 +2,10 @@ Animation.nextFrame
 Animation.pause
 Animation.resume
 Animation.stop
+AppObserver.onActivateModel
+AppObserver.onNewModel
+AppObserver.onOpenModel
+AppObserver.onUnloadExtension
 Array.cross
 Array.distance
 Array.distance_to_line
@@ -218,6 +222,7 @@ Sketchup.get_locale
 Sketchup.get_resource_path
 Sketchup.get_shortcuts
 Sketchup.install_from_archive
+Sketchup.is_64bit?
 Sketchup.is_online
 Sketchup.is_pro?
 Sketchup.is_valid_filename?
@@ -301,6 +306,7 @@ Sketchup::Camera.focal_length
 Sketchup::Camera.focal_length=
 Sketchup::Camera.fov
 Sketchup::Camera.fov=
+Sketchup::Camera.fov_is_height?
 Sketchup::Camera.height
 Sketchup::Camera.height=
 Sketchup::Camera.image_width
@@ -314,6 +320,16 @@ Sketchup::Camera.up
 Sketchup::Camera.xaxis
 Sketchup::Camera.yaxis
 Sketchup::Camera.zaxis
+Sketchup::ClassificationSchema.<=>
+Sketchup::ClassificationSchema.name
+Sketchup::ClassificationSchema.namespace
+Sketchup::Classifications.[]
+Sketchup::Classifications.each
+Sketchup::Classifications.keys
+Sketchup::Classifications.length
+Sketchup::Classifications.load_schema
+Sketchup::Classifications.size
+Sketchup::Classifications.unload_schema
 Sketchup::Color.alpha
 Sketchup::Color.alpha=
 Sketchup::Color.blend
@@ -330,12 +346,14 @@ Sketchup::Color.to_i
 Sketchup::Color.to_s
 Sketchup::ComponentDefinition.<=>
 Sketchup::ComponentDefinition.==
+Sketchup::ComponentDefinition.add_classification
 Sketchup::ComponentDefinition.add_observer
 Sketchup::ComponentDefinition.behavior
 Sketchup::ComponentDefinition.count_instances
 Sketchup::ComponentDefinition.description
 Sketchup::ComponentDefinition.description=
 Sketchup::ComponentDefinition.entities
+Sketchup::ComponentDefinition.get_classification_value
 Sketchup::ComponentDefinition.group?
 Sketchup::ComponentDefinition.guid
 Sketchup::ComponentDefinition.hidden?
@@ -349,9 +367,11 @@ Sketchup::ComponentDefinition.name
 Sketchup::ComponentDefinition.name=
 Sketchup::ComponentDefinition.path
 Sketchup::ComponentDefinition.refresh_thumbnail
+Sketchup::ComponentDefinition.remove_classification
 Sketchup::ComponentDefinition.remove_observer
 Sketchup::ComponentDefinition.save_as
 Sketchup::ComponentDefinition.save_thumbnail
+Sketchup::ComponentDefinition.set_classification_value
 Sketchup::ComponentInstance.add_observer
 Sketchup::ComponentInstance.definition
 Sketchup::ComponentInstance.definition=
@@ -577,6 +597,7 @@ Sketchup::Face.set_texture_projection
 Sketchup::Face.vertices
 Sketchup::Group.add_observer
 Sketchup::Group.copy
+Sketchup::Group.definition
 Sketchup::Group.description
 Sketchup::Group.description=
 Sketchup::Group.entities
@@ -662,6 +683,7 @@ Sketchup::Layers.count
 Sketchup::Layers.each
 Sketchup::Layers.length
 Sketchup::Layers.purge_unused
+Sketchup::Layers.remove
 Sketchup::Layers.remove_observer
 Sketchup::Layers.size
 Sketchup::Layers.unique_name
@@ -670,6 +692,11 @@ Sketchup::LayersObserver.onLayerAdded
 Sketchup::LayersObserver.onLayerChanged
 Sketchup::LayersObserver.onLayerRemoved
 Sketchup::LayersObserver.onRemoveAllLayers
+Sketchup::Licensing.get_extension_license
+Sketchup::Licensing::ExtensionLicense.days_remaining
+Sketchup::Licensing::ExtensionLicense.error_description
+Sketchup::Licensing::ExtensionLicense.licensed?
+Sketchup::Licensing::ExtensionLicense.state
 Sketchup::Loop.convex?
 Sketchup::Loop.edges
 Sketchup::Loop.edgeuses
@@ -682,6 +709,9 @@ Sketchup::Material.alpha
 Sketchup::Material.alpha=
 Sketchup::Material.color
 Sketchup::Material.color=
+Sketchup::Material.colorize_deltas
+Sketchup::Material.colorize_type
+Sketchup::Material.colorize_type=
 Sketchup::Material.display_name
 Sketchup::Material.materialType
 Sketchup::Material.name
@@ -725,6 +755,7 @@ Sketchup::Model.attribute_dictionaries
 Sketchup::Model.attribute_dictionary
 Sketchup::Model.behavior
 Sketchup::Model.bounds
+Sketchup::Model.close
 Sketchup::Model.close_active
 Sketchup::Model.commit_operation
 Sketchup::Model.definitions
@@ -733,6 +764,7 @@ Sketchup::Model.description=
 Sketchup::Model.edit_transform
 Sketchup::Model.entities
 Sketchup::Model.export
+Sketchup::Model.find_entity_by_id
 Sketchup::Model.georeferenced?
 Sketchup::Model.get_attribute
 Sketchup::Model.get_datum
@@ -1115,6 +1147,7 @@ UI.play_sound
 UI.preferences_pages
 UI.refresh_inspectors
 UI.savepanel
+UI.select_directory
 UI.set_cursor
 UI.set_toolbar_visible
 UI.show_inspector
