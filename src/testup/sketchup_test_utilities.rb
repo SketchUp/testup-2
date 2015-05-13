@@ -262,6 +262,20 @@ module TestUp
             "#{num} unexpected notifications")
       end
 
+      # @param [String] event
+      # @param [Integer] argument
+      # @param [Class] type
+      # @param [Object] expected
+      def assert_callback_data(event, argument_index, type, expected)
+        # NOTE: This inspects only the last callback.
+        arguments = callback_data[event].last
+        argument = arguments[argument_index]
+        assert_kind_of(type, argument,
+            "#{event} returned unexpected type for argument #{argument_index}")
+        assert_equal(expected, argument,
+            "#{event} returned unexpected value for argument #{argument_index}")
+      end
+
       # @param [String] notification
       # @param [Object] expected
       def assert_notification_count(notification, expected)
