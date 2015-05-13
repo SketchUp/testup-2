@@ -279,7 +279,7 @@ module TestUp
       # @param [String] notification
       # @param [Object] expected
       def assert_notification_count(notification, expected)
-        if callback_data.nil?
+        if callback_data.nil? || callback_data[notification].nil?
           actual = 0
         else
           actual = callback_data[notification].size
