@@ -160,7 +160,10 @@ module TestUp
     def self.included(base)
       # When the observer sub-classes a template observer we must inject
       # forwarding methods that will ensure all notifications is caught.
+      #puts "ObserverForwarder.included"
+      #p base.instance_methods.grep(/^on[A-Z_]/)
       base.instance_methods.grep(/^on[A-Z_]/).each { |symbol|
+        #puts "Intercepting #{symbol}"
         base.class_eval {
           define_method(symbol) { |*args|
             #puts "=> #{symbol} (overloaded trace)" if @trace_notifications
@@ -195,10 +198,12 @@ module TestUp
     private
 
     def _set_forwarding_receiver(receiver)
+      #puts "_set_forwarding_receiver (#{@receiver.inspect})"
       @receiver = receiver
     end
 
     def _forward_callback(callback_name, *args)
+      #puts "#{callback_name} (#{@receiver.inspect})"
       return if @receiver.nil?
       @receiver.add_callback_data(callback_name, args)
     end
@@ -293,6 +298,7 @@ module TestUp
     module ClassMethods
 
       def add_callback_data(method, data)
+        #puts "#{self}.add_callback_data(#{method})"
         return if method.to_s.start_with?("onDebug")
         @@callback_data ||= {}
         @@callback_data[method] ||= []
@@ -304,6 +310,7 @@ module TestUp
       end
 
       def reset_callback_data
+        #puts "!!! reset_callback_data !!!"
         @@callback_data = nil
       end
 
