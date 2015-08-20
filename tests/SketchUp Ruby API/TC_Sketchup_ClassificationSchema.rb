@@ -1,6 +1,6 @@
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
 # License:: All Rights Reserved.
-# Original Author:: Thomas Thomassen (thomthom@sketchup.com)
+# Original Author:: Thomas Thomassen
 
 
 require 'testup/testcase'

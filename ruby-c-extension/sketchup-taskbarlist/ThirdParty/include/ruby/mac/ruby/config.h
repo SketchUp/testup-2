@@ -1,5 +1,5 @@
 // Copyright 2013 Trimble Navigation Ltd.  All Rights Reserved
-// Author: bugra@sketchup.com (Bugra Barin)
+// Author: Bugra Barin
 #ifndef INCLUDE_RUBY_CONFIG_WRAPPER_H
 #define INCLUDE_RUBY_CONFIG_WRAPPER_H
 

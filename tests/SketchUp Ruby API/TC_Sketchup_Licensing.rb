@@ -1,6 +1,6 @@
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
 # License:: All Rights Reserved.
-# Original Author:: Bugra Barin (bugra@sketchup.com)
+# Original Author:: Bugra Barin
 
 require 'testup/testcase'
 
