@@ -90,7 +90,7 @@ module TestUp
         directory = list.value.first
         path = SystemUI.select_directory(directory: directory)
         unless path.nil?
-          index = list.index(directory)
+          index = list.items.index(directory)
           list.rename(index, path)
         end
       }
