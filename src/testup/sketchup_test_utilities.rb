@@ -143,4 +143,179 @@ module TestUp
 
   end # module
 
+
+  module ObserverForwarder
+
+    # Catch all notification events sent to the observer.
+    def method_missing(method_sym, *arguments, &block)
+      #puts "ObserverForwarder.method_missing(#{method_sym})"
+      if method_sym.to_s =~ /^on[A-Z_]/
+        #puts "=> #{method_sym} (method_missing trace)" if @trace_notifications
+        _forward_callback(method_sym.to_s, *arguments)
+      else
+        super
+      end
+    end
+
+    def self.included(base)
+      # When the observer sub-classes a template observer we must inject
+      # forwarding methods that will ensure all notifications is caught.
+      #puts "ObserverForwarder.included"
+      #p base.instance_methods.grep(/^on[A-Z_]/)
+      base.instance_methods.grep(/^on[A-Z_]/).each { |symbol|
+        #puts "Intercepting #{symbol}"
+        base.class_eval {
+          define_method(symbol) { |*args|
+            #puts "=> #{symbol} (overloaded trace)" if @trace_notifications
+            _forward_callback(symbol.to_s, *args)
+            super(*args)
+          } # define method
+        }
+      }
+    end
+
+    # It's important to know Object defines respond_to to take two parameters:
+    # the method to check, and whether to include private methods
+    # http://www.ruby-doc.org/core/classes/Object.html#M000333
+    def respond_to?(method_sym, include_private = false)
+      #puts "ObserverForwarder.respond_to?(#{method_sym})"
+      if method_sym.to_s =~ /^on[A-Z_]/
+        #puts "> Observer Event!"
+        true
+      else
+        super
+      end
+    end
+
+    def _start_notification_trace
+      @trace_notifications = true
+    end
+
+    def _stop_notification_trace
+      @trace_notifications = false
+    end
+
+    private
+
+    def _set_forwarding_receiver(receiver)
+      #puts "_set_forwarding_receiver (#{@receiver.inspect})"
+      @receiver = receiver
+    end
+
+    def _forward_callback(callback_name, *args)
+      #puts "#{callback_name} (#{@receiver.inspect})"
+      return if @receiver.nil?
+      @receiver.add_callback_data(callback_name, args)
+    end
+
+  end # module
+
+
+  module ObserverReceiver
+
+    # Make sure to call super from class that inherits!
+    #def setup
+    #  @@callback_data = nil
+    #end
+
+    # Make sure to call super from class that inherits!
+    #def teardown
+    #  @@callback_data = nil
+    #end
+
+    #def self.add_callback_data(method, data)
+    #  @@callback_data ||= {}
+    #  @@callback_data[method] ||= []
+    #  @@callback_data[method] << data
+    #end
+
+    def self.included(base)
+      base.send(:include, InstanceMethods)
+      base.extend(ClassMethods)
+    end
+
+    #def reset_callback_data
+    #  @@callback_data = nil
+    #end
+    #private :reset_callback_data
+
+    module InstanceMethods
+
+      def reset_callback_data
+        self.class.reset_callback_data
+      end
+
+      def callback_data
+        self.class.callback_data
+      end
+
+      def assert_notifications(*args)
+        assert_kind_of(Hash, callback_data, "No notification received")
+        args.each { |notification|
+          was_called = callback_data.has_key?(notification)
+          assert_equal(true, was_called, "#{notification} not called")
+        }
+        callback_data.each { |notification, arguments|
+          expected = args.include?(notification)
+          assert_equal(true, expected, "#{notification} unexpectedly called")
+        }
+      end
+
+      def assert_no_notification
+        num = callback_data ? callback_data.size : 0
+        assert_nil(callback_data,
+            "#{num} unexpected notifications")
+      end
+
+      # @param [String] event
+      # @param [Integer] argument
+      # @param [Class] type
+      # @param [Object] expected
+      def assert_callback_data(event, argument_index, type, expected)
+        # NOTE: This inspects only the last callback.
+        arguments = callback_data[event].last
+        argument = arguments[argument_index]
+        assert_kind_of(type, argument,
+            "#{event} returned unexpected type for argument #{argument_index}")
+        assert_equal(expected, argument,
+            "#{event} returned unexpected value for argument #{argument_index}")
+      end
+
+      # @param [String] notification
+      # @param [Object] expected
+      def assert_notification_count(notification, expected)
+        if callback_data.nil? || callback_data[notification].nil?
+          actual = 0
+        else
+          actual = callback_data[notification].size
+        end
+        assert_equal(expected, actual,
+            "#{notification} called unexpected number of times")
+      end
+
+    end # module
+
+    module ClassMethods
+
+      def add_callback_data(method, data)
+        #puts "#{self}.add_callback_data(#{method})"
+        return if method.to_s.start_with?("onDebug")
+        @@callback_data ||= {}
+        @@callback_data[method] ||= []
+        @@callback_data[method] << data
+      end
+
+      def callback_data
+        @@callback_data
+      end
+
+      def reset_callback_data
+        #puts "!!! reset_callback_data !!!"
+        @@callback_data = nil
+      end
+
+    end # module
+
+  end # module
+
 end # module
