@@ -141,6 +141,41 @@ module TestUp
       true
     end
 
+    def capture_stdout(verbose = $VERBOSE, &block)
+      io_buffer = StringIO.new
+      stdout = $stdout
+      $stdout = io_buffer
+      set_verbose_mode(verbose) {
+        block.call
+      }
+      io_buffer
+    ensure
+      $stdout = stdout
+    end
+
+    def capture_stderr(verbose = $VERBOSE, &block)
+      io_buffer = StringIO.new
+      stderr = $stderr
+      $stderr = io_buffer
+      set_verbose_mode(verbose) {
+        block.call
+      }
+      io_buffer
+    ensure
+      $stderr = stderr
+    end
+
+    VERBOSE_SILENT = nil
+    VERBOSE_SOME   = false # Default
+    VERBOSE_ALL    = true
+    def set_verbose_mode(mode, &block)
+      verbose = $VERBOSE
+      $VERBOSE = mode
+      block.call
+    ensure
+      $VERBOSE = verbose
+    end
+
   end # module
 
 
