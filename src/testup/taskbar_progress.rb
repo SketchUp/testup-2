@@ -23,8 +23,10 @@ module TestUp
         end
       rescue LoadError => error
         # Soft fail when the lib cannot be loaded. It's just extra visuals.
+        puts 'Failed to load TaskbarProgress'
         puts error.message
         puts error.backtrace.join("\n")
+        puts 'Ignoring...'
       end
     end
   end
