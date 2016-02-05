@@ -15,11 +15,13 @@ module TestUp
     # pre-loaded.
     unless defined?(CEXT_VERSION)
       pointer_size = ['a'].pack('P').size * 8
+      major, minor, rev = RUBY_VERSION.split('.')
+      ruby = "ruby#{major}#{minor}0"
       begin
         if pointer_size > 32
-          require_relative('lib/x64/TaskbarProgress')
+          require_relative("lib/#{ruby}/x64/TaskbarProgress")
         else
-          require_relative('lib/x86/TaskbarProgress')
+          require_relative("lib/#{ruby}/x86/TaskbarProgress")
         end
       rescue LoadError => error
         # Soft fail when the lib cannot be loaded. It's just extra visuals.

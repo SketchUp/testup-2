@@ -14,8 +14,8 @@
 ############
 
 tests_old/
-Debug/
-Release/
+Debug*/
+Release*/
 ipch/
 xcuserdata/
 
