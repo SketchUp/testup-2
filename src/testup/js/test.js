@@ -188,7 +188,7 @@ TestUp.Test = function() {
       });
       $failure.append($location);
 
-      var $message = $('<pre/>');
+      var $message = $('<pre class="selectable"/>');
 
       // Escape HTML characters.
       var message = TestUp.escape_html(failure.message);
