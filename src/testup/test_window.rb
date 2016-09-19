@@ -78,11 +78,8 @@ module TestUp
 
     private
 
-    # Intecept callbacks from the SKUI window before passing it on to SKUI.
-    def callback_handler(webdialog, params)
-      #puts( '>> TestWindow Callback' )
-      callback, *arguments = params.split('||')
-      #puts "#{callback}(#{arguments})"
+    # Intercept callbacks from the SKUI window before passing it on to SKUI.
+    def callback_handler(webdialog, callback, arguments)
       case callback
       when 'TestUp.on_script_debugger_attached'
         ScriptDebugger.attach
@@ -161,7 +158,23 @@ module TestUp
         filename = location
         line_number = 0
       end
-      Editor.open_file(filename, line_number)
+      unless File.exist?(filename)
+        warn "Unable to find: #{filename}"
+        warn 'Trying to account for encoding bug...'
+        warn filename
+        filename = filename.encode('ISO-8859-1')
+        warn filename
+        filename.force_encoding('UTF-8')
+        warn filename
+        warn "Exists: #{File.exist?(filename)}"
+      end
+      if File.exist?(filename)
+        Editor.open_file(filename, line_number)
+      else
+        UI.beep
+        warn "Unable to open: #{filename}"
+        p filename.bytes
+      end
     end
 
     def event_on_open_preferences()

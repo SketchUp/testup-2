@@ -12,7 +12,13 @@ require 'rubygems'
 begin
   gem 'minitest'
 rescue Gem::LoadError
-  Gem.install('minitest')
+  begin
+    Gem.install('minitest')
+  rescue Gem::LoadError
+    # Needed because of Ruby 2.2. Ruby 2.0 did not need this. Seems like a bug.
+    # This pattern is probably not that common, to be programmatically installing
+    # gems.
+  end
   gem 'minitest'
 end
 require 'minitest'

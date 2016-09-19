@@ -83,8 +83,9 @@ module TestUp
   end
 
 
+  # TODO(thomthom): Rename to `expected_test_suites`
   def self.expected_tests
-    ["SketchUp Ruby API", "Bugs"]
+    ["SketchUp Ruby API", "Observers 1.0", "Observers 2.0", "Bugs", "Ruby"]
   end
 
 

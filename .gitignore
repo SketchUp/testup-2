@@ -7,14 +7,15 @@
 *.opensdf
 *.sdf
 *.suo
+*.rbz
 
 ############
 ## Folders
 ############
 
 tests_old/
-Debug/
-Release/
+Debug*/
+Release*/
 ipch/
 xcuserdata/
 
