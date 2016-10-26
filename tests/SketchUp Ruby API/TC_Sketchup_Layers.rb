@@ -96,6 +96,61 @@ class TC_Sketchup_Layers < TestUp::TestCase
 
 
   # ========================================================================== #
+  # method Sketchup::Layers.add
+  # http://www.sketchup.com/intl/developer/docs/ourdoc/layers#add
+
+  def test_add_api_example
+    layers = Sketchup.active_model.layers
+    layer = layers.add("Test New Layer")
+  end
+
+  def test_add_new
+    layer_name = "Test New Layer"
+    layers = Sketchup.active_model.layers
+
+    layer = layers.add(layer_name)
+    assert_kind_of(Sketchup::Layer, layer)
+    assert_equal(layer_name, layer.name)
+  end
+
+  def test_add_existing
+    layer_name = "Test New Layer"
+    layers = Sketchup.active_model.layers
+    layer1 = layers.add(layer_name)
+
+    layer2 = layers.add(layer_name)
+    assert_kind_of(Sketchup::Layer, layer2)
+    assert_equal(layer1, layer2)
+  end
+
+  def test_remove_incorrect_number_of_arguments_zero
+    assert_raises(ArgumentError) do
+      Sketchup.active_model.layers.add
+    end
+  end
+
+  def test_remove_incorrect_number_of_arguments_two
+    assert_raises(ArgumentError) do
+      Sketchup.active_model.layers.add("Hello", "World")
+    end
+  end
+
+  def test_remove_invalid_argument_nil
+    # Meh! Should have been TypeError... 
+    assert_raises(ArgumentError) do
+      Sketchup.active_model.layers.add(nil)
+    end
+  end
+
+  def test_remove_invalid_argument_number
+    # Meh! Should have been TypeError... 
+    assert_raises(ArgumentError) do
+      Sketchup.active_model.layers.add(123)
+    end
+  end
+
+
+  # ========================================================================== #
   # method Sketchup::Layers.remove
   # http://www.sketchup.com/intl/developer/docs/ourdoc/layers#remove
 

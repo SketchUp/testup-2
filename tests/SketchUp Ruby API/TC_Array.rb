@@ -958,6 +958,7 @@ class TC_Array < TestUp::TestCase
   end
 
   def test_transform_4_x_4_array_scale_2x
+    assert(false, "Fix this for SU2016") # Temporarily added to avoid assert.
     array = [1, 2, 3]
     expected = [2, 4, 6]
     array_4x4 = [1, 0, 0, 0,

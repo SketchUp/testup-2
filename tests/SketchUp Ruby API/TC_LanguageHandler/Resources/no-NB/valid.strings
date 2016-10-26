@@ -1,0 +1,9 @@
+// @language_name: Norsk (Bokmål)
+// no-NB Test File
+"String 1"="Tekst 1";
+"String 2/"="Tekst 2/";
+"String "3""="Tekst 3";
+"String 4"="Tekst" 4";
+"Foo"="Little Bunny";
+"String 5"="Vær og vind, snø og regn";
+"All your base are belong to us"="Einj deh!";

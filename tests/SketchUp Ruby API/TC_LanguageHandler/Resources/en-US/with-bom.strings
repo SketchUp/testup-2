@@ -1,0 +1,8 @@
+﻿// Valid test file.
+"String 1"="Localized String 1";
+"String 2/"="Localized String 2/";
+"String "3""="Localized String 3";
+"String 4"="Localized "String" 4";
+"Foo"="Bar";
+"String 5"="Bærene bør ikke være dårlige!";
+"All your base are belong to us"="你所有的基地都屬於我們";

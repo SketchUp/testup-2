@@ -5,6 +5,8 @@
 
 require "testup/testcase"
 
+require "stringio"
+
 
 # class Sketchup::Model
 # http://www.sketchup.com/intl/developer/docs/ourdoc/model
@@ -13,10 +15,12 @@ class TC_Sketchup_Model < TestUp::TestCase
   def setup
     start_with_empty_model()
     create_test_tube()
+    Sketchup.active_model.select_tool(nil)
   end
 
   def teardown
-    # ...
+    # Just to make sure no tests leave open Ruby transactions.
+    Sketchup.active_model.commit_operation
   end
 
 
@@ -66,9 +70,29 @@ class TC_Sketchup_Model < TestUp::TestCase
     entities
   end
 
+
+  # ========================================================================== #
+  # method Sketchup::Model.start_operation
+  # http://www.sketchup.com/intl/developer/docs/ourdoc/model#start_operation
+
+  def test_start_operation_warn_new_nested_operation
+    skip("Implemented in SU2016") if Sketchup.version.to_i < 16
+    model = Sketchup.active_model
+    model.start_operation("Hello")
+    stderr = capture_stderr(VERBOSE_SOME) {
+      model.start_operation("World")
+    }
+    expected_warning = %{warning: New operation ("World") started while an existing operation ("Hello") was still open}
+    result = stderr.string
+    assert(result.include?(expected_warning),
+      "Expected warning: #{expected_warning}\nResult: #{result}")
+  end
+
+
   # ========================================================================== #
   # method Sketchup::Model.close
   # http://www.sketchup.com/intl/developer/docs/ourdoc/model#close
+
   def test_close_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
     discard_model_changes()
@@ -578,5 +602,217 @@ class TC_Sketchup_Model < TestUp::TestCase
     end
   end
 
+
+  # ========================================================================== #
+  # method Sketchup::Model.find_entity_by_persistent_id
+
+  def test_find_entity_by_persistent_id_api_example
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    model = Sketchup.active_model
+    # Init dummy variables to avoid raising errors.
+    id1 = id2 = id3 = 0
+    # Example Start:
+
+    # Look up by persistent_id.
+    pid = model.entities.add_line([0,0,0], [9,9,9]).persistent_id
+    entity = model.find_entity_by_persistent_id(pid)
+ 
+    # Look up multiple.
+    entities = model.find_entity_by_persistent_id(id1, id2, id3)
+    entities = model.find_entity_by_persistent_id([id1, id2, id3])
+  end
+
+  def test_find_entity_by_persistent_id_entity_id
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    group = Sketchup.active_model.entities[0]
+    entity = group.entities[0]
+
+    result = Sketchup.active_model.find_entity_by_persistent_id(
+        entity.persistent_id)
+    assert_equal(entity, result)
+  end
+
+  def test_find_entity_by_persistent_id_entity_id_array_single_item
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    group = Sketchup.active_model.entities[0]
+    entity = group.entities[0]
+
+    result = Sketchup.active_model.find_entity_by_persistent_id(
+        [entity.persistent_id])
+    assert_equal([entity], result)
+  end
+
+  def test_find_entity_by_persistent_id_entity_id_array
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    add_extra_groups_and_components()
+
+    entities = get_model_entities()
+    ids = entities.map { |entity| entity.persistent_id }
+
+    result = Sketchup.active_model.find_entity_by_persistent_id(ids)
+    assert_equal(entities.size, result.size)
+    assert_equal(entities, result)
+  end
+
+  def test_find_entity_by_persistent_id_entity_id_multiple_arguments
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    add_extra_groups_and_components()
+
+    entities = get_model_entities()
+    ids = entities.map { |entity| entity.persistent_id }
+
+    result = Sketchup.active_model.find_entity_by_persistent_id(*ids)
+    assert_equal(entities.size, result.size)
+    assert_equal(entities, result)
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::Model.instance_path_from_pid_path
+
+  def test_instance_path_from_pid_path_api_example
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    points = [
+      Geom::Point3d.new( 0,  0, 0),
+      Geom::Point3d.new(10,  0, 0),
+      Geom::Point3d.new(10, 20, 0),
+      Geom::Point3d.new( 0, 20, 0)
+    ]
+    model = Sketchup.active_model
+    entities = model.active_entities
+    group = entities.add_group
+    face = group.entities.add_face(points)
+    pid_path = "#{group.persistent_id}.#{face.persistent_id}"
+    # pid_path will look something like this: "658.723"
+    instance_path = model.instance_path_from_pid_path(pid_path)
+  end
+
+  def test_instance_path_from_pid_path
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    points = [
+      Geom::Point3d.new( 0,  0, 0),
+      Geom::Point3d.new(10,  0, 0),
+      Geom::Point3d.new(10, 20, 0),
+      Geom::Point3d.new( 0, 20, 0)
+    ]
+    model = Sketchup.active_model
+    entities = model.active_entities
+    group = entities.add_group
+    face = group.entities.add_face(points)
+    pid_path = "#{group.persistent_id}.#{face.persistent_id}"
+
+    result = model.instance_path_from_pid_path(pid_path)
+    assert_kind_of(Sketchup::InstancePath, result)
+    assert_equal([group, face], result.to_a)
+  end
+
+  def test_instance_path_from_pid_path_invalid_path_invalid_ids
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    model = Sketchup.active_model
+    assert_raises(ArgumentError) {
+      instance_path = model.instance_path_from_pid_path(-1, -2)
+    }
+  end
+
+  def test_instance_path_from_pid_path_invalid_path
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    model = Sketchup.active_model
+    assert_raises(ArgumentError) {
+      instance_path = model.instance_path_from_pid_path(999998, 999999)
+    }
+  end
+
+  def test_instance_path_from_pid_path_incorrect_number_of_arguments_zero
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    model = Sketchup.active_model
+    assert_raises(ArgumentError) {
+      instance_path = model.instance_path_from_pid_path
+    }
+  end
+
+  def test_instance_path_from_pid_path_invalid_argument_nil
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    model = Sketchup.active_model
+    assert_raises(TypeError) {
+      instance_path = model.instance_path_from_pid_path(nil)
+    }
+  end
+
+  def test_instance_path_from_pid_path_invalid_argument_string
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    model = Sketchup.active_model
+    assert_raises(ArgumentError) {
+      instance_path = model.instance_path_from_pid_path("hello")
+    }
+  end
+
+  def test_instance_path_from_pid_path_incorrect_number_of_arguments_zero
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    model = Sketchup.active_model
+    assert_raises(ArgumentError) {
+      instance_path = model.instance_path_from_pid_path
+    }
+  end
+
+  def test_instance_path_from_pid_path_incorrect_number_of_arguments_two
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    model = Sketchup.active_model
+    assert_raises(ArgumentError) {
+      instance_path = model.instance_path_from_pid_path(1, 2)
+    }
+  end
+
+
+  # Class to use for tool tests
+  class MyTool; end
+
+  def test_select_tool
+    mytool = MyTool.new
+    Sketchup.active_model.select_tool(mytool)
+    assert_operator(Sketchup.active_model.tools.active_tool_id, :>, 50000,
+        "Tool ID was invalid")
+  end
+
+  def test_select_tool_default
+    Sketchup.active_model.select_tool(nil)
+    # This magic number is the resource ID for the select tool (ID_DRAW_SELECT)
+    assert_equal(21022, Sketchup.active_model.tools.active_tool_id,
+        "Tool stack was not cleared")
+  end
+
+  def test_select_tool_clear
+    mytool = MyTool.new
+    Sketchup.active_model.select_tool mytool
+    Sketchup.active_model.select_tool(nil)
+    assert_equal(21022, Sketchup.active_model.tools.active_tool_id,
+        "Tool stack was not cleared")
+  end
+
+
+  def test_select_tool_diff_tools
+    mytool = MyTool.new
+    Sketchup.active_model.select_tool mytool
+    mytool_id = Sketchup.active_model.tools.active_tool_id
+
+    # Add second tool instance and confirm the tool ID is different
+    mytool2 = MyTool.new
+    Sketchup.active_model.select_tool mytool2
+    refute_equal(Sketchup.active_model.tools.active_tool_id, mytool_id,
+        "Tool ID did not change")
+  end
+
+  def test_select_tool_same_tool_2x
+    mytool = MyTool.new
+    Sketchup.active_model.select_tool mytool
+    mytool_id = Sketchup.active_model.tools.active_tool_id
+
+    # Clear the tool stack
+    Sketchup.active_model.select_tool nil
+
+    # Re-add the same tool and confirm the tool ID is different
+    Sketchup.active_model.select_tool mytool
+    refute_equal(Sketchup.active_model.tools.active_tool_id, mytool_id,
+        "Tool ID did not change")
+  end
 
 end # class

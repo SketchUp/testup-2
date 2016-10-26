@@ -345,4 +345,265 @@ class TC_Sketchup_View < TestUp::TestCase
     end
   end
 
+
+  # ========================================================================== #
+  # method Sketchup::View.draw_text
+  # http://www.sketchup.com/intl/developer/docs/ourdoc/view#draw_text
+
+  def test_draw_text_api_example
+    view = Sketchup.active_model.active_view
+
+    # This works in all SketchUp versions and draws the text using the
+    # default font, color and size.
+    point = Geom::Point3d.new(200, 100, 0)
+    view.draw_text(point, "This is a test")
+
+    # This works in SketchUp 2016 and up.
+    options = {
+      :font => "Arial",
+      :size => 20,
+      :bold => true,
+      :align => TextAlignRight
+    }
+    point = Geom::Point3d.new(200, 200, 0)
+    view.draw_text(point, "This is another\ntest", options)
+
+    # You can also use Ruby 2.0's named arguments:
+    point = Geom::Point3d.new(200, 200, 0)
+    view.draw_text(point, "Hello world!", color: "Red")
+  end
+
+  def test_draw_text
+    view = Sketchup.active_model.active_view
+    result = view.draw_text(ORIGIN, "Test")
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_invalid_argument_position
+    view = Sketchup.active_model.active_view
+    assert_raises(ArgumentError) do
+      view.draw_text("FooBar", "Test")
+    end
+  end
+
+  def test_draw_invalid_arguments_zero
+    assert_raises(ArgumentError) do
+      Sketchup.active_model.active_view.draw_text()
+    end
+  end
+
+  def test_draw_invalid_arguments_one
+    assert_raises(ArgumentError) do
+      Sketchup.active_model.active_view.draw_text(ORIGIN)
+    end
+  end
+
+  def test_draw_invalid_arguments_three
+    skip("Optional argument added in SU2016") if Sketchup.version.to_i >= 16
+    assert_raises(TypeError) do
+      Sketchup.active_model.active_view.draw_text(ORIGIN, "Test", 123)
+    end
+  end
+
+  def test_draw_invalid_arguments_four
+    assert_raises(ArgumentError) do
+      Sketchup.active_model.active_view.draw_text(ORIGIN, "Test", 123, 456)
+    end
+  end
+
+  def test_draw_text_options_argument
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    result = view.draw_text(ORIGIN, "Test", {})
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_options_invalid_argument
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    assert_raises(TypeError) do
+      view.draw_text(ORIGIN, "Test", ORIGIN)
+    end
+  end
+
+  def test_draw_text_option_font
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    options = {
+      :font => "Arial"
+    }
+    result = view.draw_text(ORIGIN, "Test", options)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_font_bogus_name
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    options = {
+      :font => "IamNotAFontButShouldNotCrash"
+    }
+    result = view.draw_text(ORIGIN, "Test", options)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_font_long_name
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    options = {
+      :font => "ThisFontNameIsTooLongForWindows01234"
+    }
+    if Sketchup.platform == :platform_osx
+      result = view.draw_text(ORIGIN, "Test", options)
+      assert_equal(view, result)
+    else
+      assert_raises(ArgumentError) do
+        view.draw_text(ORIGIN, "Test", options)
+      end
+    end
+  end
+
+  def test_draw_text_option_font_name_unicode
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    options = {
+      :font => "Tæsting てすと"
+    }
+    result = view.draw_text(ORIGIN, "てすと", options)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_font_invalid_argument
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    assert_raises(TypeError) do
+      view.draw_text(ORIGIN, "Test", font: ORIGIN)
+    end
+  end
+
+  def test_draw_text_option_size
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    result = view.draw_text(ORIGIN, "Test", size: 20)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_size_zero
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    result = view.draw_text(ORIGIN, "Test", size: 0)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_size_invalid_argument
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    assert_raises(TypeError) do
+      view.draw_text(ORIGIN, "Test", size: "FooBar")
+    end
+  end
+
+  def test_draw_text_option_italic
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    result = view.draw_text(ORIGIN, "Test", italic: true)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_bold
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    result = view.draw_text(ORIGIN, "Test", bold: true)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_color
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    color = Sketchup::Color.new(255, 0, 0)
+    result = view.draw_text(ORIGIN, "Test", color: color)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_color_string
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    result = view.draw_text(ORIGIN, "Test", color: "red")
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_color_invalid_argument
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    assert_raises(TypeError) do
+      view.draw_text(ORIGIN, "Test", color: ORIGIN)
+    end
+  end
+
+  def test_draw_text_option_align_left
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    result = view.draw_text(ORIGIN, "Test", align: TextAlignLeft)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_align_center
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    result = view.draw_text(ORIGIN, "Test", align: TextAlignCenter)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_align_right
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    result = view.draw_text(ORIGIN, "Test", align: TextAlignRight)
+    assert_equal(view, result)
+    view.refresh # Force a redraw to check if anything crashes.
+  end
+
+  def test_draw_text_option_align_invalid_integer_less_than
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    assert_raises(ArgumentError) do
+      view.draw_text(ORIGIN, "Test", align: -1)
+    end
+  end
+
+  def test_draw_text_option_align_invalid_integer_higher_than
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    assert_raises(ArgumentError) do
+      view.draw_text(ORIGIN, "Test", align: 3)
+    end
+  end
+
+  def test_draw_text_option_align_invalid_symbol
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    assert_raises(TypeError) do
+      view.draw_text(ORIGIN, "Test", align: :foobar)
+    end
+  end
+
+  def test_draw_text_option_align_invalid_argument
+    skip("Added in SU2016") if Sketchup.version.to_i < 16
+    view = Sketchup.active_model.active_view
+    assert_raises(TypeError) do
+      view.draw_text(ORIGIN, "Test", align: ORIGIN)
+    end
+  end
+
 end # class
