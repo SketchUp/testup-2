@@ -30,6 +30,7 @@ module Minitest
       puts 'MiniTest TestUp Extension in console mode' # DEBUG
     end
     # Always log to file.
+    # TODO(thomthom): Will this add multiple FileReporters?
     self.reporter << TestUp::FileReporter.new(options)
   end
 

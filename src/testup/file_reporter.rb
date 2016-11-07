@@ -9,10 +9,13 @@
 require 'json'
 require 'pp'
 require File.join(__dir__, 'minitest_setup.rb')
+require File.join(__dir__, 'system_files.rb')
 
 
 module TestUp
 class FileReporter < MiniTest::StatisticsReporter
+
+  include SystemFiles
 
   attr_accessor :sync
   attr_accessor :old_sync
@@ -102,13 +105,17 @@ class FileReporter < MiniTest::StatisticsReporter
 
   private
 
+  def log_path
+    ensure_exist(app_data(PLUGIN_NAME, 'Logs'))
+  end
+
   def create_log_file
     # File system friendly version of ISO 8601. Makes the logs be sortable in
     # the file browser.
     timestamp = Time.now.strftime('%F_%H-%M-%S')
     filename = "testup_#{timestamp}.log"
-    # TODO(thomthom): Find a good place for log files. (Configurable?)
-    filepath = File.join(ENV['HOME'], 'Desktop', 'testup', filename)
+    filepath = File.join(log_path, filename)
+    puts "Logging to: #{filepath}"
     File.open(filepath, 'w')
   end
 
