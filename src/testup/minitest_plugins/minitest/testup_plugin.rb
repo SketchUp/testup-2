@@ -3,6 +3,7 @@
 # Original Author:: Thomas Thomassen
 
 
+require File.join(__dir__, '..', '..', 'file_reporter.rb')
 require File.join(__dir__, '..', '..', 'reporter.rb')
 
 
@@ -28,6 +29,8 @@ module Minitest
     else
       puts 'MiniTest TestUp Extension in console mode' # DEBUG
     end
+    # Always log to file.
+    self.reporter << TestUp::FileReporter.new(options)
   end
 
 end # module Minitest

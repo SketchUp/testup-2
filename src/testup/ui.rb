@@ -36,6 +36,18 @@ module TestUp
     } if defined?(Sketchup)
     cmd_toggle_run_tests_in_console = cmd
 
+    cmd = UI::Command.new('Custom Seed') {
+      self.set_custom_seed
+    }
+    cmd.tooltip = 'Set Custom Seed'
+    cmd.status_bar_text = 'Set custom seed for running tests.'
+    cmd.small_icon = File.join(PATH_IMAGES, 'arrow_switch.png')
+    cmd.large_icon = File.join(PATH_IMAGES, 'arrow_switch.png')
+    cmd.set_validation_proc {
+      self.settings[:seed] ? MF_ENABLED : MF_CHECKED
+    } if defined?(Sketchup)
+    cmd_seed = cmd
+
     cmd = UI::Command.new('Verbose Console Tests') {
       self.toggle_verbose_console_tests
     }
@@ -95,13 +107,15 @@ module TestUp
     if defined?(Sketchup)
       menu = UI.menu('Plugins').add_submenu(PLUGIN_NAME)
       menu.add_item(cmd_toggle_testup)
+      menu.add_separator
+      menu.add_item(cmd_seed)
+      menu.add_separator
+      menu.add_item(cmd_toggle_run_tests_in_console)
+      menu.add_item(cmd_toggle_verbose_console_tests)
+      menu.add_item(cmd_display_minitest_help)
+      menu.add_separator
+      menu.add_item(cmd_run_tests)
       if TestUp::DEBUG
-        menu.add_separator
-        menu.add_item(cmd_toggle_run_tests_in_console)
-        menu.add_item(cmd_toggle_verbose_console_tests)
-        menu.add_item(cmd_display_minitest_help)
-        menu.add_separator
-        menu.add_item(cmd_run_tests)
         menu.add_separator
         menu.add_item(cmd_reload_testup)
       end
@@ -111,11 +125,13 @@ module TestUp
     if defined?(Sketchup)
       toolbar = UI::Toolbar.new(PLUGIN_NAME)
       toolbar.add_item(cmd_toggle_testup)
+      toolbar.add_separator
+      toolbar.add_item(cmd_seed)
+      toolbar.add_separator
+      toolbar.add_item(cmd_toggle_run_tests_in_console)
+      toolbar.add_item(cmd_toggle_verbose_console_tests)
+      toolbar.add_item(cmd_display_minitest_help)
       if TestUp::DEBUG
-        toolbar.add_separator
-        toolbar.add_item(cmd_toggle_run_tests_in_console)
-        toolbar.add_item(cmd_toggle_verbose_console_tests)
-        toolbar.add_item(cmd_display_minitest_help)
         toolbar.add_separator
         toolbar.add_item(cmd_reload_testup)
       end

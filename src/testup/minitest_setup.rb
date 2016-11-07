@@ -36,7 +36,11 @@ module Minitest
       def run_one_method(*args)
         klass, method_name, reporter = args
         TestUp::Debugger.output("Running: #{klass.name}.#{method_name}")
-        self.testup_run_one_method(*args)
+        start_time = Time.now
+        result = self.testup_run_one_method(*args)
+        lapsed_time = Time.now - start_time
+        TestUp::Debugger.output("> Elapsed time: #{lapsed_time}s")
+        result
       end
     end
 
@@ -45,11 +49,20 @@ module Minitest
 end # module Minitest
 
 
-# Configure Ruby such that the TestUp reporter can be found without creating a
+# TODO(thomthom): Not sure if this is needed.
+# Force the parallel executer to not spawn any threads.
+# With older versions (5.4) of Minitest there were no issues. But later in 5.9
+# we started seeing Error: #<fatal: No live threads left. Deadlock?>.
+# The SketchUp Ruby API can only be used from the main thread so we must ensure
+# that Minitest doesn't start spawning threads.
+Minitest.parallel_executor = Minitest::Parallel::Executor.new(0)
+
+
+# Configure Ruby such that the TestUp reporter can be found without creating
 # gem for it.
 #
 # MiniTest uses Gem.find_files to look for extensions by globbing
-#{ }"minitest/*_plugin.rb". To avoid making a gem that needs installing, make
+# { }"minitest/*_plugin.rb". To avoid making a gem that needs installing, make
 # use of the fact that by default Gem.find_files will search in $LOAD_PATH.
 #
 # Verify by checking after `MiniTest.run`:

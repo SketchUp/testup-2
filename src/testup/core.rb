@@ -13,7 +13,10 @@ begin
   gem 'minitest'
 rescue Gem::LoadError
   begin
-    Gem.install('minitest')
+    # Minitest 5.9.1 caused problems for reasons unknown. For now locking to
+    # an older version known to work.
+    #Gem.install('minitest', '5.4.3')
+    Gem.install('minitest', '5.5.1')
   rescue Gem::LoadError
     # Needed because of Ruby 2.2. Ruby 2.0 did not need this. Seems like a bug.
     # This pattern is probably not that common, to be programmatically installing
@@ -163,7 +166,7 @@ module TestUp
   def self.update_testing_progress(num_tests_run)
     progress = TaskbarProgress.new
     progress.set_value(num_tests_run, @num_tests_being_run)
-    #puts "Test Progres: #{num_tests_run} of #{@num_tests_being_run}"
+    #puts "Test Progress: #{num_tests_run} of #{@num_tests_being_run}"
     nil
   end
 
@@ -188,6 +191,8 @@ module TestUp
       puts "No tests selected to run."
       return false
     end
+    TestUp::Debugger.output("Minitest Version: #{Minitest::VERSION}")
+    puts "Minitest Version: #{Minitest::VERSION}"
     puts "Discovering tests...\n"
     self.discover_tests
     puts "Running test suite: #{testsuite}"
@@ -202,6 +207,7 @@ module TestUp
     arguments = []
     arguments << "-n /^(#{tests.join('|')})$/"
     arguments << '--verbose' if @settings[:verbose_console_tests]
+    arguments << '--seed' if @settings[:seed]
     arguments << '--testup' if @settings[:run_in_gui]
     progress = TaskbarProgress.new
     begin
@@ -211,8 +217,24 @@ module TestUp
       }
     ensure
       progress.set_state(TaskbarProgress::NOPROGRESS)
+      #self.signal_report_finished
     end
+    puts "All tests done!"
     true
+  end
+
+
+  # Because SketchUp might keep running and do more test runs we let reporters
+  # that need to clean up know by calling .finish on them. Useful for reporters
+  # using file IO etc.
+  def self.signal_report_finished
+    reporter = MiniTest.reporter
+    reporter.finish if reporter.respond_to?(:finish)
+    if reporter.respond_to?(:reporters)
+      reporter.reporters.each { |r|
+        r.finish if r.respond_to?(:finish)
+      }
+    end
   end
 
 
