@@ -221,6 +221,7 @@ module TestUp
     puts "Discovering tests...\n"
     self.discover_tests
     puts "Running test suite: #{testsuite}"
+    puts "> Seed: #{@settings[:seed]}" if @settings[:seed]
     # If tests end with a `#` it means the whole test case should be run.
     # Automatically fix the regex.
     tests = tests.map { |pattern|
