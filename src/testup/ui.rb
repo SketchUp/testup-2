@@ -63,6 +63,13 @@ module TestUp
     } if defined?(Sketchup)
     cmd_toggle_verbose_console_tests = cmd
 
+    cmd = UI::Command.new('Open Log Folder') {
+      self.open_log_folder
+    }
+    cmd.tooltip = 'Open folder with logs'
+    cmd.status_bar_text = 'Open folder with logs.'
+    cmd_open_logs = cmd
+
     cmd = UI::Command.new('Reload TestUp') {
       TESTUP_CONSOLE.clear
       window_visible = @window && @window.visible?
@@ -110,6 +117,7 @@ module TestUp
       menu.add_separator
       menu.add_item(cmd_seed)
       menu.add_separator
+      menu.add_item(cmd_open_logs)
       menu.add_item(cmd_toggle_run_tests_in_console)
       menu.add_item(cmd_toggle_verbose_console_tests)
       menu.add_item(cmd_display_minitest_help)

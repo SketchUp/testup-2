@@ -1,9 +1,11 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2014 Trimble Navigation Ltd.
+# Copyright 2013-2016 Trimble Navigation Ltd.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
+
+require File.join(__dir__, 'app_files.rb')
 
 
 # Third party dependencies.
@@ -28,6 +30,8 @@ require 'minitest'
 
 
 module TestUp
+
+  extend AppFiles
 
   ### Constants ### ------------------------------------------------------------
 
@@ -87,6 +91,7 @@ module TestUp
     defaults = {
       :editor_application => Editor.get_default[0],
       :editor_arguments => Editor.get_default[1],
+      :seed => nil,
       :run_in_gui => true,
       :verbose_console_tests => true,
       :paths_to_testsuites => [
@@ -98,6 +103,7 @@ module TestUp
     defaults = {
       :editor_application => Editor.get_default[0],
       :editor_arguments => Editor.get_default[1],
+      :seed => nil,
       :run_in_gui => false,
       :verbose_console_tests => true,
       :paths_to_testsuites => [
@@ -170,6 +176,25 @@ module TestUp
     nil
   end
 
+  def self.set_custom_seed
+    prompts = ['Seed (Negative for Random)']
+    defaults = [self.settings[:seed] || -1]
+    begin
+      result = UI.inputbox(prompts, defaults, 'TestUp Custom Seed')
+    rescue ArgumentError => error
+      UI.messagebox(error.message)
+      retry
+    end
+    return if result == false
+    seed = result[0] < 0 ? nil : result[0]
+    self.settings[:seed] = seed
+    seed
+  end
+
+  def self.open_log_folder
+    UI.openURL(log_path)
+  end
+
   # @example Run a test case:
   #   TestUp.run_tests(["TC_Edge#"])
   #
@@ -207,7 +232,10 @@ module TestUp
     arguments = []
     arguments << "-n /^(#{tests.join('|')})$/"
     arguments << '--verbose' if @settings[:verbose_console_tests]
-    arguments << '--seed' if @settings[:seed]
+    if @settings[:seed]
+      arguments << '--seed'
+      arguments << @settings[:seed].to_s
+    end
     arguments << '--testup' if @settings[:run_in_gui]
     progress = TaskbarProgress.new
     begin
@@ -215,26 +243,13 @@ module TestUp
       self.suppress_warning_dialogs {
         MiniTest.run(arguments)
       }
+    rescue SystemExit
+      puts 'Minitest called exit.'
     ensure
       progress.set_state(TaskbarProgress::NOPROGRESS)
-      #self.signal_report_finished
     end
     puts "All tests done!"
     true
-  end
-
-
-  # Because SketchUp might keep running and do more test runs we let reporters
-  # that need to clean up know by calling .finish on them. Useful for reporters
-  # using file IO etc.
-  def self.signal_report_finished
-    reporter = MiniTest.reporter
-    reporter.finish if reporter.respond_to?(:finish)
-    if reporter.respond_to?(:reporters)
-      reporter.reporters.each { |r|
-        r.finish if r.respond_to?(:finish)
-      }
-    end
   end
 
 

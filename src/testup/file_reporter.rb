@@ -9,13 +9,14 @@
 require 'json'
 require 'pp'
 require File.join(__dir__, 'minitest_setup.rb')
-require File.join(__dir__, 'system_files.rb')
+require File.join(__dir__, 'app_files.rb')
 
 
 module TestUp
+# Based on Minitest::SummaryReporter
 class FileReporter < MiniTest::StatisticsReporter
 
-  include SystemFiles
+  include AppFiles
 
   attr_accessor :sync
   attr_accessor :old_sync
@@ -24,11 +25,7 @@ class FileReporter < MiniTest::StatisticsReporter
     super(create_log_file, options)
   end
 
-  #def finish
-  #  io.close
-  #end
-
-  def start # :nodoc:
+  def start
     super
 
     # TestUp create a really long and noisy filter string. We don't want to
@@ -50,7 +47,7 @@ class FileReporter < MiniTest::StatisticsReporter
     self.old_sync, io.sync = io.sync, true if self.sync
   end
 
-  def report # :nodoc:
+  def report
     super
 
     io.sync = self.old_sync
@@ -68,16 +65,18 @@ class FileReporter < MiniTest::StatisticsReporter
 
   def record(result)
     super
-    #io.puts "#{result.class.name}##{result.name}"
-    io.puts "%s#%s = %.2f s = %s" % [result.class, result.name, result.time, result.result_code]
+    io.puts "%s#%s = %.2f s = %s" % [result.class,
+                                     result.name,
+                                     result.time,
+                                     result.result_code]
   end
 
-  def statistics # :nodoc:
+  def statistics
     "Finished in %.6fs, %.4f runs/s, %.4f assertions/s." %
       [total_time, count / total_time, assertions / total_time]
   end
 
-  def aggregated_results # :nodoc:
+  def aggregated_results
     filtered_results = results.dup
     filtered_results.reject!(&:skipped?) unless options[:verbose]
 
@@ -85,15 +84,12 @@ class FileReporter < MiniTest::StatisticsReporter
       "\n%3d) %s" % [i+1, result]
     }.join("\n") + "\n"
 
-    #s.force_encoding(io.external_encoding) if
-    #  ENCS and io.external_encoding and s.encoding != io.external_encoding
-
     s
   end
 
   alias to_s aggregated_results
 
-  def summary # :nodoc:
+  def summary
     extra = ""
 
     extra = "\n\nYou have skipped tests. Run with --verbose for details." if
@@ -104,10 +100,6 @@ class FileReporter < MiniTest::StatisticsReporter
   end
 
   private
-
-  def log_path
-    ensure_exist(app_data(PLUGIN_NAME, 'Logs'))
-  end
 
   def create_log_file
     # File system friendly version of ISO 8601. Makes the logs be sortable in
