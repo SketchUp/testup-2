@@ -38,6 +38,14 @@ class FileReporter < MiniTest::StatisticsReporter
     opts.delete(:io)
     opts_str = JSON.pretty_generate(opts)
 
+    io.puts "SketchUp: #{Sketchup.version}"
+    io.puts "    Ruby: #{RUBY_VERSION}"
+    io.puts "  TestUp: #{PLUGIN_VERSION}"
+    io.puts "Minitest: #{Minitest::VERSION}"
+    io.puts
+    io.puts "Platform: #{Sketchup.platform}"
+    io.puts "  Locale: #{Sketchup.get_locale}"
+    io.puts
     io.puts "Run options: #{opts_str}"
     io.puts
     io.puts "# Running:"
