@@ -112,8 +112,9 @@ class FileReporter < MiniTest::StatisticsReporter
   def create_log_file
     # File system friendly version of ISO 8601. Makes the logs be sortable in
     # the file browser.
+    version = Sketchup.version.split('.').first
     timestamp = Time.now.strftime('%F_%H-%M-%S')
-    filename = "testup_#{timestamp}.log"
+    filename = "testup_#{timestamp}_su#{version}.log"
     filepath = File.join(log_path, filename)
     puts "Logging to: #{filepath}"
     File.open(filepath, 'w')
