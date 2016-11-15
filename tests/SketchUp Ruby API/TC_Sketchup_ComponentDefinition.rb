@@ -1,4 +1,4 @@
-# Copyright:: Copyright 2014 Trimble Navigation Ltd.
+# Copyright:: Copyright 2015 Trimble Navigation Ltd.
 # License:: All Rights Reserved.
 # Original Author:: Thomas Thomassen
 
@@ -6,7 +6,7 @@
 require "testup/testcase"
 
 
-# class Sketchup::ComponentInstance
+# class Sketchup::ComponentDefinition
 # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition
 class TC_Sketchup_ComponentDefinition < TestUp::TestCase
 
@@ -20,6 +20,26 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
   def teardown
     # ...
   end
+
+
+  class TestUpEvilEntityObserver < Sketchup::EntityObserver
+
+    def onChangeEntity(entity)
+      puts "#{self.class.name}.onChangeEntity(#{entity})"
+      Sketchup.active_model.definitions.purge_unused
+    end
+
+  end # class
+
+
+  class TestUpEvilDefinitionsObserver < Sketchup::DefinitionsObserver
+
+    def onComponentPropertiesChanged(definitions, definition)
+      puts "#{self.class.name}.onComponentPropertiesChanged(#{definition})"
+      definitions.purge_unused
+    end
+
+  end # class
 
 
   def create_test_image
@@ -63,6 +83,132 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
     dictionary[key] = value
 
     nil
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::ComponentDefinition.count_used_instances
+  # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition#count_used_instances
+
+  def test_count_used_instances_api_example
+    skip("Implemented in SU2016") if Sketchup.version.to_i < 16
+
+    path = Sketchup.find_support_file('Bed.skp',
+      'Components/Components Sampler/')
+    definitions = Sketchup.active_model.definitions
+    definition = definitions.load(path)
+    number = definition.count_used_instances
+  end
+
+  def test_count_used_instances
+    skip("Implemented in SU2016") if Sketchup.version.to_i < 16
+
+    model = Sketchup.active_model
+    definitions = model.definitions
+
+    # Create a definition but don't add it to the model.
+    definition1 = definitions.add('Foo')
+    definition1.entities.add_cpoint(ORIGIN)
+    assert_equal(0, definition1.count_used_instances)
+
+    # Create a new definition and add the first one a couple of time.
+    definition2 = definitions.add('Foo')
+    definition2.entities.add_cpoint(ORIGIN)
+    definition2.entities.add_instance(definition1, ORIGIN)
+    definition2.entities.add_instance(definition1, ORIGIN)
+    assert_equal(0, definition1.count_used_instances)
+    assert_equal(0, definition2.count_used_instances)
+
+    # Add the definitions to the model - this will make them 'used'.
+    model.entities.add_instance(definition1, ORIGIN)
+    assert_equal(1, definition1.count_used_instances)
+    model.entities.add_instance(definition2, ORIGIN)
+    assert_equal(3, definition1.count_used_instances)
+    assert_equal(1, definition2.count_used_instances)
+  end
+
+  def test_count_used_instances_incorrect_number_of_arguments_one
+    skip("Implemented in SU2016") if Sketchup.version.to_i < 16
+
+    model = Sketchup.active_model
+    definitions = model.definitions
+    definition = definitions.add('Foo')
+    definition.entities.add_cpoint(ORIGIN)
+    assert_raises(ArgumentError) do
+      definition.count_used_instances(123)
+    end
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::ComponentDefinition.load
+  # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition#load
+
+  def test_load_evil_definitions_observer_without_operation
+    model = Sketchup.active_model
+    entities = model.entities
+
+    observer = TestUpEvilDefinitionsObserver.new
+    model.definitions.add_observer(observer)
+
+    filename = File.join(__dir__, File.basename(__FILE__, ".*"), "test.skp")
+    definition = model.definitions.load(filename)
+
+    assert_kind_of(Sketchup::ComponentDefinition, definition)
+    assert(definition.deleted?, "Definition not deleted")
+
+    assert_raises(TypeError) do
+      definition.name
+    end
+  ensure
+    model.definitions.remove_observer(observer)
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::ComponentDefinition.name=
+  # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition#name=
+
+  def test_name_Set_evil_entities_observer_without_operation
+    model = Sketchup.active_model
+    entities = model.entities
+    definition = model.definitions.add("TestUp")
+    definition.entities.add_line(ORIGIN, [0, 0, 10])
+
+    observer = TestUpEvilEntityObserver.new
+    definition.add_observer(observer)
+
+    definition.name = "Cheese"
+
+    assert_kind_of(Sketchup::ComponentDefinition, definition)
+    assert(definition.deleted?, "Definition not deleted")
+
+    assert_raises(TypeError) do
+      definition.name
+    end
+  ensure
+    definition.remove_observer(observer) if definition.valid?
+  end
+
+  def test_name_Set_evil_definitions_observer_without_operation
+    model = Sketchup.active_model
+    entities = model.entities
+    definition = model.definitions.add("TestUp")
+    definition.entities.add_line(ORIGIN, [0, 0, 10])
+
+    observer = TestUpEvilDefinitionsObserver.new
+    model.definitions.add_observer(observer)
+
+    definition.name = "Cheese"
+
+    assert_kind_of(Sketchup::ComponentDefinition, definition)
+    assert(definition.deleted?, "Definition not deleted")
+
+    assert_raises(TypeError) do
+      definition.name
+    end
+  ensure
+    model.definitions.remove_observer(observer)
   end
 
 
@@ -252,7 +398,7 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
       definition.get_classification_value("IFC 2x3")
     end
   end
-  
+
   def test_get_classification_value_invalid_arguments_number
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
     definition = create_classified_test_instance().definition

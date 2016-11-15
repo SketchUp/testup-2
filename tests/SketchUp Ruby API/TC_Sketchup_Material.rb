@@ -316,4 +316,63 @@ class TC_Sketchup_Material < TestUp::TestCase
   end
 
 
+  # ========================================================================== #
+  # method Sketchup::Material.save_as
+
+  def test_save_as_api_example
+    filename = File.join(ENV['HOME'], 'Desktop', 'su_test.skm')
+    materials = Sketchup.active_model.materials
+    material = materials.add("Hello World")
+    material.color = 'red'
+    material.save_as(filename)
+  end
+
+  def test_save_as
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    filename = File.join(Sketchup.temp_dir, 'TC_Sketchup_Material_save_as.skm')
+    material = Sketchup.active_model.materials["Solid"]
+    # Make sure there isn't an old version.
+    File.delete(filename) if File.exist?(filename)
+    refute(File.exist?(filename))
+    # Make sure the method actually writes out a material.
+    result = material.save_as(filename)
+    assert(result)
+    assert(File.exist?(filename))
+  ensure
+    File.delete(filename) if File.exist?(filename)
+  end
+
+  def test_save_as_invalid_argument_nil
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    material = Sketchup.active_model.materials["Solid"]
+    assert_raises(TypeError) do
+      material.save_as(nil)
+    end
+  end
+
+  def test_save_as_invalid_argument_integer
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    material = Sketchup.active_model.materials["Solid"]
+    assert_raises(TypeError) do
+      material.save_as(123)
+    end
+  end
+
+  def test_save_as_incorrect_number_of_arguments_zero
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    material = Sketchup.active_model.materials["Solid"]
+    assert_raises(ArgumentError) do
+      material.save_as
+    end
+  end
+
+  def test_save_as_incorrect_number_of_arguments_two
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    material = Sketchup.active_model.materials["Solid"]
+    assert_raises(ArgumentError) do
+      material.save_as('foo', 'bar')
+    end
+  end
+
+
 end # class

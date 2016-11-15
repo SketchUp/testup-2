@@ -47,7 +47,7 @@ class TC_Sketchup_Licensing_ExtensionLicense < TestUp::TestCase
   def test_state_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
     ext_id = "4e215280-dd23-40c4-babb-b8a8dd29d5ee"
-    ext_lic = Sketchup::Licensing.get_extension_license(ext_id, 30)
+    ext_lic = Sketchup::Licensing.get_extension_license(ext_id)
     if ext_lic.state == Sketchup::Licensing::TRIAL_EXPIRED
        puts "Trial period has expired."
     end

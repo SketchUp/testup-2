@@ -26,7 +26,7 @@ class TC_Sketchup_Licensing < TestUp::TestCase
   def test_get_extension_license_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
     ext_id = "4e215280-dd23-40c4-babb-b8a8dd29d5ee"
-    ext_lic = Sketchup::Licensing.get_extension_license(ext_id, 30)
+    ext_lic = Sketchup::Licensing.get_extension_license(ext_id)
     if ext_lic.licensed?
        puts "Extension is licensed."
     end
@@ -39,7 +39,7 @@ class TC_Sketchup_Licensing < TestUp::TestCase
     end
     ext_id = "4e215280-dd23-40c4-babb-b8a8dd29d5ee"
     assert_raises ArgumentError do
-      Sketchup::Licensing.get_extension_license(ext_id, 0, nil)
+      Sketchup::Licensing.get_extension_license(ext_id, 0)
     end
   end
 
@@ -50,9 +50,6 @@ class TC_Sketchup_Licensing < TestUp::TestCase
     end
     assert_raises TypeError do
       Sketchup::Licensing.get_extension_license(nil)
-    end
-    assert_raises RangeError do
-      Sketchup::Licensing.get_extension_license("some_ext_id", -1)
     end
   end
 

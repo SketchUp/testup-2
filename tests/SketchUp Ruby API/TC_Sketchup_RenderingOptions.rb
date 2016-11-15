@@ -422,4 +422,70 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
   end
 
 
+  # ========================================================================== #
+
+  def test_constants
+    expected_constants = %w{
+      ROPAssign
+      ROPDrawHidden
+      ROPEditComponent
+      ROPSetBackgroundColor
+      ROPSetConstructionColor
+      ROPSetDepthQueEdges
+      ROPSetDepthQueWidth
+      ROPSetDisplayColorByLayer
+      ROPSetDisplayDims
+      ROPSetDisplayFog
+      ROPSetDisplayInstanceAxes
+      ROPSetDisplaySketchAxes
+      ROPSetDisplayText
+      ROPSetDrawGround
+      ROPSetDrawHorizon
+      ROPSetDrawUnderground
+      ROPSetEdgeColorMode
+      ROPSetEdgeDisplayMode
+      ROPSetEdgeType
+      ROPSetExtendEdges
+      ROPSetExtendLines
+      ROPSetFaceColor
+      ROPSetFaceColorMode
+      ROPSetFogColor
+      ROPSetFogDist
+      ROPSetFogHint
+      ROPSetFogUseBkColor
+      ROPSetForegroundColor
+      ROPSetGroundColor
+      ROPSetGroundTransparency
+      ROPSetHideConstructionGeometry
+      ROPSetHighlightColor
+      ROPSetJitterEdges
+      ROPSetLineEndEdges
+      ROPSetLineEndWidth
+      ROPSetLineExtension
+      ROPSetLockedColor
+      ROPSetMaterialTransparency
+      ROPSetModelTransparency
+      ROPSetProfileEdges
+      ROPSetProfileWidth
+      ROPSetProfilesOnlyEdges
+      ROPSetRenderMode
+      ROPSetSectionActiveColor
+      ROPSetSectionCutWidth
+      ROPSetSectionDefaultCutColor
+      ROPSetSectionDisplayMode
+      ROPSetSectionInactiveColor
+      ROPSetSkyColor
+      ROPSetTexture
+      ROPSetTransparencyObsolete
+      ROPTransparencySortMethod
+    }.sort
+    actual_constants = Sketchup::RenderingOptionsObserver.constants.sort
+    actual_constants.each_with_index { |constant, index|
+      expected = expected_constants[index]
+      assert_equal(expected, constant.to_s)
+      assert_not_nil(constant)
+    }
+  end
+
+
 end # class

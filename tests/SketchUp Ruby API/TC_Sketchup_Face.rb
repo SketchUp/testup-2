@@ -353,6 +353,7 @@ class TC_Sketchup_Face < TestUp::TestCase
   end
 
   def test_back_material_Set_invalid_arguments
+    assert(false, "Fix this for SU2016") # Create orphan operation.
     skip("Broken in SU2014") if Sketchup.version.to_i == 14
     face = create_face
 
@@ -1072,6 +1073,7 @@ class TC_Sketchup_Face < TestUp::TestCase
   end
 
   def test_material_Set_invalid_arguments
+    assert(false, "Fix this for SU2016") # Create orphan operation.
     skip("Broken in SU2014") if Sketchup.version.to_i == 14
     face = create_face
 
