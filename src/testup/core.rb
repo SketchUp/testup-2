@@ -17,8 +17,7 @@ rescue Gem::LoadError
   begin
     # Minitest 5.9.1 caused problems for reasons unknown. For now locking to
     # an older version known to work.
-    #Gem.install('minitest', '5.4.3')
-    Gem.install('minitest', '5.5.1')
+    Gem.install('minitest', '5.4.3')
   rescue Gem::LoadError
     # Needed because of Ruby 2.2. Ruby 2.0 did not need this. Seems like a bug.
     # This pattern is probably not that common, to be programmatically installing
