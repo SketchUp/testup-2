@@ -28,6 +28,8 @@ class FileReporter < MiniTest::StatisticsReporter
   def start
     super
 
+    create_run_log(options)
+
     # TestUp create a really long and noisy filter string. We don't want to
     # output this.
     # TODO(thomthom): See if the filter string from TestUp's webdialog can
@@ -109,12 +111,28 @@ class FileReporter < MiniTest::StatisticsReporter
 
   private
 
-  def create_log_file
+  def log_basename
     # File system friendly version of ISO 8601. Makes the logs be sortable in
     # the file browser.
     version = Sketchup.version.split('.').first
     timestamp = Time.now.strftime('%F_%H-%M-%S')
-    filename = "testup_#{timestamp}_su#{version}.log"
+    "testup_#{timestamp}_su#{version}"
+  end
+
+  def create_run_log(options)
+    tests = options[:filter].scan(/[(|]([A-za-z0-9#_]+)/).flatten.sort
+    log = {
+      seed: options[:seed],
+      tests: tests
+    }
+    filename = "su#{log_basename}.run"
+    filepath = File.join(log_path, filename)
+    puts "Run log: #{filepath}"
+    File.write(filepath, JSON.pretty_generate(log))
+  end
+
+  def create_log_file
+    filename = "#{log_basename}.log"
     filepath = File.join(log_path, filename)
     puts "Logging to: #{filepath}"
     File.open(filepath, 'w')

@@ -150,18 +150,39 @@ module TestUp
   end
 
 
-  def self.run_tests_gui
+  def self.select_run_config
+    title = 'Open TestUp Run Log'
+    file_filter = 'TestUp Run Logs (*.run)|*.run;||'
+    UI.openpanel(title, log_path, file_filter)
+  end
+
+
+  def self.read_run_config(run_file)
+    JSON.parse(File.read(run_file), symbolize_names: true)
+  end
+
+
+  def self.run_tests_gui(run_config = nil)
     unless @window && @window.visible?
       warn 'TestUp window not open.'
       UI.beep
       return
     end
-    testsuite = @window.active_testsuite
-    tests = @window.selected_tests
+    # If a run_config is provided we use that instead of the selected tests.
+    if run_config
+      options = {
+        seed: run_config[:seed]
+      }
+      testsuite = @window.active_testsuite # TODO(thomthom): get from run log.
+      tests = run_config[:tests]
+    else
+      testsuite = @window.active_testsuite
+      tests = @window.selected_tests
+    end
     # Number of tests is currently incorrect as the list include stubs from the
     # manifest.
     @num_tests_being_run = tests.size
-    if self.run_tests(tests, testsuite)
+    if self.run_tests(tests, testsuite, options)
       #puts Reporter.results.pretty_inspect
       @window.update_results(Reporter.results)
     else
@@ -209,19 +230,24 @@ module TestUp
   #   TestUp.run_tests(tests)
   #
   # @param [Array<String>] list of tests or test cases to run.
-  def self.run_tests(tests, testsuite = "Untitled")
+  def self.run_tests(tests, testsuite = "Untitled", options = {})
     TESTUP_CONSOLE.show
     TESTUP_CONSOLE.clear
     if tests.empty?
       puts "No tests selected to run."
       return false
     end
+    # `options` argument is used when re-running test runs. It doesn't change
+    # the user-selected seed.
+    seed = options[:seed] || @settings[:seed]
+    # Dump some test information that might be useful when reviewing test runs.
     TestUp::Debugger.output("Minitest Version: #{Minitest::VERSION}")
     puts "Minitest Version: #{Minitest::VERSION}"
     puts "Discovering tests...\n"
     self.discover_tests
     puts "Running test suite: #{testsuite}"
-    puts "> Seed: #{@settings[:seed]}" if @settings[:seed]
+    puts "> Tests: #{tests.size}"
+    puts "> Seed: #{seed}" if seed
     # If tests end with a `#` it means the whole test case should be run.
     # Automatically fix the regex.
     tests = tests.map { |pattern|
@@ -233,9 +259,9 @@ module TestUp
     arguments = []
     arguments << "-n /^(#{tests.join('|')})$/"
     arguments << '--verbose' if @settings[:verbose_console_tests]
-    if @settings[:seed]
+    if seed
       arguments << '--seed'
-      arguments << @settings[:seed].to_s
+      arguments << seed.to_s
     end
     arguments << '--testup' if @settings[:run_in_gui]
     progress = TaskbarProgress.new

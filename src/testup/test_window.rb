@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2014 Trimble Navigation Ltd.
+# Copyright 2013-2016 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
@@ -84,9 +84,11 @@ module TestUp
       when 'TestUp.on_script_debugger_attached'
         ScriptDebugger.attach
       when 'TestUp.on_run'
-        event_testup_run()
+        event_testup_run
+      when 'TestUp.on_rerun'
+        event_testup_rerun
       when 'TestUp.on_discover'
-        event_discover()
+        event_discover
       when 'TestUp.on_open_source_file'
         event_opent_source_file(arguments[0])
       when 'TestUp.on_preferences'
@@ -133,6 +135,19 @@ module TestUp
       TestUp.defer {
         discover_tests()
         TestUp.run_tests_gui
+      }
+    end
+
+    def event_testup_rerun
+      run_file = TestUp.select_run_config
+      return unless run_file
+      run_config = TestUp.read_run_config(run_file)
+      # To avoid the "Slow running script" dialog in IE the call to execute
+      # the tests is deferred.
+      TestUp.defer {
+        discover_tests()
+        TestUp.run_tests_gui(run_config)
+        puts "Re-run of: #{run_file}"
       }
     end
 
