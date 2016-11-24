@@ -20,7 +20,7 @@ module TestUp
     cmd.small_icon = File.join(PATH_IMAGES, 'testup-16.png')
     cmd.large_icon = File.join(PATH_IMAGES, 'testup-24.png')
     cmd.set_validation_proc {
-      MF_CHECKED if self.window && self.window.visible?
+      self.window && self.window.visible? ? MF_CHECKED : MF_ENABLED
     } if defined?(Sketchup)
     cmd_toggle_testup = cmd
 
@@ -32,7 +32,7 @@ module TestUp
     cmd.small_icon = File.join(PATH_IMAGES, 'console.png')
     cmd.large_icon = File.join(PATH_IMAGES, 'console.png')
     cmd.set_validation_proc {
-      MF_CHECKED if !self.settings[:run_in_gui]
+      self.settings[:run_in_gui] ? MF_ENABLED : MF_CHECKED
     } if defined?(Sketchup)
     cmd_toggle_run_tests_in_console = cmd
 
@@ -47,6 +47,18 @@ module TestUp
       self.settings[:seed] ? MF_ENABLED : MF_CHECKED
     } if defined?(Sketchup)
     cmd_seed = cmd
+
+    cmd = UI::Command.new('Re-run Saved Run') {
+      self.rerun_fixed_run
+    }
+    cmd.tooltip = 'Re-run a Saved Run from a previously picked .run file.'
+    cmd.status_bar_text = 'Re-run a Saved Run from a previously picked .run file.'
+    cmd.small_icon = File.join(PATH_IMAGES, 'rerun.png')
+    cmd.large_icon = File.join(PATH_IMAGES, 'rerun.png')
+    cmd.set_validation_proc {
+      self.current_run ? MF_ENABLED : MF_GRAYED
+    } if defined?(Sketchup)
+    cmd_rerun_saved = cmd
 
     cmd = UI::Command.new('Verbose Console Tests') {
       self.toggle_verbose_console_tests
@@ -103,19 +115,23 @@ module TestUp
     cmd.large_icon = File.join(PATH_IMAGES, 'layout-24.png')
     cmd_run_layout_tests = cmd
 
-    cmd = UI::Command.new('Run Tests') {
-      self.run_tests_gui
-    }
-    cmd.tooltip = 'Discover and run all tests.'
-    cmd.status_bar_text = 'Discover and run all tests.'
-    cmd_run_tests = cmd
-
     # Menus
     if defined?(Sketchup)
       menu = UI.menu('Plugins').add_submenu(PLUGIN_NAME)
       menu.add_item(cmd_toggle_testup)
       menu.add_separator
       menu.add_item(cmd_seed)
+      menu.add_separator
+      sub_menu = menu.add_submenu('Saved Runs')
+      menu_id = sub_menu.add_item('Set Replay-Run') { self.set_fixed_run }
+      sub_menu.set_validation_proc(menu_id) {
+        self.current_run ? MF_CHECKED : MF_ENABLED
+      }
+      sub_menu.add_separator
+      sub_menu.add_item(cmd_rerun_saved)
+      sub_menu.add_separator
+      sub_menu.add_item('Add Run...') { self.add_run }
+      sub_menu.add_item('Remove Run...') { self.remove_run }
       menu.add_separator
       menu.add_item(cmd_open_logs)
       menu.add_item(cmd_toggle_run_tests_in_console)
@@ -135,6 +151,8 @@ module TestUp
       toolbar.add_item(cmd_toggle_testup)
       toolbar.add_separator
       toolbar.add_item(cmd_seed)
+      toolbar.add_separator
+      toolbar.add_item(cmd_rerun_saved)
       toolbar.add_separator
       toolbar.add_item(cmd_toggle_run_tests_in_console)
       toolbar.add_item(cmd_toggle_verbose_console_tests)
