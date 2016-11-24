@@ -39,7 +39,7 @@ module TestUp
         # lots of nested calls to Bridge.pump_message calls which eventually
         # fail.
         TestUp.defer {
-          event_testup_ready()
+          event_testup_ready
         }
       }
       on(:close) {
@@ -72,7 +72,7 @@ module TestUp
     def reload
       return false unless visible?
       self.bridge.call('TestUp.reset')
-      discover_tests()
+      discover_tests
       true
     end
 
@@ -92,7 +92,7 @@ module TestUp
       when 'TestUp.on_open_source_file'
         event_opent_source_file(arguments[0])
       when 'TestUp.on_preferences'
-        event_on_open_preferences()
+        event_on_open_preferences
       when 'TestUp.TestSuites.on_change'
         event_change_testsuite(arguments[0])
       when 'TestUp.Console.output'
@@ -133,7 +133,7 @@ module TestUp
       # To avoid the "Slow running script" dialog in IE the call to execute
       # the tests is deferred.
       TestUp.defer {
-        discover_tests()
+        discover_tests # TODO(thomthom): Why is this needed?
         TestUp.run_tests_gui
       }
     end
@@ -145,14 +145,14 @@ module TestUp
       # To avoid the "Slow running script" dialog in IE the call to execute
       # the tests is deferred.
       TestUp.defer {
-        discover_tests()
+        discover_tests # TODO(thomthom): Why is this needed?
         TestUp.run_tests_gui(run_config)
         puts "Re-run of: #{run_file}"
       }
     end
 
     def event_discover
-      discover_tests()
+      discover_tests
     end
 
     def event_change_testsuite(testsuite)
@@ -192,7 +192,7 @@ module TestUp
       end
     end
 
-    def event_on_open_preferences()
+    def event_on_open_preferences
       #@preferences_window ||= PreferencesWindow.new
       @preferences_window = PreferencesWindow.new
       @preferences_window.show
