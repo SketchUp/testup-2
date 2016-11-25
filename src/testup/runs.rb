@@ -41,11 +41,22 @@ module Runs
     return unless run_config_file
     prompts = ['Title']
     defaults = ['']
-    result = UI.inputbox(prompts, defaults, 'Give the Run title')
-    return unless result
-    title = result[0]
-    # TODO(thomthom): Check for an existing run on the same name.
-    self.save_run(title, run_config_file)
+    while true
+      result = UI.inputbox(prompts, defaults, 'Give the Run title')
+      return unless result
+      title = result[0]
+      # Check if there is a saved run with the same name alredy.
+      runs = self.all
+      run = runs.find { |r| r.first == title }
+      if run
+        message = "A saved report with the same name already exist.\n"\
+          "\nWould you like to use a different name?"
+        result = UI.messagebox(message, MB_RETRYCANCEL)
+        return if result == IDCANCEL
+      else
+        return self.save_run(title, run_config_file)
+      end
+    end
   end
 
   def self.remove
