@@ -5,11 +5,13 @@
 #
 #-------------------------------------------------------------------------------
 
+require 'testup/runs'
 
 module TestUp
   class TestUpWindow < SKUI::Window
 
     def initialize
+      @bridge = nil
       options = {
         :title           => PLUGIN_NAME,
         :preferences_key => PLUGIN_ID,
@@ -18,6 +20,7 @@ module TestUp
         :resizable       => true
       }
       super(options)
+      # noinspection RubyLiteralArrayInspection
       [
         'testup.js',
         'commands.js',
@@ -56,14 +59,14 @@ module TestUp
     end
 
     # TODO: Fix this in SKUI.
-    # Hack, as SKUI currently doesn't support subclassing of it's controls.
+    # Hack, as SKUI currently doesn't support sub-classing of it's controls.
     def typename
       SKUI::Window.to_s.split('::').last
     end
 
     # @param [Array<Hash>] results
     def update_results(results)
-      Debugger.time("JS:TestUp.update_results") {
+      Debugger.time('JS:TestUp.update_results') {
         @bridge.call('TestUp.update_results', results)
       }
     end
@@ -105,7 +108,7 @@ module TestUp
 
     def discover_tests(first_run = false)
       discoveries = TestUp.discover_tests
-      js_command = "TestUp.TestSuites.update"
+      js_command = 'TestUp.TestSuites.update'
       js_command = "#{js_command}_first_run" if first_run
       Debugger.time("JS:#{js_command}") {
         progress = TaskbarProgress.new
@@ -139,9 +142,9 @@ module TestUp
     end
 
     def event_testup_rerun
-      run_file = TestUp.select_run_config
+      run_file = TestUp::Runs.select_config
       return unless run_file
-      run_config = TestUp.read_run_config(run_file)
+      run_config = TestUp::Runs.read_config(run_file)
       # To avoid the "Slow running script" dialog in IE the call to execute
       # the tests is deferred.
       TestUp.defer {
