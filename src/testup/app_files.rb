@@ -6,7 +6,7 @@
 #-------------------------------------------------------------------------------
 
 require 'fileutils'
-require File.join(__dir__, 'system_files.rb')
+require 'testup/system_files.rb'
 
 
 module TestUp
@@ -16,6 +16,10 @@ module AppFiles
 
   def log_path
     ensure_exist(app_data(PLUGIN_NAME, 'Logs'))
+  end
+
+  def saved_runs_path
+    ensure_exist(app_data(PLUGIN_NAME, 'Saved Runs'))
   end
 
 end # module

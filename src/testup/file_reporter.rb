@@ -8,8 +8,8 @@
 
 require 'json'
 require 'pp'
-require File.join(__dir__, 'minitest_setup.rb')
-require File.join(__dir__, 'app_files.rb')
+require 'testup/minitest_setup.rb'
+require 'testup/app_files.rb'
 
 
 module TestUp

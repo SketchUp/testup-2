@@ -6,7 +6,7 @@
 #-------------------------------------------------------------------------------
 
 require 'sketchup.rb'
-require File.join(__dir__, 'app_files.rb')
+require 'testup/app_files'
 
 
 # Third party dependencies.
@@ -151,19 +151,6 @@ module TestUp
   end
 
 
-  def self.select_run_config
-    title = 'Open TestUp Run Log'
-    file_filter = 'TestUp Run Logs (*.run)|*.run;||'
-    result = UI.openpanel(title, log_path, file_filter)
-    result ? File.expand_path(result) : result
-  end
-
-
-  def self.read_run_config(run_file)
-    JSON.parse(File.read(run_file), symbolize_names: true)
-  end
-
-
   def self.run_tests_gui(run_config = nil)
     unless @window && @window.visible?
       warn 'TestUp window not open.'
@@ -178,6 +165,7 @@ module TestUp
       testsuite = @window.active_testsuite # TODO(thomthom): get from run log.
       tests = run_config[:tests]
     else
+      options = {}
       testsuite = @window.active_testsuite
       tests = @window.selected_tests
     end
@@ -298,6 +286,7 @@ module TestUp
   end
 
 
+  # noinspection RubyResolve,RubyScope
   def self.suppress_warning_dialogs(&block)
     if Test.respond_to?(:suppress_warnings=)
       cache = Test.suppress_warnings?
@@ -323,104 +312,5 @@ module TestUp
     }
   end
 
-
-  # TODO(thomthom): Move the logic for Runs into a separate file/module.
-
-  def self.saved_runs
-    @settings[:saved_runs] ||= []
-    @settings[:saved_runs]
-  end
-
-  def self.current_run
-    @settings[:current_run]
-  end
-
-  def self.save_run(run)
-    runs = self.saved_runs
-    runs << run
-    # TODO(thomthom): Copy the run file to a dedicated folder?
-    @settings[:saved_runs] = runs
-  end
-
-  def self.add_run
-    run_config_file = self.select_run_config
-    return unless run_config_file
-    prompts = ['Title']
-    defaults = ['']
-    result = UI.inputbox(prompts, defaults, 'Give the Run title')
-    return unless result
-    title = result[0]
-    # TODO(thomthom): Check for an existing run on the same name.
-    self.save_run([title, run_config_file])
-  end
-
-  def self.remove_run
-    runs = self.saved_runs
-    if runs.empty?
-      UI.messagebox('There are no saved test runs.')
-      return
-    end
-    run_titles = runs.map { |run| run.first }.sort
-    run_options = run_titles.join('|')
-    prompts = ['Remove Run:']
-    defaults = [run_titles.first]
-    options = [run_options]
-    result = UI.inputbox(prompts, defaults, options, 'Delete a Run Replay')
-    return unless result
-    title = result[0]
-    unless run_titles.include?(title)
-      UI.messagebox('There are no saved test runs.')
-      return
-    end
-    runs.delete_if { |run| run.first == title }
-    @settings[:saved_runs] = runs
-  end
-
-  def self.set_fixed_run
-    runs = self.saved_runs
-    run_titles = runs.map { |run| run.first }.sort
-    run_options = ['[None]'].concat(run_titles).join('|')
-    prompts = ['Replay-Run:']
-    defaults = [self.current_run || '[None]']
-    options = [run_options]
-    result = UI.inputbox(prompts, defaults, options, 'Pick what run to Replay')
-    return unless result
-    title = result[0]
-    if title == '[None]'
-      @settings[:current_run] = nil
-    else
-      run = runs.find { |r| r.first == title }
-      @settings[:current_run] = run.first
-    end
-  end
-
-  def self.rerun_fixed_run
-    # TODO(thomthom): Avoid having the user set this manually.
-    if @settings[:run_in_gui]
-      UI.messagebox('TestUp must be set to run in Console mode for re-runs to work.')
-      return
-    end
-    runs = self.saved_runs
-    run_title = self.current_run
-    run = runs.find { |r| r.first == run_title }
-    unless run
-      UI.messagebox("Unable to locate .run file for: #{run_title}")
-      return
-    end
-    run_file = run[1]
-    p run
-    puts "runfile: #{run_file}"
-    p runs
-    # Load the Run configuration.
-    run_config = TestUp.read_run_config(run_file)
-    # TODO(thomthom): This duplicate code in run_tests_gui. Refactor and reuse.
-    options = {
-        seed: run_config[:seed]
-    }
-    testsuite = 'Re-run' # TODO(thomthom): get from saved run.
-    tests = run_config[:tests]
-    # Execute the tests!
-    self.run_tests(tests, testsuite, options)
-  end
 
 end # module
