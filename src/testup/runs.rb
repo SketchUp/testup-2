@@ -5,6 +5,7 @@
 #
 #-------------------------------------------------------------------------------
 
+require 'fileutils'
 require 'testup/app_files'
 
 
@@ -22,10 +23,16 @@ module Runs
     TestUp.settings[:current_run]
   end
 
-  def self.save_run(run)
+  def self.save_run(title, run_config_file)
+    # Copy the run file to a dedicated folder.
+    basename = File.basename(run_config_file, '.*')
+    run_file = "#{basename}_#{Time.now.to_i}.run"
+    saved_run_config_file = File.join(saved_runs_path, run_file)
+    FileUtils.copy(run_config_file, saved_run_config_file)
+    # Save to list.
+    run = [title, saved_run_config_file]
     runs = self.all
     runs << run
-    # TODO(thomthom): Copy the run file to a dedicated folder?
     TestUp.settings[:saved_runs] = runs
   end
 
@@ -38,7 +45,7 @@ module Runs
     return unless result
     title = result[0]
     # TODO(thomthom): Check for an existing run on the same name.
-    self.save_run([title, run_config_file])
+    self.save_run(title, run_config_file)
   end
 
   def self.remove
@@ -59,7 +66,10 @@ module Runs
       UI.messagebox('There are no saved test runs.')
       return
     end
-    runs.delete_if { |run| run.first == title }
+    run = runs.find { |r| r.first == title }
+    runs.delete_if { |r| r.first == title }
+    run_config_file = run[1]
+    File.delete(run_config_file) if File.exist?(run_config_file)
     TestUp.settings[:saved_runs] = runs
   end
 
