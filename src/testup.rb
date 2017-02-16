@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2014 Trimble Navigation Ltd.
+# Copyright 2013-2016 Trimble Navigation Ltd.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ module TestUp
       ex = SketchupExtension.new(PLUGIN_NAME, loader)
       ex.description = 'Test suite utility for SketchUp.'
       ex.version     = PLUGIN_VERSION
-      ex.copyright   = 'Trimble Navigation Limited © 2014'
+      ex.copyright   = 'Trimble Navigation Limited © 2016'
       ex.creator     = 'SketchUp'
       Sketchup.register_extension(ex, true)
       file_loaded(__FILE__)

@@ -21,7 +21,7 @@
     <orderEntry type="library" scope="PROVIDED" name="yard (v0.9.5, ruby-2.0.0-p576) [gem]" level="application" />
   </component>
   <component name="RModuleSettingsStorage">
-    <LOAD_PATH number="2" string0="C:/Program Files/SketchUp/SketchUp 2016/Tools" string1="$MODULE_DIR$/src" />
+    <LOAD_PATH number="3" string0="C:/Program Files/SketchUp/SketchUp 2016/Tools" string1="$MODULE_DIR$/src" string2="$MODULE_DIR$/../SketchUp-Ruby-API-Doc/stubs" />
     <I18N_FOLDERS number="0" />
   </component>
 </module>

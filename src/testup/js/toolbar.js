@@ -61,6 +61,15 @@ TestUp.Toolbar = function() {
       });
       $toolbar.append($discover);
 
+      var $rerun = $('<div class="button" id="rerun" />');
+      $rerun.text('Re-run...');
+      $rerun.attr('title', 'Rerun tests');
+      $rerun.prepend( $('<img src="' + path + '/images/rerun.png" />') );
+      $rerun.on('click', function() {
+        TestUp.Commands.rerun();
+      });
+      $toolbar.append($rerun);
+
       var $preferences = $('<div/>').attr({
         'class' : 'button panel',
         'id'    : 'preferences',

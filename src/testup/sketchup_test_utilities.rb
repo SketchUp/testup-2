@@ -60,6 +60,7 @@ module TestUp
 
     def start_with_empty_model
       model = Sketchup.active_model
+      model.active_view.camera.aspect_ratio = 0.0
       model.start_operation('TestUp Empty Model', true)
       while model.close_active; end
       for entity in model.entities.to_a

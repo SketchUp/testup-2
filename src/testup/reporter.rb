@@ -11,6 +11,14 @@ require File.join(__dir__, 'minitest_setup.rb')
 
 
 module TestUp
+# Doc comment from MiniTest::StatisticsReporter:
+#
+#   A reporter that gathers statistics about a test run. Does not do
+#   any IO because meant to be used as a parent class for a reporter
+#   that does.
+#
+#   If you want to create an entirely different type of output (eg,
+#   CI, HTML, etc), this is the place to start.
 class Reporter < MiniTest::StatisticsReporter
 
   @@results = []

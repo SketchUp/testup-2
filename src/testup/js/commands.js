@@ -38,6 +38,20 @@ TestUp.Commands = function() {
     },
 
 
+    rerun : function() {
+      // TODO $('body').css('cursor', 'wait');
+      // Ugly hack to allow the WebDialog to display the waiting cursor as
+      // otherwise it'll not be set until after the tests are run.
+      setTimeout(function() {
+        Sketchup.callback('TestUp.on_rerun');
+        // The cursor is now restored in TestUp.update_results since the
+        // execution of the Ruby command is also deferred to avoid the
+        // "Slow running script" dialog warning.
+        //$('body').css('cursor', 'default');
+      }, 50);
+    },
+
+
     preferences : function() {
       Sketchup.callback('TestUp.on_preferences');
     },

@@ -62,6 +62,10 @@ module TestUp
       end
     end
 
+    def external_encoding
+      Encoding::UTF_8
+    end
+
   end # class Console
 
   TESTUP_CONSOLE = Console.new

@@ -1,9 +1,12 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2014 Trimble Navigation Ltd.
+# Copyright 2013-2016 Trimble Navigation Ltd.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
+
+require 'sketchup.rb'
+require 'testup/app_files'
 
 
 # Third party dependencies.
@@ -13,7 +16,9 @@ begin
   gem 'minitest'
 rescue Gem::LoadError
   begin
-    Gem.install('minitest')
+    # Minitest 5.9.1 caused problems for reasons unknown. For now locking to
+    # an older version known to work.
+    Gem.install('minitest', '5.4.3')
   rescue Gem::LoadError
     # Needed because of Ruby 2.2. Ruby 2.0 did not need this. Seems like a bug.
     # This pattern is probably not that common, to be programmatically installing
@@ -26,10 +31,13 @@ require 'minitest'
 
 module TestUp
 
+  extend AppFiles
+
   ### Constants ### ------------------------------------------------------------
 
   # Set to true to expose more debug tools in the UI when developing TestUp.
-  DEBUG = false
+  # Sketchup.write_default(TestUp::PLUGIN_ID, 'dev-mode', true)
+  DEBUG = Sketchup.read_default(PLUGIN_ID, 'dev-mode', false)
 
   # <debug>
   if defined?(SKETCHUP_CONSOLE)
@@ -84,6 +92,7 @@ module TestUp
     defaults = {
       :editor_application => Editor.get_default[0],
       :editor_arguments => Editor.get_default[1],
+      :seed => nil,
       :run_in_gui => true,
       :verbose_console_tests => true,
       :paths_to_testsuites => [
@@ -95,6 +104,7 @@ module TestUp
     defaults = {
       :editor_application => Editor.get_default[0],
       :editor_arguments => Editor.get_default[1],
+      :seed => nil,
       :run_in_gui => false,
       :verbose_console_tests => true,
       :paths_to_testsuites => [
@@ -141,18 +151,28 @@ module TestUp
   end
 
 
-  def self.run_tests_gui
+  def self.run_tests_gui(run_config = nil)
     unless @window && @window.visible?
       warn 'TestUp window not open.'
       UI.beep
       return
     end
-    testsuite = @window.active_testsuite
-    tests = @window.selected_tests
+    # If a run_config is provided we use that instead of the selected tests.
+    if run_config
+      options = {
+        seed: run_config[:seed]
+      }
+      testsuite = @window.active_testsuite # TODO(thomthom): get from run log.
+      tests = run_config[:tests]
+    else
+      options = {}
+      testsuite = @window.active_testsuite
+      tests = @window.selected_tests
+    end
     # Number of tests is currently incorrect as the list include stubs from the
     # manifest.
     @num_tests_being_run = tests.size
-    if self.run_tests(tests, testsuite)
+    if self.run_tests(tests, testsuite, options)
       #puts Reporter.results.pretty_inspect
       @window.update_results(Reporter.results)
     else
@@ -163,8 +183,27 @@ module TestUp
   def self.update_testing_progress(num_tests_run)
     progress = TaskbarProgress.new
     progress.set_value(num_tests_run, @num_tests_being_run)
-    #puts "Test Progres: #{num_tests_run} of #{@num_tests_being_run}"
+    #puts "Test Progress: #{num_tests_run} of #{@num_tests_being_run}"
     nil
+  end
+
+  def self.set_custom_seed
+    prompts = ['Seed (Negative for Random)']
+    defaults = [self.settings[:seed] || -1]
+    begin
+      result = UI.inputbox(prompts, defaults, 'TestUp Custom Seed')
+    rescue ArgumentError => error
+      UI.messagebox(error.message)
+      retry
+    end
+    return unless result
+    seed = result[0].to_i < 0 ? nil : result[0].to_i
+    self.settings[:seed] = seed
+    seed
+  end
+
+  def self.open_log_folder
+    UI.openURL(log_path)
   end
 
   # @example Run a test case:
@@ -181,16 +220,24 @@ module TestUp
   #   TestUp.run_tests(tests)
   #
   # @param [Array<String>] list of tests or test cases to run.
-  def self.run_tests(tests, testsuite = "Untitled")
+  def self.run_tests(tests, testsuite = "Untitled", options = {})
     TESTUP_CONSOLE.show
     TESTUP_CONSOLE.clear
     if tests.empty?
       puts "No tests selected to run."
       return false
     end
+    # `options` argument is used when re-running test runs. It doesn't change
+    # the user-selected seed.
+    seed = options[:seed] || @settings[:seed]
+    # Dump some test information that might be useful when reviewing test runs.
+    TestUp::Debugger.output("Minitest Version: #{Minitest::VERSION}")
+    puts "Minitest Version: #{Minitest::VERSION}"
     puts "Discovering tests...\n"
     self.discover_tests
     puts "Running test suite: #{testsuite}"
+    puts "> Tests: #{tests.size}"
+    puts "> Seed: #{seed}" if seed
     # If tests end with a `#` it means the whole test case should be run.
     # Automatically fix the regex.
     tests = tests.map { |pattern|
@@ -202,6 +249,10 @@ module TestUp
     arguments = []
     arguments << "-n /^(#{tests.join('|')})$/"
     arguments << '--verbose' if @settings[:verbose_console_tests]
+    if seed
+      arguments << '--seed'
+      arguments << seed.to_s
+    end
     arguments << '--testup' if @settings[:run_in_gui]
     progress = TaskbarProgress.new
     begin
@@ -209,9 +260,12 @@ module TestUp
       self.suppress_warning_dialogs {
         MiniTest.run(arguments)
       }
+    rescue SystemExit
+      puts 'Minitest called exit.'
     ensure
       progress.set_state(TaskbarProgress::NOPROGRESS)
     end
+    puts "All tests done!"
     true
   end
 
@@ -232,6 +286,7 @@ module TestUp
   end
 
 
+  # noinspection RubyResolve,RubyScope
   def self.suppress_warning_dialogs(&block)
     if Test.respond_to?(:suppress_warnings=)
       cache = Test.suppress_warnings?

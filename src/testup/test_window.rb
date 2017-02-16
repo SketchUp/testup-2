@@ -1,15 +1,17 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2014 Trimble Navigation Ltd.
+# Copyright 2013-2016 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
 
+require 'testup/runs'
 
 module TestUp
   class TestUpWindow < SKUI::Window
 
     def initialize
+      @bridge = nil
       options = {
         :title           => PLUGIN_NAME,
         :preferences_key => PLUGIN_ID,
@@ -18,6 +20,7 @@ module TestUp
         :resizable       => true
       }
       super(options)
+      # noinspection RubyLiteralArrayInspection
       [
         'testup.js',
         'commands.js',
@@ -39,7 +42,7 @@ module TestUp
         # lots of nested calls to Bridge.pump_message calls which eventually
         # fail.
         TestUp.defer {
-          event_testup_ready()
+          event_testup_ready
         }
       }
       on(:close) {
@@ -56,14 +59,14 @@ module TestUp
     end
 
     # TODO: Fix this in SKUI.
-    # Hack, as SKUI currently doesn't support subclassing of it's controls.
+    # Hack, as SKUI currently doesn't support sub-classing of it's controls.
     def typename
       SKUI::Window.to_s.split('::').last
     end
 
     # @param [Array<Hash>] results
     def update_results(results)
-      Debugger.time("JS:TestUp.update_results") {
+      Debugger.time('JS:TestUp.update_results') {
         @bridge.call('TestUp.update_results', results)
       }
     end
@@ -72,7 +75,7 @@ module TestUp
     def reload
       return false unless visible?
       self.bridge.call('TestUp.reset')
-      discover_tests()
+      discover_tests
       true
     end
 
@@ -84,13 +87,15 @@ module TestUp
       when 'TestUp.on_script_debugger_attached'
         ScriptDebugger.attach
       when 'TestUp.on_run'
-        event_testup_run()
+        event_testup_run
+      when 'TestUp.on_rerun'
+        event_testup_rerun
       when 'TestUp.on_discover'
-        event_discover()
+        event_discover
       when 'TestUp.on_open_source_file'
         event_opent_source_file(arguments[0])
       when 'TestUp.on_preferences'
-        event_on_open_preferences()
+        event_on_open_preferences
       when 'TestUp.TestSuites.on_change'
         event_change_testsuite(arguments[0])
       when 'TestUp.Console.output'
@@ -103,7 +108,7 @@ module TestUp
 
     def discover_tests(first_run = false)
       discoveries = TestUp.discover_tests
-      js_command = "TestUp.TestSuites.update"
+      js_command = 'TestUp.TestSuites.update'
       js_command = "#{js_command}_first_run" if first_run
       Debugger.time("JS:#{js_command}") {
         progress = TaskbarProgress.new
@@ -131,13 +136,26 @@ module TestUp
       # To avoid the "Slow running script" dialog in IE the call to execute
       # the tests is deferred.
       TestUp.defer {
-        discover_tests()
+        discover_tests # TODO(thomthom): Why is this needed?
         TestUp.run_tests_gui
       }
     end
 
+    def event_testup_rerun
+      run_file = TestUp::Runs.select_config
+      return unless run_file
+      run_config = TestUp::Runs.read_config(run_file)
+      # To avoid the "Slow running script" dialog in IE the call to execute
+      # the tests is deferred.
+      TestUp.defer {
+        discover_tests # TODO(thomthom): Why is this needed?
+        TestUp.run_tests_gui(run_config)
+        puts "Re-run of: #{run_file}"
+      }
+    end
+
     def event_discover
-      discover_tests()
+      discover_tests
     end
 
     def event_change_testsuite(testsuite)
@@ -177,7 +195,7 @@ module TestUp
       end
     end
 
-    def event_on_open_preferences()
+    def event_on_open_preferences
       #@preferences_window ||= PreferencesWindow.new
       @preferences_window = PreferencesWindow.new
       @preferences_window.show
