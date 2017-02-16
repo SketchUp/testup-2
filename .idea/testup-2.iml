@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="RUBY_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://C:/Program Files/SketchUp/SketchUp 2016/Tools">
-      <excludeFolder url="file://C:/Program Files/SketchUp/SketchUp 2016/Tools/RubyStdLib" />
-    </content>
-    <content url="file://$MODULE_DIR$/../SketchUp-Ruby-API-Doc">
-      <excludeFolder url="file://$MODULE_DIR$/../SketchUp-Ruby-API-Doc/generated" />
+    <content url="file://C:/Program Files/SketchUp/SketchUp 2017/Tools">
+      <excludeFolder url="file://C:/Program Files/SketchUp/SketchUp 2017/Tools/RubyStdLib" />
     </content>
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/tests/SketchUp Ruby API" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests/TestUp" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/.vscode" />
       <excludeFolder url="file://$MODULE_DIR$/ruby-c-extension" />
       <excludeFolder url="file://$MODULE_DIR$/tools" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="minitest (v5.8.4, ruby-2.0.0-p576) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="power_assert (v0.2.7, ruby-2.0.0-p576) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="test-unit (v3.1.8, ruby-2.0.0-p576) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="yard (v0.9.5, ruby-2.0.0-p576) [gem]" level="application" />
+    <orderEntry type="module-library">
+      <library name="sketchup-api-stubs (v0.1.1) [path][gem]">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/pkg" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/pages" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/assets" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/.yardoc" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/autoload" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/SketchUp" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/su-template" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/pkg" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/pages" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/assets" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/.yardoc" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/autoload" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/SketchUp" />
+          <root url="file://$MODULE_DIR$/../ruby-api-stubs/su-template" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="library" scope="PROVIDED" name="bundler (v1.13.7, ruby-2.0.0-p576) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rake (v10.5.0, ruby-2.0.0-p576) [gem]" level="application" />
   </component>
   <component name="RModuleSettingsStorage">
-    <LOAD_PATH number="3" string0="C:/Program Files/SketchUp/SketchUp 2016/Tools" string1="$MODULE_DIR$/src" string2="$MODULE_DIR$/../SketchUp-Ruby-API-Doc/stubs" />
+    <LOAD_PATH number="2" string0="$MODULE_DIR$/src" string1="C:/Program Files/SketchUp/SketchUp 2017/Tools" />
     <I18N_FOLDERS number="0" />
   </component>
 </module>
