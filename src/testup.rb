@@ -21,7 +21,7 @@ module TestUp
   # Plugin information
   PLUGIN_ID       = 'TestUp2'.freeze
   PLUGIN_NAME     = 'TestUp'.freeze
-  PLUGIN_VERSION  = '2.1.0'.freeze
+  PLUGIN_VERSION  = '2.2.0'.freeze
 
   # Resource paths
   FILENAMESPACE = File.basename(__FILE__, '.*')
