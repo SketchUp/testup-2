@@ -207,15 +207,15 @@ module TestUp
   end
 
   # @example Run a test case:
-  #   TestUp.run_tests(["TC_Edge#"])
+  #   TestUp.run_tests(["TC_Sketchup_Edge#"])
   #
   # @example Run single test:
-  #   TestUp.run_tests(["TC_Edge#start"])
+  #   TestUp.run_tests(["TC_Sketchup_Edge#start"])
   #
-  # @example Run single test:
+  # @example Run a set of test cases and/or tests:
   #   tests = [
-  #     "TC_Face#",
-  #     "TC_Edge#start", "TC_Edge#end"
+  #     "TC_Sketchup_Face#",
+  #     "TC_Sketchup_Edge#start", "TC_Sketchup_Edge#end"
   #   ]
   #   TestUp.run_tests(tests)
   #
