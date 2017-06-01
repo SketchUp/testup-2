@@ -24,6 +24,28 @@ $LOAD_PATH << "C:/Users/YourUserName/Documents/testup-2/src"
 require "testup.rb"
 ```
 
+Optionally you can download a RBZ from the [Releases tab on GitHub](https://github.com/SketchUp/testup-2/releases). Beware that this might not be
+always up to date. Setting up from git is recommended in order to easily keep
+up to date.
+
+Setup for SketchUp Internal Development
+---------------------------------------
+
+Follow the same steps as for "Setup for Contributing".
+
+In order to load tests from our Perforce clients the paths where our tests are
+needs to be updated. This is done from the Preference dialog found under the
+TestUp dialog.
+
+Click the gear symbol and you should see a list of paths. By default these will
+be pointing to the git repository's copy of our tests.
+
+To simplify switching between clients a "P4 Clients" button should appear if
+you have Perforce set up on your system. Use this button to get a list of
+clients on your machine. Typically you want to use the tests from trunk. Pick a
+client and then Save - your paths will then update. Restart SketchUp after
+saving your changes to ensure you have a clean configuration.
+
 Credits
 -------
 
