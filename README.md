@@ -46,6 +46,26 @@ clients on your machine. Typically you want to use the tests from trunk. Pick a
 client and then Save - your paths will then update. Restart SketchUp after
 saving your changes to ensure you have a clean configuration.
 
+Logging and Re-running
+----------------------
+
+TestUp will log the details of a test-run. These can be found by using the menu
+`Extensions > TestUp > Open Log Folder`.
+
+In there you will find `.log` and `.run` files.
+
+The `.log` files are for human reading, containing information about the
+environment and what tests ran.
+
+The `.run` files are JSON files which can be used to re-play a test-run. From
+the TestUp main dialog, click the `Re-run...` button and select the `.run` file
+you are interested in. This will re-run the exact same tests with the same seed
+so they are also run in the same order.
+
+If you need to re-run a particular run several times you can use
+`Extensions > TestUp > Saved Runs > Add Run`. Then you can pick it from the
+drop-down after choosing `Extensions > TestUp > Saved Runs > Set Re-play Run`.
+
 Credits
 -------
 
