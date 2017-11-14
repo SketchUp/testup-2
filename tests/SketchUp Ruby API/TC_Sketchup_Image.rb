@@ -1,6 +1,6 @@
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
 # License:: All Rights Reserved.
-# Original Author:: Thomas Thomassen
+# Original Author:: Thomas Thomassen (thomthom@sketchup.com)
 
 
 require "testup/testcase"
@@ -62,5 +62,22 @@ class TC_Sketchup_Image < TestUp::TestCase
     end
   end
 
+  def test_image_rep
+    skip("New in SU2018") if Sketchup.version.to_i < 18
+    entities = Sketchup.active_model.entities
+    filename = File.join(__dir__, File.basename(__FILE__, ".*"), "test.jpg")
+    image = Sketchup.active_model.entities.add_image(filename, ORIGIN, 1.m)
+    image_rep = image.image_rep
+    assert_kind_of(Sketchup::ImageRep, image_rep)
+  end
 
+  def test_image_rep_too_many_arguments
+    skip("New in SU2018") if Sketchup.version.to_i < 18
+    entities = Sketchup.active_model.entities
+    filename = File.join(__dir__, File.basename(__FILE__, ".*"), "test.jpg")
+    image = Sketchup.active_model.entities.add_image(filename, ORIGIN, 1.m)
+    assert_raises(ArgumentError) do
+      image.image_rep(nil)
+    end
+  end
 end # class

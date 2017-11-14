@@ -184,6 +184,40 @@ class TC_Array < TestUp::TestCase
     assert_equal(0, distance)
   end
 
+  def test_distance_point2d_with_2d_array
+    point = Geom::Point2d.new(0, 0)
+
+    distance = [1, 0].distance(point)
+    assert_equal(1, distance)
+    assert_kind_of(Length, distance)
+
+    distance = [0, 1].distance(point)
+    assert_equal(1, distance)
+
+    distance = [0, 0].distance(point)
+    assert_equal(0, distance)
+
+    distance = [1, 1].distance(point)
+    assert_equal(Math.sqrt(2), distance)
+  end
+
+  def test_distance_point3d_with_2d_array
+    point = Geom::Point3d.new(0, 0, 0)
+
+    distance = [1, 0].distance(point)
+    assert_equal(1, distance)
+    assert_kind_of(Length, distance)
+
+    distance = [0, 1].distance(point)
+    assert_equal(1, distance)
+
+    distance = [0, 0].distance(point)
+    assert_equal(0, distance)
+
+    distance = [1, 1].distance(point)
+    assert_equal(Math.sqrt(2), distance)
+  end
+
   # ========================================================================== #
   # method Array.distance_to_line
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#distance_to_line
@@ -388,6 +422,35 @@ class TC_Array < TestUp::TestCase
     assert_in_delta(expected, dot_product, SKETCHUP_FLOAT_TOLERANCE)
   end
 
+  def test_dot_2d_array_with_vector2d
+    array = [1, 2]
+    vector = Geom::Vector2d.new(10, 20)
+    dot_product = array.dot(vector)
+    assert_equal(50, dot_product)
+  end
+
+  def test_dot_2d_array_with_vector3d
+    array = [1, 2]
+    vector = Geom::Vector3d.new(10, 20, 30)
+    dot_product = array.dot(vector)
+    assert_equal(50, dot_product)
+  end
+
+  def test_dot_3d_array_with_vector2d
+    array = [1, 2, 3]
+    vector = Geom::Vector2d.new(10, 20)
+    assert_raises(ArgumentError) do 
+      array.dot(vector)
+    end
+  end
+  
+  def test_dot_3d_array_with_vector3d
+    array = [1, 2, 3]
+    vector = Geom::Vector3d.new(10, 20, 30)
+    dot_product = array.dot(vector)
+    assert_equal(140, dot_product)
+  end
+
   # ========================================================================== #
   # method Array.normalize
   # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#normalize
@@ -428,6 +491,13 @@ class TC_Array < TestUp::TestCase
     expected = array
     array.normalize
     assert_equal(expected, array)
+  end
+
+  def test_normalize_2d_array
+    array = [1, 2]
+    vector = array.normalize
+    assert_equal(2, vector.size)
+    assert_equal([0.4472135954999579, 0.8944271909999159], vector)
   end
 
   # ========================================================================== #
@@ -488,6 +558,13 @@ class TC_Array < TestUp::TestCase
     assert_in_delta(expected_x_normal, array.x, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected_y_normal, array.y, SKETCHUP_FLOAT_TOLERANCE)
     assert_in_delta(expected_z_normal, array.z, SKETCHUP_FLOAT_TOLERANCE)
+  end
+
+  def test_normalize_Bang_2d_array
+    array = [1, 2]
+    vector = array.normalize!
+    assert_equal(2, vector.size)
+    assert_same(array, vector)
   end
 
   # ========================================================================== #
@@ -556,6 +633,38 @@ class TC_Array < TestUp::TestCase
     vector = Geom::Vector3d.new(0, 0, 1)
     # This will modify 'array' in place
     array.offset!(vector)
+  end
+
+  def test_offset_Bang_with_Vector3d_and_3d_array
+    array = [10, 10, 10]
+    vector = Geom::Vector3d.new(0, 0, 1)
+    array.offset!(vector)
+    assert_equal(3, array.size)
+    assert_equal([10, 10, 11], array)
+  end
+
+  def test_offset_Bang_with_Vector2d_and_3d_array
+    array = [10, 10, 10]
+    vector = Geom::Vector2d.new(0, 1)
+    assert_raises(ArgumentError) do 
+      array.offset!(vector)
+    end
+  end
+
+  def test_offset_Bang_with_Vector2d_and_2d_array
+    array = [10, 10]
+    vector = Geom::Vector2d.new(0, 1)
+    array.offset!(vector)
+    assert_equal(2, array.size)
+    assert_equal([10, 11], array)
+  end
+  
+  def test_offset_Bang_with_Vector3d_and_2d_array
+    array = [10, 10]
+    vector = Geom::Vector3d.new(0, 0, 1)
+    array.offset!(vector)
+    assert_equal(3, array.size)
+    assert_equal([10, 10, 1], array)
   end
 
   def test_offset_Bang_frozen
@@ -958,7 +1067,7 @@ class TC_Array < TestUp::TestCase
   end
 
   def test_transform_4_x_4_array_scale_2x
-    assert(false, "Fix this for SU2016") # Temporarily added to avoid assert.
+    skip("Fix this!") if Sketchup.version.to_i < 18
     array = [1, 2, 3]
     expected = [2, 4, 6]
     array_4x4 = [1, 0, 0, 0,

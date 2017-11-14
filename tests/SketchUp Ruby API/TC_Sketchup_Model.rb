@@ -1,4 +1,4 @@
-# Copyright:: Copyright 2014 Trimble Navigation Ltd.
+# Copyright:: Copyright 2014 Trimble Inc. All rights reserved.
 # License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen
 
@@ -23,6 +23,16 @@ class TC_Sketchup_Model < TestUp::TestCase
     Sketchup.active_model.commit_operation
   end
 
+  def get_test_file(filename)
+    File.join(__dir__, "TC_Sketchup_Model", filename)
+  end
+
+  def setup_with_jinyi_component
+    start_with_empty_model
+    import_file = get_test_file("jinyi.skp")
+    status = Sketchup.active_model.import(import_file)
+    assert_kind_of(TrueClass, status)
+  end
 
   def add_extra_groups_and_components
     model = Sketchup.active_model
@@ -76,7 +86,9 @@ class TC_Sketchup_Model < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/model#start_operation
 
   def test_start_operation_warn_new_nested_operation
+    original_mode = Sketchup.debug_mode?
     skip("Implemented in SU2016") if Sketchup.version.to_i < 16
+    Sketchup.debug_mode = true
     model = Sketchup.active_model
     model.start_operation("Hello")
     stderr = capture_stderr(VERBOSE_SOME) {
@@ -86,6 +98,8 @@ class TC_Sketchup_Model < TestUp::TestCase
     result = stderr.string
     assert(result.include?(expected_warning),
       "Expected warning: #{expected_warning}\nResult: #{result}")
+  ensure
+    Sketchup.debug_mode = original_mode
   end
 
 
@@ -746,14 +760,6 @@ class TC_Sketchup_Model < TestUp::TestCase
     }
   end
 
-  def test_instance_path_from_pid_path_incorrect_number_of_arguments_zero
-    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
-    model = Sketchup.active_model
-    assert_raises(ArgumentError) {
-      instance_path = model.instance_path_from_pid_path
-    }
-  end
-
   def test_instance_path_from_pid_path_incorrect_number_of_arguments_two
     skip("Implemented in SU2017") if Sketchup.version.to_i < 17
     model = Sketchup.active_model
@@ -814,5 +820,367 @@ class TC_Sketchup_Model < TestUp::TestCase
     refute_equal(Sketchup.active_model.tools.active_tool_id, mytool_id,
         "Tool ID did not change")
   end
+
+  def test_import_legacy_parameters
+    start_with_empty_model
+    dae_file = get_test_file("jinyi.dae")
+    status = Sketchup.active_model.import(dae_file, false)
+    assert_kind_of(TrueClass, status)
+    definition_list = Sketchup.active_model.definitions
+    assert_equal(3, definition_list.count)
+    assert_equal(622, definition_list.at(0).entities.count)
+  end
+
+  def test_import_dae_options
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    import_file = get_test_file("jinyi.dae")
+    options = { :validate_dae => true, 
+                :merge_coplaner_faces => true,
+                :show_summary => false}
+    status = Sketchup.active_model.import(import_file, options)
+    assert_kind_of(TrueClass, status)
+    definition_list = Sketchup.active_model.definitions
+    assert_equal(3, definition_list.count)
+    assert_equal(622, definition_list.at(0).entities.count)
+  end
+
+  def test_import_3ds_options
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    import_file = get_test_file("jinyi.3ds")
+    options = { :merge_coplaner_faces => true,
+                :units => "mile",
+                :show_summary => false}
+    status = Sketchup.active_model.import(import_file, options)
+    assert_kind_of(TrueClass, status)
+    definition_list = Sketchup.active_model.definitions
+    assert_equal(5, definition_list.count)
+    assert_equal(38, definition_list.at(0).entities.count)
+  end
+
+  def test_import_dwg_options
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    import_file = get_test_file("jinyi.dwg")
+    options = { :merge_coplaner_faces => true,
+                :orient_faces => true,
+                :preserve_origin => true,
+                :show_summary => false}
+    status = Sketchup.active_model.import(import_file, options)
+    assert_kind_of(TrueClass, status)
+    definition_list = Sketchup.active_model.definitions
+    assert_equal(3, definition_list.count)
+    assert_equal(169, definition_list.at(0).entities.count)
+  end
+
+  def test_import_dxf_options
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    import_file = get_test_file("jinyi.dxf")
+    options = { :merge_coplaner_faces => false,
+                :orient_faces => true,
+                :preserve_origin => true,
+                :show_summary => false}
+    status = Sketchup.active_model.import(import_file, options)
+    assert_kind_of(TrueClass, status)
+    definition_list = Sketchup.active_model.definitions
+    assert_equal(3, definition_list.count)
+    assert_equal(264, definition_list.at(0).entities.count)
+  end
+
+  def test_import_ifc_options
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    import_file = get_test_file("jinyi.ifc")
+    status = Sketchup.active_model.import(import_file, false)
+    assert_kind_of(TrueClass, status)
+    definition_list = Sketchup.active_model.definitions
+    assert_equal(6, definition_list.count)
+    assert_equal(821, definition_list.at(0).entities.count)
+  end
+
+  def test_import_kmz_options
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    import_file = get_test_file("jinyi.kmz")
+    options = { :validate_kmz => true,
+                :merge_coplaner_faces => true,
+                :show_summary => false}
+    status = Sketchup.active_model.import(import_file, options)
+    assert_kind_of(TrueClass, status)
+    definition_list = Sketchup.active_model.definitions
+    assert_equal(2, definition_list.count)
+    assert_equal(299, definition_list.at(0).entities.count)
+  end
+
+  def test_import_stl_options
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    import_file = get_test_file("jinyi.stl")
+    options = { :units => "inch",
+                :merge_coplaner_faces => false,
+                :preserve_origin => true,
+                :swap_yz => true}
+    status = Sketchup.active_model.import(import_file, options)
+    assert_kind_of(TrueClass, status)
+    definition_list = Sketchup.active_model.definitions
+    assert_equal(1, definition_list.count)
+    assert_equal(820, definition_list.at(0).entities.count)
+  end
+
+  def test_export_3ds_otions
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.3ds"
+    
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+    options = { :units => "m",
+                :geometry => "by_material",
+                :doubledsided_faces => true,
+                :faces => "not_two_sided",
+                :edges => true,
+                :texture_maps => true,
+                :preserve_texture_coords => true,
+                :cameras => true,
+                :show_summary => false}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
+  def test_export_dae_options
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.dae"
+
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+    options = { :triangulated_faces => true,
+                :doublesided_faces => true,
+                :edges => true,
+                :author_attribution => true,
+                :hidden_geomtry => true,
+                :preserve_instancing => true,
+                :texture_maps => true,
+                :selectionset_only => true,
+                :show_summary => false}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
+  def test_export_dwg_options
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.dwg"
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+    
+    options = { :acad_version => "acad_2013",
+                :faces_flag => true,
+                :construction_geometry => true,
+                :dimensions => true,
+                :text => true,
+                :edges => true,
+                :show_summary => false}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
+  def test_export_dxf_options
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.dxf"
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+
+    options = { :acad_version => "acad_2013",
+                :faces_flag => true,
+                :construction_geometry => true,
+                :dimensions => true,
+                :text => true,
+                :edges => true,
+                :show_summary => false}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
+  def test_export_fbx_options
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.fbx"
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+
+    options = { :units => "mile",
+                :triangulated_faces => true,
+                :doublesided_faces => true,
+                :texture_maps => true,
+                :separate_disconnected_faces => true,
+                :swap_yz => true,
+                :show_summary => false}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
+  def test_export_ifc_options
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.ifc"
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+
+    options = { :hidden_geometry => true,
+                :doublesided_faces => true,
+                :ifc_mapped_items => true,
+                :ifc_types => [
+                  "IfcBeam",
+                  "IfcBuilding",
+                  "IfcBuildingElementProxy",
+                  "IfcBuildingStorey",
+                  "IfcColumn",
+                  "IfcCurtainWall",
+                  "IfcDoor",
+                  "IfcFooting",
+                  "IfcFurnishingElement",
+                  "IfcMember",
+                  "IfcPile",
+                  "IfcPlate",
+                  "IfcProject",
+                  "IfcRailing",
+                  "IfcRamp",
+                  "IfcRampFlight",
+                  "IfcRoof",
+                  "IfcSite",
+                  "IfcSlab",
+                  "IfcSpace",
+                  "IfcStair",
+                  "IfcStairFlight",
+                  "IfcWall",
+                  "IfcWallStandardCase",
+                  "IfcWindow"],
+                :show_summary => false}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
+  def test_export_kmz_options
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.kmz"
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+
+    options = { :author_attribution => true,
+                :hidden_geometry => true,
+                :show_summary => true}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
+  def test_export_obj_options
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.obj"
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+
+    options = { :units => "model",
+                :triangulated_faces => true,
+                :doublesided_faces => true,
+                :edges => true,
+                :texture_maps => true,
+                :swap_yz => true,
+                :show_summary => false}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
+  def test_export_xsi_options
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.xsi"
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+
+    options = { :units => "model",
+                :triangulated_faces => true,
+                :doublesided_faces => true,
+                :edges => true,
+                :texture_maps => true,
+                :swap_yz => true,
+                :show_summary => false}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
+  def test_export_wrl_options
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.wrl"
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+
+    options = { :doublesided_faces => true,
+                :cameras => true,
+                :use_vrml_orientation => true,
+                :edges => true,
+                :texture_maps => true,
+                :allow_mirrored_componenets => true,
+                :material_overrides => true,
+                :show_summary => false}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
+  def test_export_stl_options
+    temp_dir = Sketchup.temp_dir
+    export_file = temp_dir + "/" + "jinyi.stl"
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    setup_with_jinyi_component
+
+    options = { :units => "model",
+                :format => "ascii",
+                :selectionset_only => true,
+                :swap_yz => true,
+                :show_summary => false}
+    status = Sketchup.active_model.export(export_file, options)
+    assert_kind_of(TrueClass, status)
+    file_size = File.stat(export_file).size
+    assert(File.exist?(export_file) && file_size > 0)
+  ensure
+    File.delete(export_file) if File.exist?(export_file)
+  end
+
 
 end # class

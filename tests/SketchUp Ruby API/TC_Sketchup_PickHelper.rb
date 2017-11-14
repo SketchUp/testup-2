@@ -1,4 +1,4 @@
-# Copyright:: Copyright 2015 Trimble Navigation Ltd.
+# Copyright:: Copyright 2016 Trimble Inc.
 # License:: The MIT License (MIT)
 # Original Author:: Paul Ballew
 
@@ -8,10 +8,13 @@ require "testup/testcase"
 # http://www.sketchup.com/intl/en/developer/docs/ourdoc/pickhelper
 class TC_Sketchup_PickHelper < TestUp::TestCase
 
+  # Set this to true to enable verbose debugging output.
+  DEBUG_OUTPUT = false
+
   def setup
     start_with_empty_model()
     setup_camera
-    
+
     # Handy variables
     @pick_helper = Sketchup.active_model.active_view.pick_helper
     @origin_point = Geom::Point3d.new(0, 0, 0)
@@ -21,10 +24,42 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
     @far_point = Geom::Point3d.new(9999999, 9999999, 0)
     @negative_point = Geom::Point3d.new(-10, -10, 0)
     @z_point = Geom::Point3d.new(0, 0, 100)
+
+    if DEBUG_OUTPUT
+      puts 'Setup'
+      puts "> #{@pick_helper.inspect}"
+      puts "> Count: #{@pick_helper.count}"
+      puts "> All Picked Size: #{@pick_helper.all_picked.size}"
+      puts "> All Picked: #{@pick_helper.all_picked.inspect}"
+    end
   end
 
   def teardown
-    Sketchup.active_model.selection.add(@pick_helper.all_picked)
+    #Sketchup.active_model.active_view.camera.aspect_ratio = 0.0
+    # Avoid blindly adding entities from @pick_helper to selection.
+    # It might be holding on to stale entity pointers. Since these tests erase
+    # all entities per test it would be easy to feed the selection deleted
+    # data. For instance when we test failure cases, PickHelper raises an error
+    # before it get to reset. It's known that one should not hold on to
+    # PickHelper for too long. Trouble is that view.pick_helper will return a
+    # cached PickHelper. One should make sure to check the result value of a
+    # pick before attempting to use it's entities.
+    #Sketchup.active_model.selection.clear
+    #Sketchup.active_model.selection.add(@pick_helper.all_picked)
+
+    if DEBUG_OUTPUT
+      puts 'Teardown'
+      entities = Sketchup.active_model.entities.to_a
+      selection = Sketchup.active_model.selection.to_a
+      diff = (selection - entities)
+
+      puts "> Entities: #{entities.inspect}"
+      puts "> Selection: #{selection.inspect}"
+      puts "> Diff: #{diff.inspect}"
+      puts "> Parent: #{diff.map { |i| i.parent }.inspect}"
+      puts "> All Picked Size: #{@pick_helper.all_picked.size}"
+      puts "> All Picked: #{@pick_helper.all_picked.inspect}"
+    end
   end
 
   def setup_camera
@@ -32,8 +67,9 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
     target = [50,0,0]
     up = [0,1,0]
     Sketchup.active_model.active_view.camera.set(eye, target, up)
+    Sketchup.active_model.active_view.camera.aspect_ratio = 1.0
   end
-  
+
   def add_window_pick_data
     # Put some stuff in the model
     entities = Sketchup.active_model.active_entities
@@ -45,7 +81,7 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
     @boundingbox = Geom::BoundingBox.new
     @boundingbox.add([-10, -10, -10], [10, 10, 10])
   end
-  
+
   def add_inside_edges
     entities = Sketchup.active_model.active_entities
     entities.add_edges([1, 0, 0], [2, 0, 0])
@@ -70,12 +106,13 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
     entities.add_edges([0, -11, 0], [0, -13, 0])
     entities.add_edges([0, 0, -11], [0, 0, -13])
   end
-  
+
   def add_inside_group
     # Inside group
     group = Sketchup.active_model.entities.add_group
     entities = group.entities
     entities.add_face([1,1,2], [5,1,2], [5,5,2], [1,5,2])
+    group
   end
 
   def add_crossing_group
@@ -83,9 +120,10 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
     entities = group.entities
     entities.add_face([1,1,5], [5,1,5], [5,5,5], [1,5,5])
     entities.add_face([6,6,5], [12,6,5], [12,12,5], [6,12,5])
+    group
   end
 
-  
+
   # ========================================================================== #
   # method Sketchup::PickHelper.window_pick
   # http://www.sketchup.com/intl/developer/docs/ourdoc/pickhelper#window_pick
@@ -157,8 +195,12 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
   end
 
   def test_window_pick_inside_on_crossing_group
-    add_crossing_group
-    end_point = Geom::Point3d.new(300, 400, 0)
+    group = add_crossing_group
+    # We want to make a pick selection crossing the entity so we use the screen
+    # projection of the center.
+    center2d = group.model.active_view.screen_coords(group.bounds.center)
+    end_point = Geom::Point3d.new(300, center2d.y, 0)
+
     num_picked = @pick_helper.window_pick(@origin_point, end_point, Sketchup::PickHelper::PICK_INSIDE)
     assert_equal(0, num_picked)
     assert_equal(0, @pick_helper.all_picked.count)
@@ -170,7 +212,7 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
     assert_equal(expected_count, num_picked)
     assert_equal(expected_count, @pick_helper.all_picked.count)
   end
-  
+
   def test_window_pick_with_group
     add_window_pick_data
     group = Sketchup.active_model.entities.add_group
@@ -188,7 +230,7 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
      boundingbox = Geom::BoundingBox.new
      boundingbox.add([1, 1, 1], [100, 100, 100])
      ph = Sketchup.active_model.active_view.pick_helper
- 
+
      # Rotate the box 45' around the z-axis
      angle = 45
      transformation = Geom::Transformation.new(ORIGIN, Z_AXIS, angle)
@@ -250,7 +292,7 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
     add_outside_edges
     assert_equal(2, num_picked)
   end
-  
+
   def test_boundingbox_pick_rotated_box
     add_boundingbox
     add_outside_edges
@@ -263,7 +305,7 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
     num_picked = @pick_helper.boundingbox_pick(@boundingbox, Sketchup::PickHelper::PICK_CROSSING, transformation)
     assert_equal(4, num_picked)
   end
-  
+
   def test_boundingbox_pick_invalid_boundingbox
     num_picked = 0
     assert_raises(TypeError) do

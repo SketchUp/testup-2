@@ -77,6 +77,7 @@ class TC_Sketchup_Entity < TestUp::TestCase
   # method Sketchup::Entity.persistent_id
 
   def test_persistent_id_edge
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
     model = Sketchup.active_model
     edge = model.entities.add_line(ORIGIN, [5,5,5])
 
@@ -86,6 +87,7 @@ class TC_Sketchup_Entity < TestUp::TestCase
   end
 
   def test_persistent_id_vertex
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
     model = Sketchup.active_model
     edge = model.entities.add_line(ORIGIN, [5,5,5])
 
@@ -95,6 +97,7 @@ class TC_Sketchup_Entity < TestUp::TestCase
   end
 
   def test_persistent_id_incorrect_number_of_arguments_one
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
     model = Sketchup.active_model
     edge = model.entities.add_line(ORIGIN, [5,5,5])
 
