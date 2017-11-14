@@ -11,6 +11,8 @@ require "testup/testcase"
 class TC_Sketchup_Edge < TestUp::TestCase
 
   def setup
+    entities = Sketchup.active_model.entities.to_a
+    selection = Sketchup.active_model.selection.to_a
     start_with_empty_model()
   end
 

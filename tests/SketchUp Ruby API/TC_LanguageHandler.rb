@@ -60,7 +60,7 @@ class TC_LanguageHandler < TestUp::TestCase
 
   def test_GetResourcePath_non_existing_file
     handler = LanguageHandler.new(@sample_valid_file)
-    
+
     result = handler.GetResourcePath('NoSuch.file')
     assert_kind_of(String, result)
     assert_equal('', result)
@@ -199,6 +199,9 @@ class TC_LanguageHandler < TestUp::TestCase
 
   # Test the file that Dynamic Component loads.
   def test_resources_dynamic_componenents
+    # Strings for shipped extensions moved from SketchUp's Resource directory
+    # to the extensions themselves as of SU2018.
+    skip if Sketchup.version.to_i > 17
     handler = LanguageHandler.new(@dynamiccomponents_strings)
     result = handler.GetString('Millimeters')
     assert(!handler.GetStrings.empty?)
@@ -208,6 +211,9 @@ class TC_LanguageHandler < TestUp::TestCase
 
   # Test the file that Sandbox Tools loads.
   def test_resources_sandbox_tools
+    # Strings for shipped extensions moved from SketchUp's Resource directory
+    # to the extensions themselves as of SU2018.
+    skip if Sketchup.version.to_i > 17
     handler = LanguageHandler.new(@sandbox_strings)
     result = handler.GetString('Stamp')
     assert(!handler.GetStrings.empty?)

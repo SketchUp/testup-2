@@ -201,4 +201,63 @@ class TC_Sketchup_Texture < TestUp::TestCase
     File.delete(temp_file) if File.exist?(temp_file)
   end
 
+  def test_image_rep
+    skip("New in SU2018") if Sketchup.version.to_i < 18
+    texture = load_small_texture
+    image_rep = texture.image_rep
+    assert_kind_of(Sketchup::ImageRep, image_rep)
+  end
+
+  def test_image_rep_colorized
+    skip("New in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    texture = load_small_texture
+    colorized = true
+
+    # colorize it, JUST DO IT!
+    material = texture.parent
+    material.color = Sketchup::Color.new(128, 64, 32)
+    image_rep = texture.image_rep(colorized)
+    assert_kind_of(Sketchup::ImageRep, image_rep)
+    color = image_rep.color_at_uv(0.5, 0.5)
+    assert_kind_of(Sketchup::Color, color)
+    assert_equal(160, color.red)
+    assert_equal(75, color.green)
+    assert_equal(32, color.blue)
+  end
+
+  def test_image_rep_not_colorized
+    skip("New in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    texture = load_small_texture
+    image_rep = texture.image_rep(false)
+    assert_kind_of(Sketchup::ImageRep, image_rep)
+    color = image_rep.color_at_uv(0.5, 0.5)
+    assert_kind_of(Sketchup::Color, color)
+    assert_equal(208, color.red)
+    assert_equal(191, color.green)
+    assert_equal(183, color.blue)
+  end
+
+  def test_image_rep_colorized_too_many_arguments
+    skip("New in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    texture = load_small_texture
+    assert_raises(ArgumentError) do 
+       texture.image_rep(true, true)
+    end
+  end
+
+  def test_image_rep_colorized_empty_argument
+    skip("New in SU2018") if Sketchup.version.to_i < 18
+    start_with_empty_model
+    texture = load_small_texture
+    image_rep = texture.image_rep
+    assert_kind_of(Sketchup::ImageRep, image_rep)
+    color = image_rep.color_at_uv(0.5, 0.5)
+    assert_kind_of(Sketchup::Color, color)
+    assert_equal(208, color.red)
+    assert_equal(191, color.green)
+    assert_equal(183, color.blue)
+  end
 end # class

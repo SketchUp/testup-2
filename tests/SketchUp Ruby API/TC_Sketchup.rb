@@ -30,7 +30,7 @@ class TC_Sketchup < TestUp::TestCase
 
   def test_debug_mode_Query
     skip("Implemented in SU2016") if Sketchup.version.to_i < 16
-    original_mode = Sketchup.debug_mode
+    original_mode = Sketchup.debug_mode?
 
     Sketchup.debug_mode = true
     assert_equal(true, Sketchup.debug_mode?)

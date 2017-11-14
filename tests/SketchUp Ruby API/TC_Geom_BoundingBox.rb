@@ -24,6 +24,13 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox
 
   def test_introduction_api_example_1
+    # <setup>
+    # The example assume a default new model with a scale model.
+    model = Sketchup.active_model
+    model.entities.clear!
+    model.entities.add_line([0, 0, 0], [9, 9, 9])
+    # </setup>
+
     # You can get the bounding box on a model.
     model = Sketchup.active_model
     model_bb = model.bounds
@@ -1271,11 +1278,11 @@ class TC_Geom_BoundingBox < TestUp::TestCase
   # method Geom::BoundingBox.new
   # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#new
 
-  def test_new_api_example
+  def test_initialize_api_example
     boundingbox = Geom::BoundingBox.new
   end
 
-  def test_new
+  def test_initialize
     boundingbox = Geom::BoundingBox.new
     assert_equal(0.0, boundingbox.width, "Width")
     assert_equal(0.0, boundingbox.height, "Height")
@@ -1283,10 +1290,16 @@ class TC_Geom_BoundingBox < TestUp::TestCase
     assert_equal(true, boundingbox.empty?, "Not empty boundingbox")
   end
 
-  def test_new_incorrect_number_of_arguments
+  def test_initialize_incorrect_number_of_arguments
     assert_raises ArgumentError do
       Geom::BoundingBox.new(nil)
     end
+  end
+
+  class CustomBounds < Geom::BoundingBox; end
+  def test_initialize_subclassed
+    # Making sure we created the objects correctly so it can be sub-classed.
+    CustomBounds::new
   end
 
 

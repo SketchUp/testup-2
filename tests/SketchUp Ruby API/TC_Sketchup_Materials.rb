@@ -14,9 +14,7 @@ class TC_Sketchup_Materials < TestUp::TestCase
   end
 
   def teardown
-    # ...
   end
-
 
   # ========================================================================== #
   # method Sketchup::Materials.load
@@ -31,6 +29,7 @@ class TC_Sketchup_Materials < TestUp::TestCase
   end
 
   def test_load
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
     # Load a material from the shipped SketchUp library. (SketchUp 2016)
     filename = 'Materials/Brick, Cladding and Siding/Cinder Block.skm'
     path = Sketchup.find_support_file(filename)
@@ -42,6 +41,7 @@ class TC_Sketchup_Materials < TestUp::TestCase
   end
 
   def test_load_existing
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
     # Load a material from the shipped SketchUp library. (SketchUp 2016)
     filename = 'Materials/Brick, Cladding and Siding/Cinder Block.skm'
     path = Sketchup.find_support_file(filename)
@@ -96,5 +96,36 @@ class TC_Sketchup_Materials < TestUp::TestCase
     end
   end
 
+  # ========================================================================== #
+  # method Sketchup::Materials.unique_name
+  # http://www.sketchup.com/intl/developer/docs/ourdoc/material#unique_name
+  
+  def test_unique_name
+    # Prepopulate the empty model with a material 
+    materials = Sketchup.active_model.materials
+    materials.add("Textured")
+	# Test unique and non-unique names
+    assert_equal("test", materials.unique_name("test"))
+    assert_equal("Textured1", materials.unique_name("Textured"))
+    test_mat = materials.add("TEXTURED")
+    assert_equal("textureD2", materials.unique_name("textureD"))
+  end
+
+  def test_unique_name_invalid_argument
+    materials = Sketchup.active_model.materials
+    assert_raises(TypeError) do
+      materials.unique_name(nil)
+    end
+    assert_raises(NameError) do
+      materials.unique_name(material)
+    end
+  end
+
+  def test_unique_name_too_many_arguments
+    materials = Sketchup.active_model.materials
+    assert_raises(ArgumentError) do
+      materials.unique_name("test0", "test1")
+    end
+  end
 
 end # class
