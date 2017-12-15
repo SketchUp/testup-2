@@ -3,6 +3,8 @@ TestUp 2 for SketchUp
 
 TestUp is a wrapper on top of the [minitest](https://github.com/seattlerb/minitest) gem. It allow SketchUp Extension developers to write `minitest` tests that runs within SketchUp.
 
+![](docs/overview.png)
+
 Requirements
 ------------
 
