@@ -17,6 +17,10 @@ Install TestUp from `git` (See Setup for Contributing) or download RBZ from the 
 
 Check out the [wiki](https://github.com/SketchUp/testup-2/wiki) for details on creating tests. Make sure to also refer to [minitest documentation](http://docs.seattlerb.org/minitest/).
 
+Examples of extension projects implementing TestUp tests:
+* https://bitbucket.org/thomthom/quadface-tools/src
+* https://github.com/thomthom/shadow-texture/tree/dev-vscode-debug
+
 Setup for Contributing
 ----------------------
 
