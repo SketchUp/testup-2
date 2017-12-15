@@ -1,10 +1,19 @@
 TestUp 2 for SketchUp
 =====================
 
+TestUp is a wrapper on top of the [minitest](https://github.com/seattlerb/minitest) gem. It allow SketchUp Extension developers to write `minitest` tests that runs within SketchUp.
+
 Requirements
 ------------
 
 1. SketchUp 2014 or newer.
+
+Setup for Extension Developers
+------------------------------
+
+Install TestUp from `git` (See Setup for Contributing) or download RBZ from the [Releases tab on GitHub](https://github.com/SketchUp/testup-2/releases). (The Releases downloads might be behind.)
+
+Check out the [wiki](https://github.com/SketchUp/testup-2/wiki) for details on creating tests. Make sure to also refer to [minitest documentation](http://docs.seattlerb.org/minitest/).
 
 Setup for Contributing
 ----------------------
