@@ -39,13 +39,13 @@ module TestUp
   # Sketchup.write_default(TestUp::PLUGIN_ID, 'dev-mode', true)
   DEBUG = Sketchup.read_default(PLUGIN_ID, 'dev-mode', false)
 
-  # <debug>
-  if defined?(SKETCHUP_CONSOLE)
-    SKETCHUP_CONSOLE.show
-  elsif defined?(LAYOUT_CONSOLE)
-    LAYOUT_CONSOLE.show
+  if Sketchup.read_default(PLUGIN_ID, 'open_console_on_startup', false)
+    if defined?(SKETCHUP_CONSOLE)
+      SKETCHUP_CONSOLE.show
+    elsif defined?(LAYOUT_CONSOLE)
+      LAYOUT_CONSOLE.show
+    end
   end
-  # </debug>
 
   PATH_IMAGES     = File.join(PATH, 'images').freeze
   PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
@@ -130,6 +130,7 @@ module TestUp
     @settings[:run_in_gui] = nil
     @settings[:verbose_console_tests] = nil
     @settings[:paths_to_testsuites] = nil
+    @settings[:open_console_on_startup] = nil
   end
 
 

@@ -84,6 +84,16 @@ module TestUp
     cmd.status_bar_text = 'Open folder with logs.'
     cmd_open_logs = cmd
 
+    cmd = UI::Command.new('Open console on startup') {
+      self.settings[:open_console_on_startup] = !self.settings[:open_console_on_startup]
+    }
+    cmd.tooltip = 'Open console on startup'
+    cmd.status_bar_text = 'Open console on startup.'
+    cmd.set_validation_proc {
+      self.settings[:open_console_on_startup] ? MF_CHECKED : MF_ENABLED
+    } if defined?(Sketchup)
+    cmd_open_console_on_startup = cmd
+
     cmd = UI::Command.new('Reload TestUp') {
       TESTUP_CONSOLE.clear
       window_visible = @window && @window.visible?
@@ -136,6 +146,7 @@ module TestUp
       sub_menu.add_item('Remove Run...') { self::Runs.remove }
       menu.add_separator
       menu.add_item(cmd_open_logs)
+      menu.add_item(cmd_open_console_on_startup)
       menu.add_item(cmd_toggle_run_tests_in_console)
       menu.add_item(cmd_toggle_verbose_console_tests)
       menu.add_item(cmd_display_minitest_help)
