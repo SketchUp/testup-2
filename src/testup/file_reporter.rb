@@ -75,7 +75,10 @@ class FileReporter < MiniTest::StatisticsReporter
 
   def record(result)
     super
-    io.puts "%s#%s = %.2f s = %s" % [result.class,
+    unless instance_variable_defined? :@has_klass
+      @has_klass = result.instance_variable_defined? :@klass
+    end
+    io.puts "%s#%s = %.2f s = %s" % [@has_klass ? result.klass : result.class,
                                      result.name,
                                      result.time,
                                      result.result_code]

@@ -59,8 +59,11 @@ class Reporter < MiniTest::StatisticsReporter
   private
 
   def process_results(result)
+    unless instance_variable_defined? :@has_klass
+      @has_klass = result.instance_variable_defined? :@klass
+    end
     {
-      :testname   => "#{result.class.name}##{result.name}",
+      :testname   => "#{@has_klass ? result.klass : result.class}##{result.name}",
       :time       => result.time,
       :skipped    => result.skipped?,
       :error      => result.error?,
