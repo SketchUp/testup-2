@@ -1,4 +1,4 @@
-# Copyright:: Copyright 2014 Trimble Navigation Ltd.
+# Copyright:: Copyright 2014 Trimble Inc.
 # License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen
 
