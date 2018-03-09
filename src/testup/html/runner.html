@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../vendor/bootstrap/css/bootstrap.min.css">
+
+    <title>TestUp 2</title>
+  </head>
+  <body>
+
+    <div id="app">
+      {{ message }}
+
+      <ul>
+        <li v-for="(test_suite, test_suite_name) in test_suites">
+          {{ test_suite_name }}
+          <ul>
+            <li v-for="(test_case, test_case_name) in test_suite.testcases">
+              {{ test_case_name }} ({{ test_case.length }})
+              <ul>
+                <li v-for="test_name in test_case">
+                  {{ test_name }}
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="../vendor/jquery.slim.min.js"></script>
+    <script src="../vendor/popper.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../vendor/vue.js"></script>
+    <script src="../js/test_runner.js"></script>
+  </body>
+</html>

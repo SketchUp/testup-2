@@ -26,6 +26,18 @@ module TestUp
     } if defined?(Sketchup)
     cmd_toggle_testup = cmd
 
+    cmd = UI::Command.new('Open TestUp (Vue)') {
+      self.toggle_testup_vue
+    }
+    cmd.tooltip = 'Open TestUp (Vue)'
+    cmd.status_bar_text = 'Open TestUp (Vue) for running tests.'
+    cmd.small_icon = File.join(PATH_IMAGES, 'testup-16.png')
+    cmd.large_icon = File.join(PATH_IMAGES, 'testup-24.png')
+    cmd.set_validation_proc {
+      self.window && self.window.visible? ? MF_CHECKED : MF_ENABLED
+    } if defined?(Sketchup)
+    cmd_toggle_testup_vue = cmd
+
     cmd = UI::Command.new('Run tests in Ruby Console') {
       self.toggle_run_in_gui
     }
@@ -131,6 +143,7 @@ module TestUp
     if defined?(Sketchup)
       menu = UI.menu('Plugins').add_submenu(PLUGIN_NAME)
       menu.add_item(cmd_toggle_testup)
+      menu.add_item(cmd_toggle_testup_vue)
       menu.add_separator
       menu.add_item(cmd_seed)
       menu.add_separator
@@ -162,6 +175,7 @@ module TestUp
     if defined?(Sketchup)
       toolbar = UI::Toolbar.new(PLUGIN_NAME)
       toolbar.add_item(cmd_toggle_testup)
+      toolbar.add_item(cmd_toggle_testup_vue)
       toolbar.add_separator
       toolbar.add_item(cmd_seed)
       toolbar.add_separator

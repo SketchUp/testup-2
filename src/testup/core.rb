@@ -7,6 +7,7 @@
 
 require 'sketchup.rb'
 require 'testup/app_files'
+require 'testup/ui/test_runner_window'
 
 
 # Third party dependencies.
@@ -139,6 +140,11 @@ module TestUp
   def self.toggle_testup
     @window ||= TestUpWindow.new
     @window.toggle
+  end
+
+  def self.toggle_testup_vue
+    @window_vue ||= TestRunnerWindow.new
+    @window_vue.toggle
   end
 
 
