@@ -7,30 +7,70 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../vendor/bootstrap-vue/bootstrap-vue.css"/>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 
     <title>TestUp 2</title>
   </head>
   <body>
 
     <div id="app">
-      {{ message }}
 
-      <ul>
-        <li v-for="(test_suite, test_suite_name) in test_suites">
-          {{ test_suite_name }}
-          <ul>
-            <li v-for="(test_case, test_case_name) in test_suite.testcases">
-              {{ test_case_name }} ({{ test_case.length }})
+      <div class="container-fluid">
+
+        <button type="button" class="btn btn-primary">
+          <i class="fas fa-play"></i>
+          Run
+        </button>
+        <button type="button" class="btn btn-primary">
+          <i class="fas fa-search"></i>
+          Discover
+        </button>
+        <button type="button" class="btn btn-primary">
+          <i class="fas fa-forward"></i>
+          Re-run...
+        </button>
+
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-secondary"
+                  title="Total number of tests passed">0</button>
+          <button type="button" class="btn btn-secondary"
+                  title="Number of tests">0</button>
+          <button type="button" class="btn btn-secondary"
+                  title="Number of failed tests">0</button>
+          <button type="button" class="btn btn-secondary"
+                  title="Number of tests with errors">0</button>
+        </div>
+
+        <button type="button" class="btn btn-primary" title="Preferences">
+          <i class="fas fa-cog"></i>
+        </button>
+
+
+        <b-card no-body>
+          <b-tabs card no-fade>
+            <b-tab v-bind:title="test_suite_name" v-for="(test_suite, test_suite_name) in test_suites">
               <ul>
-                <li v-for="test_name in test_case">
-                  {{ test_name }}
+                <li v-for="(test_case, test_case_name) in test_suite.testcases">
+                  <img src="../images/not_run.png">
+                  <input type="checkbox" v-bind:value="test_case_name">
+                  {{ test_case_name }} ({{ test_case.length }})
+                  <ul>
+                    <li v-for="test_name in test_case">
+                      <img src="../images/not_run.png">
+                      <input type="checkbox" v-bind:value="test_name">
+                      {{ test_name }}
+                    </li>
+                  </ul>
                 </li>
               </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
+            </b-tab>
+          </b-tabs>
+        </b-card>
+
+      </div><!-- .container -->
+
+    </div><!-- #app -->
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -38,6 +78,7 @@
     <script src="../vendor/popper.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="../vendor/vue.js"></script>
+    <script src="../vendor/bootstrap-vue/bootstrap-vue.js"></script>
     <script src="../js/test_runner.js"></script>
   </body>
 </html>

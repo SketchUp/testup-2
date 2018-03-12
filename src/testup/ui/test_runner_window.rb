@@ -102,16 +102,16 @@ module TestUp
       nil
     end
 
-    def discover_tests(first_run = false)
+    def discover_tests
       discoveries = TestUp.discover_tests
-      # js_command = 'TestUp.TestSuites.update'
-      # js_command = "#{js_command}_first_run" if first_run
-      # Debugger.time("JS:#{js_command}") {
+      # TODO: Restructure the test data to include the required state for
+      # - Expanded Testcase
+      # - Enabled Testcase
+      # - Enabled Test
       Debugger.time("JS:update(...)") {
         progress = TaskbarProgress.new
         begin
           progress.set_state(TaskbarProgress::INDETERMINATE)
-          # self.bridge.call(js_command, discoveries)
           call('app.update', discoveries)
         ensure
           progress.set_state(TaskbarProgress::NOPROGRESS)
@@ -126,9 +126,8 @@ module TestUp
         :debugger   => ScriptDebugger.attached?,
         :path       => PATH
       }
-      # self.bridge.call('TestUp.init', config)
       call('app.init', config)
-      discover_tests(true)
+      discover_tests
     end
 
     def event_testup_run
