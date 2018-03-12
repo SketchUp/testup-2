@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../vendor/bootstrap-vue/bootstrap-vue.css"/>
+    <link rel="stylesheet" href="../css/test_runner.css"/>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 
     <title>TestUp 2</title>
@@ -49,17 +50,31 @@
 
         <b-card no-body>
           <b-tabs card no-fade>
-            <b-tab v-bind:title="test_suite_name" v-for="(test_suite, test_suite_name) in test_suites">
+            <b-tab class="tu-test-suite" v-bind:title="test_suite.title" v-for="test_suite in test_suites" v-bind:key="test_suite.id">
+              <div>
+                <a href="#" v-on:click="selectAll(test_suite)">Select All</a>
+                <a href="#" v-on:click="selectNone(test_suite)">Select None</a>
+              </div>
               <ul>
-                <li v-for="(test_case, test_case_name) in test_suite.testcases">
+                <li class="tu-test-case" v-for="test_case in test_suite.test_cases" v-bind:class="{ expanded: test_case.expanded }">
                   <img src="../images/not_run.png">
-                  <input type="checkbox" v-bind:value="test_case_name">
-                  {{ test_case_name }} ({{ test_case.length }})
-                  <ul>
-                    <li v-for="test_name in test_case">
+                  <b-form-checkbox v-model="test_case.enabled">&nbsp;</b-form-checkbox>
+                  <span class="tu-title" v-on:click="test_case.expanded = !test_case.expanded">
+                    {{ test_case.title }}
+                  </span>
+                  <span class="tu-metadata">
+                    (
+                      Tests: <span title="Tests" class="size">{{ test_case.tests.length }}</span>,
+                      Passed: <span title="Passed" class="passed">0</span>,
+                      Failed: <span title="Failed" class="failed">0</span>,
+                      Errors: <span title="Errors" class="errors">0</span>,
+                      Skipped: <span title="Skipped" class="skipped">0</span>
+                    )
+                  </span>
+                  <ul class="tu-tests">
+                    <li class="tu-test" v-for="test in test_case.tests">
                       <img src="../images/not_run.png">
-                      <input type="checkbox" v-bind:value="test_name">
-                      {{ test_name }}
+                      <b-form-checkbox v-model="test.enabled">{{ test.title }}</b-form-checkbox>
                     </li>
                   </ul>
                 </li>
@@ -67,6 +82,14 @@
             </b-tab>
           </b-tabs>
         </b-card>
+
+
+        <div>
+          {{ num_test_suites }} test suites,
+          {{ num_test_cases }} test cases,
+          {{ num_tests }} tests discovered -
+          {{ new Date().toLocaleTimeString() }}
+        </div>
 
       </div><!-- .container -->
 

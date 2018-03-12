@@ -1,0 +1,25 @@
+.tu-test-suite ul {
+  list-style-type: none;
+  padding: 0;
+}
+.tu-test-suite ul ul {
+  padding-left: 18px;
+}
+
+.tu-test-case > .tu-title {
+  font-weight: bold;
+  margin-left: -0.5rem; /* Adjust for no-title checkbox */
+}
+.tu-test-case > .tu-metadata {
+  color: #999;
+}
+.tu-test-case > .custom-checkbox {
+  margin-right: 0; /* Remove extra space from Bootstrap-Vue checkbox */
+}
+
+.tu-test-case > .tu-tests {
+  display: none;
+}
+.tu-test-case.expanded > .tu-tests {
+  display: block;
+}

@@ -103,7 +103,7 @@ module TestUp
     end
 
     def discover_tests
-      discoveries = TestUp.discover_tests
+      discoveries = restructure(TestUp.discover_tests)
       # TODO: Restructure the test data to include the required state for
       # - Expanded Testcase
       # - Enabled Testcase
@@ -118,6 +118,47 @@ module TestUp
         end
       }
       nil
+    end
+
+    TEST_NOT_RUN = 0
+    TEST_SUCCESS = 1 << 0
+    TEST_FAILED  = 1 << 1
+    TEST_ERROR   = 1 << 2
+    TEST_MISSING = 1 << 3
+
+    # TODO: Consider creating this structure when discovering.
+    def restructure(discoveries)
+      discoveries.map { |test_suite_name, test_suite|
+        {
+          id: test_suite_name,
+          title: test_suite_name,
+          test_cases: restructure_test_cases(test_suite[:testcases]),
+        }
+      }
+    end
+
+    def restructure_test_cases(test_cases)
+      test_cases.map { |test_case_name, tests|
+        {
+          id: test_case_name,
+          title: test_case_name,
+          tests: restructure_tests(tests),
+          enabled: true,
+          expanded: false,
+          state: TEST_NOT_RUN | TEST_MISSING
+        }
+      }
+    end
+
+    def restructure_tests(tests)
+      tests.map { |test_name|
+        {
+          id: test_name,
+          title: test_name,
+          enabled: true,
+          state: TEST_NOT_RUN
+        }
+      }
     end
 
     def event_testup_ready
