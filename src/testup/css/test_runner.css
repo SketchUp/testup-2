@@ -1,3 +1,55 @@
+body {
+  background: #eee;
+  padding: 0;
+  margin: 0;
+}
+
+
+.su-toolbar {
+  background: #999;
+  border-bottom: #666;
+}
+.su-toolbar > * {
+  display: inline-block;
+  background: #bbb;
+}
+
+
+.su-statusbar {
+  background: #999;
+  border-top: #666;
+  padding: 1rem;
+}
+
+
+.su-panel-group > * {
+  display: inline-block;
+  background: #bbb;
+}
+
+
+.su-button {
+  padding: 1rem;
+}
+
+.su-panel {
+  padding: 1rem;
+}
+
+
+.su-tab-bar {
+  background: #bbb;
+}
+.su-tab-bar .su-tab-title {
+  display: inline-block;
+  background: #ddd;
+  padding: 0.75rem;
+}
+.su-tab-content {
+  display: none;
+}
+
+
 .tu-test-suite ul {
   list-style-type: none;
   padding: 0;

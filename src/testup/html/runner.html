@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../vendor/bootstrap-vue/bootstrap-vue.css"/>
+    <!-- <link rel="stylesheet" href="../vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../vendor/bootstrap-vue/bootstrap-vue.css"/> -->
     <link rel="stylesheet" href="../css/test_runner.css"/>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 
@@ -17,93 +17,70 @@
 
     <div id="app">
 
-      <div class="container-fluid">
+      <su-toolbar>
 
-        <button type="button" class="btn btn-primary" v-on:click="runTests">
+        <su-button v-on:click="runTests">
           <i class="fas fa-play"></i>
           Run
-        </button>
-        <button type="button" class="btn btn-primary">
+        </su-button>
+        <su-button>
           <i class="fas fa-search"></i>
           Discover
-        </button>
-        <button type="button" class="btn btn-primary">
+        </su-button>
+        <su-button>
           <i class="fas fa-forward"></i>
           Re-run...
-        </button>
+        </su-button>
 
-        <div class="btn-group" role="group" aria-label="Basic example">
-          <button type="button" class="btn btn-secondary"
-                  title="Total number of tests passed">0</button>
-          <button type="button" class="btn btn-secondary"
-                  title="Number of tests">0</button>
-          <button type="button" class="btn btn-secondary"
-                  title="Number of failed tests">0</button>
-          <button type="button" class="btn btn-secondary"
-                  title="Number of tests with errors">0</button>
-        </div>
+        <su-panel-group>
+          <su-panel title="Total number of tests passed">0</su-panel>
+          <su-panel title="Number of tests">0</su-panel>
+          <su-panel title="Number of failed tests">0</su-panel>
+          <su-panel title="Number of tests with errors">0</su-panel>
+        </su-panel-group>
 
-        <button type="button" class="btn btn-primary" title="Preferences">
+        <su-button title="Preferences">
           <i class="fas fa-cog"></i>
-        </button>
+        </su-button>
+
+      </su-toolbar>
 
 
-        <b-card no-body>
-          <b-tabs card no-fade v-model="tabIndex">
-            <b-tab class="tu-test-suite" v-bind:title="test_suite.title" v-for="test_suite in test_suites" v-bind:key="test_suite.id">
-              <div>
-                <a href="#" v-on:click="selectTestSuite(test_suite, true)">Select All</a>
-                <a href="#" v-on:click="selectTestSuite(test_suite, false)">Select None</a>
-              </div>
-              <ul>
-                <li class="tu-test-case" v-for="test_case in test_suite.test_cases" v-bind:class="{ expanded: test_case.expanded }">
-                  <img src="../images/not_run.png">
-                  <b-form-checkbox
-                    v-model="test_case.enabled"
-                    v-on:input="selectTests(test_case, test_case.enabled)">&nbsp;</b-form-checkbox>
-                  <span class="tu-title" v-on:click="test_case.expanded = !test_case.expanded">
-                    {{ test_case.title }}
-                  </span>
-                  <span class="tu-metadata">
-                    (
-                      Tests: <span title="Tests" class="size">{{ test_case.tests.length }}</span>,
-                      Passed: <span title="Passed" class="passed">0</span>,
-                      Failed: <span title="Failed" class="failed">0</span>,
-                      Errors: <span title="Errors" class="errors">0</span>,
-                      Skipped: <span title="Skipped" class="skipped">0</span>
-                    )
-                  </span>
-                  <ul class="tu-tests">
-                    <li class="tu-test" v-for="test in test_case.tests">
-                      <img src="../images/not_run.png">
-                      <b-form-checkbox v-model="test.enabled">{{ test.title }}</b-form-checkbox>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </b-tab>
-          </b-tabs>
-        </b-card>
+      <su-tabs v-model="tabIndex">
+        <su-tab v-bind:title="test_suite.title"
+                v-for="test_suite in test_suites" v-bind:key="test_suite.id">
+          <div>
+            <a href="#" v-on:click="selectTestSuite(test_suite, true)">Select All</a>
+            <a href="#" v-on:click="selectTestSuite(test_suite, false)">Select None</a>
+          </div>
+          <su-scollable>
+            <tu-test-suite>
+              <tu-test-case v-for="test_case in test_suite.test_cases"
+                            v-bind:key="test_case.id"
+                            v-bind:test-case="test_case">
+              </tu-test-case>
+            </tu-test-suite>
+          </su-scollable>
+        </su-tab>
+      </su-tabs>
 
 
-        <div>
-          {{ num_test_suites }} test suites,
-          {{ num_test_cases }} test cases,
-          {{ num_tests }} tests discovered -
-          {{ new Date().toLocaleTimeString() }}
-        </div>
-
-      </div><!-- .container -->
+    <su-statusbar>
+      {{ num_test_suites }} test suites,
+      {{ num_test_cases }} test cases,
+      {{ num_tests }} tests discovered -
+      {{ new Date().toLocaleTimeString() }}
+    </su-statusbar>
 
     </div><!-- #app -->
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="../vendor/jquery.slim.min.js"></script>
+    <!-- <script src="../vendor/jquery.slim.min.js"></script>
     <script src="../vendor/popper.min.js"></script>
-    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script> -->
     <script src="../vendor/vue.js"></script>
-    <script src="../vendor/bootstrap-vue/bootstrap-vue.js"></script>
+    <!-- <script src="../vendor/bootstrap-vue/bootstrap-vue.js"></script> -->
     <script src="../js/test_runner.js"></script>
   </body>
 </html>
