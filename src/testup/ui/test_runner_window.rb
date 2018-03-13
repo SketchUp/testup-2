@@ -25,15 +25,39 @@ module TestUp
       end
     end
 
+    def event_run_tests(test_suite)
+      puts "event_run_tests"
+      options = {}
+      tests = selected_tests(test_suite)
+      TestUp.instance_variable_set(:@num_tests_being_run, tests.size) # TODO: Hack!
+      if TestUp.run_tests(tests, test_suite["title"], options)
+        puts Reporter.results.pretty_inspect
+        # @window.update_results(Reporter.results)
+      else
+        # @window.update_results({})
+      end
+    end
+
+    def selected_tests(test_suite)
+      tests = []
+      test_suite["test_cases"].each { |test_case|
+        test_case["tests"].each { |test|
+          next unless test["enabled"]
+          tests << "#{test_case["title"]}##{test["title"]}"
+        }
+      }
+      tests
+    end
+
     # --------------------------------------------------------------------------
 
-    def active_testsuite
+    # def active_testsuite
       # @bridge.call('TestUp.TestSuites.active')
-    end
+    # end
 
-    def selected_tests
+    # def selected_tests
       # @bridge.call('TestUp.TestSuite.selected_tests')
-    end
+    # end
 
     # @param [Array<Hash>] results
     def update_results(results)
@@ -67,6 +91,9 @@ module TestUp
       dialog.add_action_callback('ready') { |dialog, params|
         puts 'Log: Ready'
         event_testup_ready
+      }
+      dialog.add_action_callback('runTests') { |dialog, run_config|
+        event_run_tests(run_config)
       }
       dialog
     end
@@ -122,9 +149,10 @@ module TestUp
 
     TEST_NOT_RUN = 0
     TEST_SUCCESS = 1 << 0
-    TEST_FAILED  = 1 << 1
-    TEST_ERROR   = 1 << 2
-    TEST_MISSING = 1 << 3
+    TEST_SKIPPED = 1 << 1
+    TEST_FAILED  = 1 << 2
+    TEST_ERROR   = 1 << 3
+    TEST_MISSING = 1 << 4
 
     # TODO: Consider creating this structure when discovering.
     def restructure(discoveries)
@@ -145,7 +173,7 @@ module TestUp
           tests: restructure_tests(tests),
           enabled: true,
           expanded: false,
-          state: TEST_NOT_RUN | TEST_MISSING
+          state: TEST_NOT_RUN | TEST_MISSING,
         }
       }
     end
@@ -156,7 +184,8 @@ module TestUp
           id: test_name,
           title: test_name,
           enabled: true,
-          state: TEST_NOT_RUN
+          state: TEST_NOT_RUN,
+          failures: [],
         }
       }
     end

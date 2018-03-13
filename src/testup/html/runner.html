@@ -19,7 +19,7 @@
 
       <div class="container-fluid">
 
-        <button type="button" class="btn btn-primary">
+        <button type="button" class="btn btn-primary" v-on:click="runTests">
           <i class="fas fa-play"></i>
           Run
         </button>
@@ -49,16 +49,18 @@
 
 
         <b-card no-body>
-          <b-tabs card no-fade>
+          <b-tabs card no-fade v-model="tabIndex">
             <b-tab class="tu-test-suite" v-bind:title="test_suite.title" v-for="test_suite in test_suites" v-bind:key="test_suite.id">
               <div>
-                <a href="#" v-on:click="selectAll(test_suite)">Select All</a>
-                <a href="#" v-on:click="selectNone(test_suite)">Select None</a>
+                <a href="#" v-on:click="selectTestSuite(test_suite, true)">Select All</a>
+                <a href="#" v-on:click="selectTestSuite(test_suite, false)">Select None</a>
               </div>
               <ul>
                 <li class="tu-test-case" v-for="test_case in test_suite.test_cases" v-bind:class="{ expanded: test_case.expanded }">
                   <img src="../images/not_run.png">
-                  <b-form-checkbox v-model="test_case.enabled">&nbsp;</b-form-checkbox>
+                  <b-form-checkbox
+                    v-model="test_case.enabled"
+                    v-on:input="selectTests(test_case, test_case.enabled)">&nbsp;</b-form-checkbox>
                   <span class="tu-title" v-on:click="test_case.expanded = !test_case.expanded">
                     {{ test_case.title }}
                   </span>

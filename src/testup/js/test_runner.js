@@ -10,6 +10,7 @@ var app = new Vue({
   data: {
     message: 'Hello Vue!',
     test_suites: [],
+    tabIndex: 0,
   },
   methods: {
     init(config) {
@@ -19,15 +20,19 @@ var app = new Vue({
       this.message = 'Update!';
       this.test_suites = discoveries;
     },
-    selectAll(test_suite) {
+    selectTestSuite(test_suite, enabled) {
       for (test_case of test_suite.test_cases) {
-        test_case.enabled = true;
+        test_case.enabled = enabled;
+        this.selectTests(test_case, enabled);
       }
     },
-    selectNone(test_suite) {
-      for (test_case of test_suite.test_cases) {
-        test_case.enabled = false;
+    selectTests(test_case, enabled) {
+      for (test of test_case.tests) {
+        test.enabled = enabled
       }
+    },
+    runTests() {
+      sketchup.runTests(this.test_suites[this.tabIndex]);
     },
   },
   computed: {
