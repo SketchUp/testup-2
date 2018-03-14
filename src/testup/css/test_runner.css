@@ -1,77 +1,8 @@
-body {
-  background: #eee;
-  padding: 0;
-  margin: 0;
-}
-
-
-.su-toolbar {
-  background: #999;
-  border-bottom: #666;
-}
-.su-toolbar > * {
-  display: inline-block;
-  background: #bbb;
-}
-
+@import 'su-styles.css';
 
 .su-statusbar {
-  background: #999;
-  border-top: #666;
-  padding: 1rem;
-}
-
-
-.su-panel-group > * {
-  display: inline-block;
-  background: #bbb;
-}
-
-
-.su-button {
-  padding: 1rem;
-}
-
-.su-panel {
-  padding: 1rem;
-}
-
-
-.su-tab-bar {
-  background: #bbb;
-}
-.su-tab-bar .su-tab-title {
-  display: inline-block;
-  background: #ddd;
-  padding: 0.75rem;
-}
-.su-tab-content {
-  display: none;
-}
-
-
-.tu-test-suite ul {
-  list-style-type: none;
-  padding: 0;
-}
-.tu-test-suite ul ul {
-  padding-left: 18px;
-}
-
-.tu-test-case > .tu-title {
-  font-weight: bold;
-  margin-left: -0.5rem; /* Adjust for no-title checkbox */
-}
-.tu-test-case > .tu-metadata {
-  color: #999;
-}
-.tu-test-case > .custom-checkbox {
-  margin-right: 0; /* Remove extra space from Bootstrap-Vue checkbox */
-}
-
-.tu-test-case > .tu-tests {
-  display: none;
-}
-.tu-test-case.expanded > .tu-tests {
-  display: block;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }

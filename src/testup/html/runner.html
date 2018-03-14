@@ -15,7 +15,7 @@
   </head>
   <body>
 
-    <div id="app">
+    <div id="app" v-cloak>
 
       <su-toolbar>
 
@@ -46,9 +46,9 @@
       </su-toolbar>
 
 
-      <su-tabs v-model="tabIndex">
+      <su-tabs v-model:selectedIndex="activeTestSuiteIndex">
         <su-tab v-bind:title="test_suite.title"
-                v-for="test_suite in test_suites" v-bind:key="test_suite.id">
+                v-for="(test_suite, index) in test_suites" v-bind:key="test_suite.id">
           <div>
             <a href="#" v-on:click="selectTestSuite(test_suite, true)">Select All</a>
             <a href="#" v-on:click="selectTestSuite(test_suite, false)">Select None</a>
@@ -69,7 +69,7 @@
       {{ num_test_suites }} test suites,
       {{ num_test_cases }} test cases,
       {{ num_tests }} tests discovered -
-      {{ new Date().toLocaleTimeString() }}
+      {{ last_update.toLocaleTimeString() }}
     </su-statusbar>
 
     </div><!-- #app -->

@@ -40,7 +40,7 @@ Vue.component('su-panel-group', {
 
 Vue.component('su-tabs', {
   props: {
-    tabIndex: {
+    selectedIndex: {
       type: Number,
       default: 0
     },
@@ -48,36 +48,28 @@ Vue.component('su-tabs', {
   data: () => ({
     tabs: [],
   }),
-  created() {
-    this.tabs = this.$children;
-  },
-  mounted() {
-    this.selectTab(this.tabs[0]);
-  },
   methods: {
-    selectTab(selectedTab, event) {
-      // See if we should store the hash in the url fragment.
-      // if (event && !this.options.useUrlFragment) {
-      //     event.preventDefault();
-      // }
-      // const selectedTab = this.findTab(selectedTabHash);
-      // if (! selectedTab) {
-      //     return;
-      // }
-      // if (selectedTab.isDisabled) {
-      //     return;
-      // }
+    registerTab(tab) {
+      this.tabs.push(tab);
+      if (this.tabs.length - 1 == this.selectedIndex) {
+        this.selectTab(this.selectedIndex);
+      }
+    },
+    selectTab(index) {
+      let selectedTab = this.tabs[index];
+      // TODO: Use a watcher instead?
       this.tabs.forEach(tab => {
-        // tab.isActive = (tab.hash === selectedTab.hash);
-        tab.isActive = (tab === selectedTab);
+        tab.active = (tab === selectedTab);
       });
-      // this.$emit('changed', { tab: selectedTab });
+      this.$emit('input', index);
     },
   },
   template: `
     <div class="su-tabs">
       <div class="su-tab-bar">
-        <div class="su-tab-title" v-for="tab in tabs">
+        <div class="su-tab-title" v-for="(tab, index) in tabs"
+             v-bind:class="{ 'active': tab.active }"
+             v-on:click="selectTab(index)">
           {{ tab.title }}
         </div>
       </div>
@@ -88,11 +80,13 @@ Vue.component('su-tabs', {
 Vue.component('su-tab', {
   props: ['title'],
   data: () => ({
-    isActive: false,
-    isVisible: true,
+    active: false,
   }),
+  mounted() {
+    this.$parent.registerTab(this);
+  },
   template: `
-    <div class="su-tab">
+    <div class="su-tab" v-show="active">
       <slot></slot>
     </div>`,
 });
@@ -169,7 +163,16 @@ let app = new Vue({
   data: {
     message: 'Hello Vue!',
     test_suites: [],
-    tabIndex: 0,
+    // tabIndex: 0,
+    activeTestSuiteIndex: 0,
+    last_update: new Date(),
+  },
+  watch: {
+    test_suites: function (val) {
+      // TODO: Work around Chrome bug:
+      // https://stackoverflow.com/questions/44778114/chrome-tolocaledatestring-returning-wrong-format
+      this.last_update = new Date();
+    },
   },
   methods: {
     init(config) {
@@ -182,11 +185,13 @@ let app = new Vue({
     selectTestSuite(test_suite, enabled) {
       for (test_case of test_suite.test_cases) {
         test_case.enabled = enabled;
-        this.selectTests(test_case, enabled);
+        for (test of test_case.tests) {
+          test.enabled = enabled
+        }
       }
     },
     runTests() {
-      sketchup.runTests(this.test_suites[this.tabIndex]);
+      sketchup.runTests(this.test_suites[this.activeTestSuiteIndex]);
     },
   },
   computed: {
