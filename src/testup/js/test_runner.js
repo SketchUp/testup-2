@@ -12,7 +12,10 @@ Vue.component('su-toolbar', {
 
 
 Vue.component('su-button', {
-  template: `<div class="su-button"><slot></slot></div>`,
+  template: `
+    <div class="su-button">
+      <slot></slot>
+    </div>`,
 });
 
 Vue.component('su-checkbox', {
@@ -149,10 +152,29 @@ Vue.component('tu-tests', {
 
 Vue.component('tu-test', {
   props: ['test'],
+  filters: {
+    linkify: function (message) {
+      // TODO: Linkify source locations.
+      return message;
+    },
+  },
   template: `
     <li>
       <img src="../images/not_run.png">
       <su-checkbox v-model="test.enabled">{{ test.title }}</su-checkbox>
+      <template v-if="test.result">
+        <span>(Time: {{ test.result.run_time }})</span>
+        <div>
+          <div v-for="failure in test.result.failures">
+            <div>
+              <a href="#" title="Click to open file in editor">
+                {{ failure.location }}
+              </a>
+            </div>
+            <pre>{{ failure.message | linkify }}</pre>
+          </div>
+        </div>
+      </template>
     </li>
   `,
 });
@@ -182,6 +204,17 @@ let app = new Vue({
       this.message = 'Update!';
       this.test_suites = discoveries;
     },
+    update_test_suite(test_suite) {
+      console.log('Update Test Suite!', this.activeTestSuiteIndex);
+      // let tsi = this.test_suites.find((ts) => {
+      //   return ts.title == test_suite.title;
+      // });
+      // let index = this.test_suites.indexOf(tsi);
+      // this.test_suites[index] = test_suite;
+      // TODO: Find a better way to get the test_suite index. Don't rely on the
+      //       active tab index.
+      this.test_suites[this.activeTestSuiteIndex].test_cases = test_suite.test_cases;
+    },
     selectTestSuite(test_suite, enabled) {
       for (test_case of test_suite.test_cases) {
         test_case.enabled = enabled;
@@ -191,7 +224,8 @@ let app = new Vue({
       }
     },
     runTests() {
-      sketchup.runTests(this.test_suites[this.activeTestSuiteIndex]);
+      let test_suite = this.test_suites[this.activeTestSuiteIndex];
+      sketchup.runTests(test_suite);
     },
   },
   computed: {

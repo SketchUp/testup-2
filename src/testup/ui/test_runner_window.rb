@@ -32,10 +32,30 @@ module TestUp
       TestUp.instance_variable_set(:@num_tests_being_run, tests.size) # TODO: Hack!
       if TestUp.run_tests(tests, test_suite["title"], options)
         puts Reporter.results.pretty_inspect
+        merge_results(test_suite, Reporter.results)
+        JSON.pretty_generate(test_suite)
+        call('app.update_test_suite', test_suite)
         # @window.update_results(Reporter.results)
       else
         # @window.update_results({})
       end
+    end
+
+    def merge_results(test_suite, results)
+      results.each { |result|
+        test_case_name, test_name = result[:testname].split('#')
+        test_case = test_suite['test_cases'].find { |tc| tc['title'] == test_case_name }
+        test = test_case['tests'].find { |t| t['title'] == test_name }
+        test['result'] = {
+          run_time: result[:time],
+          assertions: result[:assertions],
+          skipped: result[:skipped],
+          passed: result[:passed],
+          error: result[:error],
+          failures: result[:failures],
+        }
+      }
+      test_suite
     end
 
     def selected_tests(test_suite)
@@ -155,6 +175,7 @@ module TestUp
     TEST_MISSING = 1 << 4
 
     # TODO: Consider creating this structure when discovering.
+    # TODO: Create custom classes for each type, which support to_json.
     def restructure(discoveries)
       discoveries.map { |test_suite_name, test_suite|
         {
@@ -173,7 +194,7 @@ module TestUp
           tests: restructure_tests(tests),
           enabled: true,
           expanded: false,
-          state: TEST_NOT_RUN | TEST_MISSING,
+          # state: TEST_NOT_RUN | TEST_MISSING,
         }
       }
     end
@@ -184,8 +205,23 @@ module TestUp
           id: test_name,
           title: test_name,
           enabled: true,
-          state: TEST_NOT_RUN,
-          failures: [],
+          # state: TEST_NOT_RUN,
+          result: nil,
+          # result: {
+            # run_time: 0.0,
+            # assertions: 0;
+            # skipped: false,
+            # passed: false,
+            # error: false,
+            # failures: [],
+            # failures: [
+            #   {
+            #     type: "Error",
+            #     message: "ArgumentError: Hello World",
+            #     location: "tests/TestUp/TC_TestErrors.rb:32",
+            #   },
+            # ],
+          # }
         }
       }
     end
