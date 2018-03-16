@@ -202,7 +202,7 @@ Vue.component('tu-test-case', {
       <div class="tu-title" v-on:click="toggle">
         <su-checkbox
           v-model="testCase.enabled"
-          v-on:input="selectTests(testCase, testCase.enabled)">&nbsp;</su-checkbox>
+          v-on:input="selectTests(testCase, testCase.enabled)"></su-checkbox>
         <b>{{ testCase.title }}</b>
         <span class="tu-metadata">
           (

@@ -98,6 +98,13 @@ body {
   background: #ccc;
 }
 
+
+.su-checkbox input {
+  vertical-align: bottom;
+  margin-bottom: 2px; /* Windows 10, Chrome */
+}
+
+
 .su-panel {
   padding: 1rem;
 }
@@ -156,9 +163,6 @@ body {
 }
 .tu-test-case > .tu-metadata {
   color: #999;
-}
-.tu-test-case > .custom-checkbox {
-  margin-right: 0; /* Remove extra space from Bootstrap-Vue checkbox */
 }
 
 
