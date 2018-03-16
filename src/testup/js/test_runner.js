@@ -112,20 +112,78 @@ Vue.component('tu-test-suite', {
 
 Vue.component('tu-test-case', {
   props: ['testCase'],
+  computed: {
+    stats() {
+      let data = {
+        tests: this.testCase.tests.length,
+        passed: 0,
+        failed: 0,
+        errors: 0,
+        skipped: 0,
+        missing: 0,
+      }
+      for (test of this.testCase.tests) {
+        if (!test.result) continue;
+        let result = test.result;
+        data.passed += result.passed ? 1 : 0;
+        data.errors += result.error ? 1 : 0;
+        data.skipped += result.skipped ? 1 : 0;
+        data.missing += result.missing ? 1 : 0;
+        // data.failed += result.failed ? 1 : 0;
+        if (!(result.passed || result.error || result.skipped || result.missing)) {
+          data.failed += 1;
+        }
+      }
+      return data;
+    },
+    classObject() {
+      let stats = this.stats;
+      let classes = {};
+
+      // Pick the most severe status from the tests for the testcase.
+      if (stats.failed > 0) {
+        classes['tu-failed'] = true;
+      }
+      else if (stats.errors > 0) {
+        classes['tu-error'] = true;
+      }
+      else if (stats.passed > 0) {
+        classes['tu-passed'] = true;
+      }
+
+      // Always add missing class to a test case as it doesn't exclude the
+      // other statuses.
+      if (stats.missing > 0)
+      {
+        classes['tu-missing'] = true;
+      }
+
+      // Mark test cases with partial coverage that hasn't been run yet.
+      let partially_missing = stats.missing > 0 && stats.missing != stats.tests;
+      if (partially_missing && stats.failed == 0 && stats.errors == 0 && stats.passed == 0)
+      {
+        classes['tu-partial'] = true;
+      }
+
+      return classes;
+    }
+  },
   methods: {
     selectTests(test_case, enabled) {
       for (test of test_case.tests) {
         test.enabled = enabled
       }
     },
-    toggle() {
-      this.testCase.expanded = !this.testCase.expanded
+    toggle(event) {
+      // console.log(event);
+      if (event.srcElement.type !== 'checkbox') {
+        this.testCase.expanded = !this.testCase.expanded
+      }
     }
   },
   template: `
-    <li class="tu-test-case">
+    <li class="tu-test-case" v-bind:class="classObject">
       <div class="tu-title" v-on:click="toggle">
-        <img src="../images/not_run.png">
         <su-checkbox
           v-model="testCase.enabled"
           v-on:input="selectTests(testCase, testCase.enabled)">&nbsp;</su-checkbox>
@@ -133,10 +191,10 @@ Vue.component('tu-test-case', {
         <span class="tu-metadata">
           (
             Tests: <span title="Tests" class="size">{{ testCase.tests.length }}</span>,
-            Passed: <span title="Passed" class="passed">0</span>,
-            Failed: <span title="Failed" class="failed">0</span>,
-            Errors: <span title="Errors" class="errors">0</span>,
-            Skipped: <span title="Skipped" class="skipped">0</span>
+            Passed: <span title="Passed" class="passed">{{ stats.passed }}</span>,
+            Failed: <span title="Failed" class="failed">{{ stats.failed }}</span>,
+            Errors: <span title="Errors" class="errors">{{ stats.errors }}</span>,
+            Skipped: <span title="Skipped" class="skipped">{{ stats.skipped }}</span>
           )
         </span>
       </div>
@@ -158,15 +216,18 @@ Vue.component('tu-tests', {
 Vue.component('tu-test', {
   props: ['test'],
   computed: {
-    classObject: function () {
+    classObject() {
       let result = this.test.result;
       let classes = {};
       if (result) {
         if (result.passed) classes['tu-passed'] = true;
-        if (result.failed) classes['tu-failed'] = true;
         if (result.error) classes['tu-error'] = true;
         if (result.skipped) classes['tu-skipped'] = true;
         if (result.missing) classes['tu-missing'] = true;
+        // if (result.failed) classes['tu-failed'] = true;
+        if (!(result.passed || result.error || result.skipped || result.missing)) {
+          classes['tu-failed'] = true;
+        }
       }
       return classes;
     }
