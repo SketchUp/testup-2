@@ -105,6 +105,16 @@ body {
 }
 
 
+.tu-test-suite-header {
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid #ddd;
+}
+.tu-test-suite-header a {
+  display: inline-block;
+  margin: 0 0.25rem;
+}
+
+
 .tu-test-suite {
   list-style-type: none;
   padding: 0;
@@ -114,9 +124,9 @@ body {
   padding-left: 18px;
 }
 
-.tu-test-case > .tu-title {
-  font-weight: bold;
-  margin-left: -0.5rem; /* Adjust for no-title checkbox */
+.tu-test-case {
+  padding: 0.25rem;
+  border-bottom: 1px solid #ddd;
 }
 .tu-test-case > .tu-metadata {
   color: #999;
@@ -125,9 +135,114 @@ body {
   margin-right: 0; /* Remove extra space from Bootstrap-Vue checkbox */
 }
 
-.tu-test-case > .tu-tests {
-  display: none;
+
+.tu-tests {
+  margin-bottom: 0.5rem;
 }
-.tu-test-case.expanded > .tu-tests {
-  display: block;
+
+
+.tu-test {
+  padding: 0.15rem;
+}
+.tu-test:hover {
+  background: #e8e8e8;
+}
+.tu-test > .tu-title {
+  white-space: nowrap;
+  padding-left: 20px;
+  background: url(../images/not_run.png) no-repeat left center;
+}
+
+
+.tu-test-result {
+  font-size: 12px;
+  padding-left: 3rem;
+}
+.tu-test-result .tu-title {
+  margin: 0.25rem 0rem 0.25rem 0rem;
+}
+.tu-test-result .tu-message {
+  background: #ddd;
+  color: #555;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  margin: 0 0 0.5rem;
+}
+
+
+.tu-test-suite .tu-passed > .tu-title
+{
+  background-image: url(../images/accept.png);
+}
+
+.tu-test-suite .tu-failed > .tu-title
+{
+  background-image: url(../images/exclamation.png);
+}
+
+.tu-test-suite .tu-error > .tu-title
+{
+  background-image: url(../images/error.png);
+}
+
+.tu-test-suite .tu-skipped > .tu-title
+{
+  background-image: url(../images/skip.png);
+}
+
+.tu-test-suite .tu-missing > .tu-title
+{
+  background-image: url(../images/missing.png);
+}
+
+/* Partially missing testcases */
+.tu-test-suite .tu-missing.tu-passed > .tu-title
+{
+  background-image: url(../images/missing_accept.png);
+}
+.tu-test-suite .tu-missing.tu-failed > .tu-title
+{
+  background-image: url(../images/missing_exclamation.png);
+}
+.tu-test-suite .tu-missing.tu-error > .tu-title
+{
+  background-image: url(../images/missing_error.png);
+}
+.tu-test-suite .tu-missing.tu-partial > .tu-title
+{
+  background-image: url(../images/missing_not_run.png);
+}
+
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .2s ease-out;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.slide-fade-enter-active {
+  /* transition: all .2s ease-out; */
+  transition: max-height .2s ease-out;
+}
+.slide-fade-leave-active {
+  /* transition: all .2s ease-out; */
+  transition: max-height .2s ease-out;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  /* transform: translateX(10px); */
+  /* opacity: 0; */
+  overflow: hidden;
+  max-height: 0;
+  /* transform: scaleY(0);
+  transform-origin: top; */
+}
+.slide-fade-leave, .slide-fade-enter-to {
+  /* transform: translateX(10px); */
+  /* transform: scaleY(1);
+  transform-origin: top; */
+  /* opacity: 1; */
+  max-height: 10000px;
 }

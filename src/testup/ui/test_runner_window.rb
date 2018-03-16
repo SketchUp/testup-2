@@ -31,9 +31,9 @@ module TestUp
       tests = selected_tests(test_suite)
       TestUp.instance_variable_set(:@num_tests_being_run, tests.size) # TODO: Hack!
       if TestUp.run_tests(tests, test_suite["title"], options)
-        puts Reporter.results.pretty_inspect
+        # puts Reporter.results.pretty_inspect
         merge_results(test_suite, Reporter.results)
-        JSON.pretty_generate(test_suite)
+        # JSON.pretty_generate(test_suite)
         call('app.update_test_suite', test_suite)
         # @window.update_results(Reporter.results)
       else
@@ -232,7 +232,6 @@ module TestUp
         :debugger   => ScriptDebugger.attached?,
         :path       => PATH
       }
-      call('app.init', config)
       discover_tests
     end
 

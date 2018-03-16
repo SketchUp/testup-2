@@ -118,31 +118,36 @@ Vue.component('tu-test-case', {
         test.enabled = enabled
       }
     },
+    toggle() {
+      this.testCase.expanded = !this.testCase.expanded
+    }
   },
   template: `
-    <li class="tu-test-case" v-bind:class="{ expanded: testCase.expanded }">
-      <img src="../images/not_run.png">
-      <su-checkbox
-        v-model="testCase.enabled"
-        v-on:input="selectTests(testCase, testCase.enabled)">&nbsp;</su-checkbox>
-      <span class="tu-title" v-on:click="testCase.expanded = !testCase.expanded">
-        {{ testCase.title }}
-      </span>
-      <span class="tu-metadata">
-        (
-          Tests: <span title="Tests" class="size">{{ testCase.tests.length }}</span>,
-          Passed: <span title="Passed" class="passed">0</span>,
-          Failed: <span title="Failed" class="failed">0</span>,
-          Errors: <span title="Errors" class="errors">0</span>,
-          Skipped: <span title="Skipped" class="skipped">0</span>
-        )
-      </span>
-      <tu-tests>
-        <tu-test
-          v-for="test in testCase.tests"
-          v-bind:key="test.id"
-          v-bind:test="test"></tu-test>
-      </tu-tests>
+    <li class="tu-test-case">
+      <div class="tu-title" v-on:click="toggle">
+        <img src="../images/not_run.png">
+        <su-checkbox
+          v-model="testCase.enabled"
+          v-on:input="selectTests(testCase, testCase.enabled)">&nbsp;</su-checkbox>
+        <b>{{ testCase.title }}</b>
+        <span class="tu-metadata">
+          (
+            Tests: <span title="Tests" class="size">{{ testCase.tests.length }}</span>,
+            Passed: <span title="Passed" class="passed">0</span>,
+            Failed: <span title="Failed" class="failed">0</span>,
+            Errors: <span title="Errors" class="errors">0</span>,
+            Skipped: <span title="Skipped" class="skipped">0</span>
+          )
+        </span>
+      </div>
+      <transition name="fade">
+        <tu-tests v-show="testCase.expanded">
+          <tu-test
+            v-for="test in testCase.tests"
+            v-bind:key="test.id"
+            v-bind:test="test"></tu-test>
+        </tu-tests>
+      </transition>
     </li>`,
 });
 
@@ -152,6 +157,33 @@ Vue.component('tu-tests', {
 
 Vue.component('tu-test', {
   props: ['test'],
+  computed: {
+    classObject: function () {
+      let result = this.test.result;
+      let classes = {};
+      if (result) {
+        if (result.passed) classes['tu-passed'] = true;
+        if (result.failed) classes['tu-failed'] = true;
+        if (result.error) classes['tu-error'] = true;
+        if (result.skipped) classes['tu-skipped'] = true;
+        if (result.missing) classes['tu-missing'] = true;
+      }
+      return classes;
+    }
+  },
+  template: `
+    <li class="tu-test" v-bind:class="classObject">
+      <div class="tu-title">
+        <su-checkbox v-model="test.enabled">{{ test.title }}</su-checkbox>
+        <span v-if="test.result">(Time: {{ test.result.run_time }})</span>
+      </div>
+      <tu-test-result v-if="test.result" v-bind:result="test.result"/>
+    </li>
+  `,
+});
+
+Vue.component('tu-test-result', {
+  props: ['result'],
   filters: {
     linkify: function (message) {
       // TODO: Linkify source locations.
@@ -159,23 +191,16 @@ Vue.component('tu-test', {
     },
   },
   template: `
-    <li>
-      <img src="../images/not_run.png">
-      <su-checkbox v-model="test.enabled">{{ test.title }}</su-checkbox>
-      <template v-if="test.result">
-        <span>(Time: {{ test.result.run_time }})</span>
-        <div>
-          <div v-for="failure in test.result.failures">
-            <div>
-              <a href="#" title="Click to open file in editor">
-                {{ failure.location }}
-              </a>
-            </div>
-            <pre>{{ failure.message | linkify }}</pre>
-          </div>
+    <div class="tu-test-result">
+      <div v-for="failure in result.failures" class="tu-test-failure">
+        <div class="tu-title">
+          <a href="#" title="Click to open file in editor">
+            {{ failure.location }}
+          </a>
         </div>
-      </template>
-    </li>
+        <pre class="tu-message">{{ failure.message | linkify }}</pre>
+      </div>
+    </div>
   `,
 });
 
@@ -183,9 +208,7 @@ Vue.component('tu-test', {
 let app = new Vue({
   el: '#app',
   data: {
-    message: 'Hello Vue!',
     test_suites: [],
-    // tabIndex: 0,
     activeTestSuiteIndex: 0,
     last_update: new Date(),
   },
@@ -197,11 +220,7 @@ let app = new Vue({
     },
   },
   methods: {
-    init(config) {
-      this.message = 'Init!';
-    },
     update(discoveries) {
-      this.message = 'Update!';
       this.test_suites = discoveries;
     },
     update_test_suite(test_suite) {
