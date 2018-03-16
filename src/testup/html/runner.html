@@ -33,10 +33,18 @@
         </su-button>
 
         <su-panel-group>
-          <su-panel title="Total number of tests passed">0</su-panel>
-          <su-panel title="Number of tests">0</su-panel>
-          <su-panel title="Number of failed tests">0</su-panel>
-          <su-panel title="Number of tests with errors">0</su-panel>
+          <su-panel title="Total number of tests">
+            {{ active_test_suite_stats.tests }}
+          </su-panel>
+          <su-panel title="Number of passed tests">
+            {{ active_test_suite_stats.passed }}
+          </su-panel>
+          <su-panel title="Number of failed tests">
+            {{ active_test_suite_stats.failed }}
+          </su-panel>
+          <su-panel title="Number of tests with errors">
+            {{ active_test_suite_stats.errors }}
+          </su-panel>
         </su-panel-group>
 
         <su-button title="Preferences">

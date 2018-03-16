@@ -290,7 +290,7 @@ let app = new Vue({
     last_update: new Date(),
   },
   watch: {
-    test_suites: function (val) {
+    test_suites(value) {
       // TODO: Work around Chrome bug:
       // https://stackoverflow.com/questions/44778114/chrome-tolocaledatestring-returning-wrong-format
       this.last_update = new Date();
@@ -343,6 +343,33 @@ let app = new Vue({
         }
       }
       return num;
+    },
+    active_test_suite() {
+      console.log('active_test_suite');
+      return this.test_suites[this.activeTestSuiteIndex];
+    },
+    active_test_suite_stats() {
+      console.log('active_test_suite_stats');
+      let test_suite = this.active_test_suite;
+      let data = {
+        tests: 0,
+        passed: 0,
+        failed: 0,
+        errors: 0,
+      };
+      if (test_suite) {
+        for (test_case of test_suite.test_cases) {
+          data.tests += test_case.tests.length;
+          for (test of test_case.tests) {
+            if (!test.result) continue;
+            data.passed += test.result.passed ? 1 : 0;
+            data.failed += test.result.failed ? 1 : 0;
+            data.errors += test.result.error ? 1 : 0;
+          }
+        }
+      }
+      console.log(data);
+      return data;
     },
   },
   mounted() {

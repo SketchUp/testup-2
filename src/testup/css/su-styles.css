@@ -225,6 +225,13 @@ body {
 }
 
 
+.su-toolbar .su-panel {
+  padding: 1rem 0.5rem;
+  min-width: 3rem;
+  text-align: center;
+}
+
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity .2s ease-out;
 }
