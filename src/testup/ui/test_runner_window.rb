@@ -113,11 +113,16 @@ module TestUp
       dialog = UI::HtmlDialog.new(options)
       dialog.set_file(filename)
       dialog.add_action_callback('ready') { |dialog, params|
-        puts 'Log: Ready'
+        puts "ready(...)"
         event_testup_ready
       }
       dialog.add_action_callback('runTests') { |dialog, run_config|
+        puts "runTests(...)"
         event_run_tests(run_config)
+      }
+      dialog.add_action_callback('openSourceFile') { |dialog, location|
+        puts "openSourceFile(#{location})"
+        event_open_source_file(location)
       }
       dialog
     end
@@ -140,7 +145,7 @@ module TestUp
       when 'TestUp.on_discover'
         event_discover
       when 'TestUp.on_open_source_file'
-        event_opent_source_file(arguments[0])
+        event_open_source_file(arguments[0])
       when 'TestUp.on_preferences'
         event_on_open_preferences
       when 'TestUp.TestSuites.on_change'
@@ -273,7 +278,7 @@ module TestUp
       Debugger.output(value)
     end
 
-    def event_opent_source_file(location)
+    def event_open_source_file(location)
       puts "TestUp.open_source_file(#{location})"
       result = location.match(/^(.+):(\d+)?$/)
       if result
