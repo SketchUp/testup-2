@@ -102,9 +102,12 @@ module TestUp
       options = {
         :title           => PLUGIN_NAME,
         :preferences_key => PLUGIN_ID,
-        :width           => 400,
+        :width           => 600,
         :height          => 400,
-        :resizable       => true
+        :min_width       => 300,
+        :min_height      => 300,
+        :resizable       => true,
+        :scrollable      => false,
       }
       # dialog = UI::WebDialog.new(options)
       dialog = UI::HtmlDialog.new(options)

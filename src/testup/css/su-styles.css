@@ -225,13 +225,6 @@ body {
 }
 
 
-.su-toolbar .su-panel {
-  padding: 1rem 0.5rem;
-  min-width: 3rem;
-  text-align: center;
-}
-
-
 .fade-enter-active, .fade-leave-active {
   transition: opacity .2s ease-out;
 }
@@ -264,4 +257,40 @@ body {
   transform-origin: top; */
   /* opacity: 1; */
   max-height: 10000px;
+}
+
+
+/* App Style */
+
+.su-toolbar,
+.su-tab-bar,
+.su-statusbar,
+.tu-test-suite-header {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.su-toolbar .su-panel {
+  padding: 1rem 0.5rem;
+  min-width: 3rem;
+  text-align: center;
+}
+
+.su-toolbar .su-panel {
+  padding: 1rem 0.5rem;
+  min-width: 3rem;
+  text-align: center;
+}
+
+.su-scollable {
+  overflow: auto;
+  /* Found no better way to define the position of this other than hard coding
+   * guestimates based on current layout of the header and footer.
+   */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7.6rem;
+  bottom: 2rem;
+  /* background: #faa; */
 }
