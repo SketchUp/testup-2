@@ -166,7 +166,7 @@ Vue.component('tu-test-case', {
       }
 
       return classes;
-    }
+    },
   },
   methods: {
     selectTests(test_case, enabled) {
@@ -180,6 +180,22 @@ Vue.component('tu-test-case', {
         this.testCase.expanded = !this.testCase.expanded
       }
     }
+  },
+  watch: {
+    testCase(newTestCase, oldTestCase) {
+      // console.log('Test Case Updated');
+      // Roll down all test cases that have failed tests.
+      for (test of this.testCase.tests) {
+        // Only unroll if tests that ran failed. This allow the user to roll
+        // up failed tests while focusing on a sub-set.
+        if (!(test.enabled && test.result)) continue;
+        if (test.result.error || test.result.failed) {
+          this.testCase.expanded = true
+          return;
+        }
+      }
+      return false;
+    },
   },
   template: `
     <li class="tu-test-case" v-bind:class="classObject">

@@ -52,7 +52,8 @@ module TestUp
           skipped: result[:skipped],
           passed: result[:passed],
           error: result[:error],
-          failures: result[:failures],
+          # TODO: Compute :failed
+          failures: result[:failures], # TODO: This is really 'messages'
         }
       }
       test_suite
