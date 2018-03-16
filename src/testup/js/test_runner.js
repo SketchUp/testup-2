@@ -248,11 +248,16 @@ Vue.component('tu-test', {
       return classes;
     }
   },
+  filters: {
+    formatTime(seconds) {
+      return seconds.toFixed(3);
+    },
+  },
   template: `
     <li class="tu-test" v-bind:class="classObject">
       <div class="tu-title">
         <su-checkbox v-model="test.enabled">{{ test.title }}</su-checkbox>
-        <span v-if="test.result">(Time: {{ test.result.run_time }})</span>
+        <span v-if="test.result" class="tu-metadata">(Time: {{ test.result.run_time | formatTime }})</span>
       </div>
       <tu-test-result v-if="test.result" v-bind:result="test.result"/>
     </li>
