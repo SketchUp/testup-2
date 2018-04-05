@@ -160,10 +160,6 @@ module TestUp
 
     def discover_tests
       discoveries = restructure(TestUp.discover_tests)
-      # TODO: Restructure the test data to include the required state for
-      # - Expanded Testcase
-      # - Enabled Testcase
-      # - Enabled Test
       Debugger.time("JS:update(...)") {
         progress = TaskbarProgress.new
         begin
@@ -175,13 +171,6 @@ module TestUp
       }
       nil
     end
-
-    TEST_NOT_RUN = 0
-    TEST_SUCCESS = 1 << 0
-    TEST_SKIPPED = 1 << 1
-    TEST_FAILED  = 1 << 2
-    TEST_ERROR   = 1 << 3
-    TEST_MISSING = 1 << 4
 
     # TODO: Consider creating this structure when discovering.
     # TODO: Create custom classes for each type, which support to_json.
@@ -203,7 +192,6 @@ module TestUp
           tests: restructure_tests(tests),
           enabled: true,
           expanded: false,
-          # state: TEST_NOT_RUN | TEST_MISSING,
         }
       }
     end
@@ -214,7 +202,6 @@ module TestUp
           id: test_name,
           title: test_name,
           enabled: true,
-          # state: TEST_NOT_RUN,
           result: nil,
           # result: {
             # run_time: 0.0,
@@ -241,6 +228,7 @@ module TestUp
         :debugger   => ScriptDebugger.attached?,
         :path       => PATH
       }
+      # TODO: Push config to dialog.
       discover_tests
     end
 

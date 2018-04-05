@@ -341,6 +341,7 @@ let app = new Vue({
       // this.test_suites[index] = test_suite;
       // TODO: Find a better way to get the test_suite index. Don't rely on the
       //       active tab index.
+      // TODO: Update coverage
       this.test_suites[this.activeTestSuiteIndex].test_cases = test_suite.test_cases;
     },
     selectTestSuite(test_suite, enabled) {
