@@ -123,12 +123,12 @@ Vue.component('tu-test-case', {
         missing: 0,
       }
       for (test of this.testCase.tests) {
+        data.missing += test.missing ? 1 : 0;
         if (!test.result) continue;
         let result = test.result;
         data.passed += result.passed ? 1 : 0;
         data.errors += result.error ? 1 : 0;
         data.skipped += result.skipped ? 1 : 0;
-        data.missing += result.missing ? 1 : 0;
         // data.failed += result.failed ? 1 : 0;
         if (!(result.passed || result.error || result.skipped || result.missing)) {
           data.failed += 1;
@@ -235,11 +235,11 @@ Vue.component('tu-test', {
     classObject() {
       let result = this.test.result;
       let classes = {};
+      if (this.test.missing) classes['tu-missing'] = true;
       if (result) {
         if (result.passed) classes['tu-passed'] = true;
         if (result.error) classes['tu-error'] = true;
         if (result.skipped) classes['tu-skipped'] = true;
-        if (result.missing) classes['tu-missing'] = true;
         // if (result.failed) classes['tu-failed'] = true;
         if (!(result.passed || result.error || result.skipped || result.missing)) {
           classes['tu-failed'] = true;

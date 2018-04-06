@@ -158,13 +158,22 @@ module TestUp
       nil
     end
 
+    def time(title = '', &block)
+      start = Time.now
+      result = block.call
+      lapsed_time = Time.now - start
+      puts "Timing #{title}: #{lapsed_time}s"
+      result
+    end
+
     def discover_tests
-      discoveries = restructure(TestUp.discover_tests)
+      discoveries = time('discover') { TestUp.discover_tests }
+      discoveries = time('restructure') { restructure(discoveries) }
       Debugger.time("JS:update(...)") {
         progress = TaskbarProgress.new
         begin
           progress.set_state(TaskbarProgress::INDETERMINATE)
-          call('app.update', discoveries)
+          time('app.update') { call('app.update', discoveries) }
         ensure
           progress.set_state(TaskbarProgress::NOPROGRESS)
         end
@@ -176,10 +185,57 @@ module TestUp
     # TODO: Create custom classes for each type, which support to_json.
     def restructure(discoveries)
       discoveries.map { |test_suite_name, test_suite|
+        missing = test_suite[:missing_coverage]
+        test_cases = restructure_test_cases(test_suite[:testcases])
+        merge_missing_tests(test_cases, missing)
+        # TODO: Clean up these pesky .to_s calls. (Find out why we get Class instead of String)
         {
-          id: test_suite_name,
-          title: test_suite_name,
-          test_cases: restructure_test_cases(test_suite[:testcases]),
+          id: test_suite_name.to_s,
+          title: test_suite_name.to_s,
+          test_cases: test_cases,
+          coverage: test_suite[:coverage],
+          missing_coverage: test_suite[:missing_coverage],
+        }
+      }
+    end
+
+    def merge_missing_tests(test_cases, missing)
+      missing.each { |test_case_name, tests|
+        missing_test_case = missing[test_case_name] || {}
+        missing_tests = restructure_missing_tests(missing_test_case)
+        # TODO: Clean up these pesky .to_s calls. (Find out why we get Class instead of String)
+        test_case = test_cases.find { |tc| tc[:title].to_s == test_case_name }
+        if test_case.nil?
+          test_case = ensure_test_case(test_case_name)
+          test_cases << test_case
+        end
+        test_case[:tests].concat(missing_tests)
+        test_case[:tests].sort! { |a, b|
+          a[:title].to_s <=> b[:title].to_s
+        }
+      }
+      test_cases.sort! { |a, b| a[:title].to_s <=> b[:title].to_s }
+      nil
+    end
+
+    def ensure_test_case(test_case_name)
+      {
+        id: test_case_name,
+        title: test_case_name,
+        tests: [],
+        enabled: true,
+        expanded: false,
+      }
+    end
+
+    def restructure_missing_tests(tests)
+      tests.map { |test_name|
+        {
+          id: test_name,
+          title: test_name,
+          enabled: true,
+          missing: true,
+          result: nil,
         }
       }
     end
@@ -202,6 +258,7 @@ module TestUp
           id: test_name,
           title: test_name,
           enabled: true,
+          missing: false,
           result: nil,
           # result: {
             # run_time: 0.0,
