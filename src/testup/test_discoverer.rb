@@ -30,6 +30,8 @@ module TestUp
   # @return [Array]
   def discover
     @errors.clear
+    # Reset list of runnables MiniTest knows about.
+    MiniTest::Runnable.runnables.clear
     testsuites = {}
     for testsuite_path in @paths_to_testsuites
       if !File.directory?(testsuite_path)
@@ -53,6 +55,7 @@ module TestUp
         :missing_coverage => missing_tests
       }
     end
+    # GC.start # Needed? (Slows down)
     testsuites
   end
 
@@ -61,17 +64,27 @@ module TestUp
   def discover_testcases(testsuite_path)
     testcases = {}
     testcase_source_files = discover_testcase_source_files(testsuite_path)
-    for testcase_file in testcase_source_files
-      begin
-        testcase = load_testcase(testcase_file)
-      rescue TestCaseLoadError => error
-        @errors << error
-        next
-      end
-      next if testcase.nil?
-      next if testcase.test_methods.empty?
+    # TODO: Clean up this file. The Sandbox was added as a quick and dirty
+    #       performance improvement.
+    Sandbox.reset
+    # for testcase_file in testcase_source_files
+    #   begin
+    #     testcase = load_testcase(testcase_file)
+    #   rescue TestCaseLoadError => error
+    #     @errors << error
+    #     next
+    #   end
+    #   next if testcase.nil?
+    #   next if testcase.test_methods.empty?
+    #   testcases[testcase] = testcase.test_methods
+    # end
+    testcase_source_files.each { |testcase_file|
+      Sandbox.load(testcase_file)
+    }
+    Sandbox.test_classes.each { |testcase|
+      # testcase = Sandbox.sym_to_class(test_class)
       testcases[testcase] = testcase.test_methods
-    end
+    }
     testcases
   end
 
@@ -93,6 +106,56 @@ module TestUp
   def discover_testcase_source_files(testsuite_path)
     testcase_filter = File.join(testsuite_path, 'TC_*.rb')
     Dir.glob(testcase_filter)
+  end
+
+  module Sandbox
+    def self.load(testcase_filename)
+      # Attempt to load the testcase so it can be inspected for testcases and
+      # test methods. Any errors is wrapped up in a custom error type so it can
+      # be caught further up and displayed in the UI.
+      begin
+        module_eval(File.read(testcase_filename), testcase_filename)
+        Kernel.load testcase_filename # TODO: Needed? Can we 'move' the already evaluated test?
+      rescue ScriptError, StandardError => error
+        testcase_name = File.basename(testcase_filename, '.*')
+        warn "#{error.class} Loading #{testcase_name}"
+        warn self.format_load_backtrace(error)
+        raise TestCaseLoadError.new(error)
+      end
+    end
+    def self.sym_to_class(symbol)
+      self.const_get(symbol)
+    end
+    def self.classes
+      self.constants.select { |c| self.const_get(c).is_a?(Class) }
+    end
+    def self.test_classes
+      # self.classes.map { |c| self.const_get(c) }.grep(TestUp::TestCase)
+      klasses = []
+      self.classes.each { |c|
+        # klass = self.const_get(c)
+        klass = Object.const_get(c)
+        # klasses << klass if klass.singleton_class.ancestors.include?(TestUp::TestCase)
+        klasses << klass if klass.ancestors.include?(TestUp::TestCase)
+      }
+      klasses
+    end
+    def self.reset
+      self.classes.each { |klass|
+        self.send(:remove_const, klass)
+        Object.send(:remove_const, klass) if Object.constants.include?(klass)
+      }
+    end
+    # @param [Exception] error
+    # @return [String]
+    def self.format_load_backtrace(error)
+      file_basename = File.basename(__FILE__)
+      index = error.backtrace.index { |line|
+        line =~ /testup\/#{file_basename}:\d+:in `load'/i
+      }
+      filtered_backtrace = error.backtrace[0..index]
+      error.message << "\n" << filtered_backtrace.join("\n")
+    end
   end
 
   # @param [String] testcase_file
