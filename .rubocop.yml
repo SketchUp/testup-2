@@ -1,0 +1,156 @@
+inherit_from: .rubocop_todo.yml
+
+require: rubocop-sketchup
+
+AllCops:
+  SketchUp:
+    SourcePath: src
+    TargetSketchUpVersion: 2014
+    SketchupPerformance:
+      Exclude:
+      - ruby-c-extension/
+      - tests/
+      - tools/
+    SketchupRequirements:
+      Exclude:
+      - ruby-c-extension/
+      - tests/
+      - tools/
+    SketchupSuggestions:
+      Exclude:
+      - ruby-c-extension/
+      - tests/
+      - tools/
+  TargetRubyVersion: 2.1 # Should have been 2.0 but RuboCop dropped support.
+  Exclude:
+  - docs/**/*.rb
+  - ruby-c-extension/**/*.rb
+  - src/testup/third-party/**/*.rb
+  - tests/**/*.rb # TODO - for now ignore.
+  - tools/**/*.rb
+
+
+# I will align my arrays as I please!
+Layout/AlignArray:
+  Enabled: false
+
+# It's ok to use double empty lines for "paragraphs".
+Layout/EmptyLines:
+  Enabled: false
+
+# Extra space is fine.
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+# Extra space is fine.
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+# RuboCop - why you hate white-space?
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+# It's ok to have two empty lines to create "paragraphs".
+Layout/EmptyLineBetweenDefs:
+  NumberOfEmptyLines: [1, 2]
+
+# Let git handle and normalize end of line. Easier for Windows.
+Layout/EndOfLine:
+  Enabled: false
+
+# Spaces are fine to line up matrices etc to be more readable.
+Layout/ExtraSpacing:
+  Enabled: false
+
+# This project use 4 spaces for continuity-lines.
+Layout/IndentArray:
+  Enabled: false
+
+# This project use 4 spaces for continuity-lines.
+Layout/IndentHash:
+  Enabled: false
+
+# Spaces are fine to line up matrices etc to be more readable.
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+
+# Too noisy...
+Metrics/AbcSize:
+  Enabled: false
+
+# Tests should have not upper size limit.
+Metrics/ClassLength:
+  Exclude:
+    - 'tests/**/*'
+
+# Too noisy...
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+# TODO: Re-enable after addressing .rubocop_todo.yml
+# Allowing for a few more lines than the default 10.
+# Metrics/MethodLength:
+  # Max: 20
+
+# Too noisy...
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+# Tests follow a different naming convention.
+Naming/ClassAndModuleCamelCase:
+  Exclude:
+    - 'tests/**/*.rb'
+
+# Tests follow a different naming convention.
+Naming/FileName:
+  Exclude:
+    - 'tests/**/*.rb'
+
+# Tool classes must use the SketchUp API method names.
+Naming/MethodName:
+  Exclude:
+    - '**/*_tool.rb'
+
+# Variables such as x, y, z; u, v; r, g, b, is all too common within the world
+# of 3D and their meaning is clear.
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+
+# It's ok to use {...} for multi-line blocks.
+Style/BlockDelimiters:
+  Enabled: false
+
+# Compact style is fine.
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# Nah, it's ok.
+Style/CommentedKeyword:
+  Enabled: false
+
+# No need for a doc-block for each class/module.
+Style/Documentation:
+  Enabled: false
+
+# Some times it simply reads better to not have a modifier conditional.
+Style/IfUnlessModifier:
+  Enabled: false
+
+# No need to force `.zero` over `== 0`
+Style/NumericPredicate:
+  Enabled: false
+
+# It's fine to refer to self.
+Style/RedundantSelf:
+  Enabled: false
+
+# There would be so many files touched to fix this. Ignoring for now.
+Style/StringLiterals:
+  Enabled: false # TODO
+
+# It's fine to have trailing comma, makes adding/removing items easier.
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: false
