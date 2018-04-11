@@ -8,6 +8,7 @@
 
 module TestUp
  # TODO: Refactor this class to be less hacky! Return a CoverageResult object.
+ # TODO: Rename to CoverageDiscoverer
  class Coverage
 
   # @param [String] settings_id
