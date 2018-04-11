@@ -356,6 +356,9 @@ let app = new Vue({
       let test_suite = this.test_suites[this.activeTestSuiteIndex];
       sketchup.runTests(test_suite);
     },
+    discoverTests() {
+      sketchup.discoverTests();
+    }
   },
   computed: {
     num_test_suites: function () {

@@ -20,7 +20,9 @@ module TestUp
     def toggle
       if @dialog.visible?
         @dialog.close
+        @dialog = nil
       else
+        @dialog ||= create_dialog
         @dialog.show
       end
     end
@@ -29,6 +31,7 @@ module TestUp
       puts "event_run_tests"
       options = {}
       tests = selected_tests(test_suite)
+      # TODO: Use run_tests_gui ?
       TestUp.instance_variable_set(:@num_tests_being_run, tests.size) # TODO: Hack!
       if TestUp.run_tests(tests, test_suite["title"], options)
         # puts Reporter.results.pretty_inspect
@@ -119,6 +122,10 @@ module TestUp
       dialog.add_action_callback('runTests') { |dialog, run_config|
         puts "runTests(...)"
         event_run_tests(run_config)
+      }
+      dialog.add_action_callback('discoverTests') { |dialog, run_config|
+        puts "discoverTests(...)"
+        event_discover
       }
       dialog.add_action_callback('openSourceFile') { |dialog, location|
         puts "openSourceFile(#{location})"
@@ -312,6 +319,7 @@ module TestUp
     end
 
     def event_discover
+      # TODO: Merge newly discovered tests with existing data.
       discover_tests
     end
 
