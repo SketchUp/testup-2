@@ -28,7 +28,6 @@ class TC_Report_TestCoverage < TestUp::TestCase
     coverage = TestUp::Report::TestCoverage.new(100.0, {})
     expected = {
       percent: 100.0,
-      missing: [],
     }
     assert_equal(expected, coverage.to_h)
   end
@@ -43,23 +42,6 @@ class TC_Report_TestCoverage < TestUp::TestCase
     coverage = TestUp::Report::TestCoverage.new(85.6, missing)
     expected = {
       percent: 85.6,
-      missing: [
-        {
-          title: 'TC_Example',
-          id: :TC_Example,
-          enabled: true,
-          expanded: false,
-          tests: [
-            {
-              title: 'foo_bar',
-              id: :foo_bar,
-              result: nil,
-              enabled: true,
-              missing: true,
-            }
-          ],
-        }
-      ],
     }
     assert_equal(expected.to_json, coverage.to_json)
   end

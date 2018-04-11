@@ -73,7 +73,7 @@ class TC_Report_TestCase < TestUp::TestCase
           result: nil,
           enabled: true,
           missing: false,
-        }
+        },
       ],
     }
     assert_equal(expected.to_json, test_case.to_json)

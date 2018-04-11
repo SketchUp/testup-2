@@ -22,7 +22,7 @@ module TestUp
       def to_h
         {
           percent: @percent,
-          missing: @missing,
+          # missing: @missing,
         }
       end
 
