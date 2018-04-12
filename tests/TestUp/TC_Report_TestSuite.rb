@@ -17,6 +17,8 @@ class TC_Report_TestSuite < TestUp::TestCase
   end
 
 
+  FAKE_PATH = 'testup/fake/path'
+
   def fixture_coverage_missing_tests
     missing = {
       'TC_Example': [
@@ -32,8 +34,10 @@ class TC_Report_TestSuite < TestUp::TestCase
 
 
   def test_initialize_default
-    suite = TestUp::Report::TestSuite.new('Suite Title')
+    suite = TestUp::Report::TestSuite.new('Suite Title', FAKE_PATH)
+    assert_kind_of(String, suite.title)
     assert_equal('Suite Title', suite.title)
+    assert_kind_of(Symbol, suite.id)
     assert_equal(:suite_title, suite.id)
 
     assert_kind_of(Enumerable, suite.test_cases)
@@ -49,7 +53,7 @@ class TC_Report_TestSuite < TestUp::TestCase
       TestUp::Report::TestCase.new('TC_Biz'),
       TestUp::Report::TestCase.new('TC_Baz'),
     ]
-    suite = TestUp::Report::TestSuite.new('Suite Title', test_cases)
+    suite = TestUp::Report::TestSuite.new('Suite Title', FAKE_PATH, test_cases)
     assert_equal('Suite Title', suite.title)
     assert_equal(:suite_title, suite.id)
 
@@ -66,7 +70,7 @@ class TC_Report_TestSuite < TestUp::TestCase
       TestUp::Report::TestCase.new('TC_Biz'),
       TestUp::Report::TestCase.new('TC_Baz'),
     ]
-    suite = TestUp::Report::TestSuite.new('Example Suite', test_cases)
+    suite = TestUp::Report::TestSuite.new('Example Suite', FAKE_PATH, test_cases)
     titles = suite.test_cases.map(&:title)
     expected = %w[TC_Bar TC_Baz TC_Biz TC_Foo]
     assert_equal(expected, titles)
@@ -74,10 +78,11 @@ class TC_Report_TestSuite < TestUp::TestCase
 
 
   def test_to_h_default
-    suite = TestUp::Report::TestSuite.new('Example Suite')
+    suite = TestUp::Report::TestSuite.new('Example Suite', FAKE_PATH)
     expected = {
       title: 'Example Suite',
       id: :example_suite,
+      path: FAKE_PATH,
       test_cases: [],
       coverage: nil,
     }
@@ -89,10 +94,11 @@ class TC_Report_TestSuite < TestUp::TestCase
     test_cases = [
       TestUp::Report::TestCase.new('TC_Example')
     ]
-    suite = TestUp::Report::TestSuite.new('Example Suite', test_cases)
+    suite = TestUp::Report::TestSuite.new('Example Suite', FAKE_PATH, test_cases)
     expected = {
       title: 'Example Suite',
       id: :example_suite,
+      path: FAKE_PATH,
       test_cases: [
         {
           title: 'TC_Example',
@@ -118,11 +124,12 @@ class TC_Report_TestSuite < TestUp::TestCase
     test_cases = [
       TestUp::Report::TestCase.new('TC_Example', tests)
     ]
-    suite = TestUp::Report::TestSuite.new('Example Suite', test_cases,
+    suite = TestUp::Report::TestSuite.new('Example Suite', FAKE_PATH, test_cases,
       coverage: fixture_coverage_missing_tests)
     expected = {
       title: 'Example Suite',
       id: :example_suite,
+      path: FAKE_PATH,
       test_cases: [
         {
           title: 'TC_Example',

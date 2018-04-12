@@ -17,7 +17,7 @@ module TestUp
       attr_reader :title, :id, :result
 
       def initialize(title, result = nil, missing: false)
-        @title = title
+        @title = title.to_s
         @id = title.to_sym
         @result = result
         @enabled = true

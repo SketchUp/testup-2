@@ -40,7 +40,9 @@ class TC_Report_Test < TestUp::TestCase
 
   def test_initialize_default
     test = TestUp::Report::Test.new('test_foo')
+    assert_kind_of(String, test.title)
     assert_equal('test_foo', test.title)
+    assert_kind_of(Symbol, test.id)
     assert_equal(:test_foo, test.id)
     assert(test.enabled?)
     refute(test.missing?)

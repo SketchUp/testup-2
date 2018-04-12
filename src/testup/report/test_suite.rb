@@ -8,16 +8,22 @@
 require 'json'
 require 'set'
 
+require 'testup/type_check'
+
 
 module TestUp
   module Report
     class TestSuite
 
-      attr_reader :title, :id, :test_cases, :coverage
+      include TypeCheck
 
-      def initialize(title, test_cases = [], coverage: nil)
-        @title = title
+      attr_reader :title, :id, :path, :test_cases, :coverage
+
+      def initialize(title, path, test_cases = [], coverage: nil)
+        expect_all_type(Report::TestCase, test_cases)
+        @title = title.to_s
         @id = to_id(title)
+        @path = path
         @test_cases = SortedSet.new(test_cases)
         @coverage = coverage
         merge_coverage(coverage) if coverage
@@ -27,6 +33,7 @@ module TestUp
         {
           title: @title,
           id: @id,
+          path: @path,
           test_cases: @test_cases.to_a,
           coverage: @coverage,
         }

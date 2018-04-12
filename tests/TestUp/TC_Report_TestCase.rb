@@ -19,7 +19,9 @@ class TC_Report_TestCase < TestUp::TestCase
 
   def test_initialize_default
     test_case = TestUp::Report::TestCase.new('TC_Example')
+    assert_kind_of(String, test_case.title)
     assert_equal('TC_Example', test_case.title)
+    assert_kind_of(Symbol, test_case.id)
     assert_equal(:TC_Example, test_case.id)
     assert(test_case.enabled?)
     refute(test_case.expanded?)

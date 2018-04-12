@@ -8,17 +8,23 @@
 require 'json'
 require 'set'
 
+require 'testup/type_check'
+
 
 module TestUp
   module Report
     class TestCase
 
       include Comparable
+      include TypeCheck
 
       attr_reader :title, :id, :tests
 
+      # @param [String] title
+      # @param [Array<Report::Test>] tests
       def initialize(title, tests = [])
-        @title = title
+        expect_all_type(Report::Test, tests)
+        @title = title.to_s
         @id = title.to_sym
         @tests = SortedSet.new(tests)
         @enabled = true
