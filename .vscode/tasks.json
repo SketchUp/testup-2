@@ -8,7 +8,7 @@
       "type": "shell",
       "command": "ruby",
       "args": [
-        "${workspaceFolder}/tools/debug.rb",
+        "${workspaceFolder}/tools/debug-sketchup.rb",
         "17"
       ],
       "problemMatcher": []
@@ -18,7 +18,7 @@
       "type": "shell",
       "command": "ruby",
       "args": [
-        "${workspaceFolder}/tools/debug.rb",
+        "${workspaceFolder}/tools/debug-sketchup.rb",
         "18"
       ],
       "problemMatcher": []

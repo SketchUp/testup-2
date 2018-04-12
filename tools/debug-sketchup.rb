@@ -32,5 +32,5 @@ end
 
 # We then start SketchUp with the special flag to make it connect to the
 # debugger on the given port.
-id = spawn(command)
+id = spawn(sketchup_command)
 Process.detach(id)
