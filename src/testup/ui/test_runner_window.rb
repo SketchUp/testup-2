@@ -5,7 +5,8 @@
 #
 #-------------------------------------------------------------------------------
 
-# require 'testup/runs'
+require 'testup/api'
+
 
 module TestUp
   class TestRunnerWindow
@@ -22,26 +23,20 @@ module TestUp
         @dialog.close
         @dialog = nil
       else
-        @dialog ||= create_dialog
+        @dialog ||= create_dialogs
         @dialog.show
       end
     end
 
+    # @param [Hash] test_suite JSON data from JavaScript side.
     def event_run_tests(test_suite)
-      puts "event_run_tests"
+      puts 'event_run_tests'
       options = {}
       tests = selected_tests(test_suite)
-      # TODO: Use run_tests_gui ?
-      TestUp.instance_variable_set(:@num_tests_being_run, tests.size) # TODO: Hack!
-      if TestUp.run_tests(tests, test_suite["title"], options)
-        # puts Reporter.results.pretty_inspect
-        merge_results(test_suite, Reporter.results)
-        # JSON.pretty_generate(test_suite)
+      TestUp::API.run_tests(tests, test_suite['title'], options) { |results|
+        merge_results(test_suite, results)
         call('app.update_test_suite', test_suite)
-        # @window.update_results(Reporter.results)
-      else
-        # @window.update_results({})
-      end
+      }
     end
 
     def merge_results(test_suite, results)
@@ -64,39 +59,16 @@ module TestUp
 
     def selected_tests(test_suite)
       tests = []
-      test_suite["test_cases"].each { |test_case|
-        test_case["tests"].each { |test|
-          next unless test["enabled"]
-          tests << "#{test_case["title"]}##{test["title"]}"
+      test_suite['test_cases'].each { |test_case|
+        test_case['tests'].each { |test|
+          next unless test['enabled']
+          tests << "#{test_case['title']}##{test['title']}"
         }
       }
       tests
     end
 
     # --------------------------------------------------------------------------
-
-    # def active_testsuite
-      # @bridge.call('TestUp.TestSuites.active')
-    # end
-
-    # def selected_tests
-      # @bridge.call('TestUp.TestSuite.selected_tests')
-    # end
-
-    # @param [Array<Hash>] results
-    def update_results(results)
-      # Debugger.time('JS:TestUp.update_results') {
-      #   @bridge.call('TestUp.update_results', results)
-      # }
-    end
-
-    # Clears and reloads the test suites.
-    def reload
-      # return false unless visible?
-      # self.bridge.call('TestUp.reset')
-      # discover_tests
-      # true
-    end
 
     private
 
@@ -140,31 +112,6 @@ module TestUp
       @dialog.execute_script("#{function}(#{argument_js});")
     end
 
-    # Intercept callbacks from the SKUI window before passing it on to SKUI.
-    def callback_handler(webdialog, callback, arguments)
-      case callback
-      when 'TestUp.on_script_debugger_attached'
-        ScriptDebugger.attach
-      when 'TestUp.on_run'
-        event_testup_run
-      when 'TestUp.on_rerun'
-        event_testup_rerun
-      when 'TestUp.on_discover'
-        event_discover
-      when 'TestUp.on_open_source_file'
-        event_open_source_file(arguments[0])
-      when 'TestUp.on_preferences'
-        event_on_open_preferences
-      when 'TestUp.TestSuites.on_change'
-        event_change_testsuite(arguments[0])
-      when 'TestUp.Console.output'
-        event_console_output(arguments[0])
-      end
-    ensure
-      super
-      nil
-    end
-
     def time(title = '', &block)
       start = Time.now
       result = block.call
@@ -174,7 +121,7 @@ module TestUp
     end
 
     def discover_tests
-      discoveries = time('discover') { TestUp.discover_tests }
+      discoveries = time('discover') { TestUp::API.discover_tests }
       discoveries = time('restructure') { restructure(discoveries) }
       Debugger.time("JS:update(...)") {
         progress = TaskbarProgress.new
