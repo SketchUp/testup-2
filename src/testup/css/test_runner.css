@@ -6,3 +6,19 @@
   left: 0;
   right: 0;
 }
+
+
+.tu-suite-stats .su-panel {
+  /* TODO: Make non-bold, larger text */
+  font-weight: bold;
+}
+
+.tu-suite-stats .tu-passed {
+  color: #080;
+}
+.tu-suite-stats .tu-failed {
+  color: #800;
+}
+.tu-suite-stats .tu-errors {
+  color: #860;
+}

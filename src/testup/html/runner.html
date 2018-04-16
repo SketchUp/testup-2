@@ -34,17 +34,17 @@
 
         <su-panel class="su-flex"></su-panel>
 
-        <su-panel-group>
+        <su-panel-group class="tu-suite-stats">
           <su-panel title="Total number of tests">
             {{ active_test_suite_stats.tests }}
           </su-panel>
-          <su-panel title="Number of passed tests">
+          <su-panel title="Number of passed tests" class="tu-passed">
             {{ active_test_suite_stats.passed }}
           </su-panel>
-          <su-panel title="Number of failed tests">
+          <su-panel title="Number of failed tests" class="tu-failed">
             {{ active_test_suite_stats.failed }}
           </su-panel>
-          <su-panel title="Number of tests with errors">
+          <su-panel title="Number of tests with errors" class="tu-errors">
             {{ active_test_suite_stats.errors }}
           </su-panel>
         </su-panel-group>
