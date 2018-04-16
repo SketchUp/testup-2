@@ -14,11 +14,14 @@ module TestUp
 
       attr_reader :percent, :missing
 
+      # @param [Float] percent
+      # @param [Hash, Array<Report::TestCase>]
       def initialize(percent, missing)
-        @percent = percent
+        @percent = percent.to_f
         @missing = restructure(missing)
       end
 
+      # @return [Hash]
       def to_h
         {
           percent: @percent,
@@ -26,6 +29,7 @@ module TestUp
         }
       end
 
+      # @return [String]
       def to_json(*args)
         to_h.to_json(*args)
       end
@@ -34,7 +38,11 @@ module TestUp
 
       # TODO: Refactor out this when TestUp::Coverage is cleaned up to generate
       # Report objects directly.
+      #
+      # @param [Hash] missing
+      # @return [Array<Report::TestCase>]
       def restructure(missing)
+        return missing unless missing.is_a?(Hash)
         missing.map { |test_case_name, tests_names|
           tests = tests_names.map { |test_name|
             Report::Test.new(test_name, missing: true)

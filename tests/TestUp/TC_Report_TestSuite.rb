@@ -63,6 +63,37 @@ class TC_Report_TestSuite < TestUp::TestCase
   end
 
 
+  def test_test_case
+    test_cases = [
+      TestUp::Report::TestCase.new('TC_Foo'),
+      TestUp::Report::TestCase.new('TC_Bar'),
+      TestUp::Report::TestCase.new('TC_Biz'),
+      TestUp::Report::TestCase.new('TC_Baz'),
+    ]
+    suite = TestUp::Report::TestSuite.new('Example Suite', FAKE_PATH, test_cases)
+
+    test_case = suite.test_case('TC_Bar')
+    assert_kind_of(TestUp::Report::TestCase, test_case)
+    assert_equal('TC_Bar', test_case.title)
+
+    test_case = suite.test_case('TC_Bar')
+    assert_kind_of(TestUp::Report::TestCase, test_case, 'array access')
+    assert_equal('TC_Bar', test_case.title)
+  end
+
+
+  def test_test_case_Query
+    test_cases = [
+      TestUp::Report::TestCase.new('TC_Foo'),
+      TestUp::Report::TestCase.new('TC_Bar'),
+      TestUp::Report::TestCase.new('TC_Biz'),
+      TestUp::Report::TestCase.new('TC_Baz'),
+    ]
+    suite = TestUp::Report::TestSuite.new('Example Suite', FAKE_PATH, test_cases)
+    assert(suite.test_case?('TC_Bar'))
+  end
+
+
   def test_test_cases_sorted
     test_cases = [
       TestUp::Report::TestCase.new('TC_Foo'),

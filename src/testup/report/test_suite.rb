@@ -29,6 +29,19 @@ module TestUp
         merge_coverage(coverage) if coverage
       end
 
+      # @param [Report::TestCase, String]
+      # @return [Report::TestCase]
+      def test_case(test_case)
+        title = test_case.is_a?(Report::TestCase) ? test_case.title : test_case
+        @test_cases.find { |tc| tc.title == title }
+      end
+      alias_method :[], :test_case
+
+      # @param [Report::TestCase, String]
+      def test_case?(test_case)
+        !test_case(test_case).nil?
+      end
+
       def to_h
         {
           title: @title,

@@ -43,6 +43,12 @@ module TestUp
         @expanded
       end
 
+      # @param [Report::Test, String] test The basename of the expected test
+      def test_covered?(test)
+        title = test.is_a?(Report::Test) ? test.title : test
+        @tests.any? { |t| t.title.start_with?(title) }
+      end
+
       def to_h
         {
           title: @title,

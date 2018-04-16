@@ -31,6 +31,31 @@ class TC_Report_TestCase < TestUp::TestCase
   end
 
 
+  def test_test_covered_Query_string_argument
+    tests = [
+      TestUp::Report::Test.new('test_foo'),
+      TestUp::Report::Test.new('test_bar_happy_path'),
+      TestUp::Report::Test.new('test_bar_arguments'),
+    ]
+    test_case = TestUp::Report::TestCase.new('TC_Example', tests)
+    assert(test_case.test_covered?('test_foo'), 'test_foo')
+    assert(test_case.test_covered?('test_bar'), 'test_bar')
+  end
+
+  def test_test_covered_Query_class_argument
+    tests = [
+      TestUp::Report::Test.new('test_foo'),
+      TestUp::Report::Test.new('test_bar_happy_path'),
+      TestUp::Report::Test.new('test_bar_arguments'),
+    ]
+    test_foo = TestUp::Report::Test.new('test_foo')
+    test_bar = TestUp::Report::Test.new('test_bar')
+    test_case = TestUp::Report::TestCase.new('TC_Example', tests)
+    assert(test_case.test_covered?(test_foo), 'test_foo')
+    assert(test_case.test_covered?(test_bar), 'test_bar')
+  end
+
+
   def test_tests_sorted
     tests = [
       TestUp::Report::Test.new('foo'),
