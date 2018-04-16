@@ -1,0 +1,5 @@
+TC_TestSamples.test_equal_failure
+TC_TestSamples.test_error
+TC_TestSamples.test_failure
+TC_TestSamples.test_pass
+TC_TestSamples.test_skip
