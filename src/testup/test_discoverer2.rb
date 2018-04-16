@@ -64,7 +64,7 @@ module TestUp
         coverage_report = nil
         coverage = Coverage.new(test_suite_path)
         if coverage.has_manifest?
-          percent = coverage.percent(missing_tests)
+          percent = coverage.percent(test_cases)
           missing = coverage.missing_tests(test_cases)
           coverage_report = Report::Coverage.new(percent, missing)
         end
