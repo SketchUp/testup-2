@@ -19,12 +19,23 @@ module TestUp
 
       attr_reader :title, :id, :path, :test_cases, :coverage
 
+      # @param [String] title
+      # @param [String] path
+      # @param [Enumerable<Report::TestCase>] test_cases
+      # @param [Report::Coverage] coverage
       def initialize(title, path, test_cases = [], coverage: nil)
         expect_all_type(Report::TestCase, test_cases)
         @title = title.to_s
         @id = to_id(title)
         @path = path
         @test_cases = SortedSet.new(test_cases)
+        @coverage = coverage
+        merge_coverage(coverage) if coverage
+      end
+
+      # @param [Report::Coverage] coverage
+      def coverage=(coverage)
+        raise ArgumentError, 'Coverage already merged' if @coverage
         @coverage = coverage
         merge_coverage(coverage) if coverage
       end

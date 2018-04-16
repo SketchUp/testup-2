@@ -39,7 +39,7 @@ class TC_CoverageDiscoverer < TestUp::TestCase
     manifest
   end
 
-  def fixture_discovered_tests
+  def fixture_discovered_test_suite
     tc_test_errors_tests = [
       TestUp::Report::Test.new('test_pass'),
       TestUp::Report::Test.new('test_skip'),
@@ -60,29 +60,27 @@ class TC_CoverageDiscoverer < TestUp::TestCase
 
 
   def test_report_with_manifest
-    discoverer = TestUp::CoverageDiscoverer.new(TESTUP_UI_TESTS_PATH)
-    discoverer.stub :manifest, fake_manifest do
-      assert(discoverer.manifest.exist?)
-      coverage = discoverer.report(fixture_discovered_tests)
-      assert_kind_of(TestUp::Report::TestCoverage, coverage)
-
-      assert_equal(1, coverage.missing.size, 'missing test cases')
-      titles = coverage.missing.map(&:title)
-      expected = %w(TC_TestSamples)
-
-      assert_equal(2, coverage.missing[0].tests.size, 'missing tests')
-      titles = coverage.missing[0].tests.map(&:title)
-      expected = %w(test_error test_skip)
-
-      assert_equal(expected, titles)
-      assert_equal(40.0, coverage.percent)
+    discoverer = TestUp::CoverageDiscoverer.new
+    coverage = TestUp::Manifest.stub :new, fake_manifest do
+      discoverer.report(fixture_discovered_test_suite)
     end
+    assert_kind_of(TestUp::Report::TestCoverage, coverage)
+
+    assert_equal(1, coverage.missing.size, 'missing test cases')
+    titles = coverage.missing.map(&:title)
+    expected = %w(TC_TestSamples)
+
+    assert_equal(2, coverage.missing[0].tests.size, 'missing tests')
+    titles = coverage.missing[0].tests.map(&:title)
+    expected = %w(test_error test_skip)
+
+    assert_equal(expected, titles)
+    assert_equal(40.0, coverage.percent)
   end
 
   def test_report_with_no_manifest
-    discoverer = TestUp::CoverageDiscoverer.new(TESTUP_UI_TESTS_PATH)
-    refute(discoverer.manifest.exist?)
-    coverage = discoverer.report(fixture_discovered_tests)
+    discoverer = TestUp::CoverageDiscoverer.new
+    coverage = discoverer.report(fixture_discovered_test_suite)
     assert_kind_of(TestUp::Report::TestCoverage, coverage)
     assert_empty(coverage.missing, 'Test cases')
     assert_equal(0.0, coverage.percent)

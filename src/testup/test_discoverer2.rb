@@ -10,7 +10,7 @@ require 'set'
 require 'testup/report/test_case'
 require 'testup/report/test_suite'
 require 'testup/report/test'
-require 'testup/coverage'
+require 'testup/coverage_discoverer'
 require 'testup/log'
 
 
@@ -50,7 +50,8 @@ module TestUp
           next nil
         end
 
-        # Derive the TestSuite name from the directory name.
+        # Derive the TestSuite name from the directory name and ensure they
+        # are uniquely named.
         test_suite_title = File.basename(test_suite_path)
         if discovered_suites.include?(test_suite_title)
           # TODO: raise custom error and catch later for display in UI.
@@ -58,19 +59,13 @@ module TestUp
         end
         discovered_suites << test_suite_title
 
+        # Discover all the tests in the test suite.
         test_cases = discover_testcases(test_suite_path)
-
-        # TODO: Make Coverage return Report::Coverage
-        coverage_report = nil
-        coverage = Coverage.new(test_suite_path)
-        if coverage.has_manifest?
-          percent = coverage.percent(test_cases)
-          missing = coverage.missing_tests(test_cases)
-          coverage_report = Report::Coverage.new(percent, missing)
-        end
-
-        Report::TestSuite.new(test_suite_title, test_suite_path, test_cases,
-          coverage: coverage_report)
+        suite = Report::TestSuite.new(test_suite_title, test_suite_path,
+                                      test_cases)
+        coverage = CoverageDiscoverer.new
+        suite.coverage = coverage.report(suite)
+        suite
       }.compact
     end
 

@@ -12,19 +12,12 @@ require 'testup/manifest'
 module TestUp
   class CoverageDiscoverer
 
-    attr_reader :manifest
-
-    # @param [String] path
-    def initialize(path)
-      @path = path
-      manifest_path = File.join(path, Manifest::FILENAME)
-      @manifest = Manifest.new(manifest_path)
-    end
+    def initialize; end
 
     # @param [Report::TestSuite] discovered_suite
     # @return [Report::TestCoverage]
     def report(discovered_suite)
-      expected_test_cases = manifest_test_cases
+      expected_test_cases = manifest_test_cases(discovered_suite)
       missing = find_missing_test_cases(discovered_suite, expected_test_cases)
       percent = compute_percentage(expected_test_cases, missing)
       Report::TestCoverage.new(percent, missing)
@@ -73,8 +66,11 @@ module TestUp
       Report::TestCase.new(expected_test_case.title, missing_tests)
     end
 
+    # @param [Report::TestSuite] suite
     # @return [Array<Report::TestCase>]
-    def manifest_test_cases
+    def manifest_test_cases(suite)
+      manifest_path = File.join(suite.path, Manifest::FILENAME)
+      manifest = Manifest.new(manifest_path)
       expected = {}
       manifest.expected_methods.each { |expected_method|
         test_case_name, test_method_name = test_name(expected_method)
