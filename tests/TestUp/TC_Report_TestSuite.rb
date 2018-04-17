@@ -3,7 +3,11 @@
 # Original Author:: Thomas Thomassen
 
 require 'testup/testcase'
+require 'testup/report/test_case'
+require 'testup/report/test_coverage'
+require 'testup/report/test_result'
 require 'testup/report/test_suite'
+require 'testup/report/test'
 
 
 class TC_Report_TestSuite < TestUp::TestCase
@@ -30,6 +34,28 @@ class TC_Report_TestSuite < TestUp::TestCase
       ],
     }
     TestUp::Report::TestCoverage.new(85.6, missing)
+  end
+
+  def fixture_test_result_success
+    TestUp::Report::TestResult.new(
+      0.2, # run_time
+      3,   # assertions
+      0,   # skipped
+      1,   # passed
+      0,   # error
+      [],  # failures
+    )
+  end
+
+  def fixture_test_result_failure
+    TestUp::Report::TestResult.new(
+      0.2, # run_time
+      3,   # assertions
+      0,   # skipped
+      0,   # passed
+      1,   # error
+      [],  # failures
+    )
   end
 
 
@@ -63,6 +89,41 @@ class TC_Report_TestSuite < TestUp::TestCase
   end
 
 
+  def test_merge_results
+    tests_old = [
+      TestUp::Report::Test.new('test_foo'),
+      TestUp::Report::Test.new('test_bar'),
+      TestUp::Report::Test.new('test_biz'),
+    ]
+    test_cases_old = [
+      TestUp::Report::TestCase.new('TC_Example', tests_old),
+      TestUp::Report::TestCase.new('TC_Hello'),
+    ]
+    suite_old = TestUp::Report::TestSuite.new('Example', FAKE_PATH,
+                                              test_cases_old)
+
+    tests_new = [
+      TestUp::Report::Test.new('test_foo'),
+      TestUp::Report::Test.new('test_bar', fixture_test_result_failure),
+      TestUp::Report::Test.new('test_biz', fixture_test_result_success),
+    ]
+    test_cases_new = [
+      TestUp::Report::TestCase.new('TC_Example', tests_new),
+    ]
+    suite_new = TestUp::Report::TestSuite.new('Example', FAKE_PATH,
+                                              test_cases_new)
+
+    assert_nil(suite_old.merge_results(suite_new))
+    test_case_old = test_cases_old[0]
+    test_case_new = test_cases_new[0]
+    assert_nil(test_case_old.tests[0].result)
+    assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[1].result)
+    assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[2].result)
+    assert_equal(fixture_test_result_failure, test_case_old.tests[1].result)
+    assert_equal(fixture_test_result_success, test_case_old.tests[2].result)
+  end
+
+
   def test_test_case
     test_cases = [
       TestUp::Report::TestCase.new('TC_Foo'),
@@ -90,7 +151,7 @@ class TC_Report_TestSuite < TestUp::TestCase
       TestUp::Report::TestCase.new('TC_Baz'),
     ]
     suite = TestUp::Report::TestSuite.new('Example Suite', FAKE_PATH, test_cases)
-    assert(suite.test_case?('TC_Bar'))
+    assert(suite.test_case?('TC_Bar'), 'TestCase not found')
   end
 
 

@@ -8,6 +8,7 @@
 require 'json'
 require 'set'
 
+require 'testup/report/collection'
 require 'testup/type_check'
 
 
@@ -24,11 +25,13 @@ module TestUp
       # @param [Enumerable<Report::TestCase>] test_cases
       # @param [Report::Coverage] coverage
       def initialize(title, path, test_cases = [], coverage: nil)
+        expect_type(String, title)
+        expect_type(String, path)
         expect_all_type(Report::TestCase, test_cases)
         @title = title.to_s
         @id = to_id(title)
         @path = path
-        @test_cases = SortedSet.new(test_cases)
+        @test_cases = Collection.new(test_cases)
         @coverage = coverage
         merge_coverage(coverage) if coverage
       end
@@ -40,11 +43,20 @@ module TestUp
         merge_coverage(coverage) if coverage
       end
 
-      # @param [Report::TestCase, String]
+      # @param [Report::TestSuite] other_test_suite
+      # @return [nil]
+      def merge_results(other_test_suite)
+        other_test_suite.test_cases.each { |other_test_case|
+          test_case = @test_cases[other_test_case]
+          test_case.merge_results(other_test_case) unless test_case.nil?
+        }
+        nil
+      end
+
+      # @param [Report::TestCase, Symbol, String]
       # @return [Report::TestCase]
       def test_case(test_case)
-        title = test_case.is_a?(Report::TestCase) ? test_case.title : test_case
-        @test_cases.find { |tc| tc.title == title }
+        @test_cases[test_case]
       end
       alias_method :[], :test_case
 

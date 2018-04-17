@@ -17,6 +17,29 @@ class TC_Report_TestCase < TestUp::TestCase
   end
 
 
+  def fixture_test_result_success
+    TestUp::Report::TestResult.new(
+      0.2, # run_time
+      3,   # assertions
+      0,   # skipped
+      1,   # passed
+      0,   # error
+      [],  # failures
+    )
+  end
+
+  def fixture_test_result_failure
+    TestUp::Report::TestResult.new(
+      0.2, # run_time
+      3,   # assertions
+      0,   # skipped
+      0,   # passed
+      1,   # error
+      [],  # failures
+    )
+  end
+
+
   def test_initialize_default
     test_case = TestUp::Report::TestCase.new('TC_Example')
     assert_kind_of(String, test_case.title)
@@ -28,6 +51,36 @@ class TC_Report_TestCase < TestUp::TestCase
 
     assert_kind_of(Enumerable, test_case.tests)
     assert_empty(test_case.tests)
+  end
+
+
+  def test_hash
+    test = TestUp::Report::Test.new('test_foo')
+    assert_equal(:test_foo.hash, test.hash)
+  end
+
+
+  def test_merge_results
+    tests_old = [
+      TestUp::Report::Test.new('test_foo'),
+      TestUp::Report::Test.new('test_bar'),
+      TestUp::Report::Test.new('test_biz'),
+    ]
+    test_case_old = TestUp::Report::TestCase.new('TC_Example', tests_old)
+
+    tests_new = [
+      TestUp::Report::Test.new('test_foo'),
+      TestUp::Report::Test.new('test_bar', fixture_test_result_failure),
+      TestUp::Report::Test.new('test_biz', fixture_test_result_success),
+    ]
+    test_case_new = TestUp::Report::TestCase.new('TC_Example', tests_new)
+
+    assert_nil(test_case_old.merge_results(test_case_new))
+    assert_nil(test_case_old.tests[0].result)
+    assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[1].result)
+    assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[2].result)
+    assert_equal(fixture_test_result_failure, test_case_old.tests[1].result)
+    assert_equal(fixture_test_result_success, test_case_old.tests[2].result)
   end
 
 

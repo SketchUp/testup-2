@@ -32,6 +32,18 @@ module TestUp
         @enabled
       end
 
+      def hash
+        @id.hash
+      end
+
+      # @param [Report::Test]
+      # @return [Boolean]
+      def merge_result(test)
+        return false if test.result.nil?
+        @result = test.result
+        true
+      end
+
       def missing?
         @missing
       end

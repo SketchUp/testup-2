@@ -8,6 +8,7 @@
 require 'json'
 require 'set'
 
+require 'testup/report/collection'
 require 'testup/type_check'
 
 
@@ -26,7 +27,7 @@ module TestUp
         expect_all_type(Report::Test, tests)
         @title = title.to_s
         @id = title.to_sym
-        @tests = SortedSet.new(tests)
+        @tests = Collection.new(tests)
         @enabled = true
         @expanded = false
       end
@@ -41,6 +42,20 @@ module TestUp
 
       def expanded?
         @expanded
+      end
+
+      def hash
+        @id.hash
+      end
+
+      # @param [Report::TestCase] other_test_case
+      # @return [nil]
+      def merge_results(other_test_case)
+        other_test_case.tests.each { |other_test|
+          test = @tests[other_test]
+          test.merge_result(other_test) if test
+        }
+        nil
       end
 
       # @param [Report::Test, String] test The basename of the expected test

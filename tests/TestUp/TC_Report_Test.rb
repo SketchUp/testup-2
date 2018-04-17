@@ -37,6 +37,17 @@ class TC_Report_Test < TestUp::TestCase
     )
   end
 
+  def fixture_test_result_failure
+    TestUp::Report::TestResult.new(
+      0.2, # run_time
+      3,   # assertions
+      0,   # skipped
+      0,   # passed
+      1,   # error
+      [],  # failures
+    )
+  end
+
 
   def test_initialize_default
     test = TestUp::Report::Test.new('test_foo')
@@ -78,6 +89,39 @@ class TC_Report_Test < TestUp::TestCase
     titles = tests.sort.map(&:title)
     expected = %w[bar baz biz foo]
     assert_equal(expected, titles)
+  end
+
+
+  def test_hash
+    test = TestUp::Report::Test.new('test_foo')
+    assert_equal(:test_foo.hash, test.hash)
+  end
+
+
+  def test_merge_results_overwrite_empty
+    test_old = TestUp::Report::Test.new('test_foo')
+    test_new = TestUp::Report::Test.new('test_foo', fixture_test_result_success)
+    assert_nil(test_old.result)
+    assert(test_old.merge_result(test_new))
+    assert_kind_of(TestUp::Report::TestResult, test_old.result)
+    assert_equal(fixture_test_result_success, test_old.result)
+  end
+
+  def test_merge_results_overwrite_existing
+    test_old = TestUp::Report::Test.new('test_foo', fixture_test_result_success)
+    test_new = TestUp::Report::Test.new('test_foo', fixture_test_result_failure)
+    assert(test_old.merge_result(test_new))
+    assert_kind_of(TestUp::Report::TestResult, test_old.result)
+    assert_equal(fixture_test_result_failure, test_old.result)
+  end
+
+  def test_merge_results_dont_clear_existing
+    test_old = TestUp::Report::Test.new('test_foo', fixture_test_result_success)
+    test_new = TestUp::Report::Test.new('test_foo')
+    assert_kind_of(TestUp::Report::TestResult, test_old.result)
+    refute(test_old.merge_result(test_new))
+    assert_kind_of(TestUp::Report::TestResult, test_old.result)
+    assert_equal(fixture_test_result_success, test_old.result)
   end
 
 
