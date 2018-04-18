@@ -7,7 +7,7 @@
 
 
 module TestUp
- class TestDiscoverer
+ class TestDiscovererLegacy
 
   # Error type used when loading the .RB files containing the test cases.
   class TestCaseLoadError < StandardError

@@ -5,6 +5,7 @@
 #
 #-------------------------------------------------------------------------------
 
+require 'testup/api_legacy'
 require 'testup/debug'
 require 'testup/log'
 require 'testup/reporter'
@@ -28,7 +29,7 @@ module TestUp
     # return [Boolean]
     def run(tests, options: {})
       return false if tests.empty?
-      API.discover_tests([@path])
+      LegacyAPI.discover_tests([@path])
       test_pattern = parse(tests)
       run_tests(test_pattern, options)
       yield Reporter.results
@@ -48,7 +49,7 @@ module TestUp
       progress = TestProgress.new(num_tests: tests.size)
       begin
         progress.set_state(TaskbarProgress::NORMAL)
-        API.suppress_warning_dialogs {
+        LegacyAPI.suppress_warning_dialogs {
           MiniTest.run(arguments)
         }
       rescue SystemExit

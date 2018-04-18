@@ -5,17 +5,15 @@
 #
 #-------------------------------------------------------------------------------
 
+require 'testup/legacy/test_discoverer'
 require 'testup/debug'
 require 'testup/reporter'
 require 'testup/taskbar_progress'
-require 'testup/test_discoverer'
 
 
 module TestUp
-  module API
+  module LegacyAPI
 
-    # @api TestUp
-    #
     # @example Run a test case:
     #   TestUp.run_tests(["TC_Sketchup_Edge#"])
     #
@@ -103,7 +101,7 @@ module TestUp
         begin
           progress.set_state(TaskbarProgress::INDETERMINATE)
           paths = TestUp.settings[:paths_to_testsuites]
-          test_discoverer = TestDiscoverer.new(paths)
+          test_discoverer = TestDiscovererLegacy.new(paths)
           discoveries = test_discoverer.discover
         ensure
           progress.set_state(TaskbarProgress::NOPROGRESS)

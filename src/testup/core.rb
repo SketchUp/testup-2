@@ -79,7 +79,7 @@ module TestUp
   require File.join(PATH, 'p4.rb')
   require File.join(PATH, 'settings.rb')
   require File.join(PATH, 'taskbar_progress.rb')
-  require File.join(PATH, 'test_discoverer.rb')
+  require File.join(PATH, 'legacy/test_discoverer.rb')
   require File.join(PATH, 'ui.rb')
   if RUBY_PLATFORM =~ /mswin|mingw/
     require File.join(PATH, 'win32.rb')
@@ -283,7 +283,7 @@ module TestUp
       begin
         progress.set_state(TaskbarProgress::INDETERMINATE)
         paths = TestUp.settings[:paths_to_testsuites]
-        test_discoverer = TestDiscoverer.new(paths)
+        test_discoverer = TestDiscovererLegacy.new(paths)
         discoveries = test_discoverer.discover
       ensure
         progress.set_state(TaskbarProgress::NOPROGRESS)
