@@ -53,6 +53,24 @@ module TestUp
         nil
       end
 
+      # @param [Report::TestSuite] other_test_suite
+      # @return [nil]
+      def rediscover(other_test_suite)
+        # Prune removed items:
+        other_test_cases = other_test_suite.test_cases
+        @test_cases.reject! { |test_case| other_test_cases[test_case].nil? }
+        # Add/update new items:
+        other_test_suite.test_cases.each { |other_test_case|
+          test_case = @test_cases[other_test_case]
+          if test_case
+            test_case.rediscover(other_test_case)
+          else
+            @test_cases << other_test_case
+          end
+        }
+        nil
+      end
+
       # @param [Report::TestCase, Symbol, String]
       # @return [Report::TestCase]
       def test_case(test_case)

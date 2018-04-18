@@ -20,6 +20,7 @@ module TestUp
       include TypeCheck
 
       attr_reader :title, :id, :tests
+      attr_writer :enabled, :expanded
 
       # @param [String] title
       # @param [Array<Report::Test>] tests
@@ -54,6 +55,19 @@ module TestUp
         other_test_case.tests.each { |other_test|
           test = @tests[other_test]
           test.merge_result(other_test) if test
+        }
+        nil
+      end
+
+      # @param [Report::TestCase] other_test_case
+      # @return [nil]
+      def rediscover(other_test_case)
+        # Prune removed items:
+        other_tests = other_test_case.tests
+        @tests.reject! { |test| other_tests[test].nil? }
+        # Add new items:
+        other_test_case.tests.each { |other_test|
+          @tests << other_test unless @tests[other_test]
         }
         nil
       end

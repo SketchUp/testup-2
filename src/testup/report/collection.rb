@@ -14,7 +14,8 @@ module TestUp
 
       # @param [Integer, #hash]
       def [](value)
-        return @hash.keys[value] if value.is_a?(Integer)
+        # return @hash.keys[value] if value.is_a?(Integer)
+        return each.to_a[value] if value.is_a?(Integer)
         value = value.to_sym if value.is_a?(String)
         @hash.each { |key, _| return key if key.hash == value.hash }
         nil

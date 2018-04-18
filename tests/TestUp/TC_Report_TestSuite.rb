@@ -91,9 +91,9 @@ class TC_Report_TestSuite < TestUp::TestCase
 
   def test_merge_results
     tests_old = [
-      TestUp::Report::Test.new('test_foo'),
       TestUp::Report::Test.new('test_bar'),
       TestUp::Report::Test.new('test_biz'),
+      TestUp::Report::Test.new('test_foo'),
     ]
     test_cases_old = [
       TestUp::Report::TestCase.new('TC_Example', tests_old),
@@ -103,9 +103,9 @@ class TC_Report_TestSuite < TestUp::TestCase
                                               test_cases_old)
 
     tests_new = [
-      TestUp::Report::Test.new('test_foo'),
       TestUp::Report::Test.new('test_bar', fixture_test_result_failure),
       TestUp::Report::Test.new('test_biz', fixture_test_result_success),
+      TestUp::Report::Test.new('test_foo'),
     ]
     test_cases_new = [
       TestUp::Report::TestCase.new('TC_Example', tests_new),
@@ -116,11 +116,58 @@ class TC_Report_TestSuite < TestUp::TestCase
     assert_nil(suite_old.merge_results(suite_new))
     test_case_old = test_cases_old[0]
     test_case_new = test_cases_new[0]
-    assert_nil(test_case_old.tests[0].result)
+    assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[0].result)
     assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[1].result)
-    assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[2].result)
-    assert_equal(fixture_test_result_failure, test_case_old.tests[1].result)
-    assert_equal(fixture_test_result_success, test_case_old.tests[2].result)
+    assert_nil(test_case_old.tests[2].result)
+    assert_equal(fixture_test_result_failure, test_case_old.tests[0].result)
+    assert_equal(fixture_test_result_success, test_case_old.tests[1].result)
+  end
+
+
+  def test_rediscover
+    tests_old = [
+      TestUp::Report::Test.new('test_bar'),
+      TestUp::Report::Test.new('test_biz'),
+      TestUp::Report::Test.new('test_foo'),
+    ]
+    test_cases_old = [
+      TestUp::Report::TestCase.new('TC_Example', tests_old),
+      TestUp::Report::TestCase.new('TC_Hello'),
+    ]
+    test_cases_old[0].expanded = false
+    test_cases_old[0].enabled = false
+    suite_old = TestUp::Report::TestSuite.new('Example', FAKE_PATH,
+                                              test_cases_old)
+
+    tests_new = [
+      TestUp::Report::Test.new('test_bar'),
+      TestUp::Report::Test.new('test_baz'),
+      TestUp::Report::Test.new('test_foo'),
+    ]
+    test_cases_new = [
+      TestUp::Report::TestCase.new('TC_Example', tests_new),
+      TestUp::Report::TestCase.new('TC_World'),
+    ]
+    suite_new = TestUp::Report::TestSuite.new('Example', FAKE_PATH,
+                                              test_cases_new)
+
+    tc_example = suite_old.test_case('TC_Example')
+    refute(tc_example.enabled?, 'Enabled')
+    refute(tc_example.expanded?, 'Expanded')
+
+    assert_nil(suite_old.rediscover(suite_new))
+
+    test_case_titles = suite_old.test_cases.map(&:title)
+    expected_test_case_titles = suite_new.test_cases.map(&:title)
+    assert_equal(expected_test_case_titles, test_case_titles)
+
+    refute(tc_example.enabled?, 'Enabled')
+    refute(tc_example.expanded?, 'Expanded')
+    test_titles = tc_example.tests.map(&:title)
+    expected_test_titles = tests_new.map(&:title)
+    assert_equal(expected_test_titles, test_titles)
+
+    assert_empty(suite_old.test_case('TC_World').tests)
   end
 
 

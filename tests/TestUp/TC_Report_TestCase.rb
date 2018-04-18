@@ -62,25 +62,55 @@ class TC_Report_TestCase < TestUp::TestCase
 
   def test_merge_results
     tests_old = [
-      TestUp::Report::Test.new('test_foo'),
       TestUp::Report::Test.new('test_bar'),
       TestUp::Report::Test.new('test_biz'),
+      TestUp::Report::Test.new('test_foo'),
     ]
     test_case_old = TestUp::Report::TestCase.new('TC_Example', tests_old)
 
     tests_new = [
-      TestUp::Report::Test.new('test_foo'),
       TestUp::Report::Test.new('test_bar', fixture_test_result_failure),
       TestUp::Report::Test.new('test_biz', fixture_test_result_success),
+      TestUp::Report::Test.new('test_foo'),
     ]
     test_case_new = TestUp::Report::TestCase.new('TC_Example', tests_new)
 
     assert_nil(test_case_old.merge_results(test_case_new))
-    assert_nil(test_case_old.tests[0].result)
+    assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[0].result)
     assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[1].result)
+    assert_nil(test_case_old.tests[2].result)
+    assert_equal(fixture_test_result_failure, test_case_old.tests[0].result)
+    assert_equal(fixture_test_result_success, test_case_old.tests[1].result)
+  end
+
+
+  def test_rediscover
+    tests_old = [
+      TestUp::Report::Test.new('test_bar'),
+      TestUp::Report::Test.new('test_baz', fixture_test_result_success),
+      TestUp::Report::Test.new('test_foo', fixture_test_result_failure),
+    ]
+    tests_old[2].enabled = false
+    test_case_old = TestUp::Report::TestCase.new('TC_Example', tests_old)
+
+    tests_new = [
+      TestUp::Report::Test.new('test_bar'),
+      TestUp::Report::Test.new('test_biz'),
+      TestUp::Report::Test.new('test_foo'),
+    ]
+    tests_new[0].enabled = false
+    test_case_new = TestUp::Report::TestCase.new('TC_Example', tests_new)
+
+    assert_nil(test_case_old.rediscover(test_case_new))
+
+    expected_titles = test_case_new.tests.map(&:title)
+    test_titles = test_case_old.tests.map(&:title)
+    assert_equal(expected_titles, test_titles)
+
+    assert_nil(test_case_old.tests[0].result)
+    assert_nil(test_case_old.tests[1].result)
     assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[2].result)
-    assert_equal(fixture_test_result_failure, test_case_old.tests[1].result)
-    assert_equal(fixture_test_result_success, test_case_old.tests[2].result)
+    assert_equal(fixture_test_result_failure, test_case_old.tests[2].result)
   end
 
 

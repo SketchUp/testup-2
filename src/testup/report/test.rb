@@ -15,6 +15,7 @@ module TestUp
       include Comparable
 
       attr_reader :title, :id, :result
+      attr_writer :enabled
 
       def initialize(title, result = nil, missing: false)
         @title = title.to_s

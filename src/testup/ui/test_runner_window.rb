@@ -71,10 +71,6 @@ module TestUp
       tests
     end
 
-    # --------------------------------------------------------------------------
-
-    private
-
     def create_dialog
       filename = File.join(PATH, 'html', 'runner.html')
       options = {
