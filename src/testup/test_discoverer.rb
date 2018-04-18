@@ -15,7 +15,7 @@ require 'testup/log'
 
 
 module TestUp
-  class TestDiscoverer2
+  class TestDiscoverer
 
     # Error type used when loading the .rb files containing the test cases.
     class TestCaseLoadError < StandardError

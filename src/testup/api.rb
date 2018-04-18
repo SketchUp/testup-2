@@ -9,16 +9,13 @@ require 'testup/debug'
 require 'testup/log'
 require 'testup/reporter'
 require 'testup/taskbar_progress'
-require 'testup/test_discoverer2'
+require 'testup/test_discoverer'
 
 
 module TestUp
-  module API2
+  # @api TestUp
+  module API
 
-    TestDiscoverer = TestUp::TestDiscoverer2 # TODO: Remove shim
-
-    # @api TestUp
-    #
     # @example Run a test case:
     #   TestUp.run_tests(["TC_Sketchup_Edge#"])
     #
@@ -61,11 +58,6 @@ module TestUp
       }
     end
 
-    # @api TestUp
-    #
-    # @return [Hash{String => Hash}]
-    #
-    # TODO:
     # @param [String] test_suite_paths
     # @return [Array<Report::TestSuite>]
     def self.discover_tests(test_suite_paths)
@@ -82,7 +74,6 @@ module TestUp
       }
     end
 
-    # @api TestUp
     def self.suppress_warning_dialogs(&block)
       if ::Test.respond_to?(:suppress_warnings=)
         cache = ::Test.suppress_warnings?

@@ -5,11 +5,10 @@
 #
 #-------------------------------------------------------------------------------
 
-require 'testup/api_legacy'
+require 'testup/legacy/api'
 require 'testup/debug'
 require 'testup/log'
 require 'testup/reporter'
-require 'testup/test_discoverer'
 require 'testup/test_progress'
 
 

@@ -4,7 +4,7 @@
 
 require 'testup/testcase'
 require 'testup/report/test_suite'
-require 'testup/test_discoverer2'
+require 'testup/test_discoverer'
 
 
 class TC_TestDiscoverer < TestUp::TestCase
@@ -24,7 +24,7 @@ class TC_TestDiscoverer < TestUp::TestCase
 
   def test_discover_ui_tests
     paths = [TESTUP_UI_TESTS_PATH]
-    discoverer = TestUp::TestDiscoverer2.new(paths)
+    discoverer = TestUp::TestDiscoverer.new(paths)
 
     test_suites = discoverer.discover
     assert_equal(1, test_suites.size, 'Number of test suites')
