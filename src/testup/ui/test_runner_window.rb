@@ -6,6 +6,7 @@
 #-------------------------------------------------------------------------------
 
 require 'testup/api'
+require 'testup/log'
 
 
 module TestUp
@@ -33,7 +34,7 @@ module TestUp
 
     # @param [Hash] test_suite JSON data from JavaScript side.
     def event_run_tests(test_suite)
-      puts 'event_run_tests'
+      Log.debug 'event_run_tests'
       options = {}
       tests = selected_tests(test_suite)
       TestUp::API.run_tests(tests, test_suite['title'], options) { |results|
@@ -91,19 +92,19 @@ module TestUp
 
     def add_callbacks(dialog)
       dialog.add_action_callback('ready') { |dialog, params|
-        puts "ready(...)"
+        Log.debug "ready(...)"
         event_testup_ready
       }
       dialog.add_action_callback('runTests') { |dialog, run_config|
-        puts "runTests(...)"
+        Log.debug "runTests(...)"
         event_run_tests(run_config)
       }
       dialog.add_action_callback('discoverTests') { |dialog, run_config|
-        puts "discoverTests(...)"
+        Log.debug "discoverTests(...)"
         event_discover
       }
       dialog.add_action_callback('openSourceFile') { |dialog, location|
-        puts "openSourceFile(#{location})"
+        Log.debug "openSourceFile(#{location})"
         event_open_source_file(location)
       }
       dialog
@@ -120,7 +121,7 @@ module TestUp
       start = Time.now
       result = block.call
       lapsed_time = Time.now - start
-      puts "Timing #{title}: #{lapsed_time}s"
+      Log.debug "Timing #{title}: #{lapsed_time}s"
       result
     end
 
@@ -265,7 +266,7 @@ module TestUp
       TestUp.defer {
         discover_tests # TODO(thomthom): Why is this needed?
         TestUp.run_tests_gui(run_config)
-        puts "Re-run of: #{run_file}"
+        Log.debug "Re-run of: #{run_file}"
       }
     end
 
@@ -283,7 +284,7 @@ module TestUp
     end
 
     def event_open_source_file(location)
-      puts "TestUp.open_source_file(#{location})"
+      Log.debug "TestUp.open_source_file(#{location})"
       result = location.match(/^(.+):(\d+)?$/)
       if result
         filename = result[1]
