@@ -24,9 +24,12 @@ module TestUp
         @dialog = nil
       else
         @dialog ||= create_dialogs
+        add_callbacks(@dialog)
         @dialog.show
       end
     end
+
+    private
 
     # @param [Hash] test_suite JSON data from JavaScript side.
     def event_run_tests(test_suite)
@@ -87,6 +90,10 @@ module TestUp
       # dialog = UI::WebDialog.new(options)
       dialog = UI::HtmlDialog.new(options)
       dialog.set_file(filename)
+      dialog
+    end
+
+    def add_callbacks(dialog)
       dialog.add_action_callback('ready') { |dialog, params|
         puts "ready(...)"
         event_testup_ready
@@ -112,6 +119,7 @@ module TestUp
       @dialog.execute_script("#{function}(#{argument_js});")
     end
 
+    # TODO: Move to a mix-in module.
     def time(title = '', &block)
       start = Time.now
       result = block.call
