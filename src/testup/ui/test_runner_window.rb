@@ -37,7 +37,6 @@ module TestUp
       Log.debug 'event_run_tests'
       options = {}
       tests = selected_tests(test_suite)
-require 'testup/debug'
       TestUp::LegacyAPI.run_tests(tests, test_suite['title'], options) { |results|
         merge_results(test_suite, results)
         call('app.update_test_suite', test_suite)
