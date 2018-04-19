@@ -40,9 +40,9 @@ class TC_Report_TestSuite < TestUp::TestCase
     TestUp::Report::TestResult.new(
       0.2, # run_time
       3,   # assertions
-      0,   # skipped
-      1,   # passed
-      0,   # error
+      false,   # skipped
+      true,   # passed
+      false,   # error
       [],  # failures
     )
   end
@@ -51,9 +51,9 @@ class TC_Report_TestSuite < TestUp::TestCase
     TestUp::Report::TestResult.new(
       0.2, # run_time
       3,   # assertions
-      0,   # skipped
-      0,   # passed
-      1,   # error
+      false,   # skipped
+      false,   # passed
+      true,   # error
       [],  # failures
     )
   end
@@ -86,6 +86,59 @@ class TC_Report_TestSuite < TestUp::TestCase
     assert_kind_of(Enumerable, suite.test_cases)
     assert_equal(test_cases.size, suite.test_cases.size)
     assert_nil(suite.coverage)
+  end
+
+
+  def test_from_hash_without_tests
+    expected = {
+      title: 'Example Suite',
+      id: :example_suite,
+      path: FAKE_PATH,
+      test_cases: [],
+      coverage: nil,
+    }
+    suite = TestUp::Report::TestSuite.from_hash(expected)
+    assert_kind_of(TestUp::Report::TestSuite, suite)
+    assert_equal(expected.to_json, suite.to_json)
+  end
+
+  def test_from_hash_with_tests
+    expected = {
+      title: 'Example Suite',
+      id: :example_suite,
+      path: FAKE_PATH,
+      test_cases: [
+        {
+          title: 'TC_Example',
+          id: :TC_Example,
+          enabled: true,
+          expanded: false,
+          tests: [],
+        }
+      ],
+      coverage: nil,
+    }
+    suite = TestUp::Report::TestSuite.from_hash(expected)
+    assert_kind_of(TestUp::Report::TestSuite, suite)
+    assert_kind_of(TestUp::Report::TestCase, suite.test_cases[0])
+    assert_equal(expected.to_json, suite.to_json)
+  end
+
+  def test_from_hash_with_coverage
+    expected = {
+      title: 'Example Suite',
+      id: :example_suite,
+      path: FAKE_PATH,
+      test_cases: [],
+      coverage: {
+        percent: 0.0,
+        missing: [],
+      },
+    }
+    suite = TestUp::Report::TestSuite.from_hash(expected)
+    assert_kind_of(TestUp::Report::TestSuite, suite)
+    assert_kind_of(TestUp::Report::TestCoverage, suite.coverage)
+    assert_equal(expected[:coverage][:percent], suite.coverage.percent)
   end
 
 
@@ -280,43 +333,43 @@ class TC_Report_TestSuite < TestUp::TestCase
               title: 'bar',
               id: :bar,
               result: nil,
-              enabled: true,
               missing: false,
+              enabled: true,
             },
             {
               title: 'baz',
               id: :baz,
               result: nil,
-              enabled: true,
               missing: false,
+              enabled: true,
             },
             {
               title: 'biz',
               id: :biz,
               result: nil,
-              enabled: true,
               missing: false,
+              enabled: true,
             },
             {
               title: 'biz_baz',
               id: :biz_baz,
               result: nil,
-              enabled: true,
               missing: true,
+              enabled: true,
             },
             {
               title: 'foo',
               id: :foo,
               result: nil,
-              enabled: true,
               missing: false,
+              enabled: true,
             },
             {
               title: 'foo_bar',
               id: :foo_bar,
               result: nil,
-              enabled: true,
               missing: true,
+              enabled: true,
             },
           ],
         },
@@ -330,8 +383,8 @@ class TC_Report_TestSuite < TestUp::TestCase
               title: 'world',
               id: :world,
               result: nil,
-              enabled: true,
               missing: true,
+              enabled: true,
             },
           ],
         },

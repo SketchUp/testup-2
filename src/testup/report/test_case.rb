@@ -9,6 +9,7 @@ require 'json'
 require 'set'
 
 require 'testup/report/collection'
+require 'testup/from_hash'
 require 'testup/type_check'
 
 
@@ -16,11 +17,22 @@ module TestUp
   module Report
     class TestCase
 
+      extend FromHash
       include Comparable
       include TypeCheck
 
       attr_reader :title, :id, :tests
       attr_writer :enabled, :expanded
+
+      # @param [Hash] hash
+      # @return [Report::TestCase]
+      def self.from_hash(hash)
+        title, enabled, expanded, tests = typed_values(hash)
+        test_case = new(title, tests)
+        test_case.enabled = enabled
+        test_case.expanded = expanded
+        test_case
+      end
 
       # @param [String] title
       # @param [Array<Report::Test>] tests
@@ -90,6 +102,17 @@ module TestUp
 
       def to_json(*args)
         to_h.to_json(*args)
+      end
+
+      private
+
+      def self.typed_structure
+        {
+          title: :to_s,
+          enabled: :bool,
+          expanded: :bool,
+          tests: [Report::Test]
+        }
       end
 
     end # class

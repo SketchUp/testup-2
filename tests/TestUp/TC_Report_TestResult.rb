@@ -21,11 +21,48 @@ class TC_Report_TestResult < TestUp::TestCase
     TestUp::Report::TestResult.new(
       0.2, # run_time
       3,   # assertions
-      0,   # skipped
-      1,   # passed
-      0,   # error
+      false,   # skipped
+      true,   # passed
+      false,   # error
       [],  # failures
     )
+  end
+
+
+  def test_from_hash_without_failures
+    expected = {
+      run_time: 0.2,
+      assertions: 3,
+      skipped: false,
+      passed: true,
+      error: false,
+      failures: [],
+    }
+    result = TestUp::Report::TestResult.from_hash(expected)
+    result.is_a?(TestUp::Report::TestResult)
+    assert_equal(expected.to_json, result.to_json)
+  end
+
+  def test_from_hash_with_failures
+    expected = {
+      run_time: 0.2,
+      assertions: 3,
+      skipped: false,
+      passed: true,
+      error: false,
+      failures: [
+        {
+          type: 'Error',
+          message: 'ArgumentError: Hello World',
+          location: 'tests/TestUp/TC_TestErrors.rb:32',
+        }
+      ],
+    }
+    result = TestUp::Report::TestResult.from_hash(expected)
+    assert_kind_of(TestUp::Report::TestResult, result)
+    assert_equal(1, result.failures.size)
+    assert_kind_of(TestUp::Report::TestFailure, result.failures[0])
+    assert_equal(expected.to_json, result.to_json)
   end
 
 
@@ -34,9 +71,9 @@ class TC_Report_TestResult < TestUp::TestCase
     expected = {
       run_time: 0.2,
       assertions: 3,
-      skipped: 0,
-      passed: 1,
-      error: 0,
+      skipped: false,
+      passed: true,
+      error: false,
       failures: [],
     }
     assert_equal(expected, result.to_h)
@@ -48,9 +85,9 @@ class TC_Report_TestResult < TestUp::TestCase
     expected = {
       run_time: 0.2,
       assertions: 3,
-      skipped: 0,
-      passed: 1,
-      error: 0,
+      skipped: false,
+      passed: true,
+      error: false,
       failures: [],
     }
     assert_equal(expected.to_json, result.to_json)

@@ -30,9 +30,9 @@ class TC_Report_Test < TestUp::TestCase
     TestUp::Report::TestResult.new(
       0.2, # run_time
       3,   # assertions
-      0,   # skipped
-      1,   # passed
-      0,   # error
+      false,   # skipped
+      true,   # passed
+      false,   # error
       [],  # failures
     )
   end
@@ -41,9 +41,9 @@ class TC_Report_Test < TestUp::TestCase
     TestUp::Report::TestResult.new(
       0.2, # run_time
       3,   # assertions
-      0,   # skipped
-      0,   # passed
-      1,   # error
+      false,   # skipped
+      false,   # passed
+      true,   # error
       [],  # failures
     )
   end
@@ -76,6 +76,40 @@ class TC_Report_Test < TestUp::TestCase
     assert(test.enabled?)
     refute(test.missing?)
     assert_kind_of(TestUp::Report::TestResult, test.result)
+  end
+
+
+  def test_from_hash_without_result
+    expected = {
+      title: 'foo_bar',
+      id: :foo_bar,
+      result: nil,
+      missing: false,
+      enabled: true,
+    }
+    test = TestUp::Report::Test.from_hash(expected)
+    assert_kind_of(TestUp::Report::Test, test)
+    assert_equal(expected.to_json, test.to_json)
+  end
+
+  def test_from_hash_with_result
+    expected = {
+      title: 'foo_bar',
+      id: :foo_bar,
+      result: {
+        run_time: 0.2,
+        assertions: 3,
+        skipped: false,
+        passed: true,
+        error: false,
+        failures: [],
+      },
+      missing: false,
+      enabled: true,
+    }
+    test = TestUp::Report::Test.from_hash(expected)
+    assert_kind_of(TestUp::Report::Test, test)
+    assert_equal(expected.to_json, test.to_json)
   end
 
 
@@ -131,8 +165,8 @@ class TC_Report_Test < TestUp::TestCase
       title: 'foo_bar',
       id: :foo_bar,
       result: nil,
-      enabled: true,
       missing: false,
+      enabled: true,
     }
     assert_equal(expected, test.to_h)
   end
@@ -145,13 +179,13 @@ class TC_Report_Test < TestUp::TestCase
       result: {
         run_time: 0.2,
         assertions: 3,
-        skipped: 0,
-        passed: 1,
-        error: 0,
+        skipped: false,
+        passed: true,
+        error: false,
         failures: [],
       },
-      enabled: true,
       missing: false,
+      enabled: true,
     }
     assert_equal(expected.to_json, test.to_json)
   end

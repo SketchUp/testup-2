@@ -54,6 +54,42 @@ class TC_Report_TestCase < TestUp::TestCase
   end
 
 
+  def test_from_hash_without_tests
+    expected = {
+      title: 'TC_Example',
+      id: :TC_Example,
+      enabled: true,
+      expanded: false,
+      tests: [],
+    }
+    test_case = TestUp::Report::TestCase.from_hash(expected)
+    assert_kind_of(TestUp::Report::TestCase, test_case)
+    assert_equal(expected.to_json, test_case.to_json)
+  end
+
+  def test_from_hash_with_tests
+    expected = {
+      title: 'TC_Example',
+      id: :TC_Example,
+      enabled: true,
+      expanded: false,
+      tests: [
+        {
+          title: 'foo_bar',
+          id: :foo_bar,
+          result: nil,
+          missing: false,
+          enabled: true,
+        },
+      ],
+    }
+    test_case = TestUp::Report::TestCase.from_hash(expected)
+    assert_kind_of(TestUp::Report::TestCase, test_case)
+    assert_kind_of(TestUp::Report::Test, test_case.tests[0])
+    assert_equal(expected.to_json, test_case.to_json)
+  end
+
+
   def test_hash
     test = TestUp::Report::Test.new('test_foo')
     assert_equal(:test_foo.hash, test.hash)
@@ -181,8 +217,8 @@ class TC_Report_TestCase < TestUp::TestCase
           title: 'foo_bar',
           id: :foo_bar,
           result: nil,
-          enabled: true,
           missing: false,
+          enabled: true,
         },
       ],
     }

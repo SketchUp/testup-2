@@ -153,6 +153,7 @@ module TestUp
       index = error.backtrace.index { |line|
         line =~ /testup\/#{file_basename}:\d+:in `load'/i
       }
+      index ||= -1
       filtered_backtrace = error.backtrace[0..index]
       error.message << "\n" << filtered_backtrace.join("\n")
     end

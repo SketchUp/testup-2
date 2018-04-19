@@ -7,22 +7,32 @@
 
 require 'json'
 
+require 'testup/from_hash'
+
 
 module TestUp
   module Report
     class Test
 
+      extend FromHash
       include Comparable
 
       attr_reader :title, :id, :result
       attr_writer :enabled
 
-      def initialize(title, result = nil, missing: false)
+      # @param [Hash] hash
+      # @return [Report::Test]
+      def self.from_hash(hash)
+        title, result, missing, enabled = typed_values(hash)
+        new(title, result, missing: missing, enabled: enabled)
+      end
+
+      def initialize(title, result = nil, missing: false, enabled: true)
         @title = title.to_s
         @id = title.to_sym
         @result = result
-        @enabled = true
         @missing = missing
+        @enabled = enabled
       end
 
       def <=>(other)
@@ -54,13 +64,24 @@ module TestUp
           title: @title,
           id: @id,
           result: @result,
-          enabled: @enabled,
           missing: @missing,
+          enabled: @enabled,
         }
       end
 
       def to_json(*args)
         to_h.to_json(*args)
+      end
+
+      private
+
+      def self.typed_structure
+        {
+          title: :to_s,
+          result: Report::TestResult,
+          missing: :bool,
+          enabled: :bool,
+        }
       end
 
     end # class

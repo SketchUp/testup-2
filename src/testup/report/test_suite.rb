@@ -9,6 +9,7 @@ require 'json'
 require 'set'
 
 require 'testup/report/collection'
+require 'testup/from_hash'
 require 'testup/type_check'
 
 
@@ -16,9 +17,17 @@ module TestUp
   module Report
     class TestSuite
 
+      extend FromHash
       include TypeCheck
 
       attr_reader :title, :id, :path, :test_cases, :coverage
+
+      # @param [Hash] hash
+      # @return [Report::TestCase]
+      def self.from_hash(hash)
+        title, path, test_cases, coverage = typed_values(hash)
+        new(title, path, test_cases, coverage: coverage)
+      end
 
       # @param [String] title
       # @param [String] path
@@ -98,6 +107,15 @@ module TestUp
       end
 
       private
+
+      def self.typed_structure
+        {
+          title: :to_s,
+          path: :to_s,
+          test_cases: [Report::TestCase],
+          coverage: Report::TestCoverage,
+        }
+      end
 
       def find_test_case(test_case)
         # TODO: Make TestCase#hash be hashes of it's id?

@@ -7,10 +7,14 @@
 
 require 'json'
 
+require 'testup/from_hash'
+
 
 module TestUp
   module Report
     class TestCoverage
+
+      extend FromHash
 
       attr_reader :percent, :missing
 
@@ -35,6 +39,13 @@ module TestUp
       end
 
       private
+
+      def self.typed_structure
+        {
+          percent: :to_f,
+          missing: [Report::TestCase],
+        }
+      end
 
       # TODO: Refactor out this when TestUp::Coverage is cleaned up to generate
       # Report objects directly.
