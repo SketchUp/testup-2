@@ -58,8 +58,8 @@ class TC_Report_TestCase < TestUp::TestCase
     expected = {
       title: 'TC_Example',
       id: :TC_Example,
-      enabled: true,
-      expanded: false,
+      enabled: false,
+      expanded: true,
       tests: [],
     }
     test_case = TestUp::Report::TestCase.from_hash(expected)

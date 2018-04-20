@@ -53,13 +53,14 @@ module TestUp
       end
 
       # @param [Report::TestSuite] other_test_suite
-      # @return [nil]
+      # @return [Report::TestSuite] it self
       def merge_results(other_test_suite)
+        expect_type(Report::TestSuite, other_test_suite)
         other_test_suite.test_cases.each { |other_test_case|
           test_case = @test_cases[other_test_case]
           test_case.merge_results(other_test_case) unless test_case.nil?
         }
-        nil
+        self
       end
 
       # @return [Array<String>]
@@ -74,8 +75,9 @@ module TestUp
       end
 
       # @param [Report::TestSuite] other_test_suite
-      # @return [nil]
+      # @return [Report::TestSuite] it self
       def rediscover(other_test_suite)
+        expect_type(Report::TestSuite, other_test_suite)
         # Prune removed items:
         other_test_cases = other_test_suite.test_cases
         @test_cases.reject! { |test_case| other_test_cases[test_case].nil? }
@@ -88,7 +90,7 @@ module TestUp
             @test_cases << other_test_case
           end
         }
-        nil
+        self
       end
 
       # @param [Report::TestCase, Symbol, String]

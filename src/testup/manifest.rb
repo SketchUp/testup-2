@@ -36,7 +36,7 @@ module TestUp
     def parse_manifest(filename)
       return [] unless File.exist?(filename)
       File.readlines(filename).map { |line|
-        line.strip!
+        line.strip
       }
     end
 

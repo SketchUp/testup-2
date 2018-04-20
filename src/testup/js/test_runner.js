@@ -329,11 +329,16 @@ let app = new Vue({
     },
   },
   methods: {
-    update(discoveries) {
+    discover(discoveries) {
+      console.log('discover');
       this.test_suites = discoveries;
     },
-    update_test_suite(test_suite) {
-      console.log('Update Test Suite!', this.activeTestSuiteIndex);
+    rediscover(test_suite) {
+      console.log('rediscover');
+      this.test_suites = discoveries;
+    },
+    update_results(test_suite) {
+      console.log('update_results', this.activeTestSuiteIndex);
       // let tsi = this.test_suites.find((ts) => {
       //   return ts.title == test_suite.title;
       // });
@@ -357,7 +362,7 @@ let app = new Vue({
       sketchup.runTests(test_suite);
     },
     discoverTests() {
-      sketchup.discoverTests();
+      sketchup.discoverTests(this.test_suites);
     }
   },
   computed: {

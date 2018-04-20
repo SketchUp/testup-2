@@ -94,8 +94,8 @@ module TestUp
         {
           title: @title,
           id: @id,
-          enabled: true,
-          expanded: false,
+          enabled: @enabled,
+          expanded: @expanded,
           tests: @tests.to_a,
         }
       end

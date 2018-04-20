@@ -55,13 +55,13 @@ module TestUp
         Log.debug "ready(...)"
         event_testup_ready
       }
-      dialog.add_action_callback('runTests') { |dialog, run_config|
+      dialog.add_action_callback('runTests') { |dialog, test_suite_json|
         Log.debug "runTests(...)"
-        event_run_tests(run_config)
+        event_run_tests(test_suite_json)
       }
-      dialog.add_action_callback('discoverTests') { |dialog, run_config|
+      dialog.add_action_callback('discoverTests') { |dialog, test_suite_json|
         Log.debug "discoverTests(...)"
-        event_discover
+        event_discover(test_suite_json)
       }
       dialog.add_action_callback('openSourceFile') { |dialog, location|
         Log.debug "openSourceFile(#{location})"
@@ -85,6 +85,7 @@ module TestUp
       result
     end
 
+    # @return [nil]
     def discover_tests
       paths = TestUp.settings[:paths_to_testsuites]
       discoveries = time('discover') { TestUp::API.discover_tests(paths) }
@@ -92,7 +93,28 @@ module TestUp
         progress = TaskbarProgress.new
         begin
           progress.set_state(TaskbarProgress::INDETERMINATE)
-          time('app.update') { call('app.update', discoveries) }
+          time('app.discover') { call('app.discover', discoveries) }
+        ensure
+          progress.set_state(TaskbarProgress::NOPROGRESS)
+        end
+      }
+      nil
+    end
+
+    # @param [Report::TestSuite] test_suite
+    # @return [nil]
+    def rediscover_tests(test_suites)
+      paths = TestUp.settings[:paths_to_testsuites]
+      discoveries = time('discover') { TestUp::API.discover_tests(paths) }
+      discoveries.map! { |discovery|
+        test_suite = test_suites.find { |suite| suite.title == discovery.title }
+        test_suite ? test_suite.rediscover(discovery) : discovery
+      }
+      Debugger.time("JS:update(...)") {
+        progress = TaskbarProgress.new
+        begin
+          progress.set_state(TaskbarProgress::INDETERMINATE)
+          time('app.rediscover') { call('app.discover', discoveries) }
         ensure
           progress.set_state(TaskbarProgress::NOPROGRESS)
         end
@@ -112,12 +134,12 @@ module TestUp
 
     # @param [Hash] test_suite_json JSON data from JavaScript side.
     def event_run_tests(test_suite_json)
-      Log.debug 'event_run_tests'
+      Log.debug 'event_run_tests(...)'
       options = {}
       test_suite = Report::TestSuite.from_hash(test_suite_json)
       TestUp::API.run_test_suite(test_suite, options: options) { |results|
         test_suite.merge_results(results)
-        call('app.update_test_suite', test_suite)
+        call('app.update_results', test_suite)
       }
     end
 
@@ -144,19 +166,24 @@ module TestUp
       }
     end
 
-    def event_discover
-      # TODO: Merge newly discovered tests with existing data.
-      discover_tests
+    def event_discover(test_suites_json)
+      Log.debug 'event_discover(...)'
+      test_suites = test_suites_json.map { |test_suite_json|
+        Report::TestSuite.from_hash(test_suite_json)
+      }
+      time('rediscover') { rediscover_tests(test_suites) }
     end
 
-    def event_change_testsuite(testsuite)
-      TestUp.settings[:last_active_testsuite] = testsuite
+    # @param [String] test_suite_title
+    def event_change_testsuite(test_suite_title)
+      TestUp.settings[:last_active_testsuite] = test_suite_title
     end
 
     def event_console_output(value)
       Debugger.output(value)
     end
 
+    # @param [String] location
     def event_open_source_file(location)
       Log.debug "TestUp.open_source_file(#{location})"
       result = location.match(/^(.+):(\d+)?$/)

@@ -166,7 +166,7 @@ class TC_Report_TestSuite < TestUp::TestCase
     suite_new = TestUp::Report::TestSuite.new('Example', FAKE_PATH,
                                               test_cases_new)
 
-    assert_nil(suite_old.merge_results(suite_new))
+    assert_equal(suite_old, suite_old.merge_results(suite_new))
     test_case_old = test_cases_old[0]
     test_case_new = test_cases_new[0]
     assert_kind_of(TestUp::Report::TestResult, test_case_old.tests[0].result)
@@ -208,7 +208,7 @@ class TC_Report_TestSuite < TestUp::TestCase
     refute(tc_example.enabled?, 'Enabled')
     refute(tc_example.expanded?, 'Expanded')
 
-    assert_nil(suite_old.rediscover(suite_new))
+    assert_equal(suite_old, suite_old.rediscover(suite_new))
 
     test_case_titles = suite_old.test_cases.map(&:title)
     expected_test_case_titles = suite_new.test_cases.map(&:title)
