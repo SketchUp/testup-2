@@ -60,13 +60,16 @@ class Reporter < MiniTest::StatisticsReporter
 
   def process_results(result)
     {
-      :testname   => "#{result.class.name}##{result.name}",
-      :time       => result.time,
-      :skipped    => result.skipped?,
-      :error      => result.error?,
-      :passed     => result.passed?,
-      :assertions => result.assertions,
-      :failures   => result.failures.map { |failure|
+      :testname    => "#{result.class.name}##{result.name}", # TODO: Remove?
+      :test_case_name => result.class.name,
+      :test_name      => result.name,
+      :run_time       => result.time,
+      :time        => result.time, # TODO: Remove?
+      :skipped     => result.skipped?,
+      :error       => result.error?,
+      :passed      => result.passed?,
+      :assertions  => result.assertions,
+      :failures    => result.failures.map { |failure|
         {
           :type => failure.result_label,
           :message => failure.message,

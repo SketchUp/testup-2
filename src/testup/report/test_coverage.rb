@@ -18,6 +18,14 @@ module TestUp
 
       attr_reader :percent, :missing
 
+      # @param [Hash] hash
+      # @return [Report::TestCase]
+      def self.from_hash(hash)
+        hash[:missing] ||= [] # TODO: Kludge. Maybe don't omit from to_h?
+        percent, missing = typed_values(hash)
+        new(percent, missing)
+      end
+
       # @param [Float] percent
       # @param [Hash, Array<Report::TestCase>]
       def initialize(percent, missing)

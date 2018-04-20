@@ -10,6 +10,7 @@ require 'testup/log'
 require 'testup/reporter'
 require 'testup/taskbar_progress'
 require 'testup/test_discoverer'
+require 'testup/test_runner'
 
 
 module TestUp
@@ -30,7 +31,8 @@ module TestUp
     #   TestUp.run_tests(tests)
     #
     # @param [Array<String>] tests list of tests or test cases to run.
-    # @param [String] testsuite Name of test_suite
+    # @param [String] title Name of test_suite
+    # @param [String] path Path to the test_suite
     # @param [Hash] options
     # @yield [Report::TestSuite]
     # @return [Boolean]
@@ -50,12 +52,45 @@ module TestUp
       Log.info "Minitest Version: #{Minitest::VERSION}"
       Log.info "Running test suite: #{title}"
       Log.info "> Tests: #{tests.size}"
-      Log.info "> Seed: #{seed}" if seed
+      Log.info "> Seed: #{options[:seed]}" if options[:seed]
 
       runner = TestRunner.new(title: title, path: path)
       runner.run(tests, options) { |results|
+        # TODO: TestRunner should carry forward title and path.
+        yield test_suite_from_results(title, path, results)
+      }
+    end
+
+    # @param [Report::TestSuite] test_suite
+    # @param [Hash] options
+    # @yield [Report::TestSuite]
+    # @return [Boolean]
+    def self.run_test_suite(test_suite, options: {})
+      title = test_suite.title
+      path = test_suite.path
+      tests = test_suite.selected_tests
+      run_tests(tests, title: title, path: path, options: options) { |results|
         yield results
       }
+    end
+
+    # @param [String] title
+    # @param [String] path
+    # @param [Array<Hash>] results
+    # @result [Report::TestSuite]
+    def self.test_suite_from_results(title, path, results)
+      tests = {}
+      results.each { |result|
+        test_case_name = result[:test_case_name]
+        test_name = result[:test_name]
+        result_report = Report::TestResult.from_hash(result)
+        tests[test_case_name] ||= []
+        tests[test_case_name] << Report::Test.new(test_name, result_report)
+      }
+      test_cases = tests.map { |test_case_name, test_case_tests|
+        Report::TestCase.new(test_case_name, test_case_tests)
+      }
+      Report::TestSuite.new(title, path, test_cases)
     end
 
     # @param [String] test_suite_paths
@@ -74,6 +109,8 @@ module TestUp
       }
     end
 
+    # Suppresses a number of dialogs that might be triggered by the API for the
+    # duration of the given block.
     def self.suppress_warning_dialogs(&block)
       if ::Test.respond_to?(:suppress_warnings=)
         cache = ::Test.suppress_warnings?

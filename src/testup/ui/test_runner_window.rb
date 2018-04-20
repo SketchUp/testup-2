@@ -5,7 +5,7 @@
 #
 #-------------------------------------------------------------------------------
 
-require 'testup/legacy/api'
+require 'testup/api'
 require 'testup/log'
 
 
@@ -31,46 +31,6 @@ module TestUp
     end
 
     private
-
-    # @param [Hash] test_suite JSON data from JavaScript side.
-    def event_run_tests(test_suite)
-      Log.debug 'event_run_tests'
-      options = {}
-      tests = selected_tests(test_suite)
-      TestUp::LegacyAPI.run_tests(tests, test_suite['title'], options) { |results|
-        merge_results(test_suite, results)
-        call('app.update_test_suite', test_suite)
-      }
-    end
-
-    def merge_results(test_suite, results)
-      results.each { |result|
-        test_case_name, test_name = result[:testname].split('#')
-        test_case = test_suite['test_cases'].find { |tc| tc['title'] == test_case_name }
-        test = test_case['tests'].find { |t| t['title'] == test_name }
-        test['result'] = {
-          run_time: result[:time],
-          assertions: result[:assertions],
-          skipped: result[:skipped],
-          passed: result[:passed],
-          error: result[:error],
-          # TODO: Compute :failed
-          failures: result[:failures], # TODO: This is really 'messages'
-        }
-      }
-      test_suite
-    end
-
-    def selected_tests(test_suite)
-      tests = []
-      test_suite['test_cases'].each { |test_case|
-        test_case['tests'].each { |test|
-          next unless test['enabled']
-          tests << "#{test_case['title']}##{test['title']}"
-        }
-      }
-      tests
-    end
 
     def create_dialog
       filename = File.join(PATH, 'html', 'runner.html')
@@ -126,8 +86,8 @@ module TestUp
     end
 
     def discover_tests
-      discoveries = time('discover') { TestUp::LegacyAPI.discover_tests }
-      discoveries = time('restructure') { restructure(discoveries) }
+      paths = TestUp.settings[:paths_to_testsuites]
+      discoveries = time('discover') { TestUp::API.discover_tests(paths) }
       Debugger.time("JS:update(...)") {
         progress = TaskbarProgress.new
         begin
@@ -140,104 +100,6 @@ module TestUp
       nil
     end
 
-    # TODO: Consider creating this structure when discovering.
-    # TODO: Create custom classes for each type, which support to_json.
-    def restructure(discoveries)
-      discoveries.map { |test_suite_name, test_suite|
-        missing = test_suite[:missing_coverage]
-        test_cases = restructure_test_cases(test_suite[:testcases])
-        merge_missing_tests(test_cases, missing)
-        # TODO: Clean up these pesky .to_s calls. (Find out why we get Class instead of String)
-        {
-          id: test_suite_name.to_s,
-          title: test_suite_name.to_s,
-          test_cases: test_cases,
-          coverage: test_suite[:coverage],
-          missing_coverage: test_suite[:missing_coverage],
-        }
-      }
-    end
-
-    def merge_missing_tests(test_cases, missing)
-      missing.each { |test_case_name, tests|
-        missing_test_case = missing[test_case_name] || {}
-        missing_tests = restructure_missing_tests(missing_test_case)
-        # TODO: Clean up these pesky .to_s calls. (Find out why we get Class instead of String)
-        test_case = test_cases.find { |tc| tc[:title].to_s == test_case_name }
-        if test_case.nil?
-          test_case = ensure_test_case(test_case_name)
-          test_cases << test_case
-        end
-        test_case[:tests].concat(missing_tests)
-        test_case[:tests].sort! { |a, b|
-          a[:title].to_s <=> b[:title].to_s
-        }
-      }
-      test_cases.sort! { |a, b| a[:title].to_s <=> b[:title].to_s }
-      nil
-    end
-
-    def ensure_test_case(test_case_name)
-      {
-        id: test_case_name,
-        title: test_case_name,
-        tests: [],
-        enabled: true,
-        expanded: false,
-      }
-    end
-
-    def restructure_missing_tests(tests)
-      tests.map { |test_name|
-        {
-          id: test_name,
-          title: test_name,
-          enabled: true,
-          missing: true,
-          result: nil,
-        }
-      }
-    end
-
-    def restructure_test_cases(test_cases)
-      test_cases.map { |test_case_name, tests|
-        {
-          id: test_case_name,
-          title: test_case_name,
-          tests: restructure_tests(tests),
-          enabled: true,
-          expanded: false,
-        }
-      }
-    end
-
-    def restructure_tests(tests)
-      tests.map { |test_name|
-        {
-          id: test_name,
-          title: test_name,
-          enabled: true,
-          missing: false,
-          result: nil,
-          # result: {
-            # run_time: 0.0,
-            # assertions: 0;
-            # skipped: false,
-            # passed: false,
-            # error: false,
-            # failures: [],
-            # failures: [
-            #   {
-            #     type: "Error",
-            #     message: "ArgumentError: Hello World",
-            #     location: "tests/TestUp/TC_TestErrors.rb:32",
-            #   },
-            # ],
-          # }
-        }
-      }
-    end
-
     def event_testup_ready
       config = {
         :active_tab => TestUp.settings[:last_active_testsuite],
@@ -248,6 +110,18 @@ module TestUp
       discover_tests
     end
 
+    # @param [Hash] test_suite_json JSON data from JavaScript side.
+    def event_run_tests(test_suite_json)
+      Log.debug 'event_run_tests'
+      options = {}
+      test_suite = Report::TestSuite.from_hash(test_suite_json)
+      TestUp::API.run_test_suite(test_suite, options: options) { |results|
+        test_suite.merge_results(results)
+        call('app.update_test_suite', test_suite)
+      }
+    end
+
+    # TODO: Remove
     def event_testup_run
       # To avoid the "Slow running script" dialog in IE the call to execute
       # the tests is deferred.

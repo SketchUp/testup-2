@@ -5,7 +5,7 @@
 #
 #-------------------------------------------------------------------------------
 
-require 'testup/legacy/api'
+require 'testup/api'
 require 'testup/debug'
 require 'testup/log'
 require 'testup/reporter'
@@ -28,7 +28,7 @@ module TestUp
     # return [Boolean]
     def run(tests, options: {})
       return false if tests.empty?
-      LegacyAPI.discover_tests([@path])
+      API.discover_tests([@path])
       test_pattern = parse(tests)
       run_tests(test_pattern, options)
       yield Reporter.results
@@ -41,14 +41,14 @@ module TestUp
     # @param [Hash] options
     # return [nil]
     def run_tests(tests, options)
-      arguments = minitest_arguments(options)
+      arguments = minitest_arguments(tests, options)
       # TODO: Update progressbar based on tests run.
       # `tests` is just a list of patterns, the actual number of matching tests
       # is different.
       progress = TestProgress.new(num_tests: tests.size)
       begin
         progress.set_state(TaskbarProgress::NORMAL)
-        LegacyAPI.suppress_warning_dialogs {
+        API.suppress_warning_dialogs {
           MiniTest.run(arguments)
         }
       rescue SystemExit

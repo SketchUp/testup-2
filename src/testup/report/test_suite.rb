@@ -34,8 +34,8 @@ module TestUp
       # @param [Enumerable<Report::TestCase>] test_cases
       # @param [Report::Coverage] coverage
       def initialize(title, path, test_cases = [], coverage: nil)
-        expect_type(String, title)
-        expect_type(String, path)
+        expect_type(String, title, 'title')
+        expect_type(String, path, 'path')
         expect_all_type(Report::TestCase, test_cases)
         @title = title.to_s
         @id = to_id(title)
@@ -60,6 +60,17 @@ module TestUp
           test_case.merge_results(other_test_case) unless test_case.nil?
         }
         nil
+      end
+
+      # @return [Array<String>]
+      def selected_tests
+        tests = []
+        test_cases.each { |test_case|
+          test_case.tests.each { |test|
+            tests << "#{test_case.title}##{test.title}" if test.enabled?
+          }
+        }
+        tests
       end
 
       # @param [Report::TestSuite] other_test_suite

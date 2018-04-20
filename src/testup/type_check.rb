@@ -11,15 +11,15 @@ module TestUp
 
     # @param [Class] type
     # @param [Enumerable] enumerable
-    def expect_all_type(type, enumerable)
-      enumerable.each { |object| expect_type(type, object) }
+    def expect_all_type(type, enumerable, arg_name = '')
+      enumerable.each { |object| expect_type(type, object, arg_name) }
     end
 
     # @param [Class] type
     # @param [Object] object
-    def expect_type(type, object)
+    def expect_type(type, object, arg_name = '')
       unless object.is_a?(type)
-        raise TypeError, "expected #{type}, got #{object.class}"
+        raise TypeError, "#{arg_name} expected #{type}, got #{object.class}"
       end
     end
 
