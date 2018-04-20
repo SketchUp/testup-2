@@ -100,7 +100,9 @@ module TestUp
         progress = TaskbarProgress.new
         begin
           progress.set_state(TaskbarProgress::INDETERMINATE)
+          Log.debug ">> TestDiscoverer.new(...)"
           test_discoverer = TestDiscoverer.new(test_suite_paths)
+          Log.debug ">> test_discoverer.discover"
           discoveries = test_discoverer.discover
         ensure
           progress.set_state(TaskbarProgress::NOPROGRESS)

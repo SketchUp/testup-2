@@ -87,6 +87,7 @@ module TestUp
 
     # @return [nil]
     def discover_tests
+      Log.debug "discover_tests(...)"
       paths = TestUp.settings[:paths_to_testsuites]
       discoveries = time('discover') { TestUp::API.discover_tests(paths) }
       Debugger.time("JS:update(...)") {
@@ -104,17 +105,21 @@ module TestUp
     # @param [Report::TestSuite] test_suite
     # @return [nil]
     def rediscover_tests(test_suites)
+      Log.debug "rediscover_tests(...)"
       paths = TestUp.settings[:paths_to_testsuites]
+      Log.debug "> TestUp::API.discover_tests(...):"
       discoveries = time('discover') { TestUp::API.discover_tests(paths) }
+      Log.debug "> discoveries.map:"
       discoveries.map! { |discovery|
         test_suite = test_suites.find { |suite| suite.title == discovery.title }
         test_suite ? test_suite.rediscover(discovery) : discovery
       }
-      Debugger.time("JS:update(...)") {
+      Log.debug "> JS:rediscover:"
+      Debugger.time("JS:rediscover(...)") {
         progress = TaskbarProgress.new
         begin
           progress.set_state(TaskbarProgress::INDETERMINATE)
-          time('app.rediscover') { call('app.discover', discoveries) }
+          time('app.rediscover') { call('app.rediscover', discoveries) }
         ensure
           progress.set_state(TaskbarProgress::NOPROGRESS)
         end
