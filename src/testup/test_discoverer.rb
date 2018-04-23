@@ -42,7 +42,18 @@ module TestUp
       @errors.clear
 
       # Reset list of runnables MiniTest knows about.
-      MiniTest::Runnable.runnables.clear
+      # MiniTest::Runnable.runnables.clear
+      # Undefine all TestUp::TestCase sub-classes and remove them from
+      # Minitest's list of known runnables.
+      MiniTest::Runnable.runnables.reject! { |klass|
+        next false if klass == TestUp::TestCase
+        next false unless klass.ancestors.include?(TestUp::TestCase)
+        path = klass.name.split('::').map(&:to_sym)
+        leaf = path.pop
+        parent = path.inject(Object) { |klass, symbol| klass.const_get(symbol) }
+        parent.send(:remove_const, leaf)
+        true
+      }
 
       discovered_suites = Set.new
       @test_suite_paths.map { |test_suite_path|
@@ -112,7 +123,7 @@ module TestUp
         # test methods. Any errors is wrapped up in a custom error type so it can
         # be caught further up and displayed in the UI.
         begin
-          module_eval(File.read(testcase_filename), testcase_filename)
+          # module_eval(File.read(testcase_filename), testcase_filename)
           Kernel.load testcase_filename # TODO: Needed? Can we 'move' the already evaluated test?
         rescue ScriptError, StandardError => error
           testcase_name = File.basename(testcase_filename, '.*')
@@ -129,19 +140,14 @@ module TestUp
       end
       def self.test_classes
         # self.classes.map { |c| self.const_get(c) }.grep(TestUp::TestCase)
-        klasses = []
-        self.classes.each { |c|
-          # klass = self.const_get(c)
-          klass = Object.const_get(c)
-          # klasses << klass if klass.singleton_class.ancestors.include?(TestUp::TestCase)
-          klasses << klass if klass.ancestors.include?(TestUp::TestCase)
+        klasses = MiniTest::Runnable.runnables.select { |klass|
+          klass != TestUp::TestCase && klass.ancestors.include?(TestUp::TestCase)
         }
-        klasses
+        klasses - @known
       end
       def self.reset
-        self.classes.each { |klass|
-          self.send(:remove_const, klass)
-          Object.send(:remove_const, klass) if Object.constants.include?(klass)
+        @known = MiniTest::Runnable.runnables.select { |klass|
+          klass != TestUp::TestCase && klass.ancestors.include?(TestUp::TestCase)
         }
       end
       # @param [Exception] error
@@ -154,35 +160,6 @@ module TestUp
         filtered_backtrace = error.backtrace[0..index]
         error.message << "\n" << filtered_backtrace.join("\n")
       end
-    end
-
-    # @return [Array<Class>]
-    def all_test_classes
-      klasses = []
-      ObjectSpace.each_object(Class) { |klass|
-        klasses << klass if klass.name =~ /^TC_/
-      }
-      klasses
-    end
-
-    # Remove the old testcase class so changes can be made without reloading
-    # SketchUp. This is done because MiniTest is made to be run as a traditional
-    # Ruby script on a web server where the lifespan of objects isn't persistent
-    # as it is in SketchUp.
-    #
-    # @param [Symbol] testcase
-    # @return [Nil]
-    def remove_old_tests(testcase)
-      if Object.constants.include?(testcase)
-        Object.send(:remove_const, testcase)
-        # Remove any previously loaded versions from MiniTest. Otherwise MiniTest
-        # will keep running them along with the new ones.
-        MiniTest::Runnable.runnables.delete_if { |klass|
-          klass.to_s == testcase.to_s
-        }
-        GC.start
-      end
-      nil
     end
 
   end # class
