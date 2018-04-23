@@ -38,6 +38,7 @@ module TestUp
 
     # @return [Array<Report::TestSuite>]
     def discover
+      Log.trace :discover, ">>> #{self.class}.discover"
       @errors.clear
 
       # Reset list of runnables MiniTest knows about.
@@ -74,13 +75,20 @@ module TestUp
     # @param [String] testsuite_path
     # @return [Array<Report::TestCase>]
     def discover_testcases(testsuite_path)
+      Log.trace :discover, ">>> #{self.class}.discover_testcases(...)"
+      Log.trace :discover, ">>>   testsuite_path: #{testsuite_path}"
       testcase_source_files = discover_testcase_source_files(testsuite_path)
       # TODO: Clean up this file. The Sandbox was added as a quick and dirty
       #       performance improvement.
+      # Log.debug ">>>> Sandbox.reset(...)"
       Sandbox.reset
+      # Log.debug ">>>> Sandbox.load(...)"
       testcase_source_files.each { |testcase_file|
+        # Log.debug ">>>>   #{testcase_file}"
         Sandbox.load(testcase_file)
       }
+      # Log.debug ">>>> Sandbox.test_classes(...)"
+      Log.trace :discover, ">>>   test_cases: #{Sandbox.test_classes.size}"
       Sandbox.test_classes.map { |test_case|
         tests = test_case.test_methods.map { |test_title|
           Report::Test.new(test_title)
@@ -93,6 +101,7 @@ module TestUp
     # @param [Array<String>] testsuite_paths
     # @return [Array<String>] Path to all test case files found.
     def discover_testcase_source_files(testsuite_path)
+      # Log.debug ">>> #{self.class}.discover_testcase_source_files(...)"
       testcase_filter = File.join(testsuite_path, 'TC_*.rb')
       Dir.glob(testcase_filter)
     end

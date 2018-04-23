@@ -13,6 +13,13 @@ module TestUp
 
     @debug = true
 
+    @trace = {
+      discover: true, # TODO: Remove hard-coding. Make configurable.
+    }
+    def self.set_tracing(category, enabled)
+      @trace[category] = enabled
+    end
+
     def self.info(*args)
       puts(*args)
     end
@@ -28,6 +35,10 @@ module TestUp
 
     def self.debug?
       @debug
+    end
+
+    def self.trace(category, *args)
+      puts(*args) if @trace[category]
     end
 
   end # module

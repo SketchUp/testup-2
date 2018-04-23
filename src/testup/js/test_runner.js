@@ -333,7 +333,7 @@ let app = new Vue({
       console.log('discover');
       this.test_suites = discoveries;
     },
-    rediscover(test_suite) {
+    rediscover(discoveries) {
       console.log('rediscover');
       this.test_suites = discoveries;
     },

@@ -52,19 +52,19 @@ module TestUp
 
     def add_callbacks(dialog)
       dialog.add_action_callback('ready') { |dialog, params|
-        Log.debug "ready(...)"
+        Log.info "ready(...)"
         event_testup_ready
       }
       dialog.add_action_callback('runTests') { |dialog, test_suite_json|
-        Log.debug "runTests(...)"
+        Log.info "runTests(...)"
         event_run_tests(test_suite_json)
       }
       dialog.add_action_callback('discoverTests') { |dialog, test_suite_json|
-        Log.debug "discoverTests(...)"
+        Log.info "discoverTests(...)"
         event_discover(test_suite_json)
       }
       dialog.add_action_callback('openSourceFile') { |dialog, location|
-        Log.debug "openSourceFile(#{location})"
+        Log.info "openSourceFile(#{location})"
         event_open_source_file(location)
       }
       dialog
@@ -87,7 +87,7 @@ module TestUp
 
     # @return [nil]
     def discover_tests
-      Log.debug "discover_tests(...)"
+      Log.trace :discover, "discover_tests()"
       paths = TestUp.settings[:paths_to_testsuites]
       discoveries = time('discover') { TestUp::API.discover_tests(paths) }
       Debugger.time("JS:update(...)") {
@@ -105,16 +105,16 @@ module TestUp
     # @param [Report::TestSuite] test_suite
     # @return [nil]
     def rediscover_tests(test_suites)
-      Log.debug "rediscover_tests(...)"
+      Log.trace :discover, "rediscover_tests(...)"
       paths = TestUp.settings[:paths_to_testsuites]
-      Log.debug "> TestUp::API.discover_tests(...):"
+      Log.trace :discover, "> TestUp::API.discover_tests(...):"
       discoveries = time('discover') { TestUp::API.discover_tests(paths) }
-      Log.debug "> discoveries.map:"
+      Log.trace :discover, "> discoveries.map:"
       discoveries.map! { |discovery|
         test_suite = test_suites.find { |suite| suite.title == discovery.title }
         test_suite ? test_suite.rediscover(discovery) : discovery
       }
-      Log.debug "> JS:rediscover:"
+      Log.trace :discover, "> JS:rediscover:"
       Debugger.time("JS:rediscover(...)") {
         progress = TaskbarProgress.new
         begin
@@ -139,7 +139,7 @@ module TestUp
 
     # @param [Hash] test_suite_json JSON data from JavaScript side.
     def event_run_tests(test_suite_json)
-      Log.debug 'event_run_tests(...)'
+      Log.info 'event_run_tests(...)'
       options = {}
       test_suite = Report::TestSuite.from_hash(test_suite_json)
       TestUp::API.run_test_suite(test_suite, options: options) { |results|
@@ -167,15 +167,17 @@ module TestUp
       TestUp.defer {
         discover_tests # TODO(thomthom): Why is this needed?
         TestUp.run_tests_gui(run_config)
-        Log.debug "Re-run of: #{run_file}"
+        Log.info "Re-run of: #{run_file}"
       }
     end
 
     def event_discover(test_suites_json)
-      Log.debug 'event_discover(...)'
+      Log.info 'event_discover(...)'
       test_suites = test_suites_json.map { |test_suite_json|
+        Log.trace :discover, '> Report::TestSuite.from_hash(...)'
         Report::TestSuite.from_hash(test_suite_json)
       }
+      Log.trace :discover, '> time("rediscover")'
       time('rediscover') { rediscover_tests(test_suites) }
     end
 
@@ -190,7 +192,7 @@ module TestUp
 
     # @param [String] location
     def event_open_source_file(location)
-      Log.debug "TestUp.open_source_file(#{location})"
+      Log.info "TestUp.open_source_file(#{location})"
       result = location.match(/^(.+):(\d+)?$/)
       if result
         filename = result[1]
