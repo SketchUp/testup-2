@@ -362,7 +362,15 @@ let app = new Vue({
       sketchup.runTests(test_suite);
     },
     discoverTests() {
-      sketchup.discoverTests(this.test_suites);
+      // TODO: This appear to sometimes cause crashes.
+      // sketchup.discoverTests(this.test_suites);
+      // Workaround is to convert to a JSON string and have Ruby perform the
+      // parsing itself. Might be a bug in the SketchUp code that converts the
+      // callback data to Ruby objects.
+      // Additionally, I don't think SU2016 supported all the types needed to
+      // pass an object back as a Hash to Ruby.
+      let json = JSON.stringify(this.test_suites);
+      sketchup.discoverTests(json);
     }
   },
   computed: {

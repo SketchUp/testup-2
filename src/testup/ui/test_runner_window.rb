@@ -59,9 +59,17 @@ module TestUp
         Log.info "runTests(...)"
         event_run_tests(test_suite_json)
       }
-      dialog.add_action_callback('discoverTests') { |dialog, test_suite_json|
+      dialog.add_action_callback('discoverTests') { |dialog, test_suites_json|
         Log.info "discoverTests(...)"
-        event_discover(test_suite_json)
+        # Workaround for a sporadic crash where it appear SU crash, without
+        # BugSplat when passing a JS object back to Ruby. For some reason it
+        # had only been seen in this callback. Not sure if it's the content of
+        # the object or the amount of data. The crash would manifest itself at
+        # various places, which indicate some kind of memory issue.
+        # The workaround is to have JS convert to JSON string and decode in
+        # Ruby. Doesn't appear to have any significant impact on performance.
+        test_suites_json = JSON.parse(test_suites_json)
+        event_discover(test_suites_json)
       }
       dialog.add_action_callback('openSourceFile') { |dialog, location|
         Log.info "openSourceFile(#{location})"
@@ -171,6 +179,7 @@ module TestUp
       }
     end
 
+    # @param [Array<Hash>] test_suites_json JSON data from JavaScript side.
     def event_discover(test_suites_json)
       Log.info 'event_discover(...)'
       test_suites = test_suites_json.map { |test_suite_json|
