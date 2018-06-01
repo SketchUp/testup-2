@@ -59,12 +59,17 @@ Vue.component('su-tabs', {
       }
     },
     selectTab(index) {
-      let selectedTab = this.tabs[index];
-      // TODO: Use a watcher instead?
+      console.log('selectTab:', index);
+      this.$emit('tab-change', index);
+    },
+  },
+  watch: {
+    selectedIndex: function(newIndex, oldIndex) {
+      console.log('selectedIndex changed:', oldIndex, newIndex);
+      let selectedTab = this.tabs[newIndex];
       this.tabs.forEach(tab => {
         tab.active = (tab === selectedTab);
       });
-      this.$emit('input', index);
     },
   },
   template: `
@@ -329,6 +334,16 @@ let app = new Vue({
     },
   },
   methods: {
+    configure(config) {
+      console.log('configure', config);
+      let test_suite_title = config.active_tab;
+      // this.test_suites[this.activeTestSuiteIndex];
+      let index = this.test_suites.findIndex((test_suite) => {
+        return test_suite.title == test_suite_title;
+      });
+      console.log('tab index:', index);
+      this.activeTestSuiteIndex = index >= 0 ? index : 0;
+    },
     discover(discoveries) {
       console.log('discover');
       this.test_suites = discoveries;
@@ -371,7 +386,11 @@ let app = new Vue({
       // pass an object back as a Hash to Ruby.
       let json = JSON.stringify(this.test_suites);
       sketchup.discoverTests(json);
-    }
+    },
+    changeTestSuite(index) {
+      this.activeTestSuiteIndex = index;
+      sketchup.changeActiveTestSuite(this.active_test_suite.title);
+    },
   },
   computed: {
     num_test_suites: function () {

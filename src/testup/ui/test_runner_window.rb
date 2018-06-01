@@ -71,6 +71,10 @@ module TestUp
         test_suites_json = JSON.parse(test_suites_json)
         event_discover(test_suites_json)
       }
+      dialog.add_action_callback('changeActiveTestSuite') { |dialog, title|
+        Log.info "event_change_testsuite(...)"
+        event_change_testsuite(title)
+      }
       dialog.add_action_callback('openSourceFile') { |dialog, location|
         Log.info "openSourceFile(#{location})"
         event_open_source_file(location)

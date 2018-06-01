@@ -56,7 +56,8 @@
       </su-toolbar>
 
 
-      <su-tabs v-model:selectedIndex="activeTestSuiteIndex">
+      <su-tabs v-bind:selected-index="activeTestSuiteIndex"
+               v-on:tab-change="changeTestSuite($event)" ref="tabbar">
         <su-tab v-bind:title="test_suite.title"
                 v-for="(test_suite, index) in test_suites" v-bind:key="test_suite.id">
           <div class="tu-test-suite-header">
