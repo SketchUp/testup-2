@@ -12,6 +12,9 @@ require 'testup/log'
 module TestUp
   class TestRunnerWindow
 
+    # Used when JavaScript errors are forwarded from WebDialogs to Ruby.
+    class JavaScriptError < RuntimeError; end
+
     def initialize
       @dialog = create_dialog
       # on(:close) {
@@ -82,6 +85,10 @@ module TestUp
       dialog.add_action_callback('openSourceFile') { |dialog, location|
         Log.info "openSourceFile(#{location})"
         event_open_source_file(location)
+      }
+      dialog.add_action_callback('js_error') { |dialog, error|
+        Log.info "js_error(...)"
+        event_js_error(error)
       }
       dialog
     end
@@ -240,6 +247,34 @@ module TestUp
       #@preferences_window ||= PreferencesWindow.new
       @preferences_window = PreferencesWindow.new
       @preferences_window.show
+    end
+
+    # TODO(thomthom): Move to a super-class or mix-in.
+    def is_legacy_ie?(js_error)
+      user_agent = js_error['user-agent']
+      return false unless user_agent.is_a?(String)
+      return false unless user_agent.include?('MSIE')
+      document_mode = js_error['document-mode']
+      return false unless document_mode.is_a?(Numeric)
+      document_mode < 9
+    end
+
+    # TODO(thomthom): Move to a super-class or mix-in.
+    def event_js_error(js_error)
+      # Have to set the backtrace after the error has been thrown in order for
+      # it to propagate properly. Otherwise the backtrace will point back to
+      # this location.
+      # Log.debug js_error # Muted for now - noisy.
+      # IE8 is completely unable to load Vue. We don't want to trigger the
+      # error dialog for this old version. The dialogs should display a
+      # message using conditional IE comments.
+      return if is_legacy_ie?(js_error)
+      begin
+        raise JavaScriptError, js_error['message']
+      rescue JavaScriptError => error
+        error.set_backtrace(js_error['backtrace'])
+        raise
+      end
     end
 
   end # class
