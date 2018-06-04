@@ -101,6 +101,7 @@ Vue.component('su-tabs', {
     registerTab(tab) {
       this.tabs.push(tab);
       if (this.tabs.length - 1 == this.selectedIndex) {
+        tab.active = true;
         this.selectTab(this.selectedIndex);
       }
     },
