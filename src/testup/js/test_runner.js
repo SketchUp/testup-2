@@ -387,6 +387,9 @@ let app = new Vue({
       let json = JSON.stringify(this.test_suites);
       sketchup.discoverTests(json);
     },
+    reRun() {
+      sketchup.reRunTests();
+    },
     changeTestSuite(index) {
       this.activeTestSuiteIndex = index;
       sketchup.changeActiveTestSuite(this.active_test_suite.title);

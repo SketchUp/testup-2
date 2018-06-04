@@ -7,6 +7,7 @@
 
 require 'testup/api'
 require 'testup/debug'
+require 'testup/file_reporter'
 require 'testup/log'
 require 'testup/reporter'
 require 'testup/test_progress'
@@ -26,7 +27,7 @@ module TestUp
     # @param [Hash] options
     # @yield [Array<Report::TestSuite>]
     # return [Boolean]
-    def run(tests, options: {})
+    def run(tests, options = {})
       return false if tests.empty?
       API.discover_tests([@path])
       test_pattern = parse(tests)
@@ -41,6 +42,7 @@ module TestUp
     # @param [Hash] options
     # return [nil]
     def run_tests(tests, options)
+      TestUp::FileReporter.set_run_info(@title, @path) # Hack!
       arguments = minitest_arguments(tests, options)
       # TODO: Update progressbar based on tests run.
       # `tests` is just a list of patterns, the actual number of matching tests

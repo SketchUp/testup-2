@@ -21,6 +21,16 @@ class FileReporter < MiniTest::StatisticsReporter
   attr_accessor :sync
   attr_accessor :old_sync
 
+  # Hack: Find a better way to pass test suite title and path to the reporter.
+  #       Maybe add custom options to the TestUp MiniTest plugin - and forward
+  #       info via that?
+  @@title = 'Untitled'
+  @@path = nil
+  def self.set_run_info(title, path)
+    @@title = title
+    @@path = path
+  end
+
   def initialize(options)
     super(create_log_file, options)
   end
@@ -122,6 +132,8 @@ class FileReporter < MiniTest::StatisticsReporter
   def create_run_log(options)
     tests = options[:filter].scan(/[(|]([A-za-z0-9#_]+)/).flatten.sort
     log = {
+      test_suite: @@title,
+      path: @@path,
       seed: options[:seed],
       tests: tests
     }

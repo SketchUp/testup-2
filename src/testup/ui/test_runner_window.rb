@@ -59,6 +59,10 @@ module TestUp
         Log.info "runTests(...)"
         event_run_tests(test_suite_json)
       }
+      dialog.add_action_callback('reRunTests') { |dialog|
+        Log.info "reRunTests(...)"
+        event_rerun_tests
+      }
       dialog.add_action_callback('discoverTests') { |dialog, test_suites_json|
         Log.info "discoverTests(...)"
         # Workaround for a sporadic crash where it appear SU crash, without
@@ -140,13 +144,12 @@ module TestUp
     end
 
     def event_testup_ready
+      discover_tests
       config = {
         :active_tab => TestUp.settings[:last_active_testsuite],
         :debugger   => ScriptDebugger.attached?,
-        :path       => PATH
       }
-      # TODO: Push config to dialog.
-      discover_tests
+      call('app.configure', config)
     end
 
     # @param [Hash] test_suite_json JSON data from JavaScript side.
@@ -160,26 +163,26 @@ module TestUp
       }
     end
 
-    # TODO: Remove
-    def event_testup_run
-      # To avoid the "Slow running script" dialog in IE the call to execute
-      # the tests is deferred.
-      TestUp.defer {
-        discover_tests # TODO(thomthom): Why is this needed?
-        TestUp.run_tests_gui
-      }
-    end
-
-    def event_testup_rerun
+    def event_rerun_tests
+      Log.info 'event_rerun_tests(...)'
+      # TODO: Refactor Runs into API.
       run_file = TestUp::Runs.select_config
       return unless run_file
       run_config = TestUp::Runs.read_config(run_file)
-      # To avoid the "Slow running script" dialog in IE the call to execute
-      # the tests is deferred.
-      TestUp.defer {
-        discover_tests # TODO(thomthom): Why is this needed?
-        TestUp.run_tests_gui(run_config)
-        Log.info "Re-run of: #{run_file}"
+      options = {
+        seed: run_config[:seed]
+      }
+      tests = run_config[:tests]
+      title = run_config[:test_suite]
+      path = run_config[:path]
+      raise 'path missing from run-config' if path.nil?
+
+      # Bah... all this re-run code is really fragile... :(
+      test_suite = TestUp::API.discover_tests([path]).first
+
+      TestUp::API.run_tests(tests, title: title, path: path,  options: options) { |results|
+        test_suite.merge_results(results)
+        call('app.update_results', test_suite)
       }
     end
 
