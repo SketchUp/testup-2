@@ -262,7 +262,8 @@ Vue.component('tu-test-case', {
             Passed: <span class="passed">{{ stats.passed }}</span>,
             Failed: <span class="failed">{{ stats.failed }}</span>,
             Errors: <span class="errors">{{ stats.errors }}</span>,
-            Skipped: <span class="skipped">{{ stats.skipped }}</span>
+            Skipped: <span class="skipped">{{ stats.skipped }}</span>,
+            Missing: <span class="missing">{{ stats.missing }}</span>
           )
         </span>
       </div>
@@ -401,7 +402,8 @@ let app = new Vue({
       this.statusBarText = `
         ${ this.num_test_suites } test suites,
         ${ this.num_test_cases } test cases,
-        ${ this.num_tests } tests discovered
+        ${ this.num_tests - this.num_tests_missing } tests discovered,
+        ${ this.num_tests_missing } tests missing
       `;
     },
     rediscover(discoveries) {
@@ -410,7 +412,8 @@ let app = new Vue({
       this.statusBarText = `
         ${ this.num_test_suites } test suites,
         ${ this.num_test_cases } test cases,
-        ${ this.num_tests } tests discovered
+        ${ this.num_tests - this.num_tests.missing } tests discovered,
+        ${ this.num_tests.missing } tests missing
       `;
     },
     update_results(test_suite) {
@@ -473,12 +476,14 @@ let app = new Vue({
         failed: 0,
         errors: 0,
         skipped: 0,
+        missing: 0,
         total_time: 0,
       };
       if (test_suite) {
         for (test_case of test_suite.test_cases) {
           data.tests += test_case.tests.length;
           for (test of test_case.tests) {
+            data.missing += test.missing ? 1 : 0;
             if (!test.result) continue;
             data.passed += test.result.passed ? 1 : 0;
             data.failed += test.result.failed ? 1 : 0;
@@ -498,7 +503,7 @@ let app = new Vue({
     num_test_cases: function () {
       let num = 0;
       for (test_suite of this.test_suites) {
-        num += test_suite.test_cases.length
+        num += test_suite.test_cases.length;
       }
       return num;
     },
@@ -506,7 +511,18 @@ let app = new Vue({
       let num = 0;
       for (test_suite of this.test_suites) {
         for (test_case of test_suite.test_cases) {
-          num += test_case.tests.length
+          num += test_case.tests.length;
+        }
+      }
+      return num;
+    },
+    num_tests_missing: function () {
+      let num = 0;
+      for (test_suite of this.test_suites) {
+        for (test_case of test_suite.test_cases) {
+          for (test of test_case.tests) {
+            if (test.missing) num += 1;
+          }
         }
       }
       return num;
