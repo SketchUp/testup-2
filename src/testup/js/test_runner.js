@@ -382,14 +382,7 @@ let app = new Vue({
   data: {
     test_suites: [],
     activeTestSuiteIndex: 0,
-    last_update: new Date(),
-  },
-  watch: {
-    test_suites(value) {
-      // TODO: Work around Chrome bug:
-      // https://stackoverflow.com/questions/44778114/chrome-tolocaledatestring-returning-wrong-format
-      this.last_update = new Date();
-    },
+    statusBarText: '',
   },
   methods: {
     configure(config) {
@@ -405,10 +398,20 @@ let app = new Vue({
     discover(discoveries) {
       console.log('discover');
       this.test_suites = discoveries;
+      this.statusBarText = `
+        ${ this.num_test_suites } test suites,
+        ${ this.num_test_cases } test cases,
+        ${ this.num_tests } tests discovered
+      `;
     },
     rediscover(discoveries) {
       console.log('rediscover');
       this.test_suites = discoveries;
+      this.statusBarText = `
+        ${ this.num_test_suites } test suites,
+        ${ this.num_test_cases } test cases,
+        ${ this.num_tests } tests discovered
+      `;
     },
     update_results(test_suite) {
       console.log('update_results', this.activeTestSuiteIndex);
@@ -421,6 +424,17 @@ let app = new Vue({
       //       active tab index.
       // TODO: Update coverage
       this.test_suites[this.activeTestSuiteIndex].test_cases = test_suite.test_cases;
+      // Update statusbar.
+      let stats = this.test_suite_stats(test_suite);
+      let total_time_formatted = stats.total_time.toFixed(3) + 's';
+      this.statusBarText = `
+        ${ stats.tests } tests from test suite ${ test_suite.title }
+        run in ${ total_time_formatted }.
+        ${ stats.passed } passed,
+        ${ stats.failed } failed,
+        ${ stats.errors } errors,
+        ${ stats.skipped } skipped
+      `;
     },
     selectTestSuite(test_suite, enabled) {
       for (test_case of test_suite.test_cases) {
@@ -452,6 +466,30 @@ let app = new Vue({
       this.activeTestSuiteIndex = index;
       sketchup.changeActiveTestSuite(this.active_test_suite.title);
     },
+    test_suite_stats(test_suite) {
+      let data = {
+        tests: 0,
+        passed: 0,
+        failed: 0,
+        errors: 0,
+        skipped: 0,
+        total_time: 0,
+      };
+      if (test_suite) {
+        for (test_case of test_suite.test_cases) {
+          data.tests += test_case.tests.length;
+          for (test of test_case.tests) {
+            if (!test.result) continue;
+            data.passed += test.result.passed ? 1 : 0;
+            data.failed += test.result.failed ? 1 : 0;
+            data.errors += test.result.error ? 1 : 0;
+            data.skipped += test.result.skipped ? 1 : 0;
+            data.total_time += test.result.run_time;
+          }
+        }
+      }
+      return data;
+    },
   },
   computed: {
     num_test_suites: function () {
@@ -479,26 +517,7 @@ let app = new Vue({
     },
     active_test_suite_stats() {
       console.log('active_test_suite_stats');
-      let test_suite = this.active_test_suite;
-      let data = {
-        tests: 0,
-        passed: 0,
-        failed: 0,
-        errors: 0,
-      };
-      if (test_suite) {
-        for (test_case of test_suite.test_cases) {
-          data.tests += test_case.tests.length;
-          for (test of test_case.tests) {
-            if (!test.result) continue;
-            data.passed += test.result.passed ? 1 : 0;
-            data.failed += test.result.failed ? 1 : 0;
-            data.errors += test.result.error ? 1 : 0;
-          }
-        }
-      }
-      console.log(data);
-      return data;
+      return this.test_suite_stats(this.active_test_suite);
     },
   },
   mounted() {
