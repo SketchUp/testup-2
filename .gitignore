@@ -18,6 +18,7 @@ Debug*/
 Release*/
 ipch/
 xcuserdata/
+node_modules/
 
 
 ############
