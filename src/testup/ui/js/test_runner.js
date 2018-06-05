@@ -65,12 +65,13 @@ Vue.component('su-button', {
 });
 
 Vue.component('su-checkbox', {
-  props: ['value'],
+  props: ['value', 'disabled'],
   template: `
     <span class="su-checkbox">
       <label>
         <input type="checkbox"
           v-bind:checked="value"
+          v-bind:disabled="disabled"
           v-on:change="$emit('input', $event.target.checked)">
         <slot></slot>
       </label>
@@ -188,6 +189,9 @@ Vue.component('tu-test-case', {
       }
       return data;
     },
+    isAllMissing() {
+      return this.stats.tests == this.stats.missing;
+    },
     classObject() {
       let stats = this.stats;
       let classes = {};
@@ -254,6 +258,7 @@ Vue.component('tu-test-case', {
       <div class="tu-title" v-on:click="toggle">
         <su-checkbox
           v-model="testCase.enabled"
+          v-bind:disabled="isAllMissing"
           v-on:input="selectTests(testCase, testCase.enabled)"></su-checkbox>
         <b>{{ testCase.title }}</b>
         <span class="tu-metadata">
@@ -320,7 +325,7 @@ Vue.component('tu-test', {
   template: `
     <li class="tu-test" v-bind:class="classObject" v-bind:title="testTitle">
       <div class="tu-title">
-        <su-checkbox v-model="test.enabled">{{ test.title }}</su-checkbox>
+        <su-checkbox v-model="test.enabled" v-bind:disabled="test.missing">{{ test.title }}</su-checkbox>
         <span v-if="test.result" class="tu-metadata">(Time: {{ test.result.run_time | formatTime }})</span>
       </div>
       <tu-test-result v-if="test.result" v-bind:result="test.result"/>
