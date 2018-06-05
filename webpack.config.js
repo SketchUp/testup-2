@@ -3,11 +3,15 @@ var webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
-  entry: './dialogs/runner.js',
+  entry: {
+    // https://github.com/webpack/docs/wiki/multiple-entry-points
+    // Add new dialogs here:
+    runner: './dialogs/runner.js',
+  },
   output: {
     path: path.resolve(__dirname, './src/testup/ui'),
     publicPath: '/src/testup/ui/',
-    filename: 'js/runner.js'
+    filename: 'js/[name].js'
   },
   module: {
     rules: [
