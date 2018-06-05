@@ -64,3 +64,9 @@ Desktop.ini
 ############
 
 Gemfile.lock
+
+##################
+## Generated Files
+##################
+
+src/testup/ui/js/*

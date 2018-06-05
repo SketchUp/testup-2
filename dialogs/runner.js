@@ -5,6 +5,11 @@
  *
  ******************************************************************************/
 
+"use strict";
+
+import Vue from "vue";
+
+
 /* TODO(thomthom): Move to separate module. (See SUbD) */
 function sketchupErrorHandler(error, vm, info) {
   let data = {
@@ -175,7 +180,7 @@ Vue.component('tu-test-case', {
         skipped: 0,
         missing: 0,
       }
-      for (test of this.testCase.tests) {
+      for (let test of this.testCase.tests) {
         data.missing += test.missing ? 1 : 0;
         if (!test.result) continue;
         let result = test.result;
@@ -226,7 +231,7 @@ Vue.component('tu-test-case', {
   },
   methods: {
     selectTests(test_case, enabled) {
-      for (test of test_case.tests) {
+      for (let test of test_case.tests) {
         test.enabled = enabled
       }
     },
@@ -241,7 +246,7 @@ Vue.component('tu-test-case', {
     testCase(newTestCase, oldTestCase) {
       // console.log('Test Case Updated');
       // Roll down all test cases that have failed tests.
-      for (test of this.testCase.tests) {
+      for (let test of this.testCase.tests) {
         // Only unroll if tests that ran failed. This allow the user to roll
         // up failed tests while focusing on a sub-set.
         if (!(test.enabled && test.result)) continue;
@@ -383,7 +388,7 @@ Vue.component('tu-test-result', {
 });
 
 
-let app = new Vue({
+window.app = new Vue({
   el: '#app',
   data: {
     test_suites: [],
@@ -445,9 +450,9 @@ let app = new Vue({
       `;
     },
     selectTestSuite(test_suite, enabled) {
-      for (test_case of test_suite.test_cases) {
+      for (let test_case of test_suite.test_cases) {
         test_case.enabled = enabled;
-        for (test of test_case.tests) {
+        for (let test of test_case.tests) {
           test.enabled = enabled
         }
       }
@@ -485,9 +490,9 @@ let app = new Vue({
         total_time: 0,
       };
       if (test_suite) {
-        for (test_case of test_suite.test_cases) {
+        for (let test_case of test_suite.test_cases) {
           data.tests += test_case.tests.length;
-          for (test of test_case.tests) {
+          for (let test of test_case.tests) {
             data.missing += test.missing ? 1 : 0;
             if (!test.result) continue;
             data.passed += test.result.passed ? 1 : 0;
@@ -507,15 +512,15 @@ let app = new Vue({
     },
     num_test_cases: function () {
       let num = 0;
-      for (test_suite of this.test_suites) {
+      for (let test_suite of this.test_suites) {
         num += test_suite.test_cases.length;
       }
       return num;
     },
     num_tests: function () {
       let num = 0;
-      for (test_suite of this.test_suites) {
-        for (test_case of test_suite.test_cases) {
+      for (let test_suite of this.test_suites) {
+        for (let test_case of test_suite.test_cases) {
           num += test_case.tests.length;
         }
       }
@@ -523,9 +528,9 @@ let app = new Vue({
     },
     num_tests_missing: function () {
       let num = 0;
-      for (test_suite of this.test_suites) {
-        for (test_case of test_suite.test_cases) {
-          for (test of test_case.tests) {
+      for (let test_suite of this.test_suites) {
+        for (let test_case of test_suite.test_cases) {
+          for (let test of test_case.tests) {
             if (test.missing) num += 1;
           }
         }
