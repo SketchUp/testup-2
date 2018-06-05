@@ -79,7 +79,7 @@ module TestUp
       }
       expected.map { |test_case_name, test_methods|
         tests = test_methods.map { |test_method_name|
-          Report::Test.new(test_method_name)
+          Report::Test.new(test_method_name, missing: true)
         }
         Report::TestCase.new(test_case_name, tests)
       }

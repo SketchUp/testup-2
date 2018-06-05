@@ -67,14 +67,19 @@ class TC_CoverageDiscoverer < TestUp::TestCase
     assert_kind_of(TestUp::Report::TestCoverage, coverage)
 
     assert_equal(1, coverage.missing.size, 'missing test cases')
+
     titles = coverage.missing.map(&:title)
     expected = %w(TC_TestSamples)
-
     assert_equal(2, coverage.missing[0].tests.size, 'missing tests')
+
     titles = coverage.missing[0].tests.map(&:title)
     expected = %w(test_error test_skip)
-
     assert_equal(expected, titles)
+
+    missing = coverage.missing[0].tests.map(&:missing?)
+    expected = [true, true]
+    assert_equal(expected, missing)
+
     assert_equal(40.0, coverage.percent)
   end
 
