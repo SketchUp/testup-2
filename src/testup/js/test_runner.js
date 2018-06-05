@@ -258,11 +258,11 @@ Vue.component('tu-test-case', {
         <b>{{ testCase.title }}</b>
         <span class="tu-metadata">
           (
-            Tests: <span title="Tests" class="size">{{ testCase.tests.length }}</span>,
-            Passed: <span title="Passed" class="passed">{{ stats.passed }}</span>,
-            Failed: <span title="Failed" class="failed">{{ stats.failed }}</span>,
-            Errors: <span title="Errors" class="errors">{{ stats.errors }}</span>,
-            Skipped: <span title="Skipped" class="skipped">{{ stats.skipped }}</span>
+            Tests: <span class="size">{{ testCase.tests.length }}</span>,
+            Passed: <span class="passed">{{ stats.passed }}</span>,
+            Failed: <span class="failed">{{ stats.failed }}</span>,
+            Errors: <span class="errors">{{ stats.errors }}</span>,
+            Skipped: <span class="skipped">{{ stats.skipped }}</span>
           )
         </span>
       </div>
@@ -298,6 +298,17 @@ Vue.component('tu-test', {
         }
       }
       return classes;
+    },
+    testTitle() {
+      if (this.test.missing) return 'Missing';
+      let result = this.test.result;
+      if (result) {
+        if (result.passed) return 'Passed';
+        if (result.error) return 'Error';
+        if (result.skipped) return 'Skipped';
+        return 'Failed';
+      }
+      return 'Not run';
     }
   },
   filters: {
@@ -306,7 +317,7 @@ Vue.component('tu-test', {
     },
   },
   template: `
-    <li class="tu-test" v-bind:class="classObject">
+    <li class="tu-test" v-bind:class="classObject" v-bind:title="testTitle">
       <div class="tu-title">
         <su-checkbox v-model="test.enabled">{{ test.title }}</su-checkbox>
         <span v-if="test.result" class="tu-metadata">(Time: {{ test.result.run_time | formatTime }})</span>

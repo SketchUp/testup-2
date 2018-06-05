@@ -19,15 +19,15 @@
 
       <su-toolbar>
 
-        <su-button v-on:click.native="runTests">
+        <su-button v-on:click.native="runTests" title="Run selected tests">
           <i class="fas fa-play"></i>
           Run
         </su-button>
-        <su-button v-on:click.native="discoverTests">
+        <su-button v-on:click.native="discoverTests" title="Discover/rediscover tests">
           <i class="fas fa-search"></i>
           Discover
         </su-button>
-        <su-button v-on:click.native="reRun">
+        <su-button v-on:click.native="reRun" title="Re-run a previous test run">
           <i class="fas fa-forward"></i>
           Re-run...
         </su-button>
