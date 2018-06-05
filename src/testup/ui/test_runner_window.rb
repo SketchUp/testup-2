@@ -36,7 +36,7 @@ module TestUp
     private
 
     def create_dialog
-      filename = File.join(PATH, 'html', 'runner.html')
+      filename = File.join(PATH_UI, 'html', 'runner.html')
       options = {
         :title           => PLUGIN_NAME,
         :preferences_key => PLUGIN_ID,

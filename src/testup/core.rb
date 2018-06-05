@@ -48,7 +48,9 @@ module TestUp
     end
   end
 
+  PATH_UI         = File.join(PATH, 'ui').freeze
   PATH_IMAGES     = File.join(PATH, 'images').freeze
+  # TODO(thomthom): Remove once old dialog is obsolete.
   PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
 
 
