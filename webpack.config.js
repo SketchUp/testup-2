@@ -6,7 +6,7 @@ module.exports = {
   entry: {
     // https://github.com/webpack/docs/wiki/multiple-entry-points
     // Add new dialogs here:
-    runner: './dialogs/runner.js',
+    runner: './dialogs/runner.ts',
   },
   output: {
     path: path.resolve(__dirname, './src/testup/ui'),

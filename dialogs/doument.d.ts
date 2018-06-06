@@ -1,3 +1,3 @@
 interface Document {
-  documentMode?: any;
+  documentMode?: any; // IE property
 }

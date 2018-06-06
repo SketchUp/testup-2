@@ -8,7 +8,7 @@
 "use strict";
 
 import Vue from "vue";
-import * as suErrorHandler from "./js/su-error-handler";
+import * as suErrorHandler from "./ts/su-error-handler";
 
 Vue.config.errorHandler = suErrorHandler.vueErrorHandler;
 window.onerror = suErrorHandler.globalErrorHandler;
@@ -25,16 +25,29 @@ import SUToolbar from "./components/su-toolbar.vue";
 import TUTestCase from "./components/tu-test-case.vue";
 import TUTestSuite from "./components/tu-test-suite.vue";
 
+import { RunnerConfig, TestSuite } from './ts/types'
+
+declare global {
+  interface Window { app: Vue; }
+}
+
 
 window.app = new Vue({
   el: '#app',
-  data: {
-    test_suites: [],
-    activeTestSuiteIndex: 0,
-    statusBarText: '',
+  // data: {
+  //   test_suites: [],
+  //   activeTestSuiteIndex: 0,
+  //   statusBarText: '',
+  // },
+  data() {
+    return {
+      test_suites: <TestSuite[]> [],
+      activeTestSuiteIndex: 0,
+      statusBarText: '',
+    };
   },
   methods: {
-    configure(config) {
+    configure(config: RunnerConfig) {
       console.log('configure', config);
       let test_suite_title = config.active_tab;
       // this.test_suites[this.activeTestSuiteIndex];
@@ -44,7 +57,7 @@ window.app = new Vue({
       console.log('tab index:', index);
       this.activeTestSuiteIndex = index >= 0 ? index : 0;
     },
-    discover(discoveries) {
+    discover(discoveries: Array<TestSuite>) {
       console.log('discover');
       this.test_suites = discoveries;
       this.statusBarText = `
@@ -54,17 +67,17 @@ window.app = new Vue({
         ${ this.num_tests_missing } tests missing
       `;
     },
-    rediscover(discoveries) {
+    rediscover(discoveries: Array<TestSuite>) {
       console.log('rediscover');
       this.test_suites = discoveries;
       this.statusBarText = `
         ${ this.num_test_suites } test suites,
         ${ this.num_test_cases } test cases,
-        ${ this.num_tests - this.num_tests.missing } tests discovered,
-        ${ this.num_tests.missing } tests missing
+        ${ this.num_tests - this.num_tests_missing } tests discovered,
+        ${ this.num_tests_missing } tests missing
       `;
     },
-    update_results(test_suite) {
+    update_results(test_suite: TestSuite) {
       console.log('update_results', this.activeTestSuiteIndex);
       // let tsi = this.test_suites.find((ts) => {
       //   return ts.title == test_suite.title;
@@ -87,7 +100,7 @@ window.app = new Vue({
         ${ stats.skipped } skipped
       `;
     },
-    selectTestSuite(test_suite, enabled) {
+    selectTestSuite(test_suite: TestSuite, enabled: boolean) {
       for (let test_case of test_suite.test_cases) {
         test_case.enabled = enabled;
         for (let test of test_case.tests) {
@@ -113,11 +126,11 @@ window.app = new Vue({
     reRun() {
       sketchup.reRunTests();
     },
-    changeTestSuite(index) {
+    changeTestSuite(index: number) {
       this.activeTestSuiteIndex = index;
       sketchup.changeActiveTestSuite(this.active_test_suite.title);
     },
-    test_suite_stats(test_suite) {
+    test_suite_stats(test_suite: TestSuite) {
       let data = {
         tests: 0,
         passed: 0,
