@@ -2,8 +2,9 @@
   <div class="su-toolbar"><slot></slot></div>
 </template>
 
-<script>
-  export default {
-    name: 'su-toolbar'
-  }
+<script lang="ts">
+import Vue from "vue";
+export default Vue.extend({
+  name: 'su-toolbar'
+})
 </script>

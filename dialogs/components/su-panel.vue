@@ -4,8 +4,9 @@
   </div>
 </template>
 
-<script>
-  export default {
-    name: 'su-panel'
-  }
+<script lang="ts">
+import Vue from "vue";
+export default Vue.extend({
+  name: 'su-panel'
+})
 </script>

@@ -2,8 +2,9 @@
   <div class="su-scrollable"><slot></slot></div>
 </template>
 
-<script>
-  export default {
-    name: 'su-scrollable'
-  }
+<script lang="ts">
+import Vue from "vue";
+export default Vue.extend({
+  name: 'su-scrollable'
+})
 </script>

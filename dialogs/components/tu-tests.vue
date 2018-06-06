@@ -2,8 +2,9 @@
   <ul class="tu-tests"><slot></slot></ul>
 </template>
 
-<script>
-  export default {
-    name: 'tu-tests'
-  }
+<script lang="ts">
+import Vue from "vue";
+export default Vue.extend({
+  name: 'tu-tests'
+})
 </script>

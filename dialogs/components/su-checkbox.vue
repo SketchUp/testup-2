@@ -11,9 +11,10 @@
 </template>
 
 
-<script>
-  export default {
-    name: 'su-checkbox',
-    props: ['value', 'disabled'],
-  }
+<script lang="ts">
+import Vue from "vue";
+export default Vue.extend({
+  name: 'su-checkbox',
+  props: ['value', 'disabled'],
+})
 </script>

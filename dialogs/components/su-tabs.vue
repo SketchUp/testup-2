@@ -13,38 +13,39 @@
 
 
 <script>
-  export default {
-    name: 'su-tabs',
-    props: {
-      selectedIndex: {
-        type: Number,
-        default: 0
-      },
+import Vue from "vue";
+export default Vue.extend({
+  name: 'su-tabs',
+  props: {
+    selectedIndex: {
+      type: Number,
+      default: 0
     },
-    data: () => ({
-      tabs: [],
-    }),
-    methods: {
-      registerTab(tab) {
-        this.tabs.push(tab);
-        if (this.tabs.length - 1 == this.selectedIndex) {
-          tab.active = true;
-          this.selectTab(this.selectedIndex);
-        }
-      },
-      selectTab(index) {
-        console.log('selectTab:', index);
-        this.$emit('tab-change', index);
-      },
+  },
+  data: () => ({
+    tabs: [],
+  }),
+  methods: {
+    registerTab(tab) {
+      this.tabs.push(tab);
+      if (this.tabs.length - 1 == this.selectedIndex) {
+        tab.active = true;
+        this.selectTab(this.selectedIndex);
+      }
     },
-    watch: {
-      selectedIndex: function(newIndex, oldIndex) {
-        console.log('selectedIndex changed:', oldIndex, newIndex);
-        let selectedTab = this.tabs[newIndex];
-        this.tabs.forEach(tab => {
-          tab.active = (tab === selectedTab);
-        });
-      },
+    selectTab(index) {
+      console.log('selectTab:', index);
+      this.$emit('tab-change', index);
     },
-  }
+  },
+  watch: {
+    selectedIndex: function(newIndex, oldIndex) {
+      console.log('selectedIndex changed:', oldIndex, newIndex);
+      let selectedTab = this.tabs[newIndex];
+      this.tabs.forEach(tab => {
+        tab.active = (tab === selectedTab);
+      });
+    },
+  },
+})
 </script>
