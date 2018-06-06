@@ -6,8 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "webpack --mode production --progress ",
-    "dev": "webpack --mode development --progress ",
+    "build": "set NODE_ENV=production&& webpack --mode production --progress ",
+    "build:dev": "webpack --mode development --progress ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
