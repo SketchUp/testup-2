@@ -1,0 +1,61 @@
+@import "su-base.css";
+@import "tu-fade.css";
+
+
+.tu-suite-stats .su-panel {
+  /* TODO: Make non-bold, larger text */
+  font-weight: bold;
+}
+
+.tu-suite-stats .tu-passed {
+  color: #080;
+}
+.tu-suite-stats .tu-failed {
+  color: #800;
+}
+.tu-suite-stats .tu-errors {
+  color: #860;
+}
+
+.tu-test-suite-header {
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid #ddd;
+}
+.tu-test-suite-header a {
+  display: inline-block;
+  margin: 0 0.25rem;
+}
+
+.tu-metadata {
+  color: #999;
+}
+
+.su-toolbar,
+.su-tab-bar,
+.su-statusbar,
+.tu-test-suite-header {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.su-statusbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.su-scollable {
+  /* Found no better way to define the position of this other than hard coding
+   * guestimates based on current layout of the header and footer.
+   */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7.0rem;
+  bottom: 1.5rem;
+}
+
+.su-tabs {
+  font-size: 12px;
+}

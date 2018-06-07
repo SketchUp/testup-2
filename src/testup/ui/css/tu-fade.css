@@ -1,0 +1,32 @@
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .2s ease-out;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.slide-fade-enter-active {
+  /* transition: all .2s ease-out; */
+  transition: max-height .2s ease-out;
+}
+.slide-fade-leave-active {
+  /* transition: all .2s ease-out; */
+  transition: max-height .2s ease-out;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  /* transform: translateX(10px); */
+  /* opacity: 0; */
+  overflow: hidden;
+  max-height: 0;
+  /* transform: scaleY(0);
+  transform-origin: top; */
+}
+.slide-fade-leave, .slide-fade-enter-to {
+  /* transform: translateX(10px); */
+  /* transform: scaleY(1);
+  transform-origin: top; */
+  /* opacity: 1; */
+  max-height: 10000px;
+}
