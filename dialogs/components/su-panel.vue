@@ -10,3 +10,9 @@ export default Vue.extend({
   name: 'su-panel'
 })
 </script>
+
+<style>
+.su-panel {
+  padding: 1rem;
+}
+</style>

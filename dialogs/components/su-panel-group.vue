@@ -10,3 +10,10 @@ export default Vue.extend({
   name: 'su-panel-group'
 })
 </script>
+
+<style>
+.su-panel-group > * {
+  display: inline-block;
+  background: #bbb;
+}
+</style>

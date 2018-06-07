@@ -49,3 +49,21 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+.su-tab-bar {
+  background: #bbb;
+}
+.su-tab-bar .su-tab-title {
+  display: inline-block;
+  background: #ddd;
+  padding: 0.75em 1em;
+}
+.su-tab-bar .su-tab-title:hover {
+  background: #e7e7e7;
+}
+.su-tab-bar .su-tab-title.active {
+  background: #eee;
+  font-weight: bold;
+}
+</style>

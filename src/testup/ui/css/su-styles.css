@@ -55,208 +55,12 @@ body {
 }
 
 
-.su-toolbar {
-  background: #999;
-  border-bottom: #666;
-  display: flex;
-}
-.su-toolbar > * {
-  display: inline-block;
-  background: #bbb;
-  margin-right: 2px;
-}
-.su-toolbar > :last-child {
-  margin-right: 0;
-}
-.su-toolbar .su-flex {
-  flex: 1;
-  /* background: #faa; */
-  background: none;
-  padding: 0 !important;
-  min-width: 0 !important;
-  width: 0 !important;
-  overflow: hidden;
-  margin-right: 0;
-}
-
-
-.su-statusbar {
-  background: #999;
-  border-top: #666;
-  padding: 0.25rem 0.5rem;
-  font-size: 12px;
-}
-
-
-.su-panel-group > * {
-  display: inline-block;
-  background: #bbb;
-}
-
-
-.su-button {
-  padding: 1rem;
-}
-.su-button:hover {
-  background: #ccc;
-}
-
-
-.su-checkbox input {
-  vertical-align: bottom;
-  margin-bottom: 2px; /* Windows 10, Chrome */
-}
-
-
-.su-panel {
-  padding: 1rem;
-}
-
-
-.su-tab-bar {
-  background: #bbb;
-}
-.su-tab-bar .su-tab-title {
-  display: inline-block;
-  background: #ddd;
-  padding: 0.75em 1em;
-}
-.su-tab-bar .su-tab-title:hover {
-  background: #e7e7e7;
-}
-.su-tab-bar .su-tab-title.active {
-  background: #eee;
-  font-weight: bold;
-}
-
-
-.tu-test-suite-header {
-  padding: 0.25rem 0.5rem;
-  border-bottom: 1px solid #ddd;
-}
-.tu-test-suite-header a {
-  display: inline-block;
-  margin: 0 0.25rem;
-}
-
-
-.tu-test-suite {
-  font-size: 12px;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-.tu-test-suite ul {
-  list-style-type: none;
-  padding-left: 18px;
-}
-
-.tu-test-case {
-  /* padding: 0.25rem; */
-  border-bottom: 1px solid #ddd;
-}
-.tu-test-case:hover {
-  background: #e8e8e8;
-}
-.tu-test-case > .tu-title {
-  white-space: nowrap;
-  padding: 0.25rem;
-  padding-left: 20px;
-  background: url(../images/not_run.png) no-repeat 0.25rem center;
-}
-
-
-.tu-tests {
-  /* padding: 0.25rem; */
-  margin-bottom: 0.5rem;
-}
-
-
-.tu-test {
-  padding: 0.15rem;
-}
-.tu-test:hover {
-  background: #e2e2e2;
-}
-.tu-test > .tu-title {
-  white-space: nowrap;
-  padding-left: 20px;
-  background: url(../images/not_run.png) no-repeat left center;
-}
-
-
-.tu-test-result {
-  font-size: 12px;
-  padding-left: 3rem;
-}
-.tu-test-result .tu-title {
-  margin: 0.25rem 0rem 0.25rem 0rem;
-}
-.tu-test-result .tu-message {
-  background: #ddd;
-  color: #555;
-  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-  margin: 0 0 0.5rem;
-  overflow-y: auto;
-}
-
-
-.tu-metadata {
-  color: #999;
-}
-
-
-.tu-test-suite .tu-passed > .tu-title
-{
-  background-image: url(../images/accept.png);
-}
-
-.tu-test-suite .tu-failed > .tu-title
-{
-  background-image: url(../images/exclamation.png);
-}
-
-.tu-test-suite .tu-error > .tu-title
-{
-  background-image: url(../images/error.png);
-}
-
-.tu-test-suite .tu-skipped > .tu-title
-{
-  background-image: url(../images/skip.png);
-}
-
-.tu-test-suite .tu-missing > .tu-title
-{
-  background-image: url(../images/missing.png);
-}
-
-/* Partially missing testcases */
-.tu-test-suite .tu-missing.tu-passed > .tu-title
-{
-  background-image: url(../images/missing_accept.png);
-}
-.tu-test-suite .tu-missing.tu-failed > .tu-title
-{
-  background-image: url(../images/missing_exclamation.png);
-}
-.tu-test-suite .tu-missing.tu-error > .tu-title
-{
-  background-image: url(../images/missing_error.png);
-}
-.tu-test-suite .tu-missing.tu-partial > .tu-title
-{
-  background-image: url(../images/missing_not_run.png);
-}
-
-
 .fade-enter-active, .fade-leave-active {
   transition: opacity .2s ease-out;
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
-
 
 /* Enter and leave animations can use different */
 /* durations and timing functions.              */
@@ -287,6 +91,19 @@ body {
 
 /* App Style */
 
+.tu-test-suite-header {
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid #ddd;
+}
+.tu-test-suite-header a {
+  display: inline-block;
+  margin: 0 0.25rem;
+}
+
+.tu-metadata {
+  color: #999;
+}
+
 .su-toolbar,
 .su-tab-bar,
 .su-statusbar,
@@ -295,20 +112,7 @@ body {
   white-space: nowrap;
 }
 
-.su-toolbar .su-panel {
-  padding: 1rem 0.5rem;
-  min-width: 3rem;
-  text-align: center;
-}
-
-.su-toolbar .su-panel {
-  padding: 1rem 0.5rem;
-  min-width: 3rem;
-  text-align: center;
-}
-
 .su-scollable {
-  overflow: auto;
   /* Found no better way to define the position of this other than hard coding
    * guestimates based on current layout of the header and footer.
    */

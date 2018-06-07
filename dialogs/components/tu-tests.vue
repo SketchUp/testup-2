@@ -8,3 +8,9 @@ export default Vue.extend({
   name: 'tu-tests'
 })
 </script>
+
+<style>
+.tu-tests {
+  margin-bottom: 0.5rem;
+}
+</style>

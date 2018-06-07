@@ -52,3 +52,17 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+.tu-test {
+  padding: 0.15rem;
+}
+.tu-test:hover {
+  background: #e2e2e2;
+}
+.tu-test > .tu-title {
+  white-space: nowrap;
+  padding-left: 20px;
+  background: url(../images/not_run.png) no-repeat left center;
+}
+</style>

@@ -10,7 +10,6 @@
   </span>
 </template>
 
-
 <script lang="ts">
 import Vue from "vue";
 export default Vue.extend({
@@ -18,3 +17,10 @@ export default Vue.extend({
   props: ['value', 'disabled'],
 })
 </script>
+
+<style>
+.su-checkbox input {
+  vertical-align: bottom;
+  margin-bottom: 2px; /* Windows 10, Chrome */
+}
+</style>

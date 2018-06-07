@@ -51,3 +51,20 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+.tu-test-result {
+  font-size: 12px;
+  padding-left: 3rem;
+}
+.tu-test-result .tu-title {
+  margin: 0.25rem 0rem 0.25rem 0rem;
+}
+.tu-test-result .tu-message {
+  background: #ddd;
+  color: #555;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  margin: 0 0 0.5rem;
+  overflow-y: auto;
+}
+</style>

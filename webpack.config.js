@@ -10,7 +10,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, './src/testup/ui'),
-    publicPath: '/src/testup/ui/',
+    publicPath: '', // Assumes HTML sets <base> with href to the `ui` directory.
     filename: 'js/[name].js'
   },
   module: {
@@ -41,7 +41,8 @@ module.exports = {
         test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
         options: {
-          name: '[name].[ext]?[hash]'
+          name: 'images/[name].[ext]',
+          // emitFile: false
         }
       },
       {

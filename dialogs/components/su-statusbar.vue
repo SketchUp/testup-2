@@ -8,3 +8,12 @@ export default Vue.extend({
   name: 'su-statusbar'
 })
 </script>
+
+<style>
+.su-statusbar {
+  background: #999;
+  border-top: #666;
+  padding: 0.25rem 0.5rem;
+  font-size: 12px;
+}
+</style>

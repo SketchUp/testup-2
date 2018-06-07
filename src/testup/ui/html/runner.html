@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="../css/test_runner.css"/>
+    <base href="..">
+    <link rel="stylesheet" href="css/test_runner.css"/>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 
     <title>TestUp 2</title>
@@ -52,7 +53,6 @@
 
       </su-toolbar>
 
-      {{ foobar }}
       <su-tabs v-bind:selected-index="activeTestSuiteIndex"
                v-on:tab-change="changeTestSuite($event)" ref="tabbar">
         <su-tab v-bind:title="test_suite.title"
@@ -79,7 +79,6 @@
 
     </div><!-- #app -->
 
-    <!-- <script src="../vendor/vue.js"></script> -->
-    <script src="../js/runner.js"></script>
+    <script src="js/runner.js"></script>
   </body>
 </html>

@@ -133,3 +133,19 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+.tu-test-case {
+  /* padding: 0.25rem; */
+  border-bottom: 1px solid #ddd;
+}
+.tu-test-case:hover {
+  background: #e8e8e8;
+}
+.tu-test-case > .tu-title {
+  white-space: nowrap;
+  padding: 0.25rem;
+  padding-left: 20px;
+  background: url(../images/not_run.png) no-repeat 0.25rem center;
+}
+</style>
