@@ -21,15 +21,23 @@ Examples of extension projects implementing TestUp tests:
 * https://bitbucket.org/thomthom/quadface-tools/src
 * https://github.com/thomthom/shadow-texture/tree/dev-vscode-debug
 
-Setup for Contributing
-----------------------
+Setup for Contributing/Running from Source
+------------------------------------------
+
+TestUp require NodeJS to build webdialog resources: https://nodejs.org/en/
 
 1. Fork the project to your own GitHub account. This is important so that we can do code review on changes done.
 _No **not** push directly to the main repository._
 
 2. Clone your fork to your computer.
 
-3. Add a helper Ruby file in your Plugins folder:
+3. Open a command line at the project root:
+    1. `npm install`
+    2. `npm run build`
+
+    You can also use `npm run build -- --watch` to automatically rebuild whenever files changes.
+
+4. Add a helper Ruby file in your Plugins folder:
 
 ```ruby
 # load_testup.rb
