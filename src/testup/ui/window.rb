@@ -5,6 +5,8 @@
 #
 #-------------------------------------------------------------------------------
 
+require 'testup/ui/adapters/webdialog'
+require 'testup/ui/adapters/htmldialog' if defined?(UI::HtmlDialog)
 require 'testup/log'
 
 
@@ -63,13 +65,21 @@ module TestUp
       dialog
     end
 
-    # Determines whether to create a `UI::HtmlDialog` or a `UI::WebDialog`
-    # dialog.
+    # Determines whether to use `UI::HtmlDialog` or `UI::WebDialog` dialogs.
     #
     # @return [Class]
     def window_class
-      # TODO: This should return HtmlDialogAdapter or WebDialogAdapter
-      UI::HtmlDialog # TODO:
+      window_adapter = TestUp.settings[:window_adapter]
+      case window_adapter
+      when 'default', nil
+        defined?(HtmlDialogAdapter) ? HtmlDialogAdapter : WebDialogAdapter
+      when 'html_dialog'
+        HtmlDialogAdapter
+      when 'web_dialog'
+        WebDialogAdapter
+      else
+        raise "Unknown adapter: #{window_adapter}"
+      end
     end
 
     # @return [UI::HtmlDialog, UI::WebDialog]
