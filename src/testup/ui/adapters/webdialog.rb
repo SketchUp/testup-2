@@ -15,6 +15,12 @@ module TestUp
 
     include Adapter
 
+    # @param [Hash] options
+    def initialize(options)
+      options[:dialog_title] = options[:title] if options.key?(:title)
+      super(options)
+    end
+
     # @return [Hash]
     def register_callback(callback_name, &block)
       add_action_callback(callback_name) { |dialog, params_string|
