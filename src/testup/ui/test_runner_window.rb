@@ -5,39 +5,33 @@
 #
 #-------------------------------------------------------------------------------
 
+# require 'testup/ui/preferences'
+require 'testup/ui/window'
 require 'testup/api'
+require 'testup/debug'
+require 'testup/editor'
 require 'testup/log'
+require 'testup/runs'
+require 'testup/taskbar_progress'
 
 
 module TestUp
-  class TestRunnerWindow
+  class TestRunnerWindow < Window
 
-    # Used when JavaScript errors are forwarded from WebDialogs to Ruby.
-    class JavaScriptError < RuntimeError; end
+    include Debug::Timing
 
     def initialize
-      @dialog = create_dialog
+      super
       # on(:close) {
       #   @preferences_window.close unless @preferences_window.nil?
       # }
     end
 
-    def toggle
-      if @dialog.visible?
-        @dialog.close
-        @dialog = nil
-      else
-        @dialog ||= create_dialogs
-        add_callbacks(@dialog)
-        @dialog.show
-      end
-    end
-
     private
 
-    def create_dialog
-      filename = File.join(PATH_UI, 'html', 'runner.html')
-      options = {
+    # @return [Hash]
+    def window_options
+      {
         :title           => PLUGIN_NAME,
         :preferences_key => PLUGIN_ID,
         :width           => 600,
@@ -47,17 +41,15 @@ module TestUp
         :resizable       => true,
         :scrollable      => false,
       }
-      # dialog = UI::WebDialog.new(options)
-      dialog = UI::HtmlDialog.new(options)
-      dialog.set_file(filename)
-      dialog
     end
 
-    def add_callbacks(dialog)
-      dialog.add_action_callback('ready') { |dialog, params|
-        Log.info "ready(...)"
-        event_testup_ready
-      }
+    # @return [String]
+    def window_source
+      filename = File.join(PATH_UI, 'html', 'runner.html')
+    end
+
+    def register_callbacks(dialog)
+      super
       dialog.add_action_callback('runTests') { |dialog, test_suite_json|
         Log.info "runTests(...)"
         event_run_tests(test_suite_json)
@@ -86,71 +78,10 @@ module TestUp
         Log.info "openSourceFile(#{location})"
         event_open_source_file(location)
       }
-      dialog.add_action_callback('js_error') { |dialog, error|
-        Log.info "js_error(...)"
-        event_js_error(error)
-      }
       dialog
     end
 
-    def call(function, *args)
-      arguments = args.map { |arg| JSON.pretty_generate(arg) }
-      argument_js = arguments.join(', ');
-      @dialog.execute_script("#{function}(#{argument_js});")
-    end
-
-    # TODO: Move to a mix-in module.
-    def time(title = '', &block)
-      start = Time.now
-      result = block.call
-      lapsed_time = Time.now - start
-      Log.debug "Timing #{title}: #{lapsed_time}s"
-      result
-    end
-
-    # @return [nil]
-    def discover_tests
-      Log.trace :discover, "discover_tests()"
-      paths = TestUp.settings[:paths_to_testsuites]
-      discoveries = time('discover') { TestUp::API.discover_tests(paths) }
-      Debugger.time("JS:update(...)") {
-        progress = TaskbarProgress.new
-        begin
-          progress.set_state(TaskbarProgress::INDETERMINATE)
-          time('app.discover') { call('app.discover', discoveries) }
-        ensure
-          progress.set_state(TaskbarProgress::NOPROGRESS)
-        end
-      }
-      nil
-    end
-
-    # @param [Report::TestSuite] test_suite
-    # @return [nil]
-    def rediscover_tests(test_suites)
-      Log.trace :discover, "rediscover_tests(...)"
-      paths = TestUp.settings[:paths_to_testsuites]
-      Log.trace :discover, "> TestUp::API.discover_tests(...):"
-      discoveries = time('discover') { TestUp::API.discover_tests(paths) }
-      Log.trace :discover, "> discoveries.map:"
-      discoveries.map! { |discovery|
-        test_suite = test_suites.find { |suite| suite.title == discovery.title }
-        test_suite ? test_suite.rediscover(discovery) : discovery
-      }
-      Log.trace :discover, "> JS:rediscover:"
-      Debugger.time("JS:rediscover(...)") {
-        progress = TaskbarProgress.new
-        begin
-          progress.set_state(TaskbarProgress::INDETERMINATE)
-          time('app.rediscover') { call('app.rediscover', discoveries) }
-        ensure
-          progress.set_state(TaskbarProgress::NOPROGRESS)
-        end
-      }
-      nil
-    end
-
-    def event_testup_ready
+    def event_window_ready
       discover_tests
       config = {
         :active_tab => TestUp.settings[:last_active_testsuite],
@@ -249,32 +180,46 @@ module TestUp
       @preferences_window.show
     end
 
-    # TODO(thomthom): Move to a super-class or mix-in.
-    def is_legacy_ie?(js_error)
-      user_agent = js_error['user-agent']
-      return false unless user_agent.is_a?(String)
-      return false unless user_agent.include?('MSIE')
-      document_mode = js_error['document-mode']
-      return false unless document_mode.is_a?(Numeric)
-      document_mode < 9
+    # @return [nil]
+    def discover_tests
+      Log.trace :discover, "discover_tests()"
+      paths = TestUp.settings[:paths_to_testsuites]
+      discoveries = time('discover') { TestUp::API.discover_tests(paths) }
+      Debugger.time("JS:update(...)") {
+        progress = TaskbarProgress.new
+        begin
+          progress.set_state(TaskbarProgress::INDETERMINATE)
+          time('app.discover') { call('app.discover', discoveries) }
+        ensure
+          progress.set_state(TaskbarProgress::NOPROGRESS)
+        end
+      }
+      nil
     end
 
-    # TODO(thomthom): Move to a super-class or mix-in.
-    def event_js_error(js_error)
-      # Have to set the backtrace after the error has been thrown in order for
-      # it to propagate properly. Otherwise the backtrace will point back to
-      # this location.
-      # Log.debug js_error # Muted for now - noisy.
-      # IE8 is completely unable to load Vue. We don't want to trigger the
-      # error dialog for this old version. The dialogs should display a
-      # message using conditional IE comments.
-      return if is_legacy_ie?(js_error)
-      begin
-        raise JavaScriptError, js_error['message']
-      rescue JavaScriptError => error
-        error.set_backtrace(js_error['backtrace'])
-        raise
-      end
+    # @param [Report::TestSuite] test_suite
+    # @return [nil]
+    def rediscover_tests(test_suites)
+      Log.trace :discover, "rediscover_tests(...)"
+      paths = TestUp.settings[:paths_to_testsuites]
+      Log.trace :discover, "> TestUp::API.discover_tests(...):"
+      discoveries = time('discover') { TestUp::API.discover_tests(paths) }
+      Log.trace :discover, "> discoveries.map:"
+      discoveries.map! { |discovery|
+        test_suite = test_suites.find { |suite| suite.title == discovery.title }
+        test_suite ? test_suite.rediscover(discovery) : discovery
+      }
+      Log.trace :discover, "> JS:rediscover:"
+      Debugger.time("JS:rediscover(...)") {
+        progress = TaskbarProgress.new
+        begin
+          progress.set_state(TaskbarProgress::INDETERMINATE)
+          time('app.rediscover') { call('app.rediscover', discoveries) }
+        ensure
+          progress.set_state(TaskbarProgress::NOPROGRESS)
+        end
+      }
+      nil
     end
 
   end # class
