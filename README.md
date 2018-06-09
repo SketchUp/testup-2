@@ -25,7 +25,7 @@ Setup for Contributing
 ----------------------
 
 1. Fork the project to your own GitHub account. This is important so that we can do code review on changes done.
-_No **not** push directly to the main repository._
+_Do **not** push directly to the main repository._
 
 2. Clone your fork to your computer.
 
