@@ -23,11 +23,20 @@ module TestUp
 
     # @return [Hash]
     def register_callback(callback_name, &block)
-      add_action_callback(callback_name) { |dialog, params_string|
+      add_action_callback(callback_name) { |dialog, have_params|
         # This assumes that `params_string` is a JSON string with an array
         # of objects.
-        params = JSON.parse(params_string)
-        block.call(dialog, *params)
+        begin
+          param = []
+          if have_params && !have_params.empty?
+            params_string = dialog.get_element_value('suBridge')
+            params = params_string.empty? ? [] : JSON.parse(params_string)
+          end
+          block.call(dialog, *params)
+        rescue JSON::ParserError
+          p [callback_name, params_string]
+          raise
+        end
       }
     end
 

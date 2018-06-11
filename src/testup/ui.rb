@@ -140,6 +140,7 @@ module TestUp
       else
         self.settings[:window_adapter] = 'web_dialog'
       end
+      self.reset_dialogs
     }
     cmd.tooltip = 'Force WebDialog'
     cmd.status_bar_text = 'Force WebDialog.'

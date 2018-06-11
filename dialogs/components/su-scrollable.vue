@@ -10,7 +10,7 @@ export default Vue.extend({
 </script>
 
 <style>
-.su-scollable {
+.su-scrollable {
   overflow: auto;
 }
 </style>

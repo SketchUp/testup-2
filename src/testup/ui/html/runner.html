@@ -9,6 +9,7 @@
     <base href="..">
     <link rel="stylesheet" href="css/runner.css"/>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <script src="js/lib/polyfills.js"></script>
 
     <title>TestUp 2</title>
   </head>
@@ -62,14 +63,14 @@
             <a href="#" v-on:click="selectTestSuite(test_suite, true)">Select All</a>
             <a href="#" v-on:click="selectTestSuite(test_suite, false)">Select None</a>
           </div>
-          <su-scollable>
+          <su-scrollable>
             <tu-test-suite>
               <tu-test-case v-for="test_case in test_suite.test_cases"
                             v-bind:key="test_case.id"
                             v-bind:test-case="test_case">
               </tu-test-case>
             </tu-test-suite>
-          </su-scollable>
+          </su-scrollable>
         </su-tab>
       </su-tabs>
 

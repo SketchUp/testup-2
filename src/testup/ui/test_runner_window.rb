@@ -27,6 +27,10 @@ module TestUp
       # }
     end
 
+    def toggle
+      time('TestRunnerWindow#toggle') { super }
+    end
+
     private
 
     # @return [Hash]
@@ -50,15 +54,15 @@ module TestUp
 
     def register_callbacks(dialog)
       super
-      dialog.add_action_callback('runTests') { |dialog, test_suite_json|
+      dialog.register_callback('runTests') { |dialog, test_suite_json|
         Log.info "runTests(...)"
         event_run_tests(test_suite_json)
       }
-      dialog.add_action_callback('reRunTests') { |dialog|
+      dialog.register_callback('reRunTests') { |dialog|
         Log.info "reRunTests(...)"
         event_rerun_tests
       }
-      dialog.add_action_callback('discoverTests') { |dialog, test_suites_json|
+      dialog.register_callback('discoverTests') { |dialog, test_suites_json|
         Log.info "discoverTests(...)"
         # Workaround for a sporadic crash where it appear SU crash, without
         # BugSplat when passing a JS object back to Ruby. For some reason it
@@ -70,11 +74,11 @@ module TestUp
         test_suites_json = JSON.parse(test_suites_json)
         event_discover(test_suites_json)
       }
-      dialog.add_action_callback('changeActiveTestSuite') { |dialog, title|
+      dialog.register_callback('changeActiveTestSuite') { |dialog, title|
         Log.info "event_change_testsuite(#{title})"
         event_change_testsuite(title)
       }
-      dialog.add_action_callback('openSourceFile') { |dialog, location|
+      dialog.register_callback('openSourceFile') { |dialog, location|
         Log.info "openSourceFile(#{location})"
         event_open_source_file(location)
       }
@@ -87,7 +91,7 @@ module TestUp
         :active_tab => TestUp.settings[:last_active_testsuite],
         :debugger   => ScriptDebugger.attached?,
       }
-      call('app.configure', config)
+      time('app.configure') { call('app.configure', config) }
     end
 
     # @param [Hash] test_suite_json JSON data from JavaScript side.
@@ -97,7 +101,7 @@ module TestUp
       test_suite = Report::TestSuite.from_hash(test_suite_json)
       TestUp::API.run_test_suite(test_suite, options: options) { |results|
         test_suite.merge_results(results)
-        call('app.update_results', test_suite)
+        time('app.update_results') { call('app.update_results', test_suite) }
       }
     end
 
@@ -120,7 +124,7 @@ module TestUp
 
       TestUp::API.run_tests(tests, title: title, path: path,  options: options) { |results|
         test_suite.merge_results(results)
-        call('app.update_results', test_suite)
+        time('app.update_results') { call('app.update_results', test_suite) }
       }
     end
 

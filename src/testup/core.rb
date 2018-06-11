@@ -149,6 +149,12 @@ module TestUp
     @window_vue.toggle
   end
 
+  # Call after switching dialog type to be used. Or after making changes that
+  # require the dialog to be recreated.
+  def self.reset_dialogs
+    @window_vue = nil
+  end
+
 
   def self.toggle_run_in_gui
     @settings[:run_in_gui] = !@settings[:run_in_gui]

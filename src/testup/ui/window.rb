@@ -53,12 +53,11 @@ module TestUp
     # @param [UI::HtmlDialog, UI::WebDialog] dialog
     # @return [UI::HtmlDialog, UI::WebDialog]
     def register_callbacks(dialog)
-      # TODO: dialog.register_callback
-      dialog.add_action_callback('ready') { |dialog|
+      dialog.register_callback('ready') { |dialog|
         Log.info "ready(...)"
         event_window_ready
       }
-      dialog.add_action_callback('js_error') { |dialog, error|
+      dialog.register_callback('js_error') { |dialog, error|
         Log.info "js_error(...)"
         event_js_error(error)
       }
@@ -94,6 +93,7 @@ module TestUp
     # @param [Array<#to_json>] args parameters for the JavaScript call.
     # @return [nil]
     def call(function, *args)
+      Log.info "call(#{function}, ...)"
       arguments = args.map { |arg| JSON.pretty_generate(arg) }
       argument_js = arguments.join(', ');
       @dialog.execute_script("#{function}(#{argument_js});")
@@ -122,6 +122,8 @@ module TestUp
       # message using conditional IE comments.
       return if is_legacy_ie?(js_error)
       begin
+        p js_error['user-agent']
+        p js_error['document-mode']
         raise JavaScriptError, js_error['message']
       rescue JavaScriptError => error
         error.set_backtrace(js_error['backtrace'])
