@@ -7,7 +7,7 @@
 
 require 'sketchup.rb'
 require 'testup/app_files'
-require 'testup/ui/test_runner_window'
+require 'testup/ui/runner'
 
 
 # Third party dependencies.
