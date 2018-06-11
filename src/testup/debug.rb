@@ -8,6 +8,25 @@
 
 module TestUp
 
+  # TODO(thomthom): Split this file into smaller files.
+
+  module Debug
+
+    module Timing
+
+      def time(title = '', &block)
+        start = Time.now
+        result = block.call
+        lapsed_time = Time.now - start
+        Log.debug "Timing #{title}: #{lapsed_time}s"
+        result
+      end
+
+    end # module
+
+  end # module
+
+
   module Debugger
 
     # TestUp::Debugger.attached?
@@ -59,7 +78,7 @@ module TestUp
       nil
     end
 
-  end # module Debug
+  end # module Debugger
 
   # Calling IsDebuggerPresent doesn't appear to detect the Script Debugger.
   # As a workaround to avoid the break in window.onerror we keep track of this

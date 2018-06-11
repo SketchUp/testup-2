@@ -13,8 +13,12 @@ import * as suErrorHandler from "./ts/su-error-handler";
 Vue.config.errorHandler = suErrorHandler.vueErrorHandler;
 window.onerror = suErrorHandler.globalErrorHandler;
 
+import { WebDialogShim } from "./ts/webdialog-shim";
+if (!window.sketchup) {
+  window.sketchup = new WebDialogShim;
+}
+
 import SUButton from "./components/su-button.vue";
-import SUCheckbox from "./components/su-checkbox.vue";
 import SUPanelGroup from "./components/su-panel-group.vue";
 import SUPanel from "./components/su-panel.vue";
 import SUScrollable from "./components/su-scrollable.vue";
@@ -34,11 +38,6 @@ declare global {
 
 window.app = new Vue({
   el: '#app',
-  // data: {
-  //   test_suites: [],
-  //   activeTestSuiteIndex: 0,
-  //   statusBarText: '',
-  // },
   data() {
     return {
       test_suites: <TestSuite[]> [],
@@ -51,7 +50,7 @@ window.app = new Vue({
       console.log('configure', config);
       let test_suite_title = config.active_tab;
       // this.test_suites[this.activeTestSuiteIndex];
-      let index = this.test_suites.findIndex((test_suite) => {
+      let index = this.test_suites.findIndex((test_suite: TestSuite) => {
         return test_suite.title == test_suite_title;
       });
       console.log('tab index:', index);
@@ -198,7 +197,13 @@ window.app = new Vue({
     },
   },
   mounted() {
-    sketchup.ready();
+    // KLUDGE(thomthom):
+    // For some reason, calling any methods on the global `app` instance from
+    // the `ready`callback  will raise errors in IE11. Waiting a tick works
+    // around this shenanigan.
+    Vue.nextTick(function () {
+      sketchup.ready();
+    });
   },
   components: {
     'su-button': SUButton,

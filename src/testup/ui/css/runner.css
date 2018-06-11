@@ -45,7 +45,7 @@
   right: 0;
 }
 
-.su-scollable {
+.su-scrollable {
   /* Found no better way to define the position of this other than hard coding
    * guestimates based on current layout of the header and footer.
    */

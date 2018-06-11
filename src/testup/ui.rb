@@ -96,11 +96,11 @@ module TestUp
     cmd.status_bar_text = 'Open folder with logs.'
     cmd_open_logs = cmd
 
-    cmd = UI::Command.new('Open console on startup') {
+    cmd = UI::Command.new('Open Console on Startup') {
       self.settings[:open_console_on_startup] = !self.settings[:open_console_on_startup]
     }
-    cmd.tooltip = 'Open console on startup'
-    cmd.status_bar_text = 'Open console on startup.'
+    cmd.tooltip = 'Open Console on Startup'
+    cmd.status_bar_text = 'Open Console on Startup.'
     cmd.set_validation_proc {
       self.settings[:open_console_on_startup] ? MF_CHECKED : MF_ENABLED
     } if defined?(Sketchup)
@@ -134,10 +134,21 @@ module TestUp
     cmd.status_bar_text = 'Discover and run all tests.'
     cmd_run_tests = cmd
 
-    cmd.tooltip = 'Run Layout Tests'
-    cmd.small_icon = File.join(PATH_IMAGES, 'layout-16.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'layout-24.png')
-    #cmd_run_layout_tests = cmd
+    cmd = UI::Command.new('Force WebDialog') {
+      if self.settings[:window_adapter] == 'web_dialog'
+        self.settings[:window_adapter] = nil
+      else
+        self.settings[:window_adapter] = 'web_dialog'
+      end
+      self.reset_dialogs
+    }
+    cmd.tooltip = 'Force WebDialog'
+    cmd.status_bar_text = 'Force WebDialog.'
+    cmd.set_validation_proc {
+      self.settings[:window_adapter] == 'web_dialog' ? MF_CHECKED : MF_ENABLED
+    } if defined?(Sketchup)
+    cmd_debug_force_webdialog = cmd
+
 
     # Menus
     if defined?(Sketchup)
@@ -158,17 +169,17 @@ module TestUp
       sub_menu.add_item('Add Run...') { self::Runs.add }
       sub_menu.add_item('Remove Run...') { self::Runs.remove }
       menu.add_separator
-      menu.add_item(cmd_open_logs)
       menu.add_item(cmd_open_console_on_startup)
       menu.add_item(cmd_toggle_run_tests_in_console)
       menu.add_item(cmd_toggle_verbose_console_tests)
       menu.add_item(cmd_display_minitest_help)
       menu.add_separator
-      menu.add_item(cmd_run_tests)
-      if TestUp::DEBUG
-        menu.add_separator
-        menu.add_item(cmd_reload_testup)
-      end
+      sub_menu = menu.add_submenu('Debug')
+      sub_menu.add_item(cmd_open_logs)
+      sub_menu.add_separator
+      sub_menu.add_item(cmd_debug_force_webdialog)
+      sub_menu.add_separator
+      sub_menu.add_item(cmd_reload_testup)
     end
 
     # Toolbar
