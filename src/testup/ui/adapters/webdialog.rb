@@ -21,6 +21,16 @@ module TestUp
       super(options)
     end
 
+    def show
+      if Sketchup.platform == :platform_osx
+        # UI::WebDialogs under mac isn't really modal. But this prevents the
+        # dialog from disappearing behind the SketchUp window.
+        show_modal
+      else
+        super
+      end
+    end
+
     # @return [Hash]
     def register_callback(callback_name, &block)
       add_action_callback(callback_name) { |dialog, have_params|

@@ -7,7 +7,7 @@
 
 
 module TestUp
-  class PreferencesWindow < SKUI::Window
+  class PreferencesWindowLegacy < SKUI::Window
 
     def initialize
       options = {

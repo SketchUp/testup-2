@@ -20,18 +20,31 @@ module TestUp
       @dialog = create_dialog
     end
 
+    def show
+      if @dialog.visible?
+        @dialog.bring_to_front
+      else
+        @dialog ||= create_dialog
+        register_callbacks(@dialog)
+        show_window
+      end
+    end
+
     def toggle
       if @dialog.visible?
         @dialog.close
         @dialog = nil
       else
-        @dialog ||= create_dialog
-        register_callbacks(@dialog)
-        @dialog.show
+        show
       end
     end
 
     private
+
+    # Override this if the dialog should be modal.
+    def show_window
+      @dialog.show
+    end
 
     # @return [Hash]
     def window_options

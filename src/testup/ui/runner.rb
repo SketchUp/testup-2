@@ -5,7 +5,7 @@
 #
 #-------------------------------------------------------------------------------
 
-# require 'testup/ui/preferences'
+require 'testup/ui/preferences'
 require 'testup/ui/window'
 require 'testup/api'
 require 'testup/debug'
@@ -82,6 +82,11 @@ module TestUp
         Log.info "openSourceFile(#{location})"
         event_open_source_file(location)
       }
+      dialog.register_callback('openPreferences') { |dialog|
+        Log.info "openPreferences(.)"
+        event_open_preferences
+      }
+
       dialog
     end
 
@@ -178,7 +183,7 @@ module TestUp
       end
     end
 
-    def event_on_open_preferences
+    def event_open_preferences
       #@preferences_window ||= PreferencesWindow.new
       @preferences_window = PreferencesWindow.new
       @preferences_window.show
