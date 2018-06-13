@@ -1,3 +1,4 @@
+import { PreferencesConfig } from "../interfaces/preferences-config";
 import { SketchUpPreferences } from '../interfaces/sketchup-preferences'
 import { WebDialogShim } from '../webdialog/webdialog-shim'
 
@@ -10,7 +11,7 @@ export class PreferencesWebDialogShim extends WebDialogShim implements SketchUpP
   {
     this.sketchup('runTests', [path, index]);
   }
-  save(): void
+  save(config: PreferencesConfig): void
   {
     this.sketchup('save');
   }

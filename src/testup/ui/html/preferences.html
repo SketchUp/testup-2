@@ -17,7 +17,12 @@
 
       <div id="tuPaths">
         <su-label>Test Suite Paths:</su-label>
-        <su-listbox v-bind:items="config.test_suite_paths"></su-listbox>
+        <su-listbox
+          v-bind:items="config.test_suite_paths"
+          v-bind:value="selectedPath"
+          v-on:change="pathSelected"
+          >
+        </su-listbox>
       </div>
 
 

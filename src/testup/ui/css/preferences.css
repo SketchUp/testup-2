@@ -16,7 +16,10 @@ body {
   display: block;
 }
 #tuPaths .su-listbox {
-  display: block !important;
+  display: block;
+}
+#tuPaths .su-listbox select {
+  height: 16rem;
 }
 
 #tuPathManage {
