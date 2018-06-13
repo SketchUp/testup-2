@@ -13,7 +13,10 @@ export default Vue.extend({
 
 <style>
 .su-button {
-  padding: 1rem;
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #aaa;
+  text-align: center;
 }
 .su-button:hover {
   background: #ccc;

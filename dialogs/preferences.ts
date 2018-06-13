@@ -22,9 +22,14 @@ import { SketchUpPreferences } from "./ts/interfaces/sketchup-preferences";
 declare const sketchup: SketchUpPreferences;
 
 import SUButton from "./components/su-button.vue";
+import SUGroup from "./components/su-group.vue";
+import SUInput from "./components/su-input.vue";
+import SULabel from "./components/su-label.vue";
+import SUListBox from "./components/su-listbox.vue";
 import SUPanelGroup from "./components/su-panel-group.vue";
 import SUPanel from "./components/su-panel.vue";
 import SUScrollable from "./components/su-scrollable.vue";
+import SUSeparator from "./components/su-separator.vue";
 import SUStatusbar from "./components/su-statusbar.vue";
 import SUTabs from "./components/su-tabs.vue";
 import SUTab from "./components/su-tab.vue";
@@ -110,9 +115,14 @@ window.app = new Vue({
   },
   components: {
     'su-button': SUButton,
+    'su-group': SUGroup,
+    'su-input': SUInput,
+    'su-label': SULabel,
+    'su-listbox': SUListBox,
     'su-panel': SUPanel,
     'su-panel-group': SUPanelGroup,
     'su-scrollable': SUScrollable,
+    'su-separator': SUSeparator,
     'su-statusbar': SUStatusbar,
     'su-tabs': SUTabs,
     'su-tab': SUTab,

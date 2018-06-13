@@ -17,6 +17,10 @@ import TUTestResult from "./tu-test-result.vue";
 export default Vue.extend({
   name: 'tu-test',
   props: ['test'],
+  components: {
+    'su-checkbox': SUCheckbox,
+    'tu-test-result': TUTestResult,
+  },
   computed: {
     classObject() {
       let result = this.test.result;

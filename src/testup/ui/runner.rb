@@ -43,7 +43,10 @@ module TestUp
         :min_width       => 300,
         :min_height      => 300,
         :resizable       => true,
-        :scrollable      => false,
+        # This cause errors in JS:
+        #   Uncaught TypeError: Cannot read property 'style' of null
+        #   document.body.style.overflow="hidden";
+        # :scrollable      => false,
       }
     end
 

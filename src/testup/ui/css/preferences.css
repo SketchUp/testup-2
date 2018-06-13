@@ -1,1 +1,47 @@
 @import "su-base.css";
+
+body {
+  padding: 0.5rem;
+}
+
+.su-button {
+  min-width: 6rem;
+}
+
+.tu-input-group {
+  margin: 0.5rem 0;
+}
+
+#tuPaths label {
+  display: block;
+}
+#tuPaths .su-listbox {
+  display: block !important;
+}
+
+#tuPathManage {
+  float: right;
+}
+
+#tuCodeEditor {
+  margin: 1rem 0;
+}
+
+#tuCodeEditor .su-label {
+  display: block;
+  text-align: right;
+}
+
+/* #tuCodeEditor .tu-input-group .su-label label {
+  display: inline-block;
+  width: 4rem;
+  text-align: right;
+} */
+
+#tuFooter {
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  text-align: right;
+}

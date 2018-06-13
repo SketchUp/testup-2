@@ -15,12 +15,6 @@ module TestUp
 
     include Adapter
 
-    # @param [Hash] options
-    def initialize(options)
-      options[:dialog_title] = options[:title] if options.key?(:title)
-      super(options)
-    end
-
     def show
       if Sketchup.platform == :platform_osx
         # UI::WebDialogs under mac isn't really modal. But this prevents the

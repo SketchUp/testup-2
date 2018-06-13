@@ -34,6 +34,10 @@ export default Vue.extend({
   margin-right: 0;
 }
 
+.su-toolbar .su-button {
+  padding: 1rem;
+}
+
 .su-toolbar .su-panel {
   padding: 1rem 0.5rem;
   min-width: 3rem;

@@ -10,54 +10,69 @@
     <link rel="stylesheet" href="css/preferences.css"/>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
     <script src="js/lib/polyfills.js"></script>
-
-    <title>TestUp 2</title>
   </head>
   <body>
 
     <div id="app" v-cloak>
 
-      <su-label>Test Suite Paths:</su-label>
-      <su-listbox v-bind:items="config.test_suite_paths"/>
+      <div id="tuPaths">
+        <su-label>Test Suite Paths:</su-label>
+        <su-listbox v-bind:items="config.test_suite_paths"></su-listbox>
+      </div>
 
 
-      <su-button v-on:click.native="movePathUp" title="Up">
-        Up
-      </su-button>
+      <div>
+        <span id="tuPathUpDown">
+          <su-button v-on:click.native="movePathUp" title="Up">
+            Up
+          </su-button>
 
-      <su-button v-on:click.native="movePathDown" title="Down">
-        Down
-      </su-button>
+          <su-button v-on:click.native="movePathDown" title="Down">
+            Down
+          </su-button>
+        </span>
+
+        <span id="tuPathManage">
+          <su-button v-on:click.native="editPath" title="Edit">
+            Edit
+          </su-button>
+
+          <su-separator vertical></su-separator>
+
+          <su-button v-on:click.native="removePath" title="Remove">
+            Remove
+          </su-button>
+
+          <su-button v-on:click.native="addPath" title="Add">
+            Add
+          </su-button>
+        </span>
+      </div>
 
 
-      <su-button v-on:click.native="editPath" title="Edit">
-        Edit
-      </su-button>
+      <su-group title="Code Editor" id="tuCodeEditor">
 
-      <su-button v-on:click.native="removePath" title="Remove">
-        Remove
-      </su-button>
+        <div class="tu-input-group">
+          <su-input label="Application:" v-model="config.editor.executable"></su-input>
+        </div>
 
-      <su-button v-on:click.native="addPath" title="Add">
-        Add
-      </su-button>
+        <div class="tu-input-group">
+          <su-input label="Arguments:" v-model="config.editor.arguments"></su-input>
+          <su-label>Variables: {FILE} {LINE}</su-label>
+        </div>
 
-
-      <su-label>Application:</su-label>
-      <su-input v-model="config.editor.executable"/>
-
-      <su-label>Arguments:</su-label>
-      <su-input v-model="config.editor.arguments"/>
-      <su-label>Variables: {FILE} {LINE}</su-label>
+      </su-group>
 
 
-      <su-button v-on:click.native="cancel" title="Cancel">
-        Cancel
-      </su-button>
+      <div id="tuFooter">
+        <su-button v-on:click.native="cancel" title="Cancel">
+          Cancel
+        </su-button>
 
-      <su-button v-on:click.native="save" title="Save">
-        Save
-      </su-button>
+        <su-button v-on:click.native="save" title="Save">
+          Save
+        </su-button>
+      </div>
 
     </div><!-- #app -->
 

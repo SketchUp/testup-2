@@ -26,13 +26,13 @@ module TestUp
       {
         :title           => "#{PLUGIN_NAME} - Preferences",
         :preferences_key => "#{PLUGIN_ID}_Preferences",
-        :width           => 600,
-        :height          => 400,
-        :min_width       => 300,
-        :min_height      => 300,
-        # :resizable       => false,
-        :resizable       => true, # TODO: Debug only!
-        :scrollable      => false,
+        :width           => 650,
+        :height          => 550,
+        :min_width       => 650,
+        :min_height      => 550,
+        :max_width       => 800,
+        :max_height      => 600,
+        :resizable       => true,
       }
     end
 
@@ -49,7 +49,7 @@ module TestUp
       }
       dialog.register_callback('editPath') { |dialog, path, index|
         Log.info "editPath"
-        event_edit_path
+        event_edit_path(path, index)
       }
       dialog.register_callback('save') { |dialog, config|
         Log.info "save(...)"
