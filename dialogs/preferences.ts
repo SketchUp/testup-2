@@ -46,7 +46,7 @@ window.app = new Vue({
           arguments: "",
         },
       },
-      selectedPathIndex: 0,
+      selectedPathIndex: -1,
     };
   },
   methods: {
@@ -54,24 +54,36 @@ window.app = new Vue({
       console.log('configure', config);
       this.config = config;
     },
+    addPaths(path: string) {
+      console.log('addPaths', path);
+      this.config.test_suite_paths = this.config.test_suite_paths.concat(path);
+    },
+    updatePath(path: string, index: number) {
+      console.log('updatePath', path, index);
+      this.config.test_suite_paths.splice(index, 1, path);
+    },
     pathSelected(index: number, value: string) {
       console.log('pathSelected', index, value);
       this.selectedPathIndex = index;
     },
     movePath(from: number, offset: number) {
+      if (this.selectedPathIndex < 0) return;
       let to = (this.selectedPathIndex + offset) % this.numPaths;
       let paths = this.config.test_suite_paths;
       paths.splice(to, 0, paths.splice(from, 1)[0]);
-      // this.selectedPathIndex = to;
+      // Must do this the next tick for the SELECT element to correctly update
+      // its selection.
       Vue.nextTick(() => {
         this.selectedPathIndex = to;
       });
     },
     movePathUp() {
-      this.movePath(this.selectedPathIndex, -1);
+      if (this.selectedPathIndex > 0)
+        this.movePath(this.selectedPathIndex, -1);
     },
     movePathDown() {
-      this.movePath(this.selectedPathIndex, 1);
+      if (this.selectedPathIndex < this.numPaths - 1)
+        this.movePath(this.selectedPathIndex, 1);
     },
     editPath() {
       sketchup.editPath(this.selectedPath, this.selectedPathIndex);
@@ -79,23 +91,7 @@ window.app = new Vue({
     removePath() {
       let index = this.selectedPathIndex;
       if (index >= 0 && index < this.numPaths) {
-        // let paths = this.config.test_suite_paths;
-        // paths.splice(index, 1);
-        let newIndex = Math.max(this.selectedPathIndex - 1, 0);
-        console.log('Remove:', index, newIndex);
-        // this.selectedPathIndex = newIndex;
-        // this.selectedPathIndex += index == 0 ? 0 : -1;
-        // this.config.test_suite_paths = paths;
-        this.selectedPathIndex = -1;
-        Vue.nextTick(() => {
-          this.config.test_suite_paths.splice(index, 1);
-          this.selectedPathIndex = newIndex;
-        });
-        // Vue.nextTick(() => {
-        // });
-        // this.selectedPathIndex = -1;
-        // this.selectedPathIndex = index;
-        // this.$forceUpdate();
+        this.config.test_suite_paths.splice(index, 1);
       }
     },
     addPath() {
@@ -113,7 +109,7 @@ window.app = new Vue({
       return this.config.test_suite_paths.length;
     },
     selectedPath(): string {
-      console.log('selectedPath', this.selectedPathIndex, this.config.test_suite_paths);
+      // console.log('selectedPath', this.selectedPathIndex, this.config.test_suite_paths);
       let index = this.selectedPathIndex;
       let num_paths = this.config.test_suite_paths.length;
       if (index >= 0 && index < num_paths) {
@@ -121,6 +117,15 @@ window.app = new Vue({
       } else {
         return '';
       }
+    },
+    isPathSelected(): boolean {
+      return this.numPaths > 0 && this.selectedPathIndex >= 0;
+    },
+    canMovePathUp(): boolean {
+      return this.isPathSelected && this.selectedPathIndex > 0;
+    },
+    canMovePathDown(): boolean {
+      return this.isPathSelected && this.selectedPathIndex < this.numPaths - 1;
     },
   },
   mounted() {

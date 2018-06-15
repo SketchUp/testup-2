@@ -1,7 +1,7 @@
 <template>
   <div class="su-listbox">
-    <select size="10" v-on:change="onChange" v-bind:value="traceValue">
-      <option v-for="(item, index) in items" v-bind:value="item">
+    <select size="10" v-on:change="onChange" v-bind:value="value">
+      <option v-for="(item, index) in items">
         {{ item }}
       </option>
     </select>
@@ -21,11 +21,23 @@ export default Vue.extend({
       this.$emit('change', index, value);
     }
   },
-  computed: {
-    traceValue(): string {
-      console.log('traceValue', this.value, this.items);
-      return this.value;
-    },
+  // computed: {
+  //   traceValue(): string {
+  //     console.log('traceValue', this.value, this.items);
+  //     // this.$forceUpdate();
+  //     return this.value;
+  //   },
+  // },
+  watch: {
+    value(newValue, oldValue) {
+      // For some reason the `value` attribute of the SELECT element doesn't
+      // properly update, making the selection appear out of sync with the
+      // component data. This kludge of forcing an update in the next tick
+      // works around this.
+      Vue.nextTick(() => {
+        this.$forceUpdate();
+      });
+    }
   }
 })
 </script>

@@ -107,8 +107,8 @@ module TestUp
     # @return [nil]
     def call(function, *args)
       Log.info "call(#{function}, ...)"
-      arguments = args.map { |arg| JSON.pretty_generate(arg) }
-      argument_js = arguments.join(', ');
+      arguments = args.map { |arg| arg.to_json }
+      argument_js = arguments.join(', ')
       @dialog.execute_script("#{function}(#{argument_js});")
       nil
     end

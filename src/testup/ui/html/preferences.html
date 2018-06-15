@@ -28,27 +28,27 @@
 
       <div>
         <span id="tuPathUpDown">
-          <su-button v-on:click.native="movePathUp" title="Up">
+          <su-button v-on:click.native="movePathUp" v-bind:disabled="!canMovePathUp">
             Up
           </su-button>
 
-          <su-button v-on:click.native="movePathDown" title="Down">
+          <su-button v-on:click.native="movePathDown" v-bind:disabled="!canMovePathDown">
             Down
           </su-button>
         </span>
 
         <span id="tuPathManage">
-          <su-button v-on:click.native="editPath" title="Edit">
+          <su-button v-on:click.native="editPath" v-bind:disabled="!isPathSelected">
             Edit
           </su-button>
 
           <su-separator vertical></su-separator>
 
-          <su-button v-on:click.native="removePath" title="Remove">
+          <su-button v-on:click.native="removePath" v-bind:disabled="!isPathSelected">
             Remove
           </su-button>
 
-          <su-button v-on:click.native="addPath" title="Add">
+          <su-button v-on:click.native="addPath">
             Add
           </su-button>
         </span>

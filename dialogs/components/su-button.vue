@@ -1,7 +1,7 @@
 <template>
-  <div class="su-button">
+  <button class="su-button">
     <slot></slot>
-  </div>
+  </button>
 </template>
 
 <script lang="ts">
@@ -17,8 +17,12 @@ export default Vue.extend({
   padding: 0.5rem 1rem;
   background: #aaa;
   text-align: center;
+  border: none;
 }
 .su-button:hover {
   background: #ccc;
+}
+.su-button:disabled, .su-button:disabled:hover {
+  opacity: 0.5;
 }
 </style>

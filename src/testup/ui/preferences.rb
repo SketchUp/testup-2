@@ -8,6 +8,7 @@
 require 'testup/ui/window'
 require 'testup/debug'
 require 'testup/log'
+require 'testup/ui'
 
 
 module TestUp
@@ -74,12 +75,17 @@ module TestUp
     end
 
     def event_add_path
-      puts "TODO: Add Path"
+      message = 'Select folders that includes the test cases.'
+      paths = SystemUI.select_directory(
+        select_multiple: true,
+        message: message
+      )
+      call('app.addPaths', paths) unless paths.nil?
     end
 
     def event_edit_path(path, index)
-      puts "TODO: Edit Path"
-      p [path, index]
+      new_path = SystemUI.select_directory(directory: path)
+      call('app.updatePath', new_path, index) unless new_path.nil?
     end
 
     def event_save_config(config)
