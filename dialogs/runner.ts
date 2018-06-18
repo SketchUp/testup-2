@@ -52,11 +52,12 @@ window.app = new Vue({
     configure(config: RunnerConfig) {
       console.log('configure', config);
       let test_suite_title = config.active_tab;
+      console.log('> active_tab:', test_suite_title);
       // this.test_suites[this.activeTestSuiteIndex];
       let index = this.test_suites.findIndex((test_suite: TestSuite) => {
         return test_suite.title == test_suite_title;
       });
-      console.log('tab index:', index);
+      console.log('> tab index:', index);
       this.activeTestSuiteIndex = index >= 0 ? index : 0;
     },
     reset() {
@@ -139,6 +140,7 @@ window.app = new Vue({
       sketchup.openPreferences();
     },
     changeTestSuite(index: number) {
+      console.log('changeTestSuite', index);
       this.activeTestSuiteIndex = index;
       sketchup.changeActiveTestSuite(this.active_test_suite.title);
     },
