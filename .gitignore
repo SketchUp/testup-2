@@ -69,5 +69,5 @@ Gemfile.lock
 ## Generated Files
 ##################
 
-src/testup/ui/js/*
+src/testup/ui/js/*.*
 src/testup/ui/images/*
