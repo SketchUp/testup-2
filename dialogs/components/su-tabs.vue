@@ -37,6 +37,9 @@ export default Vue.extend({
       console.log('selectTab:', index);
       this.$emit('tab-change', index);
     },
+    reset() {
+      this.tabs = [];
+    }
   },
   watch: {
     selectedIndex: function(newIndex, oldIndex) {

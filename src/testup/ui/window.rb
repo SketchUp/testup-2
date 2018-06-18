@@ -21,7 +21,7 @@ module TestUp
     end
 
     def show
-      if @dialog.visible?
+      if visible?
         @dialog.bring_to_front
       else
         @dialog ||= create_dialog
@@ -31,12 +31,16 @@ module TestUp
     end
 
     def toggle
-      if @dialog.visible?
+      if visible?
         @dialog.close
         @dialog = nil
       else
         show
       end
+    end
+
+    def visible?
+      @dialog && @dialog.visible?
     end
 
     private

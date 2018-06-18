@@ -84,12 +84,24 @@ module TestUp
     end
 
     def event_edit_path(path, index)
+      Log.info "event_save_config(#{path}, #{index})"
       new_path = SystemUI.select_directory(directory: path)
       call('app.updatePath', new_path, index) unless new_path.nil?
     end
 
     def event_save_config(config)
-      p ["TODO: Save config", config]
+      Log.info "event_save_config(...)"
+      Log.debug config.inspect
+      # Save editor config:
+      application = config['editor']['application']
+      arguments = config['editor']['arguments']
+      Editor.change(application, arguments)
+      paths = config['test_suite_paths']
+      # Save test suite paths:
+      if TestUp.settings[:paths_to_testsuites] != paths
+        TestUp.settings[:paths_to_testsuites] = paths
+        TestUp.window_vue.reload
+      end
       @dialog.close
     end
 

@@ -31,6 +31,13 @@ module TestUp
       time('TestRunnerWindow#toggle') { super }
     end
 
+    # Clears and reloads the test suites.
+    def reload
+      return false unless visible?
+      call('app.reset')
+      true
+    end
+
     private
 
     # @return [Hash]

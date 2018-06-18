@@ -59,6 +59,13 @@ window.app = new Vue({
       console.log('tab index:', index);
       this.activeTestSuiteIndex = index >= 0 ? index : 0;
     },
+    reset() {
+      this.$refs.tabbar.reset();
+      this.test_suites = [];
+      this.activeTestSuiteIndex = 0;
+      this.statusBarText = '';
+      sketchup.ready();
+    },
     discover(discoveries: Array<TestSuite>) {
       console.log('discover');
       this.test_suites = discoveries;
