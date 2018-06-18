@@ -1,6 +1,8 @@
 // Place your settings in this file to overwrite default and user settings.
 {
+  "explorer.autoReveal": false,
   "files.trimTrailingWhitespace": true,
+  "solargraph.diagnostics": true,
   "cSpell.enabledLanguageIds": [
     "javascript",
     "markdown",
@@ -13,6 +15,5 @@
   ],
   "cSpell.words": [
     "sketchup"
-  ],
-  "explorer.autoReveal": false,
+  ]
 }
