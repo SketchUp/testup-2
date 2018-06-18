@@ -13,10 +13,13 @@ import * as suErrorHandler from "./ts/su-error-handler";
 Vue.config.errorHandler = suErrorHandler.vueErrorHandler;
 window.onerror = suErrorHandler.globalErrorHandler;
 
-import { WebDialogShim } from "./ts/webdialog-shim";
+import { RunnerWebDialogShim } from "./ts/webdialog/webdialog-runner";
 if (!window.sketchup) {
-  window.sketchup = new WebDialogShim;
+  window.sketchup = new RunnerWebDialogShim;
 }
+
+import { SketchUpRunner } from "./ts/interfaces/sketchup-runner";
+declare const sketchup: SketchUpRunner;
 
 import SUButton from "./components/su-button.vue";
 import SUPanelGroup from "./components/su-panel-group.vue";
@@ -55,6 +58,13 @@ window.app = new Vue({
       });
       console.log('tab index:', index);
       this.activeTestSuiteIndex = index >= 0 ? index : 0;
+    },
+    reset() {
+      this.$refs.tabbar.reset();
+      this.test_suites = [];
+      this.activeTestSuiteIndex = 0;
+      this.statusBarText = '';
+      sketchup.ready();
     },
     discover(discoveries: Array<TestSuite>) {
       console.log('discover');
@@ -124,6 +134,9 @@ window.app = new Vue({
     },
     reRun() {
       sketchup.reRunTests();
+    },
+    openPreferences() {
+      sketchup.openPreferences();
     },
     changeTestSuite(index: number) {
       this.activeTestSuiteIndex = index;

@@ -5,7 +5,7 @@
 #
 #-------------------------------------------------------------------------------
 
-# require 'testup/ui/preferences'
+require 'testup/ui/preferences'
 require 'testup/ui/window'
 require 'testup/api'
 require 'testup/debug'
@@ -31,6 +31,13 @@ module TestUp
       time('TestRunnerWindow#toggle') { super }
     end
 
+    # Clears and reloads the test suites.
+    def reload
+      return false unless visible?
+      call('app.reset')
+      true
+    end
+
     private
 
     # @return [Hash]
@@ -43,7 +50,10 @@ module TestUp
         :min_width       => 300,
         :min_height      => 300,
         :resizable       => true,
-        :scrollable      => false,
+        # This cause errors in JS:
+        #   Uncaught TypeError: Cannot read property 'style' of null
+        #   document.body.style.overflow="hidden";
+        # :scrollable      => false,
       }
     end
 
@@ -82,6 +92,11 @@ module TestUp
         Log.info "openSourceFile(#{location})"
         event_open_source_file(location)
       }
+      dialog.register_callback('openPreferences') { |dialog|
+        Log.info "openPreferences(.)"
+        event_open_preferences
+      }
+
       dialog
     end
 
@@ -178,7 +193,7 @@ module TestUp
       end
     end
 
-    def event_on_open_preferences
+    def event_open_preferences
       #@preferences_window ||= PreferencesWindow.new
       @preferences_window = PreferencesWindow.new
       @preferences_window.show

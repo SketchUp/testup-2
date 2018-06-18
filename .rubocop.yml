@@ -23,7 +23,9 @@ AllCops:
       - tools/
   TargetRubyVersion: 2.1 # Should have been 2.0 but RuboCop dropped support.
   Exclude:
+  - dialogs/**/*
   - docs/**/*.rb
+  - node_modules/**/*
   - ruby-c-extension/**/*.rb
   - src/testup/third-party/**/*.rb
   - tests/**/*.rb # TODO - for now ignore.

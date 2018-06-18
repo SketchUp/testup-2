@@ -196,8 +196,8 @@ module TestUp
     end
 
     def event_on_open_preferences
-      #@preferences_window ||= PreferencesWindow.new
-      @preferences_window = PreferencesWindow.new
+      #@preferences_window ||= PreferencesWindowLegacy.new
+      @preferences_window = PreferencesWindowLegacy.new
       @preferences_window.show
     end
 

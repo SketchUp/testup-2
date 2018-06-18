@@ -1,13 +1,6 @@
-import SketchUp from './sketchup'
-import { TestSuite } from './types';
+import { SketchUp } from '../interfaces/sketchup';
 
 export class WebDialogShim implements SketchUp {
-  changeActiveTestSuite(test_suite_title: string): void {
-    this.sketchup('changeActiveTestSuite', [test_suite_title]);
-  }
-  discoverTests(test_suites: Array<TestSuite>): void {
-    this.sketchup('test_suites', [test_suites]);
-  }
   js_error(error_data: any): void
   {
     this.sketchup('js_error', [error_data]);
@@ -16,16 +9,8 @@ export class WebDialogShim implements SketchUp {
   {
     this.sketchup('ready');
   }
-  reRunTests(): void
-  {
-    this.sketchup('reRunTests');
-  }
-  runTests(test_suite: TestSuite): void
-  {
-    this.sketchup('runTests', [test_suite]);
-  }
 
-  private sketchup(callback: string, params?: Array<any>) {
+  protected sketchup(callback: string, params?: Array<any>) {
     let location = `skp:${callback}`;
     if (typeof(params) !== 'undefined') {
       let json_params = JSON.stringify(params);
@@ -57,9 +42,3 @@ export class WebDialogShim implements SketchUp {
 declare global {
   interface Window { sketchup: any; }
 }
-
-// TODO(thomthom): This doesn't work. Need to do this in the file that includes
-// this shim. Look for ways to make this automatic when the file is included.
-// if (!window.sketchup) {
-//   window.sketchup = new WebDialogShim;
-// }

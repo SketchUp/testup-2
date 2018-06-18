@@ -59,6 +59,7 @@ module TestUp
   class << self
     attr_reader :settings
     attr_accessor :window
+    attr_accessor :window_vue # TODO: Temp! Remove
   end
 
 

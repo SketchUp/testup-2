@@ -20,18 +20,35 @@ module TestUp
       @dialog = create_dialog
     end
 
-    def toggle
-      if @dialog.visible?
-        @dialog.close
-        @dialog = nil
+    def show
+      if visible?
+        @dialog.bring_to_front
       else
         @dialog ||= create_dialog
         register_callbacks(@dialog)
-        @dialog.show
+        show_window
       end
     end
 
+    def toggle
+      if visible?
+        @dialog.close
+        @dialog = nil
+      else
+        show
+      end
+    end
+
+    def visible?
+      @dialog && @dialog.visible?
+    end
+
     private
+
+    # Override this if the dialog should be modal.
+    def show_window
+      @dialog.show
+    end
 
     # @return [Hash]
     def window_options
@@ -94,8 +111,8 @@ module TestUp
     # @return [nil]
     def call(function, *args)
       Log.info "call(#{function}, ...)"
-      arguments = args.map { |arg| JSON.pretty_generate(arg) }
-      argument_js = arguments.join(', ');
+      arguments = args.map { |arg| arg.to_json }
+      argument_js = arguments.join(', ')
       @dialog.execute_script("#{function}(#{argument_js});")
       nil
     end

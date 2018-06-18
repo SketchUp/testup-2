@@ -6,6 +6,7 @@ module.exports = {
   entry: {
     // https://github.com/webpack/docs/wiki/multiple-entry-points
     // Add new dialogs here:
+    preferences: './dialogs/preferences.ts',
     runner: './dialogs/runner.ts',
   },
   output: {

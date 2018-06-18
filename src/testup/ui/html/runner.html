@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="css/runner.css"/>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
     <script src="js/lib/polyfills.js"></script>
-
-    <title>TestUp 2</title>
   </head>
   <body>
 
@@ -49,7 +47,7 @@
           </su-panel>
         </su-panel-group>
 
-        <su-button title="Preferences">
+        <su-button v-on:click.native="openPreferences" title="Preferences">
           <i class="fas fa-cog"></i>
         </su-button>
 

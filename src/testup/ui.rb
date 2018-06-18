@@ -212,6 +212,7 @@ module TestUp
     def self.select_directory(options)
       if defined?(UI) && UI.respond_to?(:select_directory)
         result = UI.select_directory(options)
+        return nil if result.nil?
         if options && options[:select_multiple]
           result.map! { |path| File.expand_path(path) }
         else

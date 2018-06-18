@@ -1,5 +1,9 @@
 import Vue from "vue";
 
+import { SketchUp } from "./interfaces/sketchup";
+declare const sketchup: SketchUp;
+
+
 function sendErrorToSketchUp(message: string, backtrace: any, error?: Error): void {
   let data = {
     'message' : message,

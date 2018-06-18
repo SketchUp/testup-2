@@ -11,6 +11,12 @@ require 'testup/log'
 module TestUp
   module Adapter
 
+    # @param [Hash] options
+    def initialize(options)
+      options[:dialog_title] = options[:title] if options.key?(:title)
+      super(options)
+    end
+
     # @return [Hash]
     def register_callback
       raise NotImplementedError
