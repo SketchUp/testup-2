@@ -28,11 +28,11 @@ module TestUp
         :title           => "#{PLUGIN_NAME} - Preferences",
         :preferences_key => "#{PLUGIN_ID}_Preferences",
         :width           => 650,
-        :height          => 550,
+        :height          => 460,
         :min_width       => 650,
-        :min_height      => 550,
+        :min_height      => 460,
         :max_width       => 800,
-        :max_height      => 600,
+        :max_height      => 480,
         :resizable       => true,
       }
     end
