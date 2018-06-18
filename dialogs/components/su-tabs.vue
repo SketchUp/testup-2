@@ -30,12 +30,10 @@ export default Vue.extend({
       this.tabs.push(tab);
       if (this.tabs.length - 1 == this.selectedIndex) {
         tab.active = true;
-        // this.selectTab(this.selectedIndex);
       }
     },
     selectTab(index) {
       console.log('selectTab:', index);
-      // this.$emit('tab-change', index);
       this.selectedIndex = index;
     },
     reset() {
@@ -49,7 +47,6 @@ export default Vue.extend({
       this.tabs.forEach(tab => {
         tab.active = (tab === selectedTab);
       });
-      // this.selectTab(newIndex);
       console.log('> event: tab-change:', newIndex);
       this.$emit('tab-change', newIndex);
     },
