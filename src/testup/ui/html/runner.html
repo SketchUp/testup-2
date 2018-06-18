@@ -58,8 +58,8 @@
         <su-tab v-bind:title="test_suite.title"
                 v-for="(test_suite, index) in test_suites" v-bind:key="test_suite.id">
           <div class="tu-test-suite-header">
-            <a href="#" v-on:click="selectTestSuite(test_suite, true)">Select All</a>
-            <a href="#" v-on:click="selectTestSuite(test_suite, false)">Select None</a>
+            <a href="#" v-on:click.prevent="selectTestSuite(test_suite, true)">Select All</a>
+            <a href="#" v-on:click.prevent="selectTestSuite(test_suite, false)">Select None</a>
           </div>
           <su-scrollable>
             <tu-test-suite>
