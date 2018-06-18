@@ -32,7 +32,7 @@ import SUToolbar from "./components/su-toolbar.vue";
 import TUTestCase from "./components/tu-test-case.vue";
 import TUTestSuite from "./components/tu-test-suite.vue";
 
-import { RunnerConfig, TestSuite } from './ts/types'
+import { RunnerConfig, TestSuite, TestCase, Test } from './ts/types'
 
 declare global {
   interface Window { app: Vue; }
@@ -98,6 +98,15 @@ window.app = new Vue({
       //       active tab index.
       // TODO: Update coverage
       this.test_suites[this.activeTestSuiteIndex].test_cases = test_suite.test_cases;
+      // Expand test cases with failed tests.
+      // This would be any test case with enabled tests with a failure.
+      // TODO: Consider making this a Preference option.
+      let test_cases = this.test_suites[this.activeTestSuiteIndex].test_cases;
+      for (let test_case of test_cases) {
+        if (this.hasFailedTests(test_case)) {
+          test_case.expanded = true;
+        }
+      }
       // Update statusbar.
       let stats = this.test_suite_stats(test_suite);
       let total_time_formatted = stats.total_time.toFixed(3) + 's';
@@ -143,6 +152,14 @@ window.app = new Vue({
       console.log('changeTestSuite', index);
       this.activeTestSuiteIndex = index;
       sketchup.changeActiveTestSuite(this.active_test_suite.title);
+    },
+    hasFailedTests(test_case: TestCase) {
+      for (let test of test_case.tests) {
+        if (test.enabled && test.result && (test.result.error || test.result.failed)) {
+          return true;
+        }
+      }
+      return false;
     },
     test_suite_stats(test_suite: TestSuite) {
       let data = {

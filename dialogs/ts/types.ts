@@ -18,6 +18,7 @@ export interface Test {
 
 export interface TestCase {
   enabled: boolean;
+  expanded: boolean;
   tests: Array<Test>;
 }
 
