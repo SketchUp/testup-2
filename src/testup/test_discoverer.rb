@@ -117,14 +117,14 @@ module TestUp
       Dir.glob(testcase_filter)
     end
 
+    # TODO: Move to separate file.
     module Sandbox
       def self.load(testcase_filename)
         # Attempt to load the testcase so it can be inspected for testcases and
         # test methods. Any errors is wrapped up in a custom error type so it can
         # be caught further up and displayed in the UI.
         begin
-          # module_eval(File.read(testcase_filename), testcase_filename)
-          Kernel.load testcase_filename # TODO: Needed? Can we 'move' the already evaluated test?
+          Kernel.load testcase_filename
         rescue ScriptError, StandardError => error
           testcase_name = File.basename(testcase_filename, '.*')
           warn "#{error.class} Loading #{testcase_name}"

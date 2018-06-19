@@ -37,7 +37,7 @@ module TestUp
     # @yield [Report::TestSuite]
     # @return [Boolean]
     def self.run_tests(tests, title: 'Untitled', path: nil, options: {})
-      if options[:show_console] # TODO: Add option to open Ruby Console.
+      if options[:show_console]
         TESTUP_CONSOLE.show
         TESTUP_CONSOLE.clear
       end

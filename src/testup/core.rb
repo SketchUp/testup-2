@@ -1,16 +1,11 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2016 Trimble Inc.
+# Copyright 2013-2018 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
 
 require 'sketchup.rb'
-require 'testup/app_files'
-require 'testup/ui/runner'
-
-
-# Third party dependencies.
 
 require 'rubygems'
 begin
@@ -19,15 +14,26 @@ rescue Gem::LoadError
   begin
     # Minitest 5.9.1 caused problems for reasons unknown. For now locking to
     # an older version known to work.
+    # TODO: Defer this to a point so it doesn't happen during SketchUp startup.
     Gem.install('minitest', '5.4.3')
   rescue Gem::LoadError
     # Needed because of Ruby 2.2. Ruby 2.0 did not need this. Seems like a bug.
-    # This pattern is probably not that common, to be programmatically installing
-    # gems.
+    # This pattern is probably not that common, to be programmatically
+    # installing gems.
   end
   gem 'minitest'
 end
 require 'minitest'
+
+require 'testup/ui/runner' if defined?(UI::WebDialog)
+require 'testup/app_files'
+require 'testup/console.rb'
+require 'testup/debug.rb'
+require 'testup/editor.rb'
+require 'testup/settings.rb'
+require 'testup/taskbar_progress.rb'
+require 'testup/ui.rb'
+require 'testup/win32.rb' if RUBY_PLATFORM =~ /mswin|mingw/
 
 
 module TestUp
@@ -57,23 +63,6 @@ module TestUp
   class << self
     attr_reader :settings
     attr_accessor :window
-  end
-
-
-  ### Dependencies ### ---------------------------------------------------------
-
-  if defined?(UI::WebDialog)
-    require 'testup/ui/runner'
-  end
-
-  require 'testup/console.rb'
-  require 'testup/debug.rb'
-  require 'testup/editor.rb'
-  require 'testup/settings.rb'
-  require 'testup/taskbar_progress.rb'
-  require 'testup/ui.rb'
-  if RUBY_PLATFORM =~ /mswin|mingw/
-    require 'testup/win32.rb'
   end
 
 
@@ -113,8 +102,7 @@ module TestUp
 
 
   def self.reset_settings
-    # This will make the default values be used. (At least under Windows.)
-    # TODO: Confirm this works under OSX.
+    # This will make the default values be used.
     @settings[:debugger_output_enabled] = nil
     @settings[:editor] = nil
     @settings[:editor_application] = nil
@@ -128,7 +116,8 @@ module TestUp
 
   ### Extension ### ------------------------------------------------------------
 
-  def self.toggle_testup
+  # Toggle the test runner dialog.
+  def self.toggle_test_runner_window
     @window ||= TestRunnerWindow.new
     @window.toggle
   end
@@ -139,23 +128,31 @@ module TestUp
     @window = nil
   end
 
-
+  # TODO(thomthom): Move to API.
+  # Toggle whether TestUp display the test results in a dialog or if it displays
+  # it in the Ruby Console, similar to running Minitest from a terminal.
   def self.toggle_run_in_gui
     @settings[:run_in_gui] = !@settings[:run_in_gui]
   end
 
-
+  # TODO(thomthom): Move to API.
+  # Toggle verbose test results. Only relevant if TestUp is configured to output
+  # results in the Ruby Console.
   def self.toggle_verbose_console_tests
     @settings[:verbose_console_tests] = !@settings[:verbose_console_tests]
   end
 
+  # TODO(thomthom): Move this method. Maybe to the Reporter class if the
+  # @num_tests_being_run instance variable also can be moved there.
   def self.update_testing_progress(num_tests_run)
     progress = TaskbarProgress.new
     progress.set_value(num_tests_run, @num_tests_being_run)
-    # puts "Test Progress: #{num_tests_run} of #{@num_tests_being_run}"
     nil
   end
 
+  # TODO(thomthom): Move to API.
+  # Prompts the user for a custom seed for the run-order of Minitest.
+  # This allows the user to re-run a given test run.
   def self.set_custom_seed
     prompts = ['Seed (Negative for Random)']
     defaults = [self.settings[:seed] || -1]
@@ -171,37 +168,9 @@ module TestUp
     seed
   end
 
+  # Opens the Log directory in the system file explorer.
   def self.open_log_folder
     UI.openURL(log_path)
   end
-
-
-  # TODO: Move to a separate utility file. Mixin?
-  def self.suppress_warning_dialogs(&block)
-    if Test.respond_to?(:suppress_warnings=)
-      cache = Test.suppress_warnings?
-      Test.suppress_warnings = true
-    end
-    block.call
-  ensure
-    if Test.respond_to?(:suppress_warnings=)
-      Test.suppress_warnings = cache
-    end
-    nil
-  end
-
-
-  # TODO: Move to a separate utility file. Mixin?
-  def self.defer(&block)
-    done = false
-    UI.start_timer(0, false) {
-      # Any modal dialog would cause this timer to repeat. We avoid this
-      # potential problem by breaking out early if we already have run.
-      next if done
-      done = true
-      block.call
-    }
-  end
-
 
 end # module

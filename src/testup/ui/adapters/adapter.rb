@@ -28,7 +28,6 @@ module TestUp
     # @param [UI::HtmlDialog, UI::WebDialog] dialog
     # @return [UI::HtmlDialog, UI::WebDialog]
     def register_callbacks(dialog)
-      # TODO: dialog.register_callback
       dialog.add_action_callback('ready') { |dialog|
         Log.info "ready(...)"
         event_window_ready

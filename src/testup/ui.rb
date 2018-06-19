@@ -15,7 +15,7 @@ module TestUp
 
     # Commands
     cmd = UI::Command.new('Open TestUp') {
-      self.toggle_testup
+      self.toggle_test_runner_window
     }
     cmd.tooltip = 'Open TestUp'
     cmd.status_bar_text = 'Open TestUp for running tests.'
