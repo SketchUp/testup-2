@@ -50,8 +50,6 @@ module TestUp
 
   PATH_UI         = File.join(PATH, 'ui').freeze
   PATH_IMAGES     = File.join(PATH, 'images').freeze
-  # TODO(thomthom): Remove once old dialog is obsolete.
-  PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
 
 
   ### Accessors ### ------------------------------------------------------------
@@ -59,33 +57,25 @@ module TestUp
   class << self
     attr_reader :settings
     attr_accessor :window
-    attr_accessor :window_vue # TODO: Temp! Remove
   end
 
 
   ### Dependencies ### ---------------------------------------------------------
 
   if defined?(UI::WebDialog)
-    if !defined?(TestUp::SKUI)
-      skui_path = File.join(PATH, 'third-party', 'SKUI', 'src', 'SKUI')
-      require File.join(skui_path, 'embed_skui.rb')
-      ::SKUI.embed_in(self)
-    end
-    require File.join(PATH, 'preferences_window.rb')
-    require File.join(PATH, 'test_window.rb')
+    require 'testup/ui/runner'
   end
 
-  require File.join(PATH, 'console.rb')
-  require File.join(PATH, 'coverage.rb')
-  require File.join(PATH, 'debug.rb')
-  require File.join(PATH, 'editor.rb')
-  require File.join(PATH, 'p4.rb')
-  require File.join(PATH, 'settings.rb')
-  require File.join(PATH, 'taskbar_progress.rb')
-  require File.join(PATH, 'legacy/test_discoverer.rb')
-  require File.join(PATH, 'ui.rb')
+  require 'testup/console.rb'
+  require 'testup/coverage.rb'
+  require 'testup/debug.rb'
+  require 'testup/editor.rb'
+  require 'testup/settings.rb'
+  require 'testup/taskbar_progress.rb'
+  require 'testup/legacy/test_discoverer.rb'
+  require 'testup/ui.rb'
   if RUBY_PLATFORM =~ /mswin|mingw/
-    require File.join(PATH, 'win32.rb')
+    require 'testup/win32.rb'
   end
 
 
@@ -141,19 +131,14 @@ module TestUp
   ### Extension ### ------------------------------------------------------------
 
   def self.toggle_testup
-    @window ||= TestUpWindow.new
+    @window ||= TestRunnerWindow.new
     @window.toggle
-  end
-
-  def self.toggle_testup_vue
-    @window_vue ||= TestRunnerWindow.new
-    @window_vue.toggle
   end
 
   # Call after switching dialog type to be used. Or after making changes that
   # require the dialog to be recreated.
   def self.reset_dialogs
-    @window_vue = nil
+    @window = nil
   end
 
 
