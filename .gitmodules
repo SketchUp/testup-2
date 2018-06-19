@@ -1,3 +1,0 @@
-[submodule "src/testup/third-party/SKUI"]
-	path = src/testup/third-party/SKUI
-	url = https://github.com/thomthom/SKUI.git
