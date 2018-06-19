@@ -110,7 +110,6 @@ module TestUp
     $VERBOSE = nil
     filter = File.join(PATH, '**/*.{rb,rbs}')
     files = Dir.glob(filter).each { |file|
-      next if file.downcase.include?('skui')
       load file
     }
     @window_vue = nil
