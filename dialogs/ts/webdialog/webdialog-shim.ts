@@ -5,6 +5,10 @@ export class WebDialogShim implements SketchUp {
   {
     this.sketchup('js_error', [error_data]);
   }
+  open_url(url: string): void
+  {
+    this.sketchup('open_url', [url]);
+  }
   ready(): void
   {
     this.sketchup('ready');

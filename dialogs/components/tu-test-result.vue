@@ -3,12 +3,12 @@
     <div v-for="failure in result.failures" class="tu-test-failure">
       <div class="tu-title">
         <a href="failure.location"
-            v-on:click.prevent="openEditor(failure.location)"
+            v-on:click.prevent.stop="openEditor(failure.location)"
             title="Click to open file in editor">
           {{ failure.location }}
         </a>
       </div>
-      <pre class="tu-message"
+      <pre class="tu-message su-selectable"
         v-on:click="interceptLinks"
         v-html="$options.filters.linkify(failure.message)"></pre>
     </div>

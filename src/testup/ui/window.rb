@@ -78,6 +78,10 @@ module TestUp
         Log.info "js_error(...)"
         event_js_error(error)
       }
+      dialog.register_callback('open_url') { |dialog, url|
+        Log.info "open_url(#{url})"
+        event_open_url(url)
+      }
       dialog
     end
 
@@ -115,6 +119,11 @@ module TestUp
       argument_js = arguments.join(', ')
       @dialog.execute_script("#{function}(#{argument_js});")
       nil
+    end
+
+    # @param [String] url
+    def event_open_url(url)
+      UI.openURL(url)
     end
 
     # @param [Hash] js_error

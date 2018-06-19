@@ -22,6 +22,7 @@ import { SketchUpPreferences } from "./ts/interfaces/sketchup-preferences";
 declare const sketchup: SketchUpPreferences;
 
 import { PreferencesConfig } from "./ts/interfaces/preferences-config";
+import * as UI from './ts/ui'
 
 import SUButton from "./components/su-button.vue";
 import SUGroup from "./components/su-group.vue";
@@ -129,6 +130,11 @@ window.app = new Vue({
     },
   },
   mounted() {
+    // Redirect normal links to be opened in an external browser.
+    UI.redirect_links();
+    // Disable native browser functions to make the dialog appear more native.
+    UI.disable_select();
+    UI.disable_context_menu();
     // KLUDGE(thomthom):
     // For some reason, calling any methods on the global `app` instance from
     // the `ready`callback  will raise errors in IE11. Waiting a tick works

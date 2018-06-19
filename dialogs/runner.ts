@@ -33,6 +33,7 @@ import TUTestCase from "./components/tu-test-case.vue";
 import TUTestSuite from "./components/tu-test-suite.vue";
 
 import { RunnerConfig, TestSuite, TestCase, Test } from './ts/types'
+import * as UI from './ts/ui'
 
 declare global {
   interface Window { app: Vue; }
@@ -229,6 +230,11 @@ window.app = new Vue({
     },
   },
   mounted() {
+    // Redirect normal links to be opened in an external browser.
+    UI.redirect_links();
+    // Disable native browser functions to make the dialog appear more native.
+    UI.disable_select();
+    UI.disable_context_menu();
     // KLUDGE(thomthom):
     // For some reason, calling any methods on the global `app` instance from
     // the `ready`callback  will raise errors in IE11. Waiting a tick works
