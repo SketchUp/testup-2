@@ -79,6 +79,11 @@ class TC_Report_Test < TestUp::TestCase
   end
 
 
+  def test_unicode_method_names_æøå_テスト
+    assert(true)
+  end
+
+
   def test_from_hash_without_result
     expected = {
       title: 'foo_bar',
