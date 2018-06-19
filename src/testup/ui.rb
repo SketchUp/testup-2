@@ -115,13 +115,6 @@ module TestUp
     cmd.large_icon = File.join(PATH_IMAGES, 'help.png')
     cmd_display_minitest_help = cmd
 
-    cmd = UI::Command.new('Run Tests') {
-      self.run_tests_gui
-    }
-    cmd.tooltip = 'Discover and run all tests.'
-    cmd.status_bar_text = 'Discover and run all tests.'
-    cmd_run_tests = cmd
-
     cmd = UI::Command.new('Force WebDialog') {
       if self.settings[:window_adapter] == 'web_dialog'
         self.settings[:window_adapter] = nil

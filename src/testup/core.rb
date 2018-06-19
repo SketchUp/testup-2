@@ -67,12 +67,10 @@ module TestUp
   end
 
   require 'testup/console.rb'
-  require 'testup/coverage.rb'
   require 'testup/debug.rb'
   require 'testup/editor.rb'
   require 'testup/settings.rb'
   require 'testup/taskbar_progress.rb'
-  require 'testup/legacy/test_discoverer.rb'
   require 'testup/ui.rb'
   if RUBY_PLATFORM =~ /mswin|mingw/
     require 'testup/win32.rb'
@@ -151,40 +149,10 @@ module TestUp
     @settings[:verbose_console_tests] = !@settings[:verbose_console_tests]
   end
 
-
-  def self.run_tests_gui(run_config = nil)
-    unless @window && @window.visible?
-      warn 'TestUp window not open.'
-      UI.beep
-      return
-    end
-    # If a run_config is provided we use that instead of the selected tests.
-    if run_config
-      options = {
-        seed: run_config[:seed]
-      }
-      testsuite = @window.active_testsuite # TODO(thomthom): get from run log.
-      tests = run_config[:tests]
-    else
-      options = {}
-      testsuite = @window.active_testsuite
-      tests = @window.selected_tests
-    end
-    # Number of tests is currently incorrect as the list include stubs from the
-    # manifest.
-    @num_tests_being_run = tests.size
-    if self.run_tests(tests, testsuite, options)
-      #puts Reporter.results.pretty_inspect
-      @window.update_results(Reporter.results)
-    else
-      @window.update_results({})
-    end
-  end
-
   def self.update_testing_progress(num_tests_run)
     progress = TaskbarProgress.new
     progress.set_value(num_tests_run, @num_tests_being_run)
-    #puts "Test Progress: #{num_tests_run} of #{@num_tests_being_run}"
+    # puts "Test Progress: #{num_tests_run} of #{@num_tests_being_run}"
     nil
   end
 
@@ -207,87 +175,8 @@ module TestUp
     UI.openURL(log_path)
   end
 
-  # @example Run a test case:
-  #   TestUp.run_tests(["TC_Sketchup_Edge#"])
-  #
-  # @example Run single test:
-  #   TestUp.run_tests(["TC_Sketchup_Edge#start"])
-  #
-  # @example Run a set of test cases and/or tests:
-  #   tests = [
-  #     "TC_Sketchup_Face#",
-  #     "TC_Sketchup_Edge#start", "TC_Sketchup_Edge#end"
-  #   ]
-  #   TestUp.run_tests(tests)
-  #
-  # @param [Array<String>] list of tests or test cases to run.
-  def self.run_tests(tests, testsuite = "Untitled", options = {})
-    TESTUP_CONSOLE.show
-    TESTUP_CONSOLE.clear
-    if tests.empty?
-      puts "No tests selected to run."
-      return false
-    end
-    # `options` argument is used when re-running test runs. It doesn't change
-    # the user-selected seed.
-    seed = options[:seed] || @settings[:seed]
-    # Dump some test information that might be useful when reviewing test runs.
-    TestUp::Debugger.output("Minitest Version: #{Minitest::VERSION}")
-    puts "Minitest Version: #{Minitest::VERSION}"
-    puts "Discovering tests...\n"
-    self.discover_tests
-    puts "Running test suite: #{testsuite}"
-    puts "> Tests: #{tests.size}"
-    puts "> Seed: #{seed}" if seed
-    # If tests end with a `#` it means the whole test case should be run.
-    # Automatically fix the regex.
-    tests = tests.map { |pattern|
-      if pattern =~ /\#$/
-        pattern << ".+"
-      end
-      pattern
-    }
-    arguments = []
-    arguments << "-n /^(#{tests.join('|')})$/"
-    arguments << '--verbose' if @settings[:verbose_console_tests]
-    if seed
-      arguments << '--seed'
-      arguments << seed.to_s
-    end
-    arguments << '--testup' if @settings[:run_in_gui]
-    progress = TaskbarProgress.new
-    begin
-      progress.set_state(TaskbarProgress::NORMAL)
-      self.suppress_warning_dialogs {
-        MiniTest.run(arguments)
-      }
-    rescue SystemExit
-      puts 'Minitest called exit.'
-    ensure
-      progress.set_state(TaskbarProgress::NOPROGRESS)
-    end
-    puts "All tests done!"
-    true
-  end
 
-
-  def self.discover_tests
-    Debugger.time("TestUp.discover_tests") {
-      progress = TaskbarProgress.new
-      begin
-        progress.set_state(TaskbarProgress::INDETERMINATE)
-        paths = TestUp.settings[:paths_to_testsuites]
-        test_discoverer = TestDiscovererLegacy.new(paths)
-        discoveries = test_discoverer.discover
-      ensure
-        progress.set_state(TaskbarProgress::NOPROGRESS)
-      end
-      discoveries
-    }
-  end
-
-
-  # noinspection RubyResolve,RubyScope
+  # TODO: Move to a separate utility file. Mixin?
   def self.suppress_warning_dialogs(&block)
     if Test.respond_to?(:suppress_warnings=)
       cache = Test.suppress_warnings?
@@ -302,6 +191,7 @@ module TestUp
   end
 
 
+  # TODO: Move to a separate utility file. Mixin?
   def self.defer(&block)
     done = false
     UI.start_timer(0, false) {
