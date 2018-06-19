@@ -25,11 +25,11 @@ class TC_Report_TestSuite < TestUp::TestCase
 
   def fixture_coverage_missing_tests
     missing = {
-      'TC_Example': [
+      'TC_Example' => [
         'foo_bar',
         'biz_baz',
       ],
-      'TC_Hello': [
+      'TC_Hello' => [
         'world',
       ],
     }
