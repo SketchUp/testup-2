@@ -13,7 +13,9 @@
 ## Folders
 ############
 
-tests_old/
+/archive/
+/build/
+/tests_old/
 Debug*/
 Release*/
 ipch/

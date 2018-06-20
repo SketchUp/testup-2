@@ -65,6 +65,24 @@ TestUp dialog.
 Click the gear symbol and you should see a list of paths. By default these will
 be pointing to the git repository's copy of our tests.
 
+Packaging RBZ for Release
+-------------------------
+
+To package an RBZ from the content of the `src` directory run:
+(This assumes the binary libraries and webdialog resources have been built.)
+
+```
+npm run package
+```
+
+To build webdialogs and package in a single command:
+
+```
+npm run release
+```
+
+The RBZ appear in a generated `archive` directory in the project root.
+
 Logging and Re-running
 ----------------------
 
