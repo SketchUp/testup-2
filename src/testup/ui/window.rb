@@ -7,6 +7,7 @@
 
 require 'testup/ui/adapters/webdialog'
 require 'testup/ui/adapters/htmldialog' if defined?(UI::HtmlDialog)
+require 'testup/config'
 require 'testup/log'
 
 
@@ -71,15 +72,15 @@ module TestUp
     # @return [UI::HtmlDialog, UI::WebDialog]
     def register_callbacks(dialog)
       dialog.register_callback('ready') { |dialog|
-        Log.info "ready(...)"
+        Log.trace :callback, "ready(...)"
         event_window_ready
       }
       dialog.register_callback('js_error') { |dialog, error|
-        Log.info "js_error(...)"
+        Log.trace :callback, "js_error(...)"
         event_js_error(error)
       }
       dialog.register_callback('open_url') { |dialog, url|
-        Log.info "open_url(#{url})"
+        Log.trace :callback, "open_url(#{url})"
         event_open_url(url)
       }
       dialog
@@ -114,7 +115,7 @@ module TestUp
     # @param [Array<#to_json>] args parameters for the JavaScript call.
     # @return [nil]
     def call(function, *args)
-      Log.info "call(#{function}, ...)"
+      Log.trace :call_js, "call(#{function}, ...)"
       arguments = args.map { |arg| arg.to_json }
       argument_js = arguments.join(', ')
       @dialog.execute_script("#{function}(#{argument_js});")

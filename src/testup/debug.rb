@@ -5,6 +5,8 @@
 #
 #-------------------------------------------------------------------------------
 
+require 'testup/config'
+
 
 module TestUp
 
@@ -18,7 +20,7 @@ module TestUp
         start = Time.now
         result = block.call
         lapsed_time = Time.now - start
-        Log.debug "Timing #{title}: #{lapsed_time}s"
+        Log.trace :timing, "Timing #{title}: #{lapsed_time}s"
         result
       end
 

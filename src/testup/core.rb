@@ -27,13 +27,13 @@ require 'minitest'
 
 require 'testup/ui/runner' if defined?(UI::WebDialog)
 require 'testup/app_files'
-require 'testup/console.rb'
-require 'testup/debug.rb'
-require 'testup/editor.rb'
-require 'testup/settings.rb'
-require 'testup/taskbar_progress.rb'
-require 'testup/ui.rb'
-require 'testup/win32.rb' if RUBY_PLATFORM =~ /mswin|mingw/
+require 'testup/config'
+require 'testup/console'
+require 'testup/debug'
+require 'testup/editor'
+require 'testup/taskbar_progress'
+require 'testup/ui'
+require 'testup/win32' if RUBY_PLATFORM =~ /mswin|mingw/
 
 
 module TestUp
@@ -58,63 +58,13 @@ module TestUp
   PATH_IMAGES     = File.join(PATH, 'images').freeze
 
 
-  ### Accessors ### ------------------------------------------------------------
-
   class << self
-    attr_reader :settings
     attr_accessor :window
   end
 
 
-  ### Configuration ### --------------------------------------------------------
-
-  tests_path = File.join(__dir__, '..', '..', 'tests')
-  if defined?(Sketchup)
-    defaults = {
-      :editor_application => Editor.get_default[0],
-      :editor_arguments => Editor.get_default[1],
-      :seed => nil,
-      :run_in_gui => true,
-      :verbose_console_tests => true,
-      :paths_to_testsuites => [
-        File.expand_path(File.join(tests_path, 'TestUp')),
-        File.expand_path(File.join(tests_path, 'SketchUp Ruby API'))
-      ]
-    }
-  elsif defined?(Layout)
-    defaults = {
-      :editor_application => Editor.get_default[0],
-      :editor_arguments => Editor.get_default[1],
-      :seed => nil,
-      :run_in_gui => false,
-      :verbose_console_tests => true,
-      :paths_to_testsuites => [
-        # ...
-      ]
-    }
-  end
-  @settings = Settings.new(PLUGIN_ID, defaults)
-
-
-  ### UI ### -------------------------------------------------------------------
-
   self.init_ui
 
-
-  def self.reset_settings
-    # This will make the default values be used.
-    @settings[:debugger_output_enabled] = nil
-    @settings[:editor] = nil
-    @settings[:editor_application] = nil
-    @settings[:editor_arguments] = nil
-    @settings[:run_in_gui] = nil
-    @settings[:verbose_console_tests] = nil
-    @settings[:paths_to_testsuites] = nil
-    @settings[:open_console_on_startup] = nil
-  end
-
-
-  ### Extension ### ------------------------------------------------------------
 
   # Toggle the test runner dialog.
   def self.toggle_test_runner_window

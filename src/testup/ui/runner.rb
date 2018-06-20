@@ -8,6 +8,7 @@
 require 'testup/ui/preferences'
 require 'testup/ui/window'
 require 'testup/api'
+require 'testup/config'
 require 'testup/debug'
 require 'testup/editor'
 require 'testup/log'
@@ -65,15 +66,15 @@ module TestUp
     def register_callbacks(dialog)
       super
       dialog.register_callback('runTests') { |dialog, test_suite_json|
-        Log.info "runTests(...)"
+        Log.trace :callback, "runTests(...)"
         event_run_tests(test_suite_json)
       }
       dialog.register_callback('reRunTests') { |dialog|
-        Log.info "reRunTests(...)"
+        Log.trace :callback, "reRunTests(...)"
         event_rerun_tests
       }
       dialog.register_callback('discoverTests') { |dialog, test_suites_json|
-        Log.info "discoverTests(...)"
+        Log.trace :callback, "discoverTests(...)"
         # Workaround for a sporadic crash where it appear SU crash, without
         # BugSplat when passing a JS object back to Ruby. For some reason it
         # had only been seen in this callback. Not sure if it's the content of
@@ -85,15 +86,15 @@ module TestUp
         event_discover(test_suites_json)
       }
       dialog.register_callback('changeActiveTestSuite') { |dialog, title|
-        Log.info "event_change_testsuite(#{title})"
+        Log.trace :callback, "event_change_testsuite(#{title})"
         event_change_testsuite(title)
       }
       dialog.register_callback('openSourceFile') { |dialog, location|
-        Log.info "openSourceFile(#{location})"
+        Log.trace :callback, "openSourceFile(#{location})"
         event_open_source_file(location)
       }
       dialog.register_callback('openPreferences') { |dialog|
-        Log.info "openPreferences(.)"
+        Log.trace :callback, "openPreferences(.)"
         event_open_preferences
       }
 
@@ -101,17 +102,19 @@ module TestUp
     end
 
     def event_window_ready
-      discover_tests
-      config = {
-        :active_tab => TestUp.settings[:last_active_testsuite],
-        :debugger   => ScriptDebugger.attached?,
+      time('event_window_ready') {
+        discover_tests
+        config = {
+          :active_tab => TestUp.settings[:last_active_testsuite],
+          :debugger   => ScriptDebugger.attached?,
+        }
+        time('app.configure') { call('app.configure', config) }
       }
-      time('app.configure') { call('app.configure', config) }
     end
 
     # @param [Hash] test_suite_json JSON data from JavaScript side.
     def event_run_tests(test_suite_json)
-      Log.info 'event_run_tests(...)'
+      Log.trace :callback, 'event_run_tests(...)'
       options = {}
       test_suite = Report::TestSuite.from_hash(test_suite_json)
       TestUp::API.run_test_suite(test_suite, options: options) { |results|
@@ -121,7 +124,7 @@ module TestUp
     end
 
     def event_rerun_tests
-      Log.info 'event_rerun_tests(...)'
+      Log.trace :callback, 'event_rerun_tests(...)'
       # TODO: Refactor Runs into API.
       run_file = TestUp::Runs.select_config
       return unless run_file
@@ -145,13 +148,15 @@ module TestUp
 
     # @param [Array<Hash>] test_suites_json JSON data from JavaScript side.
     def event_discover(test_suites_json)
-      Log.info 'event_discover(...)'
-      test_suites = test_suites_json.map { |test_suite_json|
-        Log.trace :discover, '> Report::TestSuite.from_hash(...)'
-        Report::TestSuite.from_hash(test_suite_json)
+      time('event_discover') {
+        Log.trace :callback, 'event_discover(...)'
+        test_suites = test_suites_json.map { |test_suite_json|
+          Log.trace :discover, '> Report::TestSuite.from_hash(...)'
+          Report::TestSuite.from_hash(test_suite_json)
+        }
+        Log.trace :discover, '> time("rediscover")'
+        time('rediscover') { rediscover_tests(test_suites) }
       }
-      Log.trace :discover, '> time("rediscover")'
-      time('rediscover') { rediscover_tests(test_suites) }
     end
 
     # @param [String] test_suite_title
@@ -165,7 +170,7 @@ module TestUp
 
     # @param [String] location
     def event_open_source_file(location)
-      Log.info "TestUp.open_source_file(#{location})"
+      Log.trace :callback, "event_open_source_file(#{location})"
       result = location.match(/^(.+):(\d+)?$/)
       if result
         filename = result[1]

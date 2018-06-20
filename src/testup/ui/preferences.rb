@@ -6,6 +6,7 @@
 #-------------------------------------------------------------------------------
 
 require 'testup/ui/window'
+require 'testup/config'
 require 'testup/debug'
 require 'testup/log'
 require 'testup/ui'
@@ -100,7 +101,7 @@ module TestUp
       # Save test suite paths:
       if TestUp.settings[:paths_to_testsuites] != paths
         TestUp.settings[:paths_to_testsuites] = paths
-        TestUp.window_vue.reload
+        TestUp.window.reload
       end
       @dialog.close
     end
