@@ -30,6 +30,12 @@ module TestUp
       nil
     end
 
+    # @param [Symbol] category
+    # @param [Boolean]
+    def self.tracing(category)
+      @trace[category] || false
+    end
+
     def self.info(*args)
       puts(*args)
     end

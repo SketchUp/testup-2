@@ -11,6 +11,18 @@ require 'testup/runs'
 
 module TestUp
 
+  # @param [Sketchup::Menu] menu
+  # @param [Symbol] category
+  def self.add_tracing_toggle(menu, category)
+    item = menu.add_item("Toggle Tracing: #{category}") {
+      setting = !TestUp::Log.tracing(category)
+      TestUp::Log.set_tracing(:timing, setting)
+    }
+    menu.set_validation_proc(item) {
+      TestUp::Log.tracing(category) ? MF_CHECKED : MF_ENABLED
+    }
+  end
+
   def self.init_ui
     return if file_loaded?(__FILE__)
 
@@ -161,6 +173,12 @@ module TestUp
       sub_menu.add_item(cmd_debug_force_webdialog)
       sub_menu.add_separator
       sub_menu.add_item(cmd_reload_testup)
+      sub_menu.add_separator
+      add_tracing_toggle(sub_menu, :call_js)
+      add_tracing_toggle(sub_menu, :callback)
+      add_tracing_toggle(sub_menu, :discover)
+      add_tracing_toggle(sub_menu, :minitest)
+      add_tracing_toggle(sub_menu, :timing)
     end
 
     # Toolbar
