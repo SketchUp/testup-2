@@ -10,6 +10,7 @@ require 'testup/ui/window'
 require 'testup/api'
 require 'testup/config'
 require 'testup/debug'
+require 'testup/debugger'
 require 'testup/editor'
 require 'testup/log'
 require 'testup/runs'
@@ -106,7 +107,6 @@ module TestUp
         discover_tests
         config = {
           :active_tab => TestUp.settings[:last_active_testsuite],
-          :debugger   => ScriptDebugger.attached?,
         }
         time('app.configure') { call('app.configure', config) }
       }

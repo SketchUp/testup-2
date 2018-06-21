@@ -5,7 +5,7 @@
 #
 #-------------------------------------------------------------------------------
 
-require 'testup/debug'
+require 'testup/debugger'
 require 'testup/log'
 require 'testup/reporter'
 require 'testup/taskbar_progress'

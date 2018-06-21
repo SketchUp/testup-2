@@ -80,8 +80,6 @@ module TestUp
     }
     cmd.tooltip = 'Verbose Console Tests'
     cmd.status_bar_text = 'Enable verbose test results in the Ruby Console.'
-    cmd.small_icon = File.join(PATH_IMAGES, 'verbose.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'verbose.png')
     cmd.set_validation_proc {
       flags = 0
       flags |= MF_GRAYED if self.settings[:run_in_gui]
@@ -124,8 +122,6 @@ module TestUp
       self.display_minitest_help
     }
     cmd.tooltip = 'Minitest Help'
-    cmd.small_icon = File.join(PATH_IMAGES, 'help.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'help.png')
     cmd_display_minitest_help = cmd
 
     cmd = UI::Command.new('Force WebDialog') {
@@ -165,9 +161,10 @@ module TestUp
       menu.add_item(cmd_open_console_on_startup)
       menu.add_item(cmd_toggle_run_tests_in_console)
       menu.add_item(cmd_toggle_verbose_console_tests)
-      menu.add_item(cmd_display_minitest_help)
       menu.add_separator
       sub_menu = menu.add_submenu('Debug')
+      sub_menu.add_item(cmd_display_minitest_help)
+      sub_menu.add_separator
       sub_menu.add_item(cmd_open_logs)
       sub_menu.add_separator
       sub_menu.add_item(cmd_debug_force_webdialog)
@@ -191,8 +188,6 @@ module TestUp
       toolbar.add_item(cmd_rerun_saved)
       toolbar.add_separator
       toolbar.add_item(cmd_toggle_run_tests_in_console)
-      toolbar.add_item(cmd_toggle_verbose_console_tests)
-      toolbar.add_item(cmd_display_minitest_help)
       if TestUp::DEBUG
         toolbar.add_separator
         toolbar.add_item(cmd_reload_testup)
