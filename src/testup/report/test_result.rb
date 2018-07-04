@@ -7,6 +7,7 @@
 
 require 'json'
 
+require 'testup/report/test_failure'
 require 'testup/from_hash'
 
 

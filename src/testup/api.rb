@@ -5,6 +5,10 @@
 #
 #-------------------------------------------------------------------------------
 
+require 'testup/report/test_case'
+require 'testup/report/test_result'
+require 'testup/report/test_suite'
+require 'testup/report/test'
 require 'testup/debugger'
 require 'testup/log'
 require 'testup/reporter'
