@@ -43,7 +43,7 @@ module TestUp
     def self.run_tests(tests, title: 'Untitled', path: nil, options: {})
       if options[:show_console]
         TESTUP_CONSOLE.show
-        TESTUP_CONSOLE.clear
+        TESTUP_CONSOLE.clear if options[:clear_console]
       end
 
       if tests.empty?
