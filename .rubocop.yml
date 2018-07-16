@@ -21,7 +21,7 @@ AllCops:
       - ruby-c-extension/
       - tests/
       - tools/
-  TargetRubyVersion: 2.1 # Should have been 2.0 but RuboCop dropped support.
+  TargetRubyVersion: 2.2 # Should have been 2.0 but RuboCop dropped support.
   Exclude:
   - dialogs/**/*
   - docs/**/*.rb
