@@ -56,7 +56,7 @@ class TC_Report_TestCoverage < TestUp::TestCase
 
   def test_to_json_with_missing_tests
     missing = {
-      'TC_Example': [
+      'TC_Example' => [
         'foo_bar',
       ],
     }

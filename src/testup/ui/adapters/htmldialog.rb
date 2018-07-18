@@ -18,5 +18,5 @@ module TestUp
       add_action_callback(callback_name, &block)
     end
 
-  end # class
+  end if defined?(UI::HtmlDialog)
 end # module
