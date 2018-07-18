@@ -85,7 +85,7 @@ module TestUp
     end
 
     def event_edit_path(path, index)
-      Log.info "event_save_config(#{path}, #{index})"
+      Log.info "event_edit_path(#{path}, #{index})"
       new_path = SystemUI.select_directory(directory: path)
       call('app.updatePath', new_path, index) unless new_path.nil?
     end
