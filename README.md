@@ -1,17 +1,14 @@
-TestUp 2 for SketchUp
-=====================
+# TestUp 2 for SketchUp
 
 TestUp is a wrapper on top of the [minitest](https://github.com/seattlerb/minitest) gem. It allow SketchUp Extension developers to write `minitest` tests that runs within SketchUp.
 
 ![](docs/overview.png)
 
-Requirements
-------------
+## Requirements
 
 1. SketchUp 2014 or newer.
 
-Setup for Extension Developers
-------------------------------
+## Setup for Extension Developers
 
 Easy: Download RBZ from the [Releases tab on GitHub](https://github.com/SketchUp/testup-2/releases).
 
@@ -23,8 +20,7 @@ Examples of extension projects implementing TestUp tests:
 * https://bitbucket.org/thomthom/quadface-tools/src
 * https://github.com/thomthom/shadow-texture/tree/dev-vscode-debug
 
-Setup for Contributing/Running from Source
-------------------------------------------
+## Setup for Contributing/Running from Source
 
 TestUp require [NodeJS](https://nodejs.org) to build webdialog resources: https://nodejs.org/en/ (Version 10.4 was used to build TestUp 2.3)
 
@@ -53,8 +49,7 @@ Optionally you can download a RBZ from the [Releases tab on GitHub](https://gith
 always up to date. Setting up from git is recommended in order to easily keep
 up to date.
 
-Setup for SketchUp Internal Development
----------------------------------------
+## Setup for SketchUp Internal Development
 
 Follow the same steps as for "Setup for Contributing".
 
@@ -65,8 +60,7 @@ TestUp dialog.
 Click the gear symbol and you should see a list of paths. By default these will
 be pointing to the git repository's copy of our tests.
 
-Packaging RBZ for Release
--------------------------
+## Packaging RBZ for Release
 
 To package an RBZ from the content of the `src` directory run:
 (This assumes the binary libraries and webdialog resources have been built.)
@@ -83,8 +77,7 @@ npm run release
 
 The RBZ appear in a generated `archive` directory in the project root.
 
-Logging and Re-running
-----------------------
+## Logging and Re-running
 
 TestUp will log the details of a test-run. These can be found by using the menu
 `Extensions > TestUp > Open Log Folder`.
@@ -103,14 +96,25 @@ If you need to re-run a particular run several times you can use
 `Extensions > TestUp > Saved Runs > Add Run`. Then you can pick it from the
 drop-down after choosing `Extensions > TestUp > Saved Runs > Set Re-play Run`.
 
-Credits
--------
+## Troubleshooting
+
+### MiniTest
+
+If you should get errors that relate to failing to install MiniTest then you
+can attempt to install manually from a backup copy in this GitHub repository:
+
+```ruby
+# From the SketchUp Ruby Console:
+Gem.install('/path/to/repo/testup-2/gems-backup/minitest-5.4.3.gem')
+# Then restart SketchUp.
+```
+
+## Credits
 
 Thanks to Mark James for making his excellent icon set "Silk" available. Portions of the set is used in this project. Some file names has been renamed and some icons where mixed to create new status indicators for test result.
 http://www.famfamfam.com/lab/icons/silk/
 
-License
--------
+## License
 
 The MIT License (MIT)
 
