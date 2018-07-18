@@ -13,7 +13,7 @@ export class PreferencesWebDialogShim extends WebDialogShim implements SketchUpP
   }
   save(config: PreferencesConfig): void
   {
-    this.sketchup('save');
+    this.sketchup('save', [config]);
   }
   cancel(): void
   {
