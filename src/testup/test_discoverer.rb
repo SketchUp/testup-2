@@ -12,6 +12,7 @@ require 'testup/report/test_suite'
 require 'testup/report/test'
 require 'testup/coverage_discoverer'
 require 'testup/log'
+require 'testup/testcase'
 
 
 module TestUp
