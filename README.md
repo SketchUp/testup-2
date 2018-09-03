@@ -96,6 +96,37 @@ If you need to re-run a particular run several times you can use
 `Extensions > TestUp > Saved Runs > Add Run`. Then you can pick it from the
 drop-down after choosing `Extensions > TestUp > Saved Runs > Set Re-play Run`.
 
+## Running from Terminal
+
+### Running a Full Suite
+
+```sh
+ "C:\Program Files\SketchUp\SketchUp 2018\SketchUp.exe" -RubyStartupArg "TestUp:CI:Path: C:\Users\Thomas\SourceTree\TestUp2\tests\TestUp UI Tests" > results.json
+```
+
+In the example above TestUp will run a test suite given its path.
+
+### Running with Custom Config
+
+```yml
+# Config.yml
+# Required:
+Path: C:\Users\Thomas\SourceTree\TestUp2\tests\TestUp UI Tests
+# Optional: (By default, don't include a fixed seed!)
+Seed: 123 # The seed number for the random order of execution of the tests
+# List the set of sets you want to run.
+#   Run all tests in test case: TC_TestCaseName#
+#   Run specific test: TC_TestCaseName#test_testname
+Tests:
+- TC_TestSamples#
+- TC_TestErrors#test_pass
+- TC_TestErrors#test_skip
+```
+
+```sh
+ "C:\Program Files\SketchUp\SketchUp 2018\SketchUp.exe" -RubyStartupArg "TestUp:CI:Config: \Full\Path\To\Config.yml" > results.json
+```
+
 ## Troubleshooting
 
 ### MiniTest

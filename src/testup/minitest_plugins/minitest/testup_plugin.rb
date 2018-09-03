@@ -18,6 +18,10 @@ module Minitest
   def self.plugin_testup_options opts, options # :nodoc:
     opts.on '-t', '--testup', 'Run tests in TestUp GUI.' do
       TestUp.settings[:run_in_gui] = true
+      options[:testup_gui] = true
+    end
+    opts.on '--testup_ci', 'Generate JSON report to STDOUT.' do
+      options[:testup_ci] = true
     end
   end
 
@@ -36,6 +40,10 @@ module Minitest
     # Always log to file.
     # TODO(thomthom): Will this add multiple FileReporters?
     self.reporter << TestUp::FileReporter.new(options)
+
+    if options[:testup_ci]
+      self.reporter << TestUp::CIJsonReporter.new(options)
+    end
   end
 
 end # module Minitest

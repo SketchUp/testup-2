@@ -1,0 +1,12 @@
+# Config.yml
+# Required:
+Path: C:\Users\Thomas\SourceTree\TestUp2\tests\TestUp UI Tests
+# Optional:(By default, don't include a fixed seed!)
+Seed: 123 # The seed number for the random order of execution of the tests
+# List the set of sets you want to run.
+#   Run all tests in test case: TC_TestCaseName#
+#   Run specific test: TC_TestCaseName#test_testname
+Tests:
+- TC_TestSamples#
+- TC_TestErrors#test_pass
+- TC_TestErrors#test_skip

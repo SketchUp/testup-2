@@ -5,6 +5,8 @@
 #
 #-------------------------------------------------------------------------------
 
+require 'pathname'
+
 require 'testup/report/test_case'
 require 'testup/report/test_result'
 require 'testup/report/test_suite'
@@ -20,6 +22,50 @@ require 'testup/test_runner'
 module TestUp
   # @api TestUp
   module API
+
+    # Writes the results to STDOUT in Json format.
+    #
+    # @param [TestUp::Report::TestSuite, Pathname, String] test_suite
+    # @param [Hash] config
+    def self.run_suite_without_gui(test_suite, config = {})
+      test_suite_path = if test_suite.is_a?(TestUp::Report::TestSuite)
+                          Pathname.new(test_suite.path)
+                        elsif test_suite.is_a?(Pathname)
+                          test_suite
+                        else
+                          Pathname.new(test_suite.to_s)
+                        end
+
+      unless test_suite_path.exist?
+        raise ArgumentError,
+              "Test suite path does not exist: #{test_suite_path.expand_path}"
+      end
+
+      # GemHelper.require('minitest-reporters-json_reporter',
+      #                   'minitest/reporters/json_reporter')
+      # https://github.com/edhowland/minitest-reporters-json_reporter#usage
+      # Minitest::Reporters.use! [ Minitest::Reporters::JsonReporter.new ]
+      # Loaded here on demand to defer gem installation.
+      require 'testup/json_ci_reporter'
+
+      options = {
+        ci: true, # TODO: Config?
+        ui: false,
+        verbose: true,
+        clear_console: false,
+        show_console: true,
+      }
+      options[:seed] = config['Seed'].to_i if config['Seed']
+      full_path = test_suite_path.expand_path.to_s
+      test_suite = TestUp::API.discover_tests([full_path]).first
+
+      title = test_suite.title
+      path = test_suite.path
+      tests = config['Tests'] ? config['Tests'] : test_suite.selected_tests
+      run_tests(tests, title: title, path: path, options: options) { |results|
+        results
+      }
+    end
 
     # @example Run a test case:
     #   TestUp.run_tests(["TC_Sketchup_Edge#"])

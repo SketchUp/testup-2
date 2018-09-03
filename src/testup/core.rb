@@ -7,25 +7,12 @@
 
 require 'sketchup.rb'
 
-require 'rubygems'
-begin
-  gem 'minitest'
-rescue Gem::LoadError
-  begin
-    # Minitest 5.9.1 caused problems for reasons unknown. For now locking to
-    # an older version known to work.
-    # TODO: Defer this to a point so it doesn't happen during SketchUp startup.
-    Gem.install('minitest', '5.4.3')
-  rescue Gem::LoadError
-    # Needed because of Ruby 2.2. Ruby 2.0 did not need this. Seems like a bug.
-    # This pattern is probably not that common, to be programmatically
-    # installing gems.
-  end
-  gem 'minitest'
-end
-require 'minitest'
+# TODO: Defer this to a point so it doesn't happen during SketchUp startup.
+require 'testup/gem_helper'
+TestUp::GemHelper.require('minitest', 'minitest', version: '5.4.3')
 
 require 'testup/ui/runner' if defined?(UI::WebDialog)
+require 'testup/app'
 require 'testup/app_files'
 require 'testup/config'
 require 'testup/console'
@@ -64,6 +51,7 @@ module TestUp
 
 
   self.init_ui
+  App.process_arguments
 
 
   # Toggle the test runner dialog.

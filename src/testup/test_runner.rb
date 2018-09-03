@@ -81,6 +81,7 @@ module TestUp
       # When running TestUp from the UI, make sure to load the MiniTest plugin.
       # arguments << '--testup' if options[:run_in_gui]
       arguments << '--testup' if options[:ui] # TODO:
+      arguments << '--testup_ci' if options[:ci]
       arguments
     end
 
