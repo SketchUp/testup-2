@@ -56,18 +56,21 @@ export default Vue.extend({
 
 <style>
 .su-tab-bar {
-  background: #bbb;
+  background: #f3f3f7;
 }
 .su-tab-bar .su-tab-title {
   display: inline-block;
-  background: #ddd;
+  background: #f3f3f7;
   padding: 0.75em 1em;
+  /* transition: border-bottom 0.2s linear; */
 }
 .su-tab-bar .su-tab-title:hover {
-  background: #e7e7e7;
+  /* background: #e7e7e7; */
+  border-bottom: 2px solid #666;
 }
 .su-tab-bar .su-tab-title.active {
-  background: #eee;
-  font-weight: bold;
+  /* background: #eee; */
+  /* font-weight: bold; */
+  border-bottom: 2px solid #e72b2d;
 }
 </style>

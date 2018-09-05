@@ -15,12 +15,15 @@ export default Vue.extend({
 .su-button {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: #aaa;
+  /* background: #aaa; */
+  background: transparent;
+  color: #bc0911;
   text-align: center;
   border: none;
+  border-radius: 2px;
 }
 .su-button:hover {
-  background: #ccc;
+  background: #afafb3;
 }
 .su-button:disabled, .su-button:disabled:hover {
   opacity: 0.5;

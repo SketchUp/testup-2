@@ -47,10 +47,10 @@ html, body {
 }
 
 html {
-  background: #eee;
+  background: #f3f3f7;
 }
 
 html, input, select, textarea {
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
 }

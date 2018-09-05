@@ -5,21 +5,24 @@
 .tu-suite-stats .su-panel {
   /* TODO: Make non-bold, larger text */
   font-weight: bold;
+  border-radius: 8px;
+  color: white;
+  background: #4a4a4a;
 }
 
 .tu-suite-stats .tu-passed {
-  color: #080;
+  background: #72a544;
 }
 .tu-suite-stats .tu-failed {
-  color: #800;
+  background: #d0021b;
 }
 .tu-suite-stats .tu-errors {
-  color: #860;
+  background: #f5a623;
 }
 
 .tu-test-suite-header {
   padding: 0.25rem 0.5rem;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #d8d8de;
 }
 .tu-test-suite-header a {
   display: inline-block;
@@ -27,7 +30,11 @@
 }
 
 .tu-metadata {
-  color: #999;
+  color: #666;
+}
+
+.tu-test-case > .tu-title > .tu-metadata {
+  float: right;
 }
 
 .su-toolbar,
@@ -52,10 +59,10 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 8.3rem;
-  bottom: 1.5rem;
+  top: 10.4rem;
+  bottom: 2.2rem;
 }
 
-.su-tabs {
+/* .su-tabs {
   font-size: 12px;
-}
+} */

@@ -11,14 +11,15 @@ export default Vue.extend({
 
 <style>
 .su-toolbar {
-  background: #999;
-  border-bottom: #666;
+  background: #eaeaef;
+  border-bottom: #eaeaef;
   display: flex;
+  padding: 15px 10px;
 }
 .su-toolbar > * {
   display: inline-block;
-  background: #bbb;
-  margin-right: 2px;
+  /* background: #bbb; */
+  margin-right: 5px;
 }
 .su-toolbar > :last-child {
   margin-right: 0;
@@ -35,7 +36,12 @@ export default Vue.extend({
 }
 
 .su-toolbar .su-button {
+  color: #bc0911;
   padding: 1rem;
+}
+.su-toolbar .su-button.primary {
+  background: #e72b2d;
+  color: #ffffff;
 }
 
 .su-toolbar .su-panel {

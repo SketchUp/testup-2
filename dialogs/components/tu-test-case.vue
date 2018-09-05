@@ -137,15 +137,15 @@ export default Vue.extend({
 <style>
 .tu-test-case {
   /* padding: 0.25rem; */
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #eaeaef;
 }
 .tu-test-case:hover {
-  background: #e8e8e8;
+  background: #eaeaef;
 }
 .tu-test-case > .tu-title {
   white-space: nowrap;
-  padding: 0.25rem;
-  padding-left: 20px;
-  background: url(../images/not_run.png) no-repeat 0.25rem center;
+  padding: 0.5rem 1rem;
+  padding-left: 25px;
+  background: url(../images/not_run.png) no-repeat 0.5rem center;
 }
 </style>

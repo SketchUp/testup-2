@@ -11,9 +11,10 @@ export default Vue.extend({
 
 <style>
 .su-statusbar {
-  background: #999;
-  border-top: #666;
-  padding: 0.25rem 0.5rem;
+  color: #666;
+  background: #eaeaef;
+  border-top: #eaeaef;
+  padding: 0.5rem 0.75rem;
   font-size: 12px;
 }
 </style>
