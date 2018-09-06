@@ -1,9 +1,10 @@
 <template>
   <li class="tu-test-case" v-bind:class="classObject">
-    <div class="tu-title" v-on:click="toggle">
+    <div class="tu-title" v-on:click.stop="toggle">
       <su-checkbox
         v-model="testCase.enabled"
         v-bind:disabled="isAllMissing"
+        v-on:click.native.stop
         v-on:input="selectTests(testCase, testCase.enabled)"></su-checkbox>
       <b>{{ testCase.title }}</b>
       <span class="tu-metadata">
@@ -15,7 +16,6 @@
           Skipped: <span class="skipped">{{ stats.skipped }}</span>,
           Missing: <span class="missing">{{ stats.missing }}</span>
         )
-        <!-- <img src="../images/accept.svg" width="16"> -->
       </span>
     </div>
     <transition name="fade">
@@ -110,10 +110,7 @@ export default Vue.extend({
       }
     },
     toggle(event) {
-      // console.log(event);
-      if (event.srcElement.type !== 'checkbox') {
-        this.testCase.expanded = !this.testCase.expanded
-      }
+      this.testCase.expanded = !this.testCase.expanded;
     }
   },
   watch: {
