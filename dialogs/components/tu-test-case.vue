@@ -15,6 +15,7 @@
           Skipped: <span class="skipped">{{ stats.skipped }}</span>,
           Missing: <span class="missing">{{ stats.missing }}</span>
         )
+        <!-- <img src="../images/accept.svg" width="16"> -->
       </span>
     </div>
     <transition name="fade">
@@ -146,6 +147,7 @@ export default Vue.extend({
   white-space: nowrap;
   padding: 0.5rem 1rem;
   padding-left: 25px;
-  background: url(../images/not_run.png) no-repeat 0.5rem center;
+  background: url(../images/not_run.svg) no-repeat 0.5rem center;
+  background-size: 16px 16px;
 }
 </style>

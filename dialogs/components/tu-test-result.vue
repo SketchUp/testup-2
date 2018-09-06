@@ -61,7 +61,8 @@ export default Vue.extend({
   margin: 0.25rem 0rem 0.25rem 0rem;
 }
 .tu-test-result .tu-message {
-  background: #ddd;
+  /* background: #eaeaef; */
+  background: rgba(0,0,0,0.1);
   color: #555;
   padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   margin: 0 0 0.5rem;

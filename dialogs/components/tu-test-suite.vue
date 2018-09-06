@@ -23,27 +23,27 @@ export default Vue.extend({
 
 .tu-test-suite .tu-passed > .tu-title
 {
-  background-image: url(../images/accept.png);
+  background-image: url(../images/accept.svg);
 }
 
 .tu-test-suite .tu-failed > .tu-title
 {
-  background-image: url(../images/exclamation.png);
+  background-image: url(../images/exclamation.svg);
 }
 
 .tu-test-suite .tu-error > .tu-title
 {
-  background-image: url(../images/error.png);
+  background-image: url(../images/error.svg);
 }
 
 .tu-test-suite .tu-skipped > .tu-title
 {
-  background-image: url(../images/skip.png);
+  background-image: url(../images/skip.svg);
 }
 
 .tu-test-suite .tu-missing > .tu-title
 {
-  background-image: url(../images/missing.png);
+  background-image: url(../images/missing.svg);
 }
 
 /* Partially missing testcases */

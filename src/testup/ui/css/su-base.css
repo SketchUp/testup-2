@@ -54,3 +54,11 @@ html, input, select, textarea {
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
   font-size: 14px;
 }
+
+a {
+  color: #bc0911;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
