@@ -49,18 +49,18 @@ export default Vue.extend({
 /* Partially missing testcases */
 .tu-test-suite .tu-missing.tu-passed > .tu-title
 {
-  background-image: url(../images/missing_accept.png);
+  background-image: url(../images/missing_accept.svg);
 }
 .tu-test-suite .tu-missing.tu-failed > .tu-title
 {
-  background-image: url(../images/missing_exclamation.png);
+  background-image: url(../images/missing_exclamation.svg);
 }
 .tu-test-suite .tu-missing.tu-error > .tu-title
 {
-  background-image: url(../images/missing_error.png);
+  background-image: url(../images/missing_error.svg);
 }
 .tu-test-suite .tu-missing.tu-partial > .tu-title
 {
-  background-image: url(../images/missing_not_run.png);
+  background-image: url(../images/missing_not_run.svg);
 }
 </style>

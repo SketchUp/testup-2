@@ -18,11 +18,11 @@
    enable-background="new 0 0 24 24"
    xml:space="preserve"
    id="svg4622"
-   sodipodi:docname="error.svg"
+   sodipodi:docname="missing_error.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"><metadata
    id="metadata4628"><rdf:RDF><cc:Work
        rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
    id="defs4626" /><sodipodi:namedview
    pagecolor="#ffffff"
    bordercolor="#666666"
@@ -67,4 +67,17 @@
    height="24"
    id="rect4619" />
 </g>
-</svg>
+<g
+   transform="matrix(0.52173913,0,0,0.52173913,12,11.478261)"
+   style="fill:#0272d0;fill-opacity:1"
+   id="g857"><g
+     style="fill:#0272d0;fill-opacity:1"
+     id="Filled_Icons-8"><path
+       inkscape:connector-curvature="0"
+       id="path851"
+       d="M 11.5,1 C 5.148,1 0,6.148 0,12.5 0,18.852 5.148,24 11.5,24 17.852,24 23,18.852 23,12.5 23,6.148 17.852,1 11.5,1 Z"
+       style="fill:#0272d0;fill-opacity:1" /><path
+       inkscape:connector-curvature="0"
+       d="M 12,12.965 V 15.5 C 12,15.776 11.775,16 11.5,16 11.224,16 11,15.776 11,15.5 v -3 C 11,12.224 11.224,12 11.5,12 12.878,12 14,10.879 14,9.5 14,8.121 12.878,7 11.5,7 10.121,7 9,8.121 9,9.5 9,9.776 8.775,10 8.5,10 8.224,10 8,9.776 8,9.5 8,7.57 9.569,6 11.5,6 13.43,6 15,7.57 15,9.5 c 0,1.76 -1.307,3.221 -3,3.465 z M 11.5,19 c -0.553,0 -1,-0.447 -1,-1 0,-0.552 0.447,-1 1,-1 0.551,0 1,0.448 1,1 0,0.553 -0.449,1 -1,1 z"
+       style="fill:#ffffff;fill-opacity:1"
+       id="path4694" /></g></g></svg>
