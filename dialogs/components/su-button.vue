@@ -28,6 +28,9 @@ export default Vue.extend({
 .su-button:disabled, .su-button:disabled:hover {
   opacity: 0.5;
 }
+.su-button:disabled:hover {
+  background: none;
+}
 .su-button.primary {
   background: #e72b2d;
   color: #ffffff;
