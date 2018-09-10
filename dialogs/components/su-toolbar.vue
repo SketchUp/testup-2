@@ -36,12 +36,7 @@ export default Vue.extend({
 }
 
 .su-toolbar .su-button {
-  color: #bc0911;
   padding: 1rem;
-}
-.su-toolbar .su-button.primary {
-  background: #e72b2d;
-  color: #ffffff;
 }
 
 .su-toolbar .su-panel {
