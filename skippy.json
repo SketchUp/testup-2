@@ -1,0 +1,19 @@
+{
+  "name": "TestUp",
+  "description": "Test suite runner for SketchUp.",
+  "namespace": "TestUp",
+  "basename": "testup",
+  "author": "Trimble Inc., SketchUp",
+  "copyright": "Copyright © 2010—2018",
+  "license": "MIT",
+  "sources": [
+    "github.com",
+    "bitbucket.org"
+  ],
+  "libraries": [
+
+  ],
+  "modules": [
+
+  ]
+}

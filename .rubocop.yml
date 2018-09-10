@@ -9,16 +9,19 @@ AllCops:
     SketchupPerformance:
       Exclude:
       - ruby-c-extension/
+      - skippy/
       - tests/
       - tools/
     SketchupRequirements:
       Exclude:
       - ruby-c-extension/
+      - skippy/
       - tests/
       - tools/
     SketchupSuggestions:
       Exclude:
       - ruby-c-extension/
+      - skippy/
       - tests/
       - tools/
   TargetRubyVersion: 2.2 # Should have been 2.0 but RuboCop dropped support.
