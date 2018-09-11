@@ -26,6 +26,8 @@ AllCops:
       - tools/
   TargetRubyVersion: 2.2 # Should have been 2.0 but RuboCop dropped support.
   Exclude:
+  - archive/**/*
+  - build/**/*
   - dialogs/**/*
   - docs/**/*.rb
   - node_modules/**/*
@@ -34,6 +36,8 @@ AllCops:
   - tests/**/*.rb # TODO - for now ignore.
   - tools/**/*.rb
 
+SketchupSuggestions/FileEncoding:
+  Enabled: false
 
 # I will align my arrays as I please!
 Layout/AlignArray:
@@ -140,6 +144,12 @@ Style/Documentation:
 # Some times it simply reads better to not have a modifier conditional.
 Style/IfUnlessModifier:
   Enabled: false
+
+Style/MultilineIfModifier:
+  Exclude:
+    - src/testup/file_reporter.rb
+    - src/testup/ui.rb
+    - src/testup/ui/adapters/htmldialog.rb
 
 # No need to force `.zero` over `== 0`
 Style/NumericPredicate:

@@ -26,7 +26,6 @@ module Inkscape
   end
 
   def self.command(arguments)
-    inkscape = INKSCAPE.tr('/', '\\')
     inkscape = self.normalise_path(INKSCAPE)
     command = %("#{inkscape}" #{arguments})
     puts command

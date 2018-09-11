@@ -21,13 +21,7 @@ module Command
   # UI::Command but mix itself into the instance - effectively subclassing it.
   # (yuck!)
   def self.new(title, &block)
-    command = UI::Command.new(title) {
-      begin
-        block.call
-      rescue Exception => exception
-        ERROR_REPORTER.handle(exception)
-      end
-    }
+    command = UI::Command.new(title, &block)
     command.extend(self)
     command
   end

@@ -61,7 +61,7 @@ module TestUp
 
       title = test_suite.title
       path = test_suite.path
-      tests = config['Tests'] ? config['Tests'] : test_suite.selected_tests
+      tests = config['Tests'] || test_suite.selected_tests
       run_tests(tests, title: title, path: path, options: options) { |results|
         results
       }

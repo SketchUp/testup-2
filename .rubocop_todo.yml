@@ -12,8 +12,6 @@
 # SupportedStyles: outdent, indent
 Layout/AccessModifierIndentation:
   Exclude:
-    - 'build/testup/settings.rb'
-    - 'build/testup/taskbar_progress.rb'
     - 'src/testup/settings.rb'
     - 'src/testup/taskbar_progress.rb'
 
@@ -23,8 +21,6 @@ Layout/AccessModifierIndentation:
 # SupportedStyles: with_first_parameter, with_fixed_indentation
 Layout/AlignParameters:
   Exclude:
-    - 'build/testup/sketchup_test_utilities.rb'
-    - 'build/testup/win32.rb'
     - 'src/testup/sketchup_test_utilities.rb'
     - 'src/testup/win32.rb'
 
@@ -33,8 +29,6 @@ Layout/AlignParameters:
 # Configuration parameters: AllowAdjacentOneLineDefs, NumberOfEmptyLines.
 Layout/EmptyLineBetweenDefs:
   Exclude:
-    - 'build/testup/taskbar_progress.rb'
-    - 'build/testup/test_discoverer.rb'
     - 'src/testup/taskbar_progress.rb'
     - 'src/testup/test_discoverer.rb'
 
@@ -42,14 +36,12 @@ Layout/EmptyLineBetweenDefs:
 # Cop supports --auto-correct.
 Layout/EmptyLinesAroundExceptionHandlingKeywords:
   Exclude:
-    - 'build/testup/file_reporter.rb'
     - 'src/testup/file_reporter.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
 Layout/EmptyLinesAroundMethodBody:
   Exclude:
-    - 'build/testup/coverage.rb'
     - 'src/testup/coverage.rb'
 
 # Offense count: 4
@@ -58,8 +50,6 @@ Layout/EmptyLinesAroundMethodBody:
 # SupportedStyles: consistent, consistent_relative_to_receiver, special_for_inner_method_call, special_for_inner_method_call_in_parentheses
 Layout/FirstParameterIndentation:
   Exclude:
-    - 'build/testup/report/test_failure.rb'
-    - 'build/testup/report/test_result.rb'
     - 'src/testup/report/test_failure.rb'
     - 'src/testup/report/test_result.rb'
 
@@ -73,9 +63,6 @@ Layout/IndentationWidth:
 # Cop supports --auto-correct.
 Layout/LeadingCommentSpace:
   Exclude:
-    - 'build/testup/sketchup_test_utilities.rb'
-    - 'build/testup/ui/runner.rb'
-    - 'build/testup/win32.rb'
     - 'src/testup/sketchup_test_utilities.rb'
     - 'src/testup/ui/runner.rb'
     - 'src/testup/win32.rb'
@@ -84,9 +71,6 @@ Layout/LeadingCommentSpace:
 # Cop supports --auto-correct.
 Layout/SpaceAfterComma:
   Exclude:
-    - 'build/testup/editor.rb'
-    - 'build/testup/log.rb'
-    - 'build/testup/sketchup_test_utilities.rb'
     - 'src/testup/editor.rb'
     - 'src/testup/log.rb'
     - 'src/testup/sketchup_test_utilities.rb'
@@ -96,7 +80,6 @@ Layout/SpaceAfterComma:
 # Configuration parameters: AllowForAlignment.
 Layout/SpaceAroundOperators:
   Exclude:
-    - 'build/testup/file_reporter.rb'
     - 'src/testup/file_reporter.rb'
 
 # Offense count: 4
@@ -105,7 +88,6 @@ Layout/SpaceAroundOperators:
 # SupportedStyles: space, no_space
 Layout/SpaceInsideParens:
   Exclude:
-    - 'build/testup/sketchup_test_utilities.rb'
     - 'src/testup/sketchup_test_utilities.rb'
 
 # Offense count: 2
@@ -114,32 +96,23 @@ Layout/SpaceInsideParens:
 # SupportedStyles: final_newline, final_blank_line
 Layout/TrailingBlankLines:
   Exclude:
-    - 'build/testup/api.rb'
     - 'src/testup/api.rb'
 
 # Offense count: 4
 Lint/DuplicateCaseCondition:
   Exclude:
-    - 'build/testup/coverage.rb'
-    - 'build/testup/coverage_discoverer.rb'
     - 'src/testup/coverage.rb'
     - 'src/testup/coverage_discoverer.rb'
 
 # Offense count: 4
 Lint/HandleExceptions:
   Exclude:
-    - 'build/testup/core.rb'
-    - 'build/testup/debug.rb'
     - 'src/testup/core.rb'
     - 'src/testup/debug.rb'
 
 # Offense count: 8
 Lint/IneffectiveAccessModifier:
   Exclude:
-    - 'build/testup/report/test.rb'
-    - 'build/testup/report/test_case.rb'
-    - 'build/testup/report/test_coverage.rb'
-    - 'build/testup/report/test_suite.rb'
     - 'src/testup/report/test.rb'
     - 'src/testup/report/test_case.rb'
     - 'src/testup/report/test_coverage.rb'
@@ -148,17 +121,11 @@ Lint/IneffectiveAccessModifier:
 # Offense count: 2
 Lint/LiteralAsCondition:
   Exclude:
-    - 'build/testup/runs.rb'
     - 'src/testup/runs.rb'
 
 # Offense count: 32
 Lint/ShadowingOuterLocalVariable:
   Exclude:
-    - 'build/testup/test_discoverer.rb'
-    - 'build/testup/ui/adapters/adapter.rb'
-    - 'build/testup/ui/preferences.rb'
-    - 'build/testup/ui/runner.rb'
-    - 'build/testup/ui/window.rb'
     - 'src/testup/test_discoverer.rb'
     - 'src/testup/ui/adapters/adapter.rb'
     - 'src/testup/ui/preferences.rb'
@@ -176,28 +143,18 @@ Lint/UnusedBlockArgument:
 # Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods.
 Lint/UnusedMethodArgument:
   Exclude:
-    - 'build/testup/minitest_plugins/minitest/testup_plugin.rb'
     - 'src/testup/minitest_plugins/minitest/testup_plugin.rb'
 
 # Offense count: 4
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
 Lint/UselessAccessModifier:
   Exclude:
-    - 'build/testup/report/test.rb'
-    - 'build/testup/report/test_case.rb'
     - 'src/testup/report/test.rb'
     - 'src/testup/report/test_case.rb'
 
 # Offense count: 14
 Lint/UselessAssignment:
   Exclude:
-    - 'build/testup/minitest_setup.rb'
-    - 'build/testup/sketchup_test_utilities.rb'
-    - 'build/testup/taskbar_progress.rb'
-    - 'build/testup/testcase.rb'
-    - 'build/testup/ui/adapters/webdialog.rb'
-    - 'build/testup/ui/preferences.rb'
-    - 'build/testup/ui/runner.rb'
     - 'src/testup/minitest_setup.rb'
     - 'src/testup/sketchup_test_utilities.rb'
     - 'src/testup/taskbar_progress.rb'
@@ -214,7 +171,7 @@ Metrics/BlockNesting:
 # Offense count: 6
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 180
+  Max: 181
 
 # Offense count: 82
 # Configuration parameters: CountComments.
@@ -229,9 +186,6 @@ Metrics/ModuleLength:
 # Offense count: 8
 Naming/AccessorMethodName:
   Exclude:
-    - 'build/testup/editor.rb'
-    - 'build/testup/taskbar_progress.rb'
-    - 'build/testup/win32.rb'
     - 'src/testup/editor.rb'
     - 'src/testup/taskbar_progress.rb'
     - 'src/testup/win32.rb'
@@ -245,8 +199,6 @@ Naming/AccessorMethodName:
 Naming/PredicateName:
   Exclude:
     - 'spec/**/*'
-    - 'build/testup/coverage.rb'
-    - 'build/testup/ui/window.rb'
     - 'src/testup/coverage.rb'
     - 'src/testup/ui/window.rb'
 
@@ -255,9 +207,6 @@ Naming/PredicateName:
 # SupportedStyles: snake_case, camelCase
 Naming/VariableName:
   Exclude:
-    - 'build/testup/debug.rb'
-    - 'build/testup/ui.rb'
-    - 'build/testup/win32.rb'
     - 'src/testup/debugger.rb'
     - 'src/testup/ui.rb'
     - 'src/testup/win32.rb'
@@ -266,10 +215,6 @@ Naming/VariableName:
 # Cop supports --auto-correct.
 Performance/RedundantBlockCall:
   Exclude:
-    - 'build/testup/debug.rb'
-    - 'build/testup/sketchup_test_utilities.rb'
-    - 'build/testup/taskbar_progress.rb'
-    - 'build/testup/ui/adapters/webdialog.rb'
     - 'src/testup/debug.rb'
     - 'src/testup/sketchup_test_utilities.rb'
     - 'src/testup/taskbar_progress.rb'
@@ -279,23 +224,16 @@ Performance/RedundantBlockCall:
 # Configuration parameters: Details.
 SketchupRequirements/LoadPath:
   Exclude:
-    - 'build/testup/minitest_setup.rb'
     - 'src/testup/minitest_setup.rb'
 
 # Offense count: 4
 SketchupRequirements/RubyStdLibNamespace:
   Exclude:
-    - 'build/testup/minitest_plugins/minitest/testup_plugin.rb'
     - 'src/testup/minitest_plugins/minitest/testup_plugin.rb'
 
 # Offense count: 12
 SketchupSuggestions/Compatibility:
   Exclude:
-    - 'build/testup.rb'
-    - 'build/testup/console.rb'
-    - 'build/testup/ui.rb'
-    - 'build/testup/ui/adapters/htmldialog.rb'
-    - 'build/testup/ui/window.rb'
     - 'src/testup.rb'
     - 'src/testup/console.rb'
     - 'src/testup/ui.rb'
@@ -306,11 +244,6 @@ SketchupSuggestions/Compatibility:
 # Configuration parameters: Details.
 SketchupSuggestions/FileEncoding:
   Exclude:
-    - 'build/testup.rb'
-    - 'build/testup/config.rb'
-    - 'build/testup/minitest_setup.rb'
-    - 'build/testup/test_discoverer.rb'
-    - 'build/testup/testcase.rb'
     - 'src/testup.rb'
     - 'src/testup/config.rb'
     - 'src/testup/minitest_setup.rb'
@@ -321,7 +254,6 @@ SketchupSuggestions/FileEncoding:
 # Configuration parameters: Details.
 SketchupSuggestions/ModelEntities:
   Exclude:
-    - 'build/testup/sketchup_test_utilities.rb'
     - 'src/testup/sketchup_test_utilities.rb'
 
 # Offense count: 4
@@ -330,8 +262,6 @@ SketchupSuggestions/ModelEntities:
 # SupportedStyles: prefer_alias, prefer_alias_method
 Style/Alias:
   Exclude:
-    - 'build/testup/minitest_setup.rb'
-    - 'build/testup/report/test_suite.rb'
     - 'src/testup/minitest_setup.rb'
     - 'src/testup/report/test_suite.rb'
 
@@ -341,15 +271,11 @@ Style/Alias:
 # SupportedStyles: always, conditionals
 Style/AndOr:
   Exclude:
-    - 'build/testup/file_reporter.rb'
     - 'src/testup/file_reporter.rb'
 
 # Offense count: 18
 Style/ClassVars:
   Exclude:
-    - 'build/testup/file_reporter.rb'
-    - 'build/testup/reporter.rb'
-    - 'build/testup/sketchup_test_utilities.rb'
     - 'src/testup/file_reporter.rb'
     - 'src/testup/reporter.rb'
     - 'src/testup/sketchup_test_utilities.rb'
@@ -360,8 +286,6 @@ Style/ClassVars:
 # Keywords: TODO, FIXME, OPTIMIZE, HACK, REVIEW
 Style/CommentAnnotation:
   Exclude:
-    - 'build/testup/file_reporter.rb'
-    - 'build/testup/test_runner.rb'
     - 'src/testup/file_reporter.rb'
     - 'src/testup/test_runner.rb'
 
@@ -371,9 +295,6 @@ Style/CommentAnnotation:
 # SupportedStyles: assign_to_condition, assign_inside_condition
 Style/ConditionalAssignment:
   Exclude:
-    - 'build/testup/sketchup_test_utilities.rb'
-    - 'build/testup/taskbar_progress.rb'
-    - 'build/testup/ui.rb'
     - 'src/testup/sketchup_test_utilities.rb'
     - 'src/testup/taskbar_progress.rb'
     - 'src/testup/ui.rb'
@@ -381,7 +302,6 @@ Style/ConditionalAssignment:
 # Offense count: 2
 Style/DoubleNegation:
   Exclude:
-    - 'build/testup/from_hash.rb'
     - 'src/testup/from_hash.rb'
 
 # Offense count: 4
@@ -390,8 +310,6 @@ Style/DoubleNegation:
 # SupportedStyles: compact, expanded
 Style/EmptyMethod:
   Exclude:
-    - 'build/testup/coverage.rb'
-    - 'build/testup/ui/window.rb'
     - 'src/testup/coverage.rb'
     - 'src/testup/ui/window.rb'
 
@@ -400,9 +318,6 @@ Style/EmptyMethod:
 # SupportedStyles: each, for
 Style/For:
   Exclude:
-    - 'build/testup/console.rb'
-    - 'build/testup/coverage.rb'
-    - 'build/testup/sketchup_test_utilities.rb'
     - 'src/testup/console.rb'
     - 'src/testup/coverage.rb'
     - 'src/testup/sketchup_test_utilities.rb'
@@ -413,7 +328,6 @@ Style/For:
 # SupportedStyles: format, sprintf, percent
 Style/FormatString:
   Exclude:
-    - 'build/testup/file_reporter.rb'
     - 'src/testup/file_reporter.rb'
 
 # Offense count: 20
@@ -426,10 +340,7 @@ Style/FormatStringToken:
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
   Exclude:
-    - 'build/testup/console.rb'
-    - 'build/testup/runs.rb'
-    - 'build/testup/sketchup_test_utilities.rb'
-    - 'build/testup/type_check.rb'
+    - 'src/testup/minitest_plugins/minitest/testup_plugin.rb'
     - 'src/testup/console.rb'
     - 'src/testup/runs.rb'
     - 'src/testup/sketchup_test_utilities.rb'
@@ -441,9 +352,6 @@ Style/GuardClause:
 # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
 Style/HashSyntax:
   Exclude:
-    - 'build/testup/config.rb'
-    - 'build/testup/ui/preferences.rb'
-    - 'build/testup/ui/runner.rb'
     - 'src/testup/config.rb'
     - 'src/testup/ui/preferences.rb'
     - 'src/testup/ui/runner.rb'
@@ -451,14 +359,12 @@ Style/HashSyntax:
 # Offense count: 2
 Style/IfUnlessModifierOfIfUnless:
   Exclude:
-    - 'build/testup/file_reporter.rb'
     - 'src/testup/file_reporter.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/InfiniteLoop:
   Exclude:
-    - 'build/testup/runs.rb'
     - 'src/testup/runs.rb'
 
 # Offense count: 2
@@ -467,7 +373,6 @@ Style/InfiniteLoop:
 # SupportedStyles: line_count_dependent, lambda, literal
 Style/Lambda:
   Exclude:
-    - 'build/testup/coverage_discoverer.rb'
     - 'src/testup/coverage_discoverer.rb'
 
 # Offense count: 4
@@ -475,7 +380,6 @@ Style/Lambda:
 # Configuration parameters: IgnoredMethods.
 Style/MethodCallWithoutArgsParentheses:
   Exclude:
-    - 'build/testup/coverage.rb'
     - 'src/testup/coverage.rb'
 
 # Offense count: 2
@@ -484,23 +388,12 @@ Style/MethodCallWithoutArgsParentheses:
 # SupportedStyles: require_parentheses, require_no_parentheses, require_no_parentheses_except_multiline
 Style/MethodDefParentheses:
   Exclude:
-    - 'build/testup/minitest_plugins/minitest/testup_plugin.rb'
     - 'src/testup/minitest_plugins/minitest/testup_plugin.rb'
 
 # Offense count: 2
 Style/MissingRespondToMissing:
   Exclude:
-    - 'build/testup/sketchup_test_utilities.rb'
     - 'src/testup/sketchup_test_utilities.rb'
-
-# Offense count: 16
-# Cop supports --auto-correct.
-Style/MultilineIfModifier:
-  Exclude:
-    - 'build/testup/file_reporter.rb'
-    - 'build/testup/ui.rb'
-    - 'src/testup/file_reporter.rb'
-    - 'src/testup/ui.rb'
 
 # Offense count: 6
 # Cop supports --auto-correct.
@@ -508,9 +401,6 @@ Style/MultilineIfModifier:
 # SupportedStyles: both, prefix, postfix
 Style/NegatedIf:
   Exclude:
-    - 'build/testup.rb'
-    - 'build/testup/sketchup_test_utilities.rb'
-    - 'build/testup/test_discoverer.rb'
     - 'src/testup.rb'
     - 'src/testup/sketchup_test_utilities.rb'
     - 'src/testup/test_discoverer.rb'
@@ -519,14 +409,12 @@ Style/NegatedIf:
 # Cop supports --auto-correct.
 Style/NestedModifier:
   Exclude:
-    - 'build/testup/file_reporter.rb'
     - 'src/testup/file_reporter.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/ParallelAssignment:
   Exclude:
-    - 'build/testup/file_reporter.rb'
     - 'src/testup/file_reporter.rb'
 
 # Offense count: 2
@@ -534,7 +422,6 @@ Style/ParallelAssignment:
 # Configuration parameters: PreferredDelimiters.
 Style/PercentLiteralDelimiters:
   Exclude:
-    - 'build/testup/editor.rb'
     - 'src/testup/editor.rb'
 
 # Offense count: 2
@@ -543,7 +430,6 @@ Style/PercentLiteralDelimiters:
 # SupportedStyles: short, verbose
 Style/PreferredHashMethods:
   Exclude:
-    - 'build/testup/sketchup_test_utilities.rb'
     - 'src/testup/sketchup_test_utilities.rb'
 
 # Offense count: 2
@@ -552,21 +438,18 @@ Style/PreferredHashMethods:
 # SupportedStyles: compact, exploded
 Style/RaiseArgs:
   Exclude:
-    - 'build/testup/test_discoverer.rb'
     - 'src/testup/test_discoverer.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/RedundantBegin:
   Exclude:
-    - 'build/testup/test_discoverer.rb'
     - 'src/testup/test_discoverer.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/RedundantParentheses:
   Exclude:
-    - 'build/testup/settings.rb'
     - 'src/testup/settings.rb'
 
 # Offense count: 2
@@ -575,7 +458,6 @@ Style/RedundantParentheses:
 # SupportedStyles: slashes, percent_r, mixed
 Style/RegexpLiteral:
   Exclude:
-    - 'build/testup/test_discoverer.rb'
     - 'src/testup/test_discoverer.rb'
 
 # Offense count: 12
@@ -584,7 +466,6 @@ Style/RegexpLiteral:
 # SupportedStyles: use_perl_names, use_english_names
 Style/SpecialGlobalVars:
   Exclude:
-    - 'build/testup/console.rb'
     - 'src/testup/console.rb'
 
 # Offense count: 10
@@ -593,10 +474,6 @@ Style/SpecialGlobalVars:
 # IgnoredMethods: respond_to, define_method
 Style/SymbolProc:
   Exclude:
-    - 'build/testup/coverage.rb'
-    - 'build/testup/manifest.rb'
-    - 'build/testup/runs.rb'
-    - 'build/testup/ui/window.rb'
     - 'src/testup/coverage.rb'
     - 'src/testup/manifest.rb'
     - 'src/testup/runs.rb'
@@ -608,7 +485,6 @@ Style/SymbolProc:
 # SupportedStyles: require_parentheses, require_no_parentheses, require_parentheses_when_complex
 Style/TernaryParentheses:
   Exclude:
-    - 'build/testup/settings.rb'
     - 'src/testup/settings.rb'
 
 # Offense count: 26
