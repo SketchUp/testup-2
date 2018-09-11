@@ -7,7 +7,7 @@ require 'testup/testcase'
 
 
 # Set of tests triggering different result types.
-class TC_TestErrors < TestUp::TestCase
+class TC_TestSkips < TestUp::TestCase
 
   def setup
     # ...
@@ -20,10 +20,9 @@ class TC_TestErrors < TestUp::TestCase
 
   # ========================================================================== #
 
-  # Ensure that error failures expand the test case.
-  def test_error_only_test_case
-    raise ArgumentError, 'All your base are belong to us!'
+  # Ensure that skips doesn't expand the test case.
+  def test_skip_only_test_case
+    skip('skip skip skip to my lou')
   end # test
-
 
 end # class

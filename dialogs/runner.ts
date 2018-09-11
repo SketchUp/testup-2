@@ -70,7 +70,7 @@ window.app = new Vue({
     },
     discover(discoveries: Array<TestSuite>) {
       console.log('discover');
-      this.test_suites = discoveries;
+      this.test_suites = discoveries.map(item => new TestSuite(item));
       this.statusBarText = `
         ${ this.num_test_suites } test suites,
         ${ this.num_test_cases } test cases,
@@ -80,7 +80,7 @@ window.app = new Vue({
     },
     rediscover(discoveries: Array<TestSuite>) {
       console.log('rediscover');
-      this.test_suites = discoveries;
+      this.test_suites = discoveries.map(item => new TestSuite(item));
       this.statusBarText = `
         ${ this.num_test_suites } test suites,
         ${ this.num_test_cases } test cases,
@@ -98,13 +98,15 @@ window.app = new Vue({
       // TODO: Find a better way to get the test_suite index. Don't rely on the
       //       active tab index.
       // TODO: Update coverage
-      this.test_suites[this.activeTestSuiteIndex].test_cases = test_suite.test_cases;
+      let test_cases = test_suite.test_cases.map(item => new TestCase(item));
+      this.test_suites[this.activeTestSuiteIndex].test_cases = test_cases;
       // Expand test cases with failed tests.
       // This would be any test case with enabled tests with a failure.
       // TODO: Consider making this a Preference option.
-      let test_cases = this.test_suites[this.activeTestSuiteIndex].test_cases;
       for (let test_case of test_cases) {
-        if (this.hasFailedTests(test_case)) {
+        // Expand any test case with failed test. But don't contract already
+        // expanded test cases.
+        if (test_case.hasFailedTests()) {
           test_case.expanded = true;
         }
       }
@@ -154,14 +156,6 @@ window.app = new Vue({
       this.activeTestSuiteIndex = index;
       sketchup.changeActiveTestSuite(this.active_test_suite.title);
     },
-    hasFailedTests(test_case: TestCase) {
-      for (let test of test_case.tests) {
-        if (test.enabled && test.result && (test.result.error || test.result.failed)) {
-          return true;
-        }
-      }
-      return false;
-    },
     test_suite_stats(test_suite: TestSuite) {
       let data = {
         tests: 0,
@@ -179,7 +173,7 @@ window.app = new Vue({
             data.missing += test.missing ? 1 : 0;
             if (!test.result) continue;
             data.passed += test.result.passed ? 1 : 0;
-            data.failed += test.result.failed ? 1 : 0;
+            data.failed += test.result.passed ? 0 : 1;
             data.errors += test.result.error ? 1 : 0;
             data.skipped += test.result.skipped ? 1 : 0;
             data.total_time += test.result.run_time;
