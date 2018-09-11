@@ -11,6 +11,7 @@ require 'testup/api'
 require 'testup/config'
 require 'testup/debug'
 require 'testup/debugger'
+require 'testup/defer'
 require 'testup/editor'
 require 'testup/log'
 require 'testup/runs'
@@ -199,9 +200,12 @@ module TestUp
     end
 
     def event_open_preferences
-      #@preferences_window ||= PreferencesWindow.new
-      @preferences_window = PreferencesWindow.new
-      @preferences_window.show
+      # Work around a crash in SketchUp 2018 (maybe others) by deferring
+      # the Preferences dialog. Maybe it's related to Chromiums event thread.
+      Execution.defer {
+        @preferences_window = PreferencesWindow.new
+        @preferences_window.show
+      }
     end
 
     # @return [nil]
