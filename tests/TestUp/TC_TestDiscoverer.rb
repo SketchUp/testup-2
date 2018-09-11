@@ -33,20 +33,21 @@ class TC_TestDiscoverer < TestUp::TestCase
     assert_kind_of(TestUp::Report::TestSuite, suite)
     assert_equal('TestUp UI Tests', suite.title)
 
-    expected = %w(TC_TestErrors TC_TestSamples)
+    expected = Dir.glob("#{TESTUP_UI_TESTS_PATH}/*.rb").map { |filename|
+      File.basename(filename, '.*')
+    }
     test_cases = suite.test_cases
     assert_equal(expected.size, test_cases.size, 'Number of test cases')
     titles = test_cases.map(&:title)
     assert_equal(expected, titles)
 
-    tc_test_errors, tc_test_samples = test_cases.to_a
-    assert_kind_of(TestUp::Report::TestCase, tc_test_errors, 'TC_TestErrors')
-    assert_kind_of(TestUp::Report::TestCase, tc_test_samples, 'TC_TestSamples')
+    test_cases.each { |test_case|
+      assert_kind_of(TestUp::Report::TestCase, test_case, test_case.title)
+    }
 
-    expected = %w(test_error test_pass test_skip)
-    assert_equal(expected.size, tc_test_errors.tests.size, 'Number of tests')
-    titles = tc_test_errors.tests.map(&:title)
-    assert_equal(expected, titles)
+    tc_test_samples = test_cases.find { |test_case|
+      test_case.title == 'TC_TestSamples'
+    }
 
     expected = %w(test_equal_failure test_error test_failure test_pass test_skip)
     assert_equal(expected.size, tc_test_samples.tests.size, 'Number of tests')
