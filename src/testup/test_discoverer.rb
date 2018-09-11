@@ -46,7 +46,7 @@ module TestUp
       # Undefine all TestUp::TestCase sub-classes and remove them from
       # Minitest's list of known runnables.
       MiniTest::Runnable.runnables.reject! { |klass|
-        next unless Sandbox.valid_class?(klass)
+        next unless Sandbox.valid_test_class?(klass)
         path = klass.name.split('::').map(&:to_sym)
         leaf = path.pop
         parent = path.inject(Object) { |klass, symbol| klass.const_get(symbol) }
@@ -138,20 +138,19 @@ module TestUp
         self.constants.select { |c| self.const_get(c).is_a?(Class) }
       end
       def self.test_classes
-        # self.classes.map { |c| self.const_get(c) }.grep(TestUp::TestCase)
-        klasses = MiniTest::Runnable.runnables.select { |klass|
-          self.valid_class?(klass)
-        }
-        klasses - @known
+        self.minitest_runnables - @known
       end
       def self.reset
-        @known = MiniTest::Runnable.runnables.select { |klass|
-          self.valid_class?(klass)
-        }
+        @known = self.minitest_runnables
       end
-      def self.valid_class?(klass)
+      def self.valid_test_class?(klass)
         # Only accept sub-classes of TestUp::TestCase.
         klass.ancestors[1..-1].include?(TestUp::TestCase)
+      end
+      def self.minitest_runnables
+        MiniTest::Runnable.runnables.select { |klass|
+          self.valid_test_class?(klass)
+        }
       end
       # @param [Exception] error
       # @return [String]
