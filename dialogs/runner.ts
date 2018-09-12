@@ -152,7 +152,16 @@ window.app = new Vue({
       sketchup.openPreferences();
     },
     changeTestSuite(index: number) {
-      console.log('changeTestSuite', index);
+      console.log('changeTestSuite', index, this.test_suites.length);
+      // In case test suites are removed, reset the index if it's out of bounds.
+      // This can happen when the Preference dialog adjusts the test suite
+      // paths. Upon saving the preferences this will trigger.
+      if (index >= this.test_suites.length) {
+        index = 0;
+      }
+      if (this.test_suites.length === 0) {
+        return;
+      }
       this.activeTestSuiteIndex = index;
       sketchup.changeActiveTestSuite(this.active_test_suite.title);
     },
