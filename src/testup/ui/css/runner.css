@@ -1,0 +1,69 @@
+@import "su-base.css";
+@import "tu-fade.css";
+
+
+.tu-suite-stats .su-panel {
+  /* TODO: Make non-bold, larger text */
+  font-weight: bold;
+  border-radius: 8px;
+  color: white;
+  background: #4a4a4a;
+}
+
+.tu-suite-stats .tu-passed {
+  background: #72a544;
+}
+.tu-suite-stats .tu-failed {
+  background: #d0021b;
+}
+.tu-suite-stats .tu-errors {
+  background: #f5a623;
+}
+
+.tu-test-suite-header {
+  padding: 0.75rem 0.75rem;
+  border-bottom: 1px solid #d8d8de;
+}
+.tu-test-suite-header a {
+  display: inline-block;
+  margin: 0 0.25rem;
+}
+
+.tu-metadata {
+  color: #666;
+}
+
+.tu-test-case > .tu-title > .tu-metadata {
+  float: right;
+}
+
+.su-toolbar,
+.su-tab-bar,
+.su-statusbar,
+.tu-test-suite-header {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.su-statusbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.su-scrollable {
+  /* Found no better way to define the position of this other than hard coding
+   * guestimates based on current layout of the header and footer.
+   */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 11.4rem;
+  bottom: 2.2rem;
+  padding: 10px;
+}
+
+/* .su-tabs {
+  font-size: 12px;
+} */

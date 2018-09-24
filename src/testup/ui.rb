@@ -1,74 +1,82 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2016 Trimble Inc.
+# Copyright 2013-2018 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
 
+require 'testup/command'
+require 'testup/config'
 require 'testup/runs'
 
 
 module TestUp
 
+  # @param [Sketchup::Menu] menu
+  # @param [Symbol] category
+  def self.add_tracing_toggle(menu, category)
+    item = menu.add_item("Toggle Tracing: #{category}") {
+      setting = !TestUp::Log.tracing(category)
+      TestUp::Log.set_tracing(:timing, setting)
+    }
+    menu.set_validation_proc(item) {
+      TestUp::Log.tracing(category) ? MF_CHECKED : MF_ENABLED
+    }
+  end
+
   def self.init_ui
     return if file_loaded?(__FILE__)
 
     # Commands
-    cmd = UI::Command.new('Open TestUp') {
-      self.toggle_testup
+    cmd = Command.new('Open TestUp') {
+      self.toggle_test_runner_window
     }
     cmd.tooltip = 'Open TestUp'
     cmd.status_bar_text = 'Open TestUp for running tests.'
-    cmd.small_icon = File.join(PATH_IMAGES, 'testup-16.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'testup-24.png')
+    cmd.icon = File.join(PATH_IMAGES, 'testup')
     cmd.set_validation_proc {
       self.window && self.window.visible? ? MF_CHECKED : MF_ENABLED
     } if defined?(Sketchup)
     cmd_toggle_testup = cmd
 
-    cmd = UI::Command.new('Run tests in Ruby Console') {
+    cmd = Command.new('Run tests in Ruby Console') {
       self.toggle_run_in_gui
     }
     cmd.tooltip = 'Run in Console'
     cmd.status_bar_text = 'Enable to output test results in the Ruby Console.'
-    cmd.small_icon = File.join(PATH_IMAGES, 'console.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'console.png')
+    cmd.icon = File.join(PATH_IMAGES, 'console')
     cmd.set_validation_proc {
       self.settings[:run_in_gui] ? MF_ENABLED : MF_CHECKED
     } if defined?(Sketchup)
     cmd_toggle_run_tests_in_console = cmd
 
-    cmd = UI::Command.new('Custom Seed') {
+    cmd = Command.new('Custom Seed') {
       self.set_custom_seed
     }
-    cmd.tooltip = 'Set Custom Seed'
+    cmd.tooltip = 'Tests Running Order'
     cmd.status_bar_text = 'Set custom seed for running tests.'
-    cmd.small_icon = File.join(PATH_IMAGES, 'arrow_switch.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'arrow_switch.png')
+    cmd.icon = File.join(PATH_IMAGES, 'random')
     cmd.set_validation_proc {
       self.settings[:seed] ? MF_ENABLED : MF_CHECKED
     } if defined?(Sketchup)
     cmd_seed = cmd
 
-    cmd = UI::Command.new('Re-run Saved Run') {
+    cmd = Command.new('Re-run Saved Run') {
       self::Runs.rerun_current
     }
     cmd.tooltip = 'Re-run a Saved Run from a previously picked .run file.'
     cmd.status_bar_text = 'Re-run a Saved Run from a previously picked .run file.'
-    cmd.small_icon = File.join(PATH_IMAGES, 'rerun.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'rerun.png')
+    cmd.icon = File.join(PATH_IMAGES, 'rerun')
     cmd.set_validation_proc {
       self::Runs.current ? MF_ENABLED : MF_GRAYED
     } if defined?(Sketchup)
     cmd_rerun_saved = cmd
 
-    cmd = UI::Command.new('Verbose Console Tests') {
+    cmd = Command.new('Verbose Console Tests') {
       self.toggle_verbose_console_tests
     }
     cmd.tooltip = 'Verbose Console Tests'
     cmd.status_bar_text = 'Enable verbose test results in the Ruby Console.'
-    cmd.small_icon = File.join(PATH_IMAGES, 'verbose.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'verbose.png')
     cmd.set_validation_proc {
       flags = 0
       flags |= MF_GRAYED if self.settings[:run_in_gui]
@@ -77,24 +85,24 @@ module TestUp
     } if defined?(Sketchup)
     cmd_toggle_verbose_console_tests = cmd
 
-    cmd = UI::Command.new('Open Log Folder') {
+    cmd = Command.new('Open Log Folder') {
       self.open_log_folder
     }
     cmd.tooltip = 'Open folder with logs'
     cmd.status_bar_text = 'Open folder with logs.'
     cmd_open_logs = cmd
 
-    cmd = UI::Command.new('Open console on startup') {
+    cmd = Command.new('Open Console on Startup') {
       self.settings[:open_console_on_startup] = !self.settings[:open_console_on_startup]
     }
-    cmd.tooltip = 'Open console on startup'
-    cmd.status_bar_text = 'Open console on startup.'
+    cmd.tooltip = 'Open Console on Startup'
+    cmd.status_bar_text = 'Open Console on Startup.'
     cmd.set_validation_proc {
       self.settings[:open_console_on_startup] ? MF_CHECKED : MF_ENABLED
     } if defined?(Sketchup)
     cmd_open_console_on_startup = cmd
 
-    cmd = UI::Command.new('Reload TestUp') {
+    cmd = Command.new('Reload TestUp') {
       TESTUP_CONSOLE.clear
       window_visible = @window && @window.visible?
       @window.close if window_visible
@@ -107,25 +115,27 @@ module TestUp
     cmd.large_icon = File.join(PATH_IMAGES, 'arrow_refresh.png')
     cmd_reload_testup = cmd
 
-    cmd = UI::Command.new('Minitest Help') {
+    cmd = Command.new('Minitest Help') {
       self.display_minitest_help
     }
     cmd.tooltip = 'Minitest Help'
-    cmd.small_icon = File.join(PATH_IMAGES, 'help.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'help.png')
     cmd_display_minitest_help = cmd
 
-    cmd = UI::Command.new('Run Tests') {
-      self.run_tests_gui
+    cmd = Command.new('Force WebDialog') {
+      if self.settings[:window_adapter] == 'web_dialog'
+        self.settings[:window_adapter] = nil
+      else
+        self.settings[:window_adapter] = 'web_dialog'
+      end
+      self.reset_dialogs
     }
-    cmd.tooltip = 'Discover and run all tests.'
-    cmd.status_bar_text = 'Discover and run all tests.'
-    cmd_run_tests = cmd
+    cmd.tooltip = 'Force WebDialog'
+    cmd.status_bar_text = 'Force WebDialog.'
+    cmd.set_validation_proc {
+      self.settings[:window_adapter] == 'web_dialog' ? MF_CHECKED : MF_ENABLED
+    } if defined?(Sketchup)
+    cmd_debug_force_webdialog = cmd
 
-    cmd.tooltip = 'Run Layout Tests'
-    cmd.small_icon = File.join(PATH_IMAGES, 'layout-16.png')
-    cmd.large_icon = File.join(PATH_IMAGES, 'layout-24.png')
-    #cmd_run_layout_tests = cmd
 
     # Menus
     if defined?(Sketchup)
@@ -145,17 +155,24 @@ module TestUp
       sub_menu.add_item('Add Run...') { self::Runs.add }
       sub_menu.add_item('Remove Run...') { self::Runs.remove }
       menu.add_separator
-      menu.add_item(cmd_open_logs)
       menu.add_item(cmd_open_console_on_startup)
       menu.add_item(cmd_toggle_run_tests_in_console)
       menu.add_item(cmd_toggle_verbose_console_tests)
-      menu.add_item(cmd_display_minitest_help)
       menu.add_separator
-      menu.add_item(cmd_run_tests)
-      if TestUp::DEBUG
-        menu.add_separator
-        menu.add_item(cmd_reload_testup)
-      end
+      sub_menu = menu.add_submenu('Debug')
+      sub_menu.add_item(cmd_display_minitest_help)
+      sub_menu.add_separator
+      sub_menu.add_item(cmd_open_logs)
+      sub_menu.add_separator
+      sub_menu.add_item(cmd_debug_force_webdialog)
+      sub_menu.add_separator
+      sub_menu.add_item(cmd_reload_testup)
+      sub_menu.add_separator
+      add_tracing_toggle(sub_menu, :call_js)
+      add_tracing_toggle(sub_menu, :callback)
+      add_tracing_toggle(sub_menu, :discover)
+      add_tracing_toggle(sub_menu, :minitest)
+      add_tracing_toggle(sub_menu, :timing)
     end
 
     # Toolbar
@@ -168,8 +185,6 @@ module TestUp
       toolbar.add_item(cmd_rerun_saved)
       toolbar.add_separator
       toolbar.add_item(cmd_toggle_run_tests_in_console)
-      toolbar.add_item(cmd_toggle_verbose_console_tests)
-      toolbar.add_item(cmd_display_minitest_help)
       if TestUp::DEBUG
         toolbar.add_separator
         toolbar.add_item(cmd_reload_testup)
@@ -187,6 +202,7 @@ module TestUp
     def self.select_directory(options)
       if defined?(UI) && UI.respond_to?(:select_directory)
         result = UI.select_directory(options)
+        return nil if result.nil?
         if options && options[:select_multiple]
           result.map! { |path| File.expand_path(path) }
         else

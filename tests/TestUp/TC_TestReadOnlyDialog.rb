@@ -21,6 +21,7 @@ class TC_TestReadOnlyDialog < TestUp::TestCase
   # ========================================================================== #
 
   def test_open_read_only_file
+    skip('Need Model#close') unless Sketchup.active_model.respond_to?(:close)
     basename = File.basename(__FILE__, ".*")
     test_model = File.join(__dir__, basename, "Cube.skp")
     Sketchup.open_file(test_model)

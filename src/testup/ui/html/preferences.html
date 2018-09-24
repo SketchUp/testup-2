@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <base href="..">
+    <link rel="stylesheet" href="css/preferences.css"/>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <script src="js/lib/polyfills.js"></script>
+  </head>
+  <body>
+
+    <div id="app" v-cloak>
+
+      <div id="tuPaths">
+        <su-label>Test Suite Paths:</su-label>
+        <su-listbox
+          v-bind:items="config.test_suite_paths"
+          v-bind:value="selectedPath"
+          v-on:change="pathSelected"
+          >
+        </su-listbox>
+      </div>
+
+
+      <div>
+        <span id="tuPathUpDown">
+          <su-button v-on:click.native="movePathUp" v-bind:disabled="!canMovePathUp">
+            Up
+          </su-button>
+
+          <su-button v-on:click.native="movePathDown" v-bind:disabled="!canMovePathDown">
+            Down
+          </su-button>
+        </span>
+
+        <span id="tuPathManage">
+          <su-button v-on:click.native="editPath" v-bind:disabled="!isPathSelected">
+            Edit
+          </su-button>
+
+          <su-separator vertical></su-separator>
+
+          <su-button v-on:click.native="removePath" v-bind:disabled="!isPathSelected">
+            Remove
+          </su-button>
+
+          <su-button v-on:click.native="addPath">
+            Add
+          </su-button>
+        </span>
+      </div>
+
+
+      <su-group title="Code Editor" id="tuCodeEditor">
+
+        <div class="tu-input-group">
+          <su-input label="Application:" v-model="config.editor.executable"></su-input>
+        </div>
+
+        <div class="tu-input-group">
+          <su-input label="Arguments:" v-model="config.editor.arguments"></su-input>
+          <su-label>Variables: {FILE} {LINE}</su-label>
+        </div>
+
+      </su-group>
+
+
+      <div id="tuFooter">
+        <su-button v-on:click.native="cancel" title="Cancel">
+          Cancel
+        </su-button>
+
+        <su-button class="primary" v-on:click.native="save" title="Save">
+          Save
+        </su-button>
+      </div>
+
+    </div><!-- #app -->
+
+    <script src="js/preferences.js"></script>
+  </body>
+</html>
