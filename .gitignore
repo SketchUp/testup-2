@@ -13,11 +13,15 @@
 ## Folders
 ############
 
-tests_old/
+/archive/
+/build/
+/tests_old/
 Debug*/
 Release*/
 ipch/
 xcuserdata/
+node_modules/
+.vs/
 
 
 ############
@@ -63,3 +67,10 @@ Desktop.ini
 ############
 
 Gemfile.lock
+
+##################
+## Generated Files
+##################
+
+src/testup/ui/js/*.*
+src/testup/ui/images/*

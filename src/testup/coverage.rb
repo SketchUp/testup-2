@@ -7,8 +7,9 @@
 
 
 module TestUp
- # TODO: Refactor this class to be less hacky! Return a CoverageResult object.
- class Coverage
+# TODO: Refactor this class to be less hacky! Return a CoverageResult object.
+# TODO: Rename to CoverageDiscoverer
+class Coverage
 
   # @param [String] settings_id
   def initialize(testsuite_path)
@@ -175,5 +176,5 @@ module TestUp
     klass.split('::') << method
   end
 
- end # class
+end # class
 end # module TestUp

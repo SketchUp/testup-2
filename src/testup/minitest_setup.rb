@@ -5,10 +5,11 @@
 #
 #-------------------------------------------------------------------------------
 
+require 'testup/debugger'
 
 # Load required extensions to the Sketchup::Console class in order to run the
 # tests in the SketchUp console.
-require File.join(__dir__, 'console.rb')
+require 'testup/console'
 $stdout = TestUp::TESTUP_CONSOLE
 $stderr = TestUp::TESTUP_CONSOLE
 

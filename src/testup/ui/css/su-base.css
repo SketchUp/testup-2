@@ -1,0 +1,68 @@
+[v-cloak] {
+  display: none;
+}
+
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: normal;
+  src: url(../fonts/OpenSans-Regular.ttf);
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: bold;
+  src: url(../fonts/OpenSans-Bold.ttf);
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: italic;
+  font-weight: bold;
+  src: url(../fonts/OpenSans-BoldItalic.ttf);
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: italic;
+  font-weight: normal;
+  src: url(../fonts/OpenSans-Italic.ttf);
+}
+
+
+* {
+  cursor: inherit;
+  box-sizing: border-box;
+}
+
+input, select, textarea {
+  cursor: auto;
+}
+
+a[href] {
+  cursor: pointer;
+}
+
+html, body {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: default;
+  overflow: hidden; /* Needed for WebDialogs */
+}
+
+html {
+  background: #f3f3f7;
+}
+
+html, input, select, textarea {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+a {
+  color: #bc0911;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}

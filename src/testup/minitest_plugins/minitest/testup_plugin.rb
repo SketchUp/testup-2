@@ -1,37 +1,49 @@
-# Copyright:: Copyright 2014 Trimble Inc.
-# License:: The MIT License (MIT)
-# Original Author:: Thomas Thomassen
+#-------------------------------------------------------------------------------
+#
+# Copyright 2014-2018 Trimble Inc.
+# License: The MIT License (MIT)
+#
+#-------------------------------------------------------------------------------
 
+require 'testup/config'
+require 'testup/log'
+require 'testup/file_reporter'
+require 'testup/reporter'
 
-require File.join(__dir__, '..', '..', 'file_reporter.rb')
-require File.join(__dir__, '..', '..', 'reporter.rb')
-
-
-puts 'MiniTest TestUp Extension discovered...' # DEBUG
 
 module Minitest
+
+  TestUp::Log.trace :minitest, 'MiniTest TestUp Extension discovered...'
 
   def self.plugin_testup_options opts, options # :nodoc:
     opts.on '-t', '--testup', 'Run tests in TestUp GUI.' do
       TestUp.settings[:run_in_gui] = true
+      options[:testup_gui] = true
+    end
+    opts.on '--testup_ci', 'Generate JSON report to STDOUT.' do
+      options[:testup_ci] = true
     end
   end
 
   def self.plugin_testup_init(options)
-    puts 'MiniTest TestUp Extension loading...' # DEBUG
+    TestUp::Log.trace :minitest, 'MiniTest TestUp Extension loading...'
     if TestUp.settings[:run_in_gui]
-      puts 'MiniTest TestUp Extension in GUI mode' # DEBUG
+      TestUp::Log.trace :minitest, 'MiniTest TestUp Extension in GUI mode'
       # Disable the default reporters as otherwise they'll print lots of data to
       # the console while the test runs. No need for that.
       self.reporter.reporters.clear
       # Add the reporters needed for TestUp.
       self.reporter << TestUp::Reporter.new($stdout, options)
     else
-      puts 'MiniTest TestUp Extension in console mode' # DEBUG
+      TestUp::Log.trace :minitest, 'MiniTest TestUp Extension in console mode'
     end
     # Always log to file.
     # TODO(thomthom): Will this add multiple FileReporters?
     self.reporter << TestUp::FileReporter.new(options)
+
+    if options[:testup_ci]
+      self.reporter << TestUp::CIJsonReporter.new(options)
+    end
   end
 
 end # module Minitest

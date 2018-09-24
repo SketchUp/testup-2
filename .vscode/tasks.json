@@ -4,12 +4,22 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Debug in SketchUp 2017",
+      "type": "shell",
+      "command": "ruby",
+      "args": [
+        "${workspaceFolder}/tools/debug-sketchup.rb",
+        "17"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Debug in SketchUp 2018",
       "type": "shell",
-      "command": "skippy",
+      "command": "ruby",
       "args": [
-        "sketchup:debug",
-        "2018"
+        "${workspaceFolder}/tools/debug-sketchup.rb",
+        "18"
       ],
       "problemMatcher": []
     }

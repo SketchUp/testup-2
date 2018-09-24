@@ -7,6 +7,7 @@
 
 require 'fileutils'
 require 'testup/app_files'
+require 'testup/config'
 
 
 module TestUp

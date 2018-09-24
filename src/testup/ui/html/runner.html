@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <base href="..">
+    <link rel="stylesheet" href="css/runner.css"/>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <script src="js/lib/polyfills.js"></script>
+  </head>
+  <body>
+
+    <div id="app" v-cloak>
+
+      <su-toolbar>
+
+        <su-button class="primary" v-on:click.native="runTests" title="Run selected tests">
+          <i class="fas fa-play"></i>
+          Run
+        </su-button>
+        <su-button v-on:click.native="reRun" title="Re-run a previous test run">
+          <i class="fas fa-forward"></i>
+          Re-run...
+        </su-button>
+
+        <su-panel class="su-flex"></su-panel>
+
+        <su-panel-group class="tu-suite-stats">
+          <su-panel title="Total number of tests">
+            {{ active_test_suite_stats.tests }}
+          </su-panel>
+          <su-panel title="Number of passed tests" class="tu-passed">
+            {{ active_test_suite_stats.passed }}
+          </su-panel>
+          <su-panel title="Number of failed tests" class="tu-failed">
+            {{ active_test_suite_stats.failed }}
+          </su-panel>
+          <su-panel title="Number of tests with errors" class="tu-errors">
+            {{ active_test_suite_stats.errors }}
+          </su-panel>
+        </su-panel-group>
+
+        <su-button class="tertiary" v-on:click.native="discoverTests"
+            title="Discover/rediscover tests">
+          <i class="fas fa-search"></i>
+        </su-button>
+        <su-button class="tertiary" v-on:click.native="openPreferences"
+            title="Preferences">
+          <i class="fas fa-cog"></i>
+        </su-button>
+
+      </su-toolbar>
+
+      <su-tabs v-bind:selected-index="activeTestSuiteIndex"
+               v-on:tab-change="changeTestSuite($event)" ref="tabbar">
+        <su-tab v-bind:title="test_suite.title"
+                v-for="(test_suite, index) in test_suites" v-bind:key="test_suite.id">
+          <div class="tu-test-suite-header">
+            <a href="#" v-on:click.prevent.stop="selectTestSuite(test_suite, true)">Select All</a>
+            <a href="#" v-on:click.prevent.stop="selectTestSuite(test_suite, false)">Select None</a>
+          </div>
+          <su-scrollable>
+            <tu-test-suite>
+              <tu-test-case v-for="test_case in test_suite.test_cases"
+                            v-bind:key="test_case.id"
+                            v-bind:test-case="test_case">
+              </tu-test-case>
+            </tu-test-suite>
+          </su-scrollable>
+        </su-tab>
+      </su-tabs>
+
+
+    <su-statusbar>
+      {{ statusBarText }}
+    </su-statusbar>
+
+    </div><!-- #app -->
+
+    <script src="js/runner.js"></script>
+  </body>
+</html>

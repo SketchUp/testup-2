@@ -32,6 +32,7 @@ module TestUp
   def []=(key, value)
     if defined?(Sketchup)
       escaped_value = escape_quotes(value)
+      puts "DEBUG: Settings [write]: #{key} => #{escaped_value}"
       Sketchup.write_default(@settings_id, key.to_s, escaped_value)
     end
     @data[key] = value

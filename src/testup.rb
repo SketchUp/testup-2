@@ -12,33 +12,40 @@ elsif defined?(Layout)
   require 'layout.rb'
 end
 
+require 'json'
+
 #-------------------------------------------------------------------------------
 
 module TestUp
 
   ### CONSTANTS ### ------------------------------------------------------------
 
-  # Plugin information
-  PLUGIN_ID       = 'TestUp2'.freeze
-  PLUGIN_NAME     = 'TestUp'.freeze
-  PLUGIN_VERSION  = '2.2.0'.freeze
-
   # Resource paths
   FILENAMESPACE = File.basename(__FILE__, '.*')
   PATH_ROOT     = File.dirname(__FILE__).freeze
   PATH          = File.join(PATH_ROOT, FILENAMESPACE).freeze
 
+  # Extension information
+  extension_json_file = File.join(PATH, 'extension.json')
+  extension_json = File.read(extension_json_file)
+  EXTENSION = ::JSON.parse(extension_json, symbolize_names: true).freeze
+
+  # Backward compatible constants. Prefer EXTENSION over these.
+  PLUGIN_ID       = EXTENSION[:product_id].freeze
+  PLUGIN_NAME     = EXTENSION[:name].freeze
+  PLUGIN_VERSION  = EXTENSION[:version].freeze
+
 
   ### EXTENSION ### ------------------------------------------------------------
 
-  loader = File.join( PATH, 'core.rb' )
+  loader = 'testup/core'
   if defined?(Sketchup)
     if !file_loaded?(__FILE__)
-      ex = SketchupExtension.new(PLUGIN_NAME, loader)
-      ex.description = 'Test suite utility for SketchUp.'
-      ex.version     = PLUGIN_VERSION
-      ex.copyright   = 'Trimble Inc. © 2013-2018'
-      ex.creator     = 'SketchUp'
+      ex = SketchupExtension.new(EXTENSION[:name], 'testup/core')
+      ex.description = EXTENSION[:description]
+      ex.version     = EXTENSION[:version]
+      ex.copyright   = EXTENSION[:copyright]
+      ex.creator     = EXTENSION[:creator]
       Sketchup.register_extension(ex, true)
       file_loaded(__FILE__)
     end

@@ -1,32 +1,26 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2016 Trimble Inc.
+# Copyright 2013-2018 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
 
 require 'sketchup.rb'
+
+# TODO: Defer this to a point so it doesn't happen during SketchUp startup.
+require 'testup/gem_helper'
+TestUp::GemHelper.require('minitest', 'minitest', version: '5.4.3')
+
+require 'testup/ui/runner' if defined?(UI::WebDialog)
+require 'testup/app'
 require 'testup/app_files'
-
-
-# Third party dependencies.
-
-require 'rubygems'
-begin
-  gem 'minitest'
-rescue Gem::LoadError
-  begin
-    # Minitest 5.9.1 caused problems for reasons unknown. For now locking to
-    # an older version known to work.
-    Gem.install('minitest', '5.4.3')
-  rescue Gem::LoadError
-    # Needed because of Ruby 2.2. Ruby 2.0 did not need this. Seems like a bug.
-    # This pattern is probably not that common, to be programmatically installing
-    # gems.
-  end
-  gem 'minitest'
-end
-require 'minitest'
+require 'testup/config'
+require 'testup/console'
+require 'testup/debug'
+require 'testup/editor'
+require 'testup/taskbar_progress'
+require 'testup/ui'
+require 'testup/win32' if RUBY_PLATFORM =~ /mswin|mingw/
 
 
 module TestUp
@@ -47,147 +41,56 @@ module TestUp
     end
   end
 
+  PATH_UI         = File.join(PATH, 'ui').freeze
   PATH_IMAGES     = File.join(PATH, 'images').freeze
-  PATH_JS_SCRIPTS = File.join(PATH, 'js').freeze
 
-
-  ### Accessors ### ------------------------------------------------------------
 
   class << self
-    attr_reader :settings
     attr_accessor :window
   end
 
 
-  ### Dependencies ### ---------------------------------------------------------
-
-  if defined?(UI::WebDialog)
-    if !defined?(TestUp::SKUI)
-      skui_path = File.join(PATH, 'third-party', 'SKUI', 'src', 'SKUI')
-      require File.join(skui_path, 'embed_skui.rb')
-      ::SKUI.embed_in(self)
-    end
-    require File.join(PATH, 'preferences_window.rb')
-    require File.join(PATH, 'test_window.rb')
-  end
-
-  require File.join(PATH, 'console.rb')
-  require File.join(PATH, 'coverage.rb')
-  require File.join(PATH, 'debug.rb')
-  require File.join(PATH, 'editor.rb')
-  require File.join(PATH, 'p4.rb')
-  require File.join(PATH, 'settings.rb')
-  require File.join(PATH, 'taskbar_progress.rb')
-  require File.join(PATH, 'test_discoverer.rb')
-  require File.join(PATH, 'ui.rb')
-  if RUBY_PLATFORM =~ /mswin|mingw/
-    require File.join(PATH, 'win32.rb')
-  end
-
-
-  ### Configuration ### --------------------------------------------------------
-
-  tests_path = File.join(__dir__, '..', '..', 'tests')
-  if defined?(Sketchup)
-    defaults = {
-      :editor_application => Editor.get_default[0],
-      :editor_arguments => Editor.get_default[1],
-      :seed => nil,
-      :run_in_gui => true,
-      :verbose_console_tests => true,
-      :paths_to_testsuites => [
-        File.expand_path(File.join(tests_path, 'TestUp')),
-        File.expand_path(File.join(tests_path, 'SketchUp Ruby API'))
-      ]
-    }
-  elsif defined?(Layout)
-    defaults = {
-      :editor_application => Editor.get_default[0],
-      :editor_arguments => Editor.get_default[1],
-      :seed => nil,
-      :run_in_gui => false,
-      :verbose_console_tests => true,
-      :paths_to_testsuites => [
-        # ...
-      ]
-    }
-  end
-  @settings = Settings.new(PLUGIN_ID, defaults)
-
-
-  ### UI ### -------------------------------------------------------------------
-
   self.init_ui
+  App.process_arguments
 
 
-  def self.reset_settings
-    # This will make the default values be used. (At least under Windows.)
-    # TODO: Confirm this works under OSX.
-    @settings[:debugger_output_enabled] = nil
-    @settings[:editor] = nil
-    @settings[:editor_application] = nil
-    @settings[:editor_arguments] = nil
-    @settings[:run_in_gui] = nil
-    @settings[:verbose_console_tests] = nil
-    @settings[:paths_to_testsuites] = nil
-    @settings[:open_console_on_startup] = nil
-  end
-
-
-  ### Extension ### ------------------------------------------------------------
-
-  def self.toggle_testup
-    @window ||= TestUpWindow.new
+  # Toggle the test runner dialog.
+  def self.toggle_test_runner_window
+    @window ||= TestRunnerWindow.new
     @window.toggle
   end
 
+  # Call after switching dialog type to be used. Or after making changes that
+  # require the dialog to be recreated.
+  def self.reset_dialogs
+    @window = nil
+  end
 
+  # TODO(thomthom): Move to API.
+  # Toggle whether TestUp display the test results in a dialog or if it displays
+  # it in the Ruby Console, similar to running Minitest from a terminal.
   def self.toggle_run_in_gui
     @settings[:run_in_gui] = !@settings[:run_in_gui]
   end
 
-
+  # TODO(thomthom): Move to API.
+  # Toggle verbose test results. Only relevant if TestUp is configured to output
+  # results in the Ruby Console.
   def self.toggle_verbose_console_tests
     @settings[:verbose_console_tests] = !@settings[:verbose_console_tests]
   end
 
-
-  def self.run_tests_gui(run_config = nil)
-    unless @window && @window.visible?
-      warn 'TestUp window not open.'
-      UI.beep
-      return
-    end
-    # If a run_config is provided we use that instead of the selected tests.
-    if run_config
-      options = {
-        seed: run_config[:seed]
-      }
-      testsuite = @window.active_testsuite # TODO(thomthom): get from run log.
-      tests = run_config[:tests]
-    else
-      options = {}
-      testsuite = @window.active_testsuite
-      tests = @window.selected_tests
-    end
-    # Number of tests is currently incorrect as the list include stubs from the
-    # manifest.
-    @num_tests_being_run = tests.size
-    if self.run_tests(tests, testsuite, options)
-      #puts Reporter.results.pretty_inspect
-      @window.update_results(Reporter.results)
-    else
-      @window.update_results({})
-    end
-  end
-
+  # TODO(thomthom): Move this method. Maybe to the Reporter class if the
+  # @num_tests_being_run instance variable also can be moved there.
   def self.update_testing_progress(num_tests_run)
     progress = TaskbarProgress.new
     progress.set_value(num_tests_run, @num_tests_being_run)
-    #puts "Test Progress: #{num_tests_run} of #{@num_tests_being_run}"
     nil
   end
 
+  # TODO(thomthom): Move to API.
+  # Prompts the user for a custom seed for the run-order of Minitest.
+  # This allows the user to re-run a given test run.
   def self.set_custom_seed
     prompts = ['Seed (Negative for Random)']
     defaults = [self.settings[:seed] || -1]
@@ -203,115 +106,9 @@ module TestUp
     seed
   end
 
+  # Opens the Log directory in the system file explorer.
   def self.open_log_folder
     UI.openURL(log_path)
   end
-
-  # @example Run a test case:
-  #   TestUp.run_tests(["TC_Sketchup_Edge#"])
-  #
-  # @example Run single test:
-  #   TestUp.run_tests(["TC_Sketchup_Edge#start"])
-  #
-  # @example Run a set of test cases and/or tests:
-  #   tests = [
-  #     "TC_Sketchup_Face#",
-  #     "TC_Sketchup_Edge#start", "TC_Sketchup_Edge#end"
-  #   ]
-  #   TestUp.run_tests(tests)
-  #
-  # @param [Array<String>] list of tests or test cases to run.
-  def self.run_tests(tests, testsuite = "Untitled", options = {})
-    TESTUP_CONSOLE.show
-    TESTUP_CONSOLE.clear
-    if tests.empty?
-      puts "No tests selected to run."
-      return false
-    end
-    # `options` argument is used when re-running test runs. It doesn't change
-    # the user-selected seed.
-    seed = options[:seed] || @settings[:seed]
-    # Dump some test information that might be useful when reviewing test runs.
-    TestUp::Debugger.output("Minitest Version: #{Minitest::VERSION}")
-    puts "Minitest Version: #{Minitest::VERSION}"
-    puts "Discovering tests...\n"
-    self.discover_tests
-    puts "Running test suite: #{testsuite}"
-    puts "> Tests: #{tests.size}"
-    puts "> Seed: #{seed}" if seed
-    # If tests end with a `#` it means the whole test case should be run.
-    # Automatically fix the regex.
-    tests = tests.map { |pattern|
-      if pattern =~ /\#$/
-        pattern << ".+"
-      end
-      pattern
-    }
-    arguments = []
-    arguments << "-n /^(#{tests.join('|')})$/"
-    arguments << '--verbose' if @settings[:verbose_console_tests]
-    if seed
-      arguments << '--seed'
-      arguments << seed.to_s
-    end
-    arguments << '--testup' if @settings[:run_in_gui]
-    progress = TaskbarProgress.new
-    begin
-      progress.set_state(TaskbarProgress::NORMAL)
-      self.suppress_warning_dialogs {
-        MiniTest.run(arguments)
-      }
-    rescue SystemExit
-      puts 'Minitest called exit.'
-    ensure
-      progress.set_state(TaskbarProgress::NOPROGRESS)
-    end
-    puts "All tests done!"
-    true
-  end
-
-
-  def self.discover_tests
-    Debugger.time("TestUp.discover_tests") {
-      progress = TaskbarProgress.new
-      begin
-        progress.set_state(TaskbarProgress::INDETERMINATE)
-        paths = TestUp.settings[:paths_to_testsuites]
-        test_discoverer = TestDiscoverer.new(paths)
-        discoveries = test_discoverer.discover
-      ensure
-        progress.set_state(TaskbarProgress::NOPROGRESS)
-      end
-      discoveries
-    }
-  end
-
-
-  # noinspection RubyResolve,RubyScope
-  def self.suppress_warning_dialogs(&block)
-    if Test.respond_to?(:suppress_warnings=)
-      cache = Test.suppress_warnings?
-      Test.suppress_warnings = true
-    end
-    block.call
-  ensure
-    if Test.respond_to?(:suppress_warnings=)
-      Test.suppress_warnings = cache
-    end
-    nil
-  end
-
-
-  def self.defer(&block)
-    done = false
-    UI.start_timer(0, false) {
-      # Any modal dialog would cause this timer to repeat. We avoid this
-      # potential problem by breaking out early if we already have run.
-      next if done
-      done = true
-      block.call
-    }
-  end
-
 
 end # module
