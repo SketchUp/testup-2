@@ -182,7 +182,7 @@ window.app = new Vue({
             data.missing += test.missing ? 1 : 0;
             if (!test.result) continue;
             data.passed += test.result.passed ? 1 : 0;
-            data.failed += test.result.passed ? 0 : 1;
+            data.failed += (test.result.passed || test.result.skipped) ? 0 : 1;
             data.errors += test.result.error ? 1 : 0;
             data.skipped += test.result.skipped ? 1 : 0;
             data.total_time += test.result.run_time;
