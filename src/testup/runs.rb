@@ -139,8 +139,9 @@ module Runs
     }
     testsuite = 'Re-run' # TODO(thomthom): get from saved run.
     tests = run_config[:tests]
+    path = run_config[:path]
     # Execute the tests!
-    TestUp.run_tests(tests, testsuite, options)
+    TestUp::API.run_tests(tests, title: testsuite, path: path, options: options)
   end
 
 end # module

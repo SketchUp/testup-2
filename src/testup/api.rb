@@ -107,7 +107,7 @@ module TestUp
       runner = TestRunner.new(title: title, path: path)
       runner.run(tests, options) { |results|
         # TODO: TestRunner should carry forward title and path.
-        yield test_suite_from_results(title, path, results)
+        yield test_suite_from_results(title, path, results) if block_given?
       }
     end
 
