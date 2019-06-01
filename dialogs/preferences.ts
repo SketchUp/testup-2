@@ -100,7 +100,6 @@ window.app = new Vue({
     },
     changeEditorExecutable: function(ev) {
       this.config.editor.executable = ev.target.value;
-      this.config.editor.application = ev.target.value;
     },
     changeEditorArguments: function(ev) {
       this.config.editor.arguments = ev.target.value;
