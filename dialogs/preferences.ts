@@ -98,6 +98,13 @@ window.app = new Vue({
     addPath() {
       sketchup.addPath();
     },
+    changeEditorExecutable: function(ev) {
+      this.config.editor.executable = ev.target.value;
+      this.config.editor.application = ev.target.value;
+    },
+    changeEditorArguments: function(ev) {
+      this.config.editor.arguments = ev.target.value;
+    },
     cancel() {
       sketchup.cancel();
     },

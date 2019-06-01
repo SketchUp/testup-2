@@ -58,11 +58,11 @@
       <su-group title="Code Editor" id="tuCodeEditor">
 
         <div class="tu-input-group">
-          <su-input label="Application:" v-model="config.editor.executable"></su-input>
+          <su-input label="Application:" v-on:keyup.native="changeEditorExecutable" v-model="config.editor.executable"></su-input>
         </div>
 
         <div class="tu-input-group">
-          <su-input label="Arguments:" v-model="config.editor.arguments"></su-input>
+          <su-input label="Arguments:" v-on:keyup.native="changeEditorArguments" v-model="config.editor.arguments"></su-input>
           <su-label>Variables: {FILE} {LINE}</su-label>
         </div>
 
