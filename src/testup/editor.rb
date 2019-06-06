@@ -76,7 +76,7 @@ module TestUp
     arguments.gsub!('{LINE}', line)
     # Do not occupy the current process
     arr = arguments.gsub("\"","").split(" ")
-    Kernel.spawn(editor,*arr)
+    Process.detach Kernel.spawn(editor,*arr)
   end
 
  end # module
