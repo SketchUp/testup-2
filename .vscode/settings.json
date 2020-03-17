@@ -1,8 +1,12 @@
 // Place your settings in this file to overwrite default and user settings.
 {
   "explorer.autoReveal": false,
+
   "files.trimTrailingWhitespace": true,
+
   "solargraph.diagnostics": true,
+  "solargraph.useBundler": true,
+
   "cSpell.enabledLanguageIds": [
     "javascript",
     "markdown",
