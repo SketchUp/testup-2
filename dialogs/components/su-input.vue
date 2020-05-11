@@ -1,7 +1,9 @@
 <template>
   <label class="su-input" v-bind:class="{ hasLabel: label }">
     <span v-if="label">{{ label }}</span>
-    <input v-bind:value="value" />
+    <input
+      v-bind:value="value"
+      v-on:input="$emit('input', $event.target.value)" />
   </label>
 </template>
 

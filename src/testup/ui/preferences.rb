@@ -94,7 +94,7 @@ module TestUp
       Log.info "event_save_config(...)"
       Log.debug config.inspect
       # Save editor config:
-      application = config['editor']['application']
+      application = config['editor']['executable']
       arguments = config['editor']['arguments']
       Editor.change(application, arguments)
       paths = config['test_suite_paths']
