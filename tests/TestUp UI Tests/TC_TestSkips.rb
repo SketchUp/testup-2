@@ -6,23 +6,27 @@
 require 'testup/testcase'
 
 
-# Set of tests triggering different result types.
-class TC_TestSkips < TestUp::TestCase
+module TestUp
+module Tests
+  # Set of tests triggering different result types.
+  class TC_TestSkips < TestUp::TestCase
 
-  def setup
-    # ...
-  end
+    def setup
+      # ...
+    end
 
-  def teardown
-    # ...
-  end
+    def teardown
+      # ...
+    end
 
 
-  # ========================================================================== #
+    # ========================================================================== #
 
-  # Ensure that skips doesn't expand the test case.
-  def test_skip_only_test_case
-    skip('skip skip skip to my lou')
-  end # test
+    # Ensure that skips doesn't expand the test case.
+    def test_skip_only_test_case
+      skip('skip skip skip to my lou')
+    end # test
 
-end # class
+  end # class
+end
+end
