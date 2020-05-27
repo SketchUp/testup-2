@@ -17,7 +17,7 @@ module TestUp
   def self.add_tracing_toggle(menu, category)
     item = menu.add_item("Toggle Tracing: #{category}") {
       setting = !TestUp::Log.tracing(category)
-      TestUp::Log.set_tracing(:timing, setting)
+      TestUp::Log.set_tracing(category, setting)
     }
     menu.set_validation_proc(item) {
       TestUp::Log.tracing(category) ? MF_CHECKED : MF_ENABLED
