@@ -81,6 +81,7 @@ module TestUp
       model.definitions.purge_unused
       model.materials.purge_unused
       model.layers.purge_unused
+      model.layers.purge_unused_folders if model.layers.respond_to?(:purge_unused_folders)
       model.styles.purge_unused
       # TODO(Remove schemas)
       model.commit_operation
