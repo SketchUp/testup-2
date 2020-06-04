@@ -67,7 +67,7 @@ module TestUp
       for entity in model.entities.to_a
         entity.locked = false if entity.respond_to?(:locked=) && entity.locked?
       end
-      if Sketchup.version.to_f < 19.0 # TODO: 19.2
+      if Sketchup.version.to_f < 19.2
         # Work around a potential crash in `entities.clear!`
         model.entities.erase_entities(model.entities.to_a)
       else
