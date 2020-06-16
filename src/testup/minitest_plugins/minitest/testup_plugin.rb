@@ -7,6 +7,7 @@
 
 require 'testup/config'
 require 'testup/log'
+# require 'testup/debug_reporter' # TODO(thomthom)
 require 'testup/file_reporter'
 require 'testup/reporter'
 
@@ -40,6 +41,8 @@ module Minitest
     # Always log to file.
     # TODO(thomthom): Will this add multiple FileReporters?
     self.reporter << TestUp::FileReporter.new(options)
+    # TODO(thomthom): Add option to enable DebugReporter
+    # self.reporter << TestUp::DebugReporter.new(options)
 
     if options[:testup_ci]
       self.reporter << TestUp::CIJsonReporter.new(options)
