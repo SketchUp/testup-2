@@ -1,6 +1,6 @@
 # Copyright:: Copyright 2015 Trimble Navigation Ltd.
 # License:: All Rights Reserved.
-# Original Author:: Thomas Thomassen
+# Original Author:: Thomas Thomassen (thomthom@sketchup.com)
 
 
 require "testup/testcase"
@@ -239,7 +239,12 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
     result = definition.add_classification("FooBar", "IfcDoor")
     assert_equal(false, result)
     dictionaries = definition.attribute_dictionaries
-    assert_nil(dictionaries)
+    if Sketchup.version.to_i < 18
+      assert_nil(dictionaries)
+    else
+      assert_equal(1, dictionaries.size)
+      assert_equal('SU_DefinitionSet', dictionaries.first.name)
+    end
   end
 
   def test_add_classification_failure_image_definition
@@ -468,8 +473,13 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
     result = definition.remove_classification("FooBar", "IfcDoor")
     assert_equal(false, result)
     dictionaries = definition.attribute_dictionaries
-    # Should be two dictionaries, "AppliedSchemaTypes" and "IFC 2x3".
-    assert_equal(2, dictionaries.size)
+    if Sketchup.version.to_i < 18
+      # Should be two dictionaries, "AppliedSchemaTypes" and "IFC 2x3".
+      assert_equal(2, dictionaries.size)
+    else
+      # Since SU2018 there always is a "SU_DefinitionSet" dictionary.
+      assert_equal(3, dictionaries.size)
+    end
   end
 
   def test_remove_classification_failure_image_definition

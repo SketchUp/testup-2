@@ -1,13 +1,11 @@
-# Copyright:: Copyright 2014 Trimble Navigation Ltd.
+# Copyright:: Copyright 2014-2019 Trimble Inc.
 # License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen
-
 
 require "testup/testcase"
 
 
 # module Geom
-# http://www.sketchup.com/intl/developer/docs/ourdoc/geom
 class TC_Geom < TestUp::TestCase
 
   def setup
@@ -869,5 +867,219 @@ class TC_Geom < TestUp::TestCase
     end
   end
 
+
+  # ========================================================================== #
+  # method Geom.tesselate
+
+  def concave_polygon
+    [
+      Geom::Point3d.new(0, 0, 0),
+      Geom::Point3d.new(90, 0, 0),
+      Geom::Point3d.new(60, 40, 0),
+      Geom::Point3d.new(90, 90, 0),
+      Geom::Point3d.new(30, 70, 0),
+    ]
+  end
+
+  def hole1
+    [
+      Geom::Point3d.new(10, 10, 0),
+      Geom::Point3d.new(20, 10, 0),
+      Geom::Point3d.new(15, 15, 0),
+    ]
+  end
+
+  def hole2
+    [
+      Geom::Point3d.new(30, 20, 0),
+      Geom::Point3d.new(50, 20, 0),
+      Geom::Point3d.new(50, 30, 0),
+      Geom::Point3d.new(30, 30, 0),
+    ]
+  end
+
+  def assert_triangle_points_in_polygon(expected_polygon_points, triangle_points)
+    assert_equal(0, triangle_points.size % 3, 'points are not in stride of 3')
+    triangle_points.each { |point|
+      result = expected_polygon_points.find { |polygon_point| point == polygon_point }
+      next unless result.nil?
+      assert(false, "expected triangle point #{point} to be included in polygon")
+    }
+  end
+
+  def test_tesselate_concave_polygon
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    triangle_points = Geom.tesselate(concave_polygon)
+    assert_equal(9, triangle_points.size)
+    assert_triangle_points_in_polygon(concave_polygon, triangle_points)
+  end
+
+  def test_tesselate_concave_polygon_array_points
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    points = concave_polygon.map(&:to_a)
+    triangle_points = Geom.tesselate(points)
+    assert_equal(9, triangle_points.size)
+    assert_triangle_points_in_polygon(concave_polygon, triangle_points)
+  end
+
+  def test_tesselate_concave_polygon_with_two_holes
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    triangle_points = Geom.tesselate(concave_polygon, hole1, hole2)
+    assert_equal(51, triangle_points.size)
+    polygon_points = concave_polygon + hole1 + hole2
+    assert_triangle_points_in_polygon(polygon_points, triangle_points)
+  end
+
+  def test_tesselate_compatiple_with_view_draw
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    triangle_points = Geom.tesselate(concave_polygon, hole1, hole2)
+    assert_equal(51, triangle_points.size)
+    # Simple test to ensure the returned data can be fed to view.draw.
+    Sketchup.active_model.active_view.draw(GL_TRIANGLES, triangle_points)
+  end
+
+  def test_tesselate_concave_polygon_with_hole_array_points
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    points = concave_polygon.map(&:to_a)
+    hole_points = hole1.map(&:to_a)
+    triangle_points = Geom.tesselate(concave_polygon, hole_points)
+    assert_equal(27, triangle_points.size)
+    polygon_points = concave_polygon + hole1
+    assert_triangle_points_in_polygon(polygon_points, triangle_points)
+  end
+
+  def test_tesselate_too_few_points_in_polygon
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    points = [Geom::Point3d.new(1, 1, 1), Geom::Point3d.new(9, 1, 1)]
+    assert_raises(ArgumentError) do
+      Geom.tesselate(points)
+    end
+  end
+
+  # @note Not part of API contract. Tests are here to pick up changes in
+  #   implementation so we are aware if changes are made. (Because people
+  #   will eventually rely on implementation details.)
+  def test_tesselate_degenerate_quad_with_collapsed_vertex
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    points = [
+      Geom::Point3d.new(0, 0, 0),
+      Geom::Point3d.new(9, 0, 0),
+      Geom::Point3d.new(9, 9, 0),
+      Geom::Point3d.new(9, 9, 0),
+    ]
+    triangle_points = Geom.tesselate(points)
+    assert_equal(3, triangle_points.size)
+  end
+
+  # @note Not part of API contract.
+  def test_tesselate_colinear_triangle
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    points = [
+      Geom::Point3d.new(0, 0, 0),
+      Geom::Point3d.new(9, 0, 0),
+      Geom::Point3d.new(5, 0, 0),
+    ]
+    triangle_points = Geom.tesselate(points)
+    assert_empty(triangle_points)
+  end
+
+  # @note Not part of API contract.
+  def test_tesselate_non_planar_polygon_small_amount
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    points = [
+      Geom::Point3d.new(0, 0, 0),
+      Geom::Point3d.new(9, 0, 4),
+      Geom::Point3d.new(9, 9, 0),
+      Geom::Point3d.new(0, 9, 0),
+    ]
+    triangle_points = Geom.tesselate(points)
+    assert_equal(6, triangle_points.size)
+    assert_triangle_points_in_polygon(points, triangle_points)
+  end
+
+  # @note Not part of API contract.
+  #
+  # gltess will project the points to either of the three axes. In the the case
+  # of this test it will not pick the XY plane, but instead XZ or YZ and cause
+  # one of the points to overlap when projected. This in turn return fewer
+  # triangles as it appear to collapse them before triangulating.
+  #
+  # https://stackoverflow.com/a/12852510/486990
+  # https://cgit.freedesktop.org/mesa/glu/tree/src/libtess/alg-outline
+  def test_tesselate_non_planar_polygon_larger_amount
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    points = [
+      Geom::Point3d.new(0, 0, 0),
+      Geom::Point3d.new(9, 0, 9),
+      Geom::Point3d.new(9, 9, 0),
+      Geom::Point3d.new(0, 9, 0),
+    ]
+    triangle_points = Geom.tesselate(points)
+    assert_equal(3, triangle_points.size)
+    assert_triangle_points_in_polygon(points, triangle_points)
+  end
+
+  def test_tesselate_too_few_arguments
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    assert_raises(ArgumentError) do
+      Geom.tesselate
+    end
+  end
+
+  def test_tesselate_invalid_point_type_first_argument_string
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    assert_raises(TypeError) do
+      Geom.tesselate('hello')
+    end
+  end
+
+  def test_tesselate_invalid_point_type_first_argument_content_string
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    assert_raises(ArgumentError) do
+      Geom.tesselate(['hello', 'sketchup', 'world'])
+    end
+  end
+
+  def test_tesselate_invalid_point_type_second_argument_string
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    assert_raises(TypeError) do
+      Geom.tesselate(concave_polygon, 'hello')
+    end
+  end
+
+  def test_tesselate_invalid_point_type_second_argument_content_string
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    assert_raises(ArgumentError) do
+      Geom.tesselate(concave_polygon, ['hello', 'sketchup', 'world'])
+    end
+  end
+
+  def test_tesselate_invalid_point_type_first_argument_nil
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    assert_raises(TypeError) do
+      Geom.tesselate(nil)
+    end
+  end
+
+  def test_tesselate_invalid_point_type_first_argument_content_nil
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    assert_raises(ArgumentError) do
+      Geom.tesselate([nil, nil, nil])
+    end
+  end
+
+  def test_tesselate_invalid_point_type_second_argument_nil
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    assert_raises(TypeError) do
+      Geom.tesselate(concave_polygon, nil)
+    end
+  end
+
+  def test_tesselate_invalid_point_type_second_argument_content_nil
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    assert_raises(ArgumentError) do
+      Geom.tesselate(concave_polygon, [nil, nil, nil])
+    end
+  end
 
 end # class
