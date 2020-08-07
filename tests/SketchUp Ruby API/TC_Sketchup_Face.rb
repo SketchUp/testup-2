@@ -1,14 +1,17 @@
-# Copyright:: Copyright 2014 Trimble Navigation Ltd.
+# Copyright:: Copyright 2014-2019 Trimble Inc Ltd.
 # License:: The MIT License (MIT)
 # Original Author:: Chris Fullmer
 
 
 require "testup/testcase"
+require_relative "utils/image_helper"
 
 
 # class Sketchup::Face
 # http://www.sketchup.com/intl/en/en/developer/docs/ourdoc/face
 class TC_Sketchup_Face < TestUp::TestCase
+
+  include TestUp::SketchUpTests::ImageHelper
 
   def setup
     start_with_empty_model
@@ -253,6 +256,16 @@ class TC_Sketchup_Face < TestUp::TestCase
     assert_kind_of(Sketchup::Material, result)
   end
 
+  def test_back_material_Set_image_material
+    skip('Fixed in SU2019.2') if Sketchup.version.to_f < 19.2
+    face = create_face
+    image_material = create_image_material
+    assert_raises(ArgumentError) do
+      face.back_material = image_material
+    end
+    assert_nil(face.back_material)
+  end
+
   def test_back_material_arity
     assert_equal(0, Sketchup::Face.instance_method(:back_material).arity)
   end
@@ -354,8 +367,8 @@ class TC_Sketchup_Face < TestUp::TestCase
 
   def test_back_material_Set_invalid_arguments
     skip("Fix this!") if Sketchup.version.to_i < 18
-    assert(false, "Fix this!") # Create orphan operation.
-    skip("Broken in SU2014") if Sketchup.version.to_i == 14
+    # SU-30036 - Leaves open operation upon raising errors.
+    skip("Broken in SU2014") if Sketchup.version.to_i == 14 # SU-30036
     face = create_face
 
     #assert_raises(TypeError) do
@@ -937,162 +950,6 @@ class TC_Sketchup_Face < TestUp::TestCase
   end
 
   # ========================================================================== #
-  # method Sketchup::Face.material
-  # http://www.sketchup.com/intl/en/developer/docs/ourdoc/face#material
-
-  def test_material_api_example
-    depth = 100
-    width = 100
-    model = Sketchup.active_model
-    entities = model.active_entities
-    pts = []
-    pts[0] = [0, 0, 0]
-    pts[1] = [width, 0, 0]
-    pts[2] = [width, depth, 0]
-    pts[3] = [0, depth, 0]
-
-    # Add the face to the entities in the model
-    face = entities.add_face(pts)
-
-    # Add a material to the back face, then check to see that it was added
-    face.material = "red"
-    material = face.material
-  end
-
-  def test_material
-    face = create_face
-    face.material = "red"
-    result = face.material
-
-    assert_kind_of(Sketchup::Material, result)
-  end
-
-  def test_material_arity
-    assert_equal(0, Sketchup::Face.instance_method(:material).arity)
-  end
-
-  def test_material_invalid_arguments
-    face = create_face
-
-    assert_raises(ArgumentError) do
-      face.material("String!")
-    end
-
-    assert_raises(ArgumentError) do
-      face.material(["Array"])
-    end
-
-    assert_raises(ArgumentError) do
-      face.material(false)
-    end
-
-    assert_raises(ArgumentError) do
-      face.material(nil)
-    end
-  end
-
-  # ========================================================================== #
-  # method Sketchup::Face.material=
-  # http://www.sketchup.com/intl/en/developer/docs/ourdoc/face#material=
-
-  def test_material_Set_api_example
-    depth = 100
-    width = 100
-    model = Sketchup.active_model
-    entities = model.active_entities
-    pts = []
-    pts[0] = [0, 0, 0]
-    pts[1] = [width, 0, 0]
-    pts[2] = [width, depth, 0]
-    pts[3] = [0, depth, 0]
-    # Add the face to the entities in the model
-    face = entities.add_face(pts)
-    status = face.material = "red"
-  end
-
-  def test_material_Set_Integer
-    face = create_face
-    result = face.material = 255
-    assert_kind_of(Integer, result)
-  end
-
-  def test_material_Set_HexInteger
-    face = create_face
-    result = face.material = 0xff
-    assert_kind_of(Integer, result)
-  end
-
-  def test_material_Set_HexString
-    face = create_face
-    result = face.material = '#ff0000'
-    assert_kind_of(String, result)
-  end
-
-  def test_material_Set_ArrayFloat
-    face = create_face
-    result = face.material = [1.0, 0.0, 0.0]
-    assert_kind_of(Array, result)
-  end
-
-  def test_material_Set_ArrayInteger
-    face = create_face
-    result = face.material = [255, 0, 0]
-    assert_kind_of(Array, result)
-  end
-
-  def test_material_Set_string
-    face = create_face
-    result = face.material = "red"
-    assert_kind_of(String, result)
-  end
-
-  def test_material_Set_material_object
-    face = create_face
-    material = Sketchup.active_model.materials.add("Material")
-    material.color = "red"
-    result = face.material = material
-    assert_kind_of(Sketchup::Material, result)
-  end
-
-  def test_material_Set_sketchupcolor
-    face = create_face
-    result = face.material = (Sketchup::Color.new("red"))
-    assert_kind_of(Sketchup::Color, result)
-  end
-
-  def test_material_Set_deleted_material
-    face = create_face
-    material = create_material
-    Sketchup.active_model.materials.remove(material)
-    assert_raises(ArgumentError) do
-      face.back_material = material
-    end
-  end
-
-  def test_material_Set_arity
-    assert_equal(1, Sketchup::Face.instance_method(:material=).arity)
-  end
-
-  def test_material_Set_invalid_arguments
-    skip("Fix this!") if Sketchup.version.to_i < 18
-    assert(false, "Fix this!") # Create orphan operation.
-    skip("Broken in SU2014") if Sketchup.version.to_i == 14
-    face = create_face
-
-    assert_raises(ArgumentError) do
-      face.material = "invalid color name"
-    end
-
-    assert_raises(ArgumentError) do
-      face.material = ["Array"]
-    end
-
-    #assert_raises(TypeError) do
-    #  face.material = nil
-    #end
-  end
-
-  # ========================================================================== #
   # method Sketchup::Face.mesh
   # http://www.sketchup.com/intl/en/developer/docs/ourdoc/face#mesh
 
@@ -1400,6 +1257,20 @@ class TC_Sketchup_Face < TestUp::TestCase
 
   def test_position_material_arity
     assert_equal(3, Sketchup::Face.instance_method(:position_material).arity)
+  end
+
+  def test_position_material_image_material
+    skip('Fixed in SU2019.2') if Sketchup.version.to_f < 19.2
+    face = create_face
+    image_material = create_image_material
+    pt_array = [
+      Geom::Point3d.new(3, 0, 0),
+      Geom::Point3d.new(0, 0, 0),
+    ]
+    assert_raises(ArgumentError) do
+      face.position_material(image_material, pt_array, true)
+    end
+    assert_nil(face.material)
   end
 
   def test_position_material_invalid_arguments

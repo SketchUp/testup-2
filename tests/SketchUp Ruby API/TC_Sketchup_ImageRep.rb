@@ -1,6 +1,6 @@
 # Copyright:: Copyright 2017 Trimble Inc.
 # License:: All Rights Reserved.
-# Original Author:: Jin Yi
+# Original Author:: Jin Yi (jinyi@sketchup.com)
 
 
 require "testup/testcase"
@@ -8,6 +8,9 @@ require "testup/testcase"
 
 # class Sketchup::ImageRep
 class TC_Sketchup_ImageRep < TestUp::TestCase
+
+  IS_WIN = Sketchup.platform == :platform_win
+  IS_MAC = Sketchup.platform == :platform_osx
 
   def setup
     skip("Implemented in SU2018") if Sketchup.version.to_i < 18
@@ -25,9 +28,33 @@ class TC_Sketchup_ImageRep < TestUp::TestCase
     # ...
   end
 
+
   def get_test_file(filename)
     File.join(__dir__, "TC_Sketchup_ImageRep", filename)
   end
+
+  # Reorder bytes into RGB order regardless of platform.
+  def rgb_bytes(bytes)
+    if IS_MAC
+      reverse_rgb_bytes(bytes)
+    else
+      bytes
+    end
+  end
+
+  # Reorder bytes into BGR order regardless of platform.
+  def bgr_bytes(bytes)
+    if IS_WIN
+      reverse_rgb_bytes(bytes)
+    else
+      bytes
+    end
+  end
+
+  def reverse_rgb_bytes(bytes)
+    bytes.each_slice(3).map { |rgb| rgb.reverse }.flatten
+  end
+
 
   def test_bits_per_pixel
     skip("Implemented in SU2018") if Sketchup.version.to_i < 18
@@ -170,7 +197,15 @@ class TC_Sketchup_ImageRep < TestUp::TestCase
     assert_raises(TypeError) do
       Sketchup::ImageRep.new(@image_rep)
     end
+  end
 
+  def su42482?
+    IS_WIN && Sketchup.version.to_f < 19.2
+  end
+
+  def test_initialize_invalid_arguments_empty_file
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    skip("Bugged under Windows (SU-42482)") if su42482?
     tempfile = get_test_file("emptyfile")
     assert_raises(ArgumentError) do
       Sketchup::ImageRep.new(tempfile)
@@ -179,6 +214,7 @@ class TC_Sketchup_ImageRep < TestUp::TestCase
 
   def test_initialize_corrupt_image
     skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    skip("Bugged under Windows (SU-42482)") if su42482?
     tempfile = get_test_file("corrupt_pikachu.jpg")
     assert_raises(ArgumentError) do
       Sketchup::ImageRep.new(tempfile)
@@ -231,9 +267,10 @@ class TC_Sketchup_ImageRep < TestUp::TestCase
     data_size = @image_rep.size
     assert_equal(data_size, data.size)
     assert_kind_of(String, data)
-    assert_equal(207, data.bytes[0])
-    assert_equal(208, data.bytes[data_size / 2])
-    assert_equal(180, data.bytes[data_size - 1])
+    bytes = bgr_bytes(data.bytes)
+    assert_equal(207, bytes[0])
+    assert_equal(208, bytes[data_size / 2])
+    assert_equal(180, bytes[data_size - 1])
   end
 
   def test_data_16x16
@@ -243,7 +280,7 @@ class TC_Sketchup_ImageRep < TestUp::TestCase
     data_size = temp.size
     assert_equal(data_size, data.size)
     assert_kind_of(String, data)
-    bytes = [
+    bgr_bytes = [
     171, 55,  98,  248, 242, 227, 253, 252, 234, 253, 252, 234, 253, 252, 234,
     253, 252, 234, 254, 252, 232, 252, 252, 235, 251, 245, 218, 249, 236, 174,
     251, 237, 120, 198, 107, 85,  182, 80,  112, 243, 240, 219, 253, 252, 234,
@@ -297,6 +334,7 @@ class TC_Sketchup_ImageRep < TestUp::TestCase
     250, 116, 1,   209, 90,  0,   240, 227, 171, 251, 248, 182, 251, 249, 192,
     251, 249, 193
     ]
+    bytes = IS_WIN ? reverse_rgb_bytes(bgr_bytes) : bgr_bytes
 
     assert_equal(bytes, data.bytes)
   end

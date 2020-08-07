@@ -96,6 +96,26 @@ class TC_Sketchup_Entity < TestUp::TestCase
     assert(result > 0)
   end
 
+  def test_persistent_id_page
+    skip("Implemented in SU2018") if Sketchup.version.to_i < 18
+    model = Sketchup.active_model
+    page = model.pages.add("TestUp")
+
+    result = page.persistent_id
+    assert_kind_of(Integer, result)
+    assert(result > 0)
+  end
+
+  def test_persistent_id_line_style
+    skip("Implemented in SU2020.0") if Sketchup.version.to_i < 20
+    model = Sketchup.active_model
+    line_style = model.line_styles[0]
+
+    result = line_style.persistent_id
+    assert_kind_of(Integer, result)
+    assert(result > 0)
+  end
+
   def test_persistent_id_incorrect_number_of_arguments_one
     skip("Implemented in SU2017") if Sketchup.version.to_i < 17
     model = Sketchup.active_model
@@ -106,5 +126,23 @@ class TC_Sketchup_Entity < TestUp::TestCase
     }
   end
 
+  def test_delete_attribute
+    start_with_empty_model
+    entities = Sketchup.active_model.entities
+    group = entities.add_group
+    group.entities.add_face([0,0,0], [9,0,0], [9,9,0], [0,9,0])
+    group.set_attribute("SU_DefinitionSet", "hazoo", 15)
+    result = group.delete_attribute("SU_DefinitionSet", "hazoo")
+    assert_equal(true, result)
+  end
+
+  def test_delete_attribute_invalid_key
+    start_with_empty_model
+    entities = Sketchup.active_model.entities
+    group = entities.add_group
+    group.entities.add_face([0,0,0], [9,0,0], [9,9,0], [0,9,0])
+    result = group.delete_attribute("SU_DefinitionSet", "hazoo")
+    assert_equal(false, result)
+  end
 
 end # class

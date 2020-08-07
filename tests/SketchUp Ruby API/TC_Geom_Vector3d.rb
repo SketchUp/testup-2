@@ -861,6 +861,18 @@ class TC_Geom_Vector3d < TestUp::TestCase
     assert_equal(expected, vector1)
   end
 
+  def test_set_Bang_too_many_arguments_vectors
+    # Expected behavior was that it would error out but nothing is caught.
+    # Current behavior is that it uses the first argument to set the vector.
+    vector1 = Geom::Vector3d.new(1, 2, 3)
+    vector2 = Geom::Vector3d.new(101, 102, 103)
+    vector3 = Geom::Vector3d.new(301, 201, 101)
+
+    vector1.set!(vector2, vector3)
+    assert_equal(vector2, vector1)
+    refute_equal(vector3, vector1)
+  end
+
   def test_set_Bang_invalid_arguments
     vector1 = Geom::Vector3d.new(1, 2, 3)
 
@@ -875,18 +887,6 @@ class TC_Geom_Vector3d < TestUp::TestCase
     assert_raises(ArgumentError, 'empty argument') do
       vector1.set!
     end
-  end
-
-  def test_set_Bang_too_many_arguments
-    # Expected behavior was that it would error out but nothing is caught.
-    # Current behavior is that it uses the first argument to set the vector.
-    vector1 = Geom::Vector3d.new(1, 2, 3)
-    vector2 = Geom::Vector3d.new(101, 102, 103)
-    vector3 = Geom::Vector3d.new(301, 201, 101)
-
-    vector1.set!(vector2, vector3)
-    assert_equal(vector2, vector1)
-    refute_equal(vector3, vector1)
   end
 
   def test_to_a

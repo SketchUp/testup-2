@@ -1,14 +1,14 @@
-# Copyright:: Copyright 2014 Trimble Navigation Ltd.
+# Copyright:: Copyright 2014-2019 Trimble Inc.
 # License:: All Rights Reserved.
-# Original Author:: Thomas Thomassen (thomthom@sketchup.com)
-
 
 require "testup/testcase"
+require_relative "utils/frozen"
 
 
 # class Length
-# http://www.sketchup.com/intl/developer/docs/ourdoc/length
 class TC_Length < TestUp::TestCase
+
+  include TestUp::SketchUpTests::Frozen
 
   def setup
     # ...
@@ -25,6 +25,111 @@ class TC_Length < TestUp::TestCase
 
   BIGNUM = (FIXNUM_MAX * 2) + 10
 
+
+  # ========================================================================== #
+  # Class constants
+
+  def test_class_constants_length_format
+    assert_kind_of(Integer, Length::Decimal)
+    assert_kind_of(Integer, Length::Architectural)
+    assert_kind_of(Integer, Length::Engineering)
+    assert_kind_of(Integer, Length::Fractional)
+  end
+
+  def test_class_constants_length_unit
+    assert_kind_of(Integer, Length::Inches)
+    assert_kind_of(Integer, Length::Feet)
+    assert_kind_of(Integer, Length::Millimeter)
+    assert_kind_of(Integer, Length::Centimeter)
+    assert_kind_of(Integer, Length::Meter)
+  end
+
+  def test_class_constants_length_unit_SU2020_0
+    skip('Added in SU2020.0') if Sketchup.version.to_f < 20
+    assert_kind_of(Integer, Length::Yard)
+  end
+
+  def test_class_constants_area_unit
+    skip('Added in SU2019.2') if Sketchup.version.to_f < 19.2
+    assert_kind_of(Integer, Length::SquareInches)
+    assert_kind_of(Integer, Length::SquareFeet)
+    assert_kind_of(Integer, Length::SquareMillimeter)
+    assert_kind_of(Integer, Length::SquareCentimeter)
+    assert_kind_of(Integer, Length::SquareMeter)
+  end
+
+  def test_class_constants_area_unit_SU2020_0
+    skip('Added in SU2020.0') if Sketchup.version.to_f < 20
+    assert_kind_of(Integer, Length::SquareYard)
+  end
+
+  def test_class_constants_volume_unit
+    skip('Added in SU2019.2') if Sketchup.version.to_f < 19.2
+    assert_kind_of(Integer, Length::CubicInches)
+    assert_kind_of(Integer, Length::CubicFeet)
+    assert_kind_of(Integer, Length::CubicMillimeter)
+    assert_kind_of(Integer, Length::CubicCentimeter)
+    assert_kind_of(Integer, Length::CubicMeter)
+  end
+
+  def test_class_constants_volume_unit_SU2020_0
+    skip('Added in SU2020.0') if Sketchup.version.to_f < 20
+    assert_kind_of(Integer, Length::CubicYard)
+    assert_kind_of(Integer, Length::Liter)
+    assert_kind_of(Integer, Length::USGallon)
+  end
+
+  def test_class_constants_count
+    # If this test fails we have added new units without updating the tests!
+    constants = []
+
+    constants << :Decimal
+    constants << :Architectural
+    constants << :Engineering
+    constants << :Fractional
+  
+    constants << :Inches
+    constants << :Feet
+    constants << :Millimeter
+    constants << :Centimeter
+    constants << :Meter
+
+    if Sketchup.version.to_f >= 20
+      constants << :Yard
+    end
+  
+    if Sketchup.version.to_f >= 19.2
+      constants << :SquareInches
+      constants << :SquareFeet
+      constants << :SquareMillimeter
+      constants << :SquareCentimeter
+      constants << :SquareMeter
+    end
+  
+    if Sketchup.version.to_f >= 20
+      constants << :SquareYard
+    end
+  
+    if Sketchup.version.to_f >= 19.2
+      constants << :CubicInches
+      constants << :CubicFeet
+      constants << :CubicMillimeter
+      constants << :CubicCentimeter
+      constants << :CubicMeter
+    end
+  
+    if Sketchup.version.to_f >= 20
+      constants << :CubicYard
+      constants << :Liter
+      constants << :USGallon
+    end
+
+    expected_constants = constants.sort
+    actual_constants = Length.constants.sort
+    assert_equal(expected_constants, actual_constants,
+      "Diff: #{actual_constants - expected_constants}"
+    )
+  end
 
   # ========================================================================== #
   # class Math
@@ -153,36 +258,36 @@ class TC_Length < TestUp::TestCase
 
 
   # ========================================================================== #
-  # Interoperability Operator Plus
+  # Interoperability Operator Divide
 
-  def test_Length_plus_Fixnum
-    assert_equal(12.0, 10.to_l + 2)
+  def test_Length_divide_Fixnum
+    assert_equal(5.0, 10.to_l / 2)
   end
 
-  def test_Length_plus_Bignum
-    result = 10.to_l + BIGNUM
-    expected = 10.0 + BIGNUM
+  def test_Length_divide_Bignum
+    result = 10.to_l / BIGNUM
+    expected = 10.0 / BIGNUM
     assert_kind_of(Float, result)
     assert_equal(expected, result)
   end
 
-  def test_Length_plus_Float
-    assert_equal(12.0, 10.to_l + 2.0)
+  def test_Length_divide_Float
+    assert_equal(5.0, 10.to_l / 2.0)
   end
 
-  def test_Fixnum_plus_Length
-    assert_equal(12.0, 2 + 10.to_l)
+  def test_Fixnum_divide_Length
+    assert_equal(5.0, 10 / 2.to_l)
   end
 
-  def test_Bignum_plus_Length
-    result = BIGNUM + 10.to_l
-    expected = BIGNUM + 10.0
+  def test_Bignum_divide_Length
+    result = BIGNUM / 10.to_l
+    expected = BIGNUM / 10.0
     assert_kind_of(Float, result)
     assert_equal(expected, result)
   end
 
-  def test_Float_plus_Length
-    assert_equal(12.0, 2.0 + 10.to_l)
+  def test_Float_divide_Length
+    assert_equal(5.0, 10.0 / 2.to_l)
   end
 
 
@@ -963,7 +1068,7 @@ class TC_Length < TestUp::TestCase
   # ========================================================================== #
   # method Length.freeze
 
-  def test_trust
+  def test_freeze
     length = 10.to_l
     assert_equal(length, length.freeze)
   end
@@ -981,7 +1086,7 @@ class TC_Length < TestUp::TestCase
   # method Length.taint
 
   def test_taint
-    assert_raises RuntimeError do
+    assert_raises FROZEN_ERROR do
       10.to_l.taint
     end
   end
@@ -999,7 +1104,7 @@ class TC_Length < TestUp::TestCase
   # method Length.untrust
 
   def test_untrust
-    assert_raises RuntimeError do
+    assert_raises FROZEN_ERROR do
       10.to_l.untrust
     end
   end
@@ -1028,8 +1133,16 @@ class TC_Length < TestUp::TestCase
   # method Length.dup
 
   def test_dup
-    assert_raises TypeError do
-      10.to_l.dup
+    if Sketchup.version.to_i < 19
+      assert_raises TypeError do
+        10.to_l.dup
+      end
+    else
+      # Ruby 2.5 changed behavior
+      length1 = 10.to_l
+      length2 = length1.dup
+      assert_kind_of(Length, length2)
+      assert_equal(length1, length2)
     end
   end
 
@@ -1038,8 +1151,16 @@ class TC_Length < TestUp::TestCase
   # method Length.clone
 
   def test_clone
-    assert_raises TypeError do
-      10.to_l.clone
+    if Sketchup.version.to_i < 19
+      assert_raises TypeError do
+        10.to_l.clone
+      end
+    else
+      # Ruby 2.5 changed behavior
+      length1 = 10.to_l
+      length2 = length1.clone
+      assert_kind_of(Length, length2)
+      assert_equal(length1, length2)
     end
   end
 

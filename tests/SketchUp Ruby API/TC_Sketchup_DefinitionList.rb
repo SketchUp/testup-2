@@ -1,6 +1,6 @@
 # Copyright:: Copyright 2015 Trimble Navigation Ltd.
 # License:: All Rights Reserved.
-# Original Author:: Thomas Thomassen
+# Original Author:: Thomas Thomassen (thomthom@sketchup.com)
 
 
 require "testup/testcase"
@@ -18,6 +18,9 @@ class TC_Sketchup_DefinitionList < TestUp::TestCase
     # ...
   end
 
+  def get_test_file(filename)
+    File.join(__dir__, "TC_Sketchup_DefinitionList", filename)
+  end
 
   class TestUpEvilEntityObserver < Sketchup::EntityObserver
 
@@ -61,6 +64,22 @@ class TC_Sketchup_DefinitionList < TestUp::TestCase
     end
   ensure
     model.definitions.remove_observer(observer) if definition.valid?
+  end
+
+  def test_load_newer_SU_version
+    skip("Crashes version of SketchUp prior to 19") if Sketchup.version.to_i < 19
+    model = Sketchup.active_model
+    file = get_test_file("SU99.skp")
+    assert_raises(RuntimeError) do
+      model.definitions.load(file)
+    end
+  end
+
+  def test_load_version_SU17
+    model = Sketchup.active_model
+    file = get_test_file("SU17.skp")
+    definition = model.definitions.load(file)
+    assert_kind_of(Sketchup::ComponentDefinition, definition)
   end
 
 
