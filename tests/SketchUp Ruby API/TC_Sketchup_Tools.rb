@@ -63,4 +63,38 @@ class TC_Sketchup_Tools < TestUp::TestCase
     refute_equal(mytool_id, mytool_id2, "Tool ID did not change")
   end
 
+  # ========================================================================== #
+  # method Sketchup::Tools.active_tool
+
+  def test_active_tool_get_selected_tool
+    skip("Implemented in SU2019") if Sketchup.version.to_i < 18
+    mytool = MyTool.new
+    Sketchup.active_model.select_tool(mytool)
+    active_tool = Sketchup.active_model.tools.active_tool
+    assert_equal(mytool.object_id, active_tool.object_id)
+  end
+
+  def test_active_tool_get_pushed_tool
+    skip("Implemented in SU2019") if Sketchup.version.to_i < 18
+    mytool = MyTool.new
+    Sketchup.active_model.tools.push_tool(mytool)
+    active_tool = Sketchup.active_model.tools.active_tool
+    assert_equal(mytool.object_id, active_tool.object_id)
+  end
+
+  def test_active_tool_get_native_tool
+    skip("Implemented in SU2019") if Sketchup.version.to_i < 18
+    Sketchup.active_model.tools.push_tool(nil) # "Default" native tool.
+    active_tool = Sketchup.active_model.tools.active_tool
+    assert_nil(active_tool)
+  end
+
+  def test_active_tool_too_many_arguments
+    skip("Implemented in SU2019") if Sketchup.version.to_i < 18
+    assert_raises(ArgumentError) do
+      Sketchup.active_model.tools.active_tool(nil)
+    end
+  end
+
+
 end # class

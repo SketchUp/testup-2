@@ -1,6 +1,6 @@
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
 # License:: All Rights Reserved.
-# Original Author:: Thomas Thomassen
+# Original Author:: Thomas Thomassen (thomthom@sketchup.com)
 
 
 require "testup/testcase"
@@ -235,7 +235,7 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   def test_set_axes_parent_to_page
     page = Sketchup.active_model.pages.add("Example Page")
-
+    
     model_observer = TestUpModelObserver.new
     Sketchup.active_model.add_observer(model_observer)
 

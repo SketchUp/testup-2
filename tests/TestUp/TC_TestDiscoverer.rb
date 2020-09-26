@@ -7,52 +7,58 @@ require 'testup/report/test_suite'
 require 'testup/test_discoverer'
 
 
-class TC_TestDiscoverer < TestUp::TestCase
+module TestUp
+module Tests
+  class TC_TestDiscoverer < TestUp::TestCase
 
-  def setup
-    # ...
-  end
+    def setup
+      # ...
+    end
 
-  def teardown
-    # ...
-  end
-
-
-  TESTS_PATH = File.expand_path('..', __dir__)
-  TESTUP_UI_TESTS_PATH = File.join(TESTS_PATH, 'TestUp UI Tests')
+    def teardown
+      # ...
+    end
 
 
-  def test_discover_ui_tests
-    paths = [TESTUP_UI_TESTS_PATH]
-    discoverer = TestUp::TestDiscoverer.new(paths)
+    TESTS_PATH = File.expand_path('..', __dir__)
+    TESTUP_UI_TESTS_PATH = File.join(TESTS_PATH, 'TestUp UI Tests')
 
-    test_suites = discoverer.discover
-    assert_equal(1, test_suites.size, 'Number of test suites')
 
-    suite = test_suites.first
-    assert_kind_of(TestUp::Report::TestSuite, suite)
-    assert_equal('TestUp UI Tests', suite.title)
+    def test_discover_ui_tests
+      paths = [TESTUP_UI_TESTS_PATH]
+      discoverer = TestUp::TestDiscoverer.new(paths)
 
-    expected = Dir.glob("#{TESTUP_UI_TESTS_PATH}/*.rb").map { |filename|
-      File.basename(filename, '.*')
-    }
-    test_cases = suite.test_cases
-    assert_equal(expected.size, test_cases.size, 'Number of test cases')
-    titles = test_cases.map(&:title)
-    assert_equal(expected, titles)
+      test_suites = discoverer.discover
+      assert_equal(1, test_suites.size, 'Number of test suites')
 
-    test_cases.each { |test_case|
-      assert_kind_of(TestUp::Report::TestCase, test_case, test_case.title)
-    }
+      suite = test_suites.first
+      assert_kind_of(TestUp::Report::TestSuite, suite)
+      assert_equal('TestUp UI Tests', suite.title)
 
-    tc_test_samples = test_cases.find { |test_case|
-      test_case.title == 'TC_TestSamples'
-    }
+      expected = Dir.glob("#{TESTUP_UI_TESTS_PATH}/*.rb").map { |filename|
+        basename = File.basename(filename, '.*')
+        "TestUp::Tests::#{basename}"
+      }
+      test_cases = suite.test_cases
+      assert_equal(expected.size, test_cases.size, 'Number of test cases')
+      titles = test_cases.map(&:title)
+      assert_equal(expected, titles)
 
-    expected = %w(test_equal_failure test_error test_failure test_pass test_skip)
-    assert_equal(expected.size, tc_test_samples.tests.size, 'Number of tests')
-    titles = tc_test_samples.tests.map(&:title)
-    assert_equal(expected, titles)
-  end
+      test_cases.each { |test_case|
+        assert_kind_of(TestUp::Report::TestCase, test_case, test_case.title)
+      }
 
-end # class
+      tc_test_samples = test_cases.find { |test_case|
+        test_case.title == 'TestUp::Tests::TC_TestSamples'
+      }
+      refute_nil(tc_test_samples)
+
+      expected = %w(test_equal_failure test_error test_failure test_pass test_skip)
+      assert_equal(expected.size, tc_test_samples.tests.size, 'Number of tests')
+      titles = tc_test_samples.tests.map(&:title)
+      assert_equal(expected, titles)
+    end
+
+  end # class
+end
+end

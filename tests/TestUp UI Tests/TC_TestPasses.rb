@@ -6,23 +6,27 @@
 require 'testup/testcase'
 
 
-# Set of tests triggering different result types.
-class TC_TestPasses < TestUp::TestCase
+module TestUp
+module Tests
+  # Set of tests triggering different result types.
+  class TC_TestPasses < TestUp::TestCase
 
-  def setup
-    # ...
-  end
+    def setup
+      # ...
+    end
 
-  def teardown
-    # ...
-  end
+    def teardown
+      # ...
+    end
 
 
-  # ========================================================================== #
+    # ========================================================================== #
 
-  # Ensure that passing tests doesn't expand the test case.
-  def test_pass_only_test_case
-    assert(true)
-  end # test
+    # Ensure that passing tests doesn't expand the test case.
+    def test_pass_only_test_case
+      assert(true)
+    end # test
 
-end # class
+  end # class
+end
+end

@@ -4,11 +4,14 @@
 
 
 require "testup/testcase"
+require_relative "utils/image_helper"
 
 
 # class Sketchup::Material
 # http://www.sketchup.com/intl/developer/docs/ourdoc/material
 class TC_Sketchup_Material < TestUp::TestCase
+
+  include TestUp::SketchUpTests::ImageHelper
 
   def setup
     disable_read_only_flag_for_test_models()
@@ -43,6 +46,7 @@ class TC_Sketchup_Material < TestUp::TestCase
   def get_test_file(filename)
     File.join(__dir__, "TC_Sketchup_Material", filename)
   end
+
 
   # ========================================================================== #
   # method Sketchup::Material.colorize_deltas
@@ -142,6 +146,8 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal("test_name0", test_mat.name)
     test_mat.name = "Textured0"
     assert_equal("Textured0", test_mat.name)
+  ensure
+    discard_model_changes()
   end
 
   def test_set_name_duplicate_failure
@@ -150,6 +156,8 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_raises(ArgumentError) do
       material.name = "Textured"
     end
+  ensure
+    discard_model_changes()
   end
 
   def test_set_name_reuse_old_name
@@ -166,6 +174,20 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_raises(TypeError) do
       material.name = material
     end
+  ensure
+    discard_model_changes()
+  end
+
+  def test_set_name_to_same_name
+    skip("Bugged in SU2018") if Sketchup.version.to_i == 18
+    start_with_empty_model
+    name = "thenameisthegame"
+    material = Sketchup.active_model.materials.add(name)
+    returned_name = material.name = name
+    assert_equal(returned_name, name)
+    assert_equal(material.name, name)
+  ensure
+    discard_model_changes()
   end
 
   # ========================================================================== #
@@ -383,6 +405,8 @@ class TC_Sketchup_Material < TestUp::TestCase
     material = materials.add("Hello World")
     material.color = 'red'
     material.save_as(filename)
+  ensure
+    discard_model_changes()
   end
 
   def test_save_as
@@ -446,6 +470,8 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal(0.4, material.alpha)
     material.alpha = 1.0
     assert_equal(1.0, material.alpha)
+  ensure
+    discard_model_changes()
   end
 
   def test_color
@@ -462,6 +488,8 @@ class TC_Sketchup_Material < TestUp::TestCase
 
     material.color = color
     assert_equal(color.to_a, material.color.to_a)
+  ensure
+    discard_model_changes()
   end
 
   def test_display_name
@@ -478,6 +506,8 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal("Joe", material.name)
     material.name = "Woof"
     assert_equal("Woof", material.name)
+  ensure
+    discard_model_changes()
   end
 
   def test_texture
@@ -494,6 +524,8 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal([190, 177, 168, 255], material.color.to_a)
     assert_equal(656, material.texture.image_width)
     assert_equal(337, material.texture.image_height)
+  ensure
+    discard_model_changes()
   end
 
   def test_texture_Set_properties
@@ -504,6 +536,8 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal([190, 177, 168, 255], material.color.to_a)
     assert_equal(1024, material.texture.width)
     assert_equal(768, material.texture.height)
+  ensure
+    discard_model_changes()
   end
 
   def test_texture_Set_image_rep
@@ -515,6 +549,8 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal([190, 177, 168, 255], material.color.to_a)
     assert_equal(656, material.texture.image_width)
     assert_equal(337, material.texture.image_height)
+  ensure
+    discard_model_changes()
   end
 
   def test_use_alpha_Query
@@ -542,5 +578,32 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert(material1 == material2)
     material2 = Sketchup.active_model.materials.add("Joe")
     refute(material1 == material2)
+  ensure
+    discard_model_changes()
   end
+
+  def test_owner_type_normal_material
+    skip('Added in SU2019.2') if Sketchup.version.to_f < 19.2
+    model_material = Sketchup.active_model.materials.add('TestMaterialType')
+    model_material.owner_type == Sketchup::Material::OWNER_MANAGER
+  ensure
+    discard_model_changes()
+  end
+
+  def test_owner_type_image_material
+    skip('Added in SU2019.2') if Sketchup.version.to_f < 19.2
+    image_material = create_image_material
+    image_material.owner_type == Sketchup::Material::OWNER_IMAGE
+  ensure
+    discard_model_changes()
+  end
+
+  def test_owner_type_incorrect_number_of_arguments_one
+    skip('Added in SU2019.2') if Sketchup.version.to_f < 19.2
+    material = Sketchup.active_model.materials["Solid"]
+    assert_raises(ArgumentError) do
+      material.owner_type(123)
+    end
+  end
+
 end # class

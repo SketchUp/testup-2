@@ -22,6 +22,26 @@
         "18"
       ],
       "problemMatcher": []
+    },
+    {
+      "label": "Debug in SketchUp 2019",
+      "type": "shell",
+      "command": "ruby",
+      "args": [
+        "${workspaceFolder}/tools/debug-sketchup.rb",
+        "19"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Debug in SketchUp 2020",
+      "type": "shell",
+      "command": "ruby",
+      "args": [
+        "${workspaceFolder}/tools/debug-sketchup.rb",
+        "20"
+      ],
+      "problemMatcher": []
     }
   ]
 }

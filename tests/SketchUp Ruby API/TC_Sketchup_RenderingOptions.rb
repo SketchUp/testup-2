@@ -1,4 +1,4 @@
-# Copyright:: Copyright 2014 Trimble Navigation Ltd.
+# Copyright:: Copyright 2014-2019 Trimble Inc.
 # License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen
 
@@ -340,9 +340,27 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
       expected_keys << "SectionCutDrawEdges"
       expected_keys << "DrawBackEdges"
     end
+    if Sketchup.version.to_i >= 18
+      expected_keys << "SectionCutFilled"
+      expected_keys << "SectionDefaultFillColor"
+    end
+    if Sketchup.version.to_f >= 19.2
+      expected_keys.delete("FaceColorMode")
+    end
+    if Sketchup.version.to_i >= 20
+      expected_keys << "DrawHiddenGeometry"
+      expected_keys << "DrawHiddenObjects"
+    end
     expected_keys.sort!
     keys = Sketchup.active_model.rendering_options.keys
     assert_kind_of(Array, keys)
+    if expected_keys.size < keys.size
+      diff = keys - expected_keys
+      assert_equal(expected_keys.size, keys.size, "Diff: #{diff}")
+    elsif keys.size < expected_keys.size
+      diff = expected_keys - keys
+      assert_equal(expected_keys.size, keys.size, "Diff: #{diff}")
+    end
     assert_equal(expected_keys.size, keys.size)
     keys.sort!
     expected_keys.size.times { |i|
@@ -424,68 +442,36 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
 
-  def test_constants
-    expected_constants = %w{
-      ROPAssign
-      ROPDrawHidden
-      ROPEditComponent
-      ROPSetBackgroundColor
-      ROPSetConstructionColor
-      ROPSetDepthQueEdges
-      ROPSetDepthQueWidth
-      ROPSetDisplayColorByLayer
-      ROPSetDisplayDims
-      ROPSetDisplayFog
-      ROPSetDisplayInstanceAxes
-      ROPSetDisplaySketchAxes
-      ROPSetDisplayText
-      ROPSetDrawGround
-      ROPSetDrawHorizon
-      ROPSetDrawUnderground
-      ROPSetEdgeColorMode
-      ROPSetEdgeDisplayMode
-      ROPSetEdgeType
-      ROPSetExtendEdges
-      ROPSetExtendLines
-      ROPSetFaceColor
-      ROPSetFaceColorMode
-      ROPSetFogColor
-      ROPSetFogDist
-      ROPSetFogHint
-      ROPSetFogUseBkColor
-      ROPSetForegroundColor
-      ROPSetGroundColor
-      ROPSetGroundTransparency
-      ROPSetHideConstructionGeometry
-      ROPSetHighlightColor
-      ROPSetJitterEdges
-      ROPSetLineEndEdges
-      ROPSetLineEndWidth
-      ROPSetLineExtension
-      ROPSetLockedColor
-      ROPSetMaterialTransparency
-      ROPSetModelTransparency
-      ROPSetProfileEdges
-      ROPSetProfileWidth
-      ROPSetProfilesOnlyEdges
-      ROPSetRenderMode
-      ROPSetSectionActiveColor
-      ROPSetSectionCutWidth
-      ROPSetSectionDefaultCutColor
-      ROPSetSectionDisplayMode
-      ROPSetSectionInactiveColor
-      ROPSetSkyColor
-      ROPSetTexture
-      ROPSetTransparencyObsolete
-      ROPTransparencySortMethod
-    }.sort
-    actual_constants = Sketchup::RenderingOptionsObserver.constants.sort
-    actual_constants.each_with_index { |constant, index|
-      expected = expected_constants[index]
-      assert_equal(expected, constant.to_s)
-      assert_not_nil(constant)
-    }
+  ROP_ENUM_PATTERN = /enum ERenderingOptionsChangeType {\s*^(.*),\s*}/m
+  ROP_ENUM_NAME_PATTERN = /^\s*k(\w+).*$/
+
+  def read_cpp_enum_names
+    file = '../../../../skore/sketchup/model/renderingoptionsnotifications.h'
+    file = File.expand_path(file, __dir__)
+    content = File.read(file)
+    enum_content = content.match(ROP_ENUM_PATTERN).captures.first
+    enum_names = enum_content.scan(ROP_ENUM_NAME_PATTERN)
+    enum_names.map!(&:first)
+    # Unused (Not exposed to the API):
+    enum_names.delete('ROPSetDisplayEdgeStippleByLayer')
+    enum_names.delete('ROPSetFogType')
+    enum_names.delete('ROPSetFogDensity')
+    # Deprecated: (Used to be exposed to the API:)
+    enum_names << 'ROPSetFaceColorMode'
+    enum_names.sort
   end
 
+  def test_constants
+    expected_constants = read_cpp_enum_names
+    actual_constants = Sketchup::RenderingOptions.constants.sort.map(&:to_s)
+
+    # In case Ruby is missing an enum value defined in CPP.
+    diff = expected_constants - actual_constants
+    assert(diff.empty?, "missing constants (#{diff.size}): #{diff}")
+    
+    # In case Ruby defines something that isn't in the CPP. (should be compile error)
+    diff = actual_constants - expected_constants
+    assert(diff.empty?, "unexpected constants (#{diff.size}): #{diff}")
+  end
 
 end # class

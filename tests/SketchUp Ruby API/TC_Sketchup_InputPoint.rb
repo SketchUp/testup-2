@@ -22,6 +22,7 @@ class TC_Sketchup_InputPoint < TestUp::TestCase
     # This is logged as SU-35668. This line can be removed once that issue
     # is resolved. For now its left in in order to reduce noise.
     view = Sketchup.active_model.active_view
+    view.zoom_extents # Ensure all entities are within the viewport
     view.refresh
   end
 
@@ -59,6 +60,12 @@ class TC_Sketchup_InputPoint < TestUp::TestCase
     Geom.linear_combination(0.5, pt1, 0.5, pt2)
   end
 
+  class CustomInputPoint < Sketchup::InputPoint
+    def custom_valid?
+      valid?
+    end
+  end
+
 
   # ========================================================================== #
   # class Sketchup::InputPoint
@@ -71,13 +78,41 @@ class TC_Sketchup_InputPoint < TestUp::TestCase
   # ========================================================================== #
   # method Sketchup::InputPoint.instance_path
 
+  def test_initialize_subclass
+    skip("Fixed in SU2019") if Sketchup.version.to_i < 19
+    inputpoint1 = Sketchup::InputPoint.new
+    assert_kind_of(Sketchup::InputPoint, inputpoint1)
+    inputpoint1.pick(Sketchup.active_model.active_view, 0, 0)
+
+    inputpoint2 = CustomInputPoint.new
+    assert_kind_of(Sketchup::InputPoint, inputpoint2)
+    assert_kind_of(CustomInputPoint, inputpoint2)
+    inputpoint2.valid? # Test a method call.
+    refute(inputpoint1 == inputpoint2, 'ip1 != ip2')
+    inputpoint1.pick(Sketchup.active_model.active_view, 100, 100)
+
+    inputpoint3 = CustomInputPoint.new
+    inputpoint3.copy!(inputpoint2)
+    assert(inputpoint2 == inputpoint3, 'ip2 == ip3')
+    assert_kind_of(Sketchup::InputPoint, inputpoint3)
+    assert_kind_of(CustomInputPoint, inputpoint3)
+    inputpoint3.valid?
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::InputPoint.instance_path
+
   def test_instance_path
     skip("Implemented in SU2017") if Sketchup.version.to_i < 17
     path = @path
     # Compute the screen coordinate of one of the entities in the path.
     view = Sketchup.active_model.active_view
+    # view.zoom_extents # Ensure all entities are within the viewport
+    # view.refresh # Need to force the view to update before proceeding.
     tr = compute_expected_transformation(path)
-    local_point = edge_mid_point(path.last)
+    edge = path.last
+    local_point = edge_mid_point(edge)
     point = local_point.transform(tr)
     screen_point = view.screen_coords(point)
     if DEBUG_OUTPUT
@@ -87,6 +122,10 @@ class TC_Sketchup_InputPoint < TestUp::TestCase
       puts ">  Local Edge Mid Point: #{local_point.inspect}"
       puts "> Global Edge Mid Point: #{point.inspect}"
       puts ">          Screen Point: #{screen_point.inspect}"
+      puts ">      Edge Start Screen Point: #{view.screen_coords(edge.start.position).inspect}"
+      puts ">        Edge End Screen Point: #{view.screen_coords(edge.end.position).inspect}"
+      puts ">      Edge Start Screen Point: #{view.screen_coords(edge.start.position).transform(tr).inspect}"
+      puts ">        Edge End Screen Point: #{view.screen_coords(edge.end.position).transform(tr).inspect}"
       puts ">              Viewport: #{view.vpwidth}x#{view.vpheight}"
       puts "> aspect_ratio: #{view.camera.aspect_ratio.inspect}"
       puts "> center_2d: #{view.camera.center_2d.inspect}"
@@ -99,6 +138,7 @@ class TC_Sketchup_InputPoint < TestUp::TestCase
       puts "> is_2d?: #{view.camera.is_2d?.inspect}"
       puts "> perspective?: #{view.camera.perspective?.inspect}"
       puts "> scale_2d: #{view.camera.scale_2d.inspect}"
+      puts "> eye: #{view.camera.eye.inspect}"
       puts "> target: #{view.camera.target.inspect}"
       puts "> up: #{view.camera.up.inspect}"
       puts "> xaxis: #{view.camera.xaxis.inspect}"

@@ -3,10 +3,13 @@
 # Original Author:: Paul Ballew
 
 require "testup/testcase"
+require_relative "utils/frozen"
 
 # class Array
 # http://www.sketchup.com/intl/developer/docs/ourdoc/array
 class TC_Array < TestUp::TestCase
+
+  include TestUp::SketchUpTests::Frozen
 
   def setup
     # ...
@@ -439,11 +442,11 @@ class TC_Array < TestUp::TestCase
   def test_dot_3d_array_with_vector2d
     array = [1, 2, 3]
     vector = Geom::Vector2d.new(10, 20)
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       array.dot(vector)
     end
   end
-  
+
   def test_dot_3d_array_with_vector3d
     array = [1, 2, 3]
     vector = Geom::Vector3d.new(10, 20, 30)
@@ -521,7 +524,7 @@ class TC_Array < TestUp::TestCase
     array = [1, 2, 3]
     array.freeze
 
-    assert_raises(RuntimeError) do
+    assert_raises(FROZEN_ERROR) do
       array.normalize!
     end
   end
@@ -646,7 +649,7 @@ class TC_Array < TestUp::TestCase
   def test_offset_Bang_with_Vector2d_and_3d_array
     array = [10, 10, 10]
     vector = Geom::Vector2d.new(0, 1)
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       array.offset!(vector)
     end
   end
@@ -658,7 +661,7 @@ class TC_Array < TestUp::TestCase
     assert_equal(2, array.size)
     assert_equal([10, 11], array)
   end
-  
+
   def test_offset_Bang_with_Vector3d_and_2d_array
     array = [10, 10]
     vector = Geom::Vector3d.new(0, 0, 1)
@@ -671,7 +674,7 @@ class TC_Array < TestUp::TestCase
     array = [1, 2, 3]
     array.freeze
 
-    assert_raises(RuntimeError) do
+    assert_raises(FROZEN_ERROR) do
       array.offset!(X_AXIS)
     end
   end
@@ -1186,7 +1189,7 @@ class TC_Array < TestUp::TestCase
     array = [1, 2, 3]
     array.freeze
 
-    assert_raises(RuntimeError) do
+    assert_raises(FROZEN_ERROR) do
       array.transform!(2)
     end
   end

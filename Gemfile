@@ -6,6 +6,7 @@ group :development do
   gem 'minitest-reporters-json_reporter'
   gem 'rubocop', '~> 0.58.1'
   gem 'rubocop-sketchup', '~> 0.4.0'
-  gem 'rubyzip', '~> 1.2.1'
+  gem 'rubyzip', '~> 1.2'
   gem 'sketchup-api-stubs'
+  gem 'solargraph'
 end

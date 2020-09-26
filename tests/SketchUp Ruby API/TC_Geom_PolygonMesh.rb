@@ -122,7 +122,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
 
   def test_initialize_invalid_polygonmesh
     polygonmesh = Geom::PolygonMesh.new
-    assert_raises(TypeError) do 
+    assert_raises(TypeError) do
       Geom::PolygonMesh.new(polygonmesh)
     end
 
@@ -141,8 +141,16 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
   def test_initialize_negative_num_points
     # Expected this to fail since creating a polygon mesh with negative points
     # does not make sense.
+    skip("Fixed in SU Blendtec") if Sketchup.version.to_i > 18
     polygonmesh = Geom::PolygonMesh.new(-1)
     assert_kind_of(Geom::PolygonMesh, polygonmesh)
+  end
+
+  def test_initialize_negative_num_points_range_error
+    skip("Fixed in SU Blendtec") if Sketchup.version.to_i < 19
+    assert_raises(RangeError) do
+      Geom::PolygonMesh.new(-1)
+    end
   end
 
   def test_initialize_invalid_num_polygons
@@ -155,8 +163,16 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
   def test_initialize_negative_num_polygons
     # Expected this to fail since creating a polygon mesh with negative number
     # of polygons sounds a bit odd.
+    skip("Fixed in SU Blendtec") if Sketchup.version.to_i > 18
     polygonmesh = Geom::PolygonMesh.new(4, -2)
     assert_kind_of(Geom::PolygonMesh, polygonmesh)
+  end
+
+  def test_initialize_negative_num_polygons_range_error
+    skip("Fixed in SU Blendtec") if Sketchup.version.to_i < 19
+    assert_raises(RangeError) do
+      Geom::PolygonMesh.new(4, -2)
+    end
   end
 
   def test_add_point
@@ -196,9 +212,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     end
   end
 
-  def test_add_point_too_few_arguments 
-    polygonmesh = Geom::PolygonMesh.new 
-    assert_raises(ArgumentError) do 
+  def test_add_point_too_few_arguments
+    polygonmesh = Geom::PolygonMesh.new
+    assert_raises(ArgumentError) do
       polygonmesh.add_point
     end
   end
@@ -236,19 +252,19 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
 
   def test_add_polygon_invalid_index
     polygonmesh = Geom::PolygonMesh.new
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.add_polygon(0)
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.add_polygon(-1)
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.add_polygon(1, 0)
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.add_polygon(nil)
     end
   end
@@ -262,14 +278,14 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     assert_kind_of(Integer, polygon_index)
     assert_equal(1, polygon_index)
   end
-  
+
   def test_add_polygon_invalid_array
     polygonmesh = Geom::PolygonMesh.new
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.add_polygon([0])
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.add_polygon([nil])
     end
   end
@@ -311,7 +327,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     assert_kind_of(Integer, polygon_index)
     assert_equal(1, polygon_index)
     assert_equal(3, polygonmesh.count_points)
-    
+
     point1 = Geom::Point3d.new(1, 0, 0)
     point2 = Geom::Point3d.new(0, 1, 0)
     point3 = Geom::Point3d.new(2, 0, 0)
@@ -328,15 +344,15 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
       polygonmesh.add_polygon(vector)
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.add_polygon("1")
     end
   end
 
   def test_add_polygon_too_few_arguments
     polygonmesh = Geom::PolygonMesh.new
-    assert_raises(ArgumentError) do 
-      polygonmesh.add_polygon 
+    assert_raises(ArgumentError) do
+      polygonmesh.add_polygon
     end
   end
 
@@ -359,7 +375,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
 
   def test_count_points_too_many_arguments
     polygonmesh = Geom::PolygonMesh.new
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.count_points(nil)
     end
   end
@@ -417,7 +433,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     vector = polygonmesh.normal_at(0)
     assert_nil(vector)
   end
-  
+
   def test_normal_at_too_many_arguments
     face = setup_face
     entities = Sketchup.active_model.active_entities
@@ -444,7 +460,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
       polygonmesh.normal_at(nil)
     end
 
-    assert_raises(TypeError) do 
+    assert_raises(TypeError) do
       polygonmesh.normal_at([1])
     end
   end
@@ -477,7 +493,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     polygonmesh = Geom::PolygonMesh.new
     point1 = Geom::Point3d.new(11, 22, 33)
     polygonmesh.add_point(point1)
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.point_at(1, 2)
     end
   end
@@ -503,11 +519,11 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     polygonmesh = Geom::PolygonMesh.new
     point1 = Geom::Point3d.new(11, 22, 33)
     polygonmesh.add_point(point1)
-    assert_raises(TypeError) do 
+    assert_raises(TypeError) do
       polygonmesh.point_at(nil)
     end
-    
-    assert_raises(TypeError) do 
+
+    assert_raises(TypeError) do
       polygonmesh.point_at([1])
     end
   end
@@ -550,24 +566,24 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
   def test_point_index_invalid_arguments
     polygonmesh = Geom::PolygonMesh.new
     polygonmesh.add_point(Geom::Point3d.new(11, 22, 33))
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.point_index(nil)
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.point_index(Geom::Vector3d.new(11, 22, 33))
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.point_index(1)
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.point_index("1")
     end
   end
 
-  def test_points 
+  def test_points
     polygonmesh = Geom::PolygonMesh.new
     point1 = Geom::Point3d.new(0, 1, 2)
     point2 = Geom::Point3d.new(10, 20, 30)
@@ -590,12 +606,12 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     point2 = Geom::Point3d.new(10, 20, 30)
     polygonmesh.add_point(point1)
     polygonmesh.add_point(point2)
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.points(nil)
     end
   end
 
-  def test_polygon_at 
+  def test_polygon_at
     polygonmesh = setup_polygon_for_polygon_at
     array = polygonmesh.polygon_at(1)
     assert_kind_of(Array, array)
@@ -604,33 +620,33 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
 
   def test_polygon_at_too_many_arguments
     polygonmesh = setup_polygon_for_polygon_at
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.polygon_at(1, 1)
     end
   end
 
   def test_polygon_at_too_few_arguments
     polygonmesh = setup_polygon_for_polygon_at
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.polygon_at
     end
   end
 
   def test_polygon_at_invalid_arguments
     polygonmesh = setup_polygon_for_polygon_at
-    assert_raises(TypeError) do 
+    assert_raises(TypeError) do
       polygonmesh.polygon_at([1])
     end
-    
-    assert_raises(TypeError) do 
+
+    assert_raises(TypeError) do
       polygonmesh.polygon_at(polygonmesh)
     end
 
-    assert_raises(TypeError) do 
+    assert_raises(TypeError) do
       polygonmesh.polygon_at("1")
     end
 
-    assert_raises(TypeError) do 
+    assert_raises(TypeError) do
       polygonmesh.polygon_at(nil)
     end
   end
@@ -659,7 +675,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
 
   def test_polygon_points_at_too_few_arguments
     polygonmesh = setup_polygon_for_polygon_at
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.polygon_points_at
     end
   end
@@ -737,7 +753,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
   def test_set_point_too_few_arguments
     polygonmesh = setup_polygon_for_polygon_at
     point1 = Geom::Point3d.new(22, 33, 44)
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.set_point(1)
     end
   end
@@ -745,7 +761,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
   def test_set_point_invalid_arguments
     polygonmesh = setup_polygon_for_polygon_at
     point1 = Geom::Point3d.new(22, 33, 44)
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.set_point(nil)
     end
 
@@ -757,7 +773,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
       polygonmesh.set_point(1, "point1")
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.set_point([1, point1])
     end
 
@@ -797,7 +813,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
   def test_set_uv_too_many_arguments
     polygonmesh = setup_polygon_for_uv
     point = Geom::Point3d.new(0, 0, 0)
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.set_uv(1, point, true, true)
     end
   end
@@ -805,7 +821,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
   def test_set_uv_too_few_arguments
     polygonmesh = setup_polygon_for_uv
     point = Geom::Point3d.new(0, 0, 0)
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.set_uv(1, point)
     end
 
@@ -817,19 +833,19 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
   def test_set_uv_invalid_arguments
     polygonmesh = setup_polygon_for_uv
     point = Geom::Point3d.new(0, 0, 0)
-    assert_raises(TypeError) do 
+    assert_raises(TypeError) do
       polygonmesh.set_uv("1", point, true)
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.set_uv(1, "point", true)
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.set_uv([1, point, true])
     end
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.set_uv(1, [point], true)
     end
   end
@@ -902,7 +918,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     polygonmesh.set_uv(3, [2, 2, 0], true)
     polygonmesh.set_uv(4, [0, 2, 0], true)
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.uv_at(1)
     end
 
@@ -933,7 +949,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
 
   def test_uvs
     polygonmesh = setup_polygon_for_uvs
-    uvs = polygonmesh.uvs(true) 
+    uvs = polygonmesh.uvs(true)
     assert_kind_of(Array, uvs)
     assert_kind_of(Geom::Point3d, uvs[0])
     assert_equal(4, uvs.size)
@@ -946,14 +962,14 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
   def test_uvs_too_many_arguments
     polygonmesh = setup_polygon_for_uvs
 
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.uvs(true, true)
     end
   end
 
   def test_uvs_too_few_arguments
     polygonmesh = setup_polygon_for_uvs
-    
+
     assert_raises(ArgumentError) do
       polygonmesh.uvs
     end
@@ -1033,8 +1049,8 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     polygonmesh = setup_polygon_for_transform
     point1 = Geom::Point3d.new(100, 200, 300)
     transform = Geom::Transformation.new(point1)
-    result = polygonmesh.transform!([1.0, 0.0, 0.0, 0.0, 
-                                    0.0, 1.0, 0.0, 0.0, 
+    result = polygonmesh.transform!([1.0, 0.0, 0.0, 0.0,
+                                    0.0, 1.0, 0.0, 0.0,
                                     0.0, 0.0, 1.0, 0.0,
                                     100.0, 200.0, 300.0, 1.0])
     assert_kind_of(Geom::PolygonMesh, result)
@@ -1083,7 +1099,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     polygonmesh = setup_polygon_for_transform
     point1 = Geom::Point3d.new(100, 200, 300)
     transform = Geom::Transformation.new(point1)
-    assert_raises(ArgumentError) do 
+    assert_raises(ArgumentError) do
       polygonmesh.transform!
     end
   end
@@ -1092,7 +1108,7 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     polygonmesh = setup_polygon_for_transform
     point1 = Geom::Point3d.new(100, 200, 300)
     transform = Geom::Transformation.new(point1)
-    
+
     assert_raises(TypeError) do
       polygonmesh.transform!(nil)
     end

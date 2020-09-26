@@ -4,11 +4,14 @@
 
 
 require "testup/testcase"
+require_relative "utils/length"
 
 
 # class Geom::Point3d
 # http://www.sketchup.com/intl/developer/docs/ourdoc/point3d
 class TC_Geom_Point3d < TestUp::TestCase
+
+  include TestUp::SketchUpTests::Length
 
   def setup
     # ...
@@ -16,14 +19,6 @@ class TC_Geom_Point3d < TestUp::TestCase
 
   def teardown
     # ...
-  end
-
-
-  # Convert a en-US locale unit string to the current machine locale.
-  def u(string)
-    # For some reason we never replaced the list separator.
-    # string.tr(',', Sketchup::RegionalSettings.list_separator)
-    string.tr('.', Sketchup::RegionalSettings.decimal_separator)
   end
 
 
@@ -823,7 +818,7 @@ class TC_Geom_Point3d < TestUp::TestCase
     end
   end
 
-  def test_set_Bang_too_many_arguments
+  def test_set_Bang_too_many_arguments_ideal
     # What was actually expected was this to throw an ArgumentError since
     # we are passing in more arguments than needed for this method.
     skip('Passing too many arguments should issue error')
