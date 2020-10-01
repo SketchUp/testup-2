@@ -31,6 +31,7 @@ module TestUp
     extend TestCaseExtendable
 
     if defined?(Sketchup)
+      extend SketchUpTestUtilities
       include SketchUpTestUtilities
     end
 
