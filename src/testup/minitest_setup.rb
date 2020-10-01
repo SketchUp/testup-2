@@ -47,6 +47,43 @@ module Minitest
 
   end # class << self
 
+  class Runnable
+    class << self
+      unless method_defined?(:testup_run)
+        alias :testup_run :run
+        # This is mostly a copy+paste of Minitest::Runnable.run method from v5.4.3.
+        # It adds hooks called before and after a testcase is run.
+        # It's to allow setup or tests that might be slow to setup.
+        def run(reporter, options = {})
+          filter = options[:filter] || '/./'
+          filter = Regexp.new $1 if filter =~ /\/(.*)\//
+
+          filtered_methods = self.runnable_methods.find_all { |m|
+            filter === m || filter === "#{self}##{m}"
+          }
+
+          with_info_handler reporter do
+            # Custom TestUp hook
+            if !filtered_methods.empty? && self.respond_to?(:setup_testcase)
+              TestUp::Debugger.output("setup_testcase: #{self.name}")
+              self.setup_testcase
+            end
+
+            filtered_methods.each do |method_name|
+              run_one_method self, method_name, reporter
+            end
+
+            # Custom TestUp hook
+            if !filtered_methods.empty? && self.respond_to?(:teardown_testcase)
+              TestUp::Debugger.output("teardown_testcase: #{self.name}")
+              self.teardown_testcase
+            end
+          end
+        end # def run
+      end
+    end # class << self
+  end # class Runnable
+
 end # module Minitest
 
 
