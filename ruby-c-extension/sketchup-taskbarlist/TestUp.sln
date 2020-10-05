@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2042
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TaskbarProgress", "TaskbarProgress\TaskbarProgress.vcxproj", "{1456285A-3D25-4B13-BF30-DBAEDEB87C22}"
 EndProject
@@ -13,12 +13,16 @@ Global
 		Debug 2.2|x64 = Debug 2.2|x64
 		Debug 2.5|Win32 = Debug 2.5|Win32
 		Debug 2.5|x64 = Debug 2.5|x64
+		Debug 2.7|Win32 = Debug 2.7|Win32
+		Debug 2.7|x64 = Debug 2.7|x64
 		Release 2.0|Win32 = Release 2.0|Win32
 		Release 2.0|x64 = Release 2.0|x64
 		Release 2.2|Win32 = Release 2.2|Win32
 		Release 2.2|x64 = Release 2.2|x64
 		Release 2.5|Win32 = Release 2.5|Win32
 		Release 2.5|x64 = Release 2.5|x64
+		Release 2.7|Win32 = Release 2.7|Win32
+		Release 2.7|x64 = Release 2.7|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Debug 2.0|Win32.ActiveCfg = Debug 2.0|Win32
@@ -31,6 +35,9 @@ Global
 		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Debug 2.5|Win32.ActiveCfg = Debug 2.5|x64
 		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Debug 2.5|x64.ActiveCfg = Debug 2.5|x64
 		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Debug 2.5|x64.Build.0 = Debug 2.5|x64
+		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Debug 2.7|Win32.ActiveCfg = Debug 2.7|x64
+		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Debug 2.7|x64.ActiveCfg = Debug 2.7|x64
+		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Debug 2.7|x64.Build.0 = Debug 2.7|x64
 		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Release 2.0|Win32.ActiveCfg = Release 2.0|Win32
 		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Release 2.0|Win32.Build.0 = Release 2.0|Win32
 		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Release 2.0|x64.ActiveCfg = Release 2.0|x64
@@ -41,6 +48,9 @@ Global
 		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Release 2.5|Win32.ActiveCfg = Release 2.5|x64
 		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Release 2.5|x64.ActiveCfg = Release 2.5|x64
 		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Release 2.5|x64.Build.0 = Release 2.5|x64
+		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Release 2.7|Win32.ActiveCfg = Release 2.7|x64
+		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Release 2.7|x64.ActiveCfg = Release 2.7|x64
+		{1456285A-3D25-4B13-BF30-DBAEDEB87C22}.Release 2.7|x64.Build.0 = Release 2.7|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
