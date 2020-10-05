@@ -3,13 +3,13 @@
 This is a SketchUp Ruby C++ Extension providing a wrapper around ITaskbarList3
 that was introduced to Windows 7.
 
-It is adviced to read up on the interface for how to use it:
-http://msdn.microsoft.com/en-us/library/windows/desktop/dd391692(v=vs.85).aspx
+It is advised to read up on the interface for how to use it:
+https://docs.microsoft.com/en-gb/windows/win32/api/shobjidl_core/nn-shobjidl_core-itaskbarlist3
 
 ## Visual Studio 2013
 
-The Ruby C Extension was created with Visual Studio 2013:
-http://www.visualstudio.com/downloads/download-visual-studio-vs
+The Ruby C Extension was created with Visual Studio 2019:
+https://visualstudio.microsoft.com/downloads/
 
 NOTE: The Ruby `config.h` had to be modified because it was originally intended
 for Visual Studio 2010.
