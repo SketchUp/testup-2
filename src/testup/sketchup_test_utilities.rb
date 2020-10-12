@@ -113,9 +113,8 @@ module TestUp
 
     # Closes all open models and creates a new one.
     def discard_all_models
-      model = nil
+      model = Sketchup.active_model
       if Sketchup.platform == :platform_osx
-        model = Sketchup.active_model
         until model.nil?
           model.close(true) if model
           model = Sketchup.active_model
@@ -123,7 +122,7 @@ module TestUp
         Sketchup.file_new
         model = Sketchup.active_model
       else
-        model.close(true) if model # On Windows this creates a new model.
+        model.close(true) # On Windows this creates a new model.
       end
       model
     end
