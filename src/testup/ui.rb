@@ -139,7 +139,8 @@ module TestUp
 
     # Menus
     if defined?(Sketchup)
-      menu = UI.menu('Plugins').add_submenu(PLUGIN_NAME)
+      menu_name = Sketchup.version < 21.1 ? 'Plugins' : 'Developer'
+      menu = UI.menu(menu_name).add_submenu(PLUGIN_NAME)
       menu.add_item(cmd_toggle_testup)
       menu.add_separator
       menu.add_item(cmd_seed)
