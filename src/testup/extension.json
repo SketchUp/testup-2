@@ -2,8 +2,8 @@
   "name": "TestUp",
   "description": "Test suite runner for SketchUp.",
   "creator": "SketchUp",
-  "copyright": "Trimble Inc. © 2013—2020",
+  "copyright": "Trimble Inc. © 2013—2021",
   "product_id": "TestUp2",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "build": "0"
 }
