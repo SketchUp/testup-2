@@ -4,44 +4,32 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Debug in SketchUp 2017",
+      "label": "Launch SketchUp in Ruby Debug mode",
       "type": "shell",
-      "command": "ruby",
+      "command": "skippy",
       "args": [
-        "${workspaceFolder}/tools/debug-sketchup.rb",
-        "17"
+        "sketchup:debug",
+        "${input:sketchupVersion}"
       ],
+      "runOptions": {
+        "reevaluateOnRerun": false
+      },
       "problemMatcher": []
-    },
+    }
+  ],
+  "inputs": [
     {
-      "label": "Debug in SketchUp 2018",
-      "type": "shell",
-      "command": "ruby",
-      "args": [
-        "${workspaceFolder}/tools/debug-sketchup.rb",
-        "18"
+      "id": "sketchupVersion",
+      "type": "pickString",
+      "description": "SketchUp Version",
+      "options": [
+        "2021",
+        "2020",
+        "2019",
+        "2018",
+        "2017"
       ],
-      "problemMatcher": []
-    },
-    {
-      "label": "Debug in SketchUp 2019",
-      "type": "shell",
-      "command": "ruby",
-      "args": [
-        "${workspaceFolder}/tools/debug-sketchup.rb",
-        "19"
-      ],
-      "problemMatcher": []
-    },
-    {
-      "label": "Debug in SketchUp 2020",
-      "type": "shell",
-      "command": "ruby",
-      "args": [
-        "${workspaceFolder}/tools/debug-sketchup.rb",
-        "20"
-      ],
-      "problemMatcher": []
+      "default": "2021"
     }
   ]
 }

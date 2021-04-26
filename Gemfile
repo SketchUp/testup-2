@@ -8,5 +8,6 @@ group :development do
   gem 'rubocop-sketchup', '~> 0.4.0'
   gem 'rubyzip', '~> 1.2'
   gem 'sketchup-api-stubs'
+  gem 'skippy', '~> 0.4.2.a'
   gem 'solargraph'
 end
