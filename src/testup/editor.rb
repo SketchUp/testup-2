@@ -74,9 +74,9 @@ module TestUp
     arguments = self.arguments
     arguments.gsub!('{FILE}', file)
     arguments.gsub!('{LINE}', line)
-    command = %["#{editor}" #{arguments}]
-    puts command
-    system(command)
+    # Do not occupy the current process
+    arr = arguments.gsub("\"","").split(" ")
+    Process.detach Kernel.spawn(editor,*arr)
   end
 
  end # module
