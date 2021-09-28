@@ -20,7 +20,14 @@ module TestUp
       super
       # Force the output to STDOUT, which allows it to be piped to file from the
       # terminal. The output will not be visible in the Ruby Console.
-      self.io = STDOUT
+      out = STDOUT
+      if options[:testup_ci_out]
+        # $stdout.puts options[:testup_ci_out].inspect
+        out = File.open(options[:testup_ci_out], 'w')
+      end
+      # $stdout.puts "CIJsonReporter"
+      # $stdout.puts "> out: #{out.inspect}"
+      self.io = out
     end
   end
 
