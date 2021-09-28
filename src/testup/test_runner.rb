@@ -82,6 +82,7 @@ module TestUp
       # arguments << '--testup' if options[:run_in_gui]
       arguments << '--testup' if options[:ui] # TODO:
       arguments << '--testup_ci' if options[:ci]
+      arguments << "--testup_ci_out=#{options[:ci_out]}" if options[:ci_out]
       arguments
     end
 

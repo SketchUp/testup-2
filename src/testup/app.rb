@@ -22,9 +22,11 @@ module TestUp
     end
 
     def self.ci_run(test_suite, config = {})
+      # puts "ci_run"
+      # p config
       Execution.delay(1.0) do
         API.run_suite_without_gui(test_suite, config)
-        self.quit
+        self.quit unless config['KeepOpen']
       end
     end
 

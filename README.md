@@ -112,8 +112,22 @@ In the example above TestUp will run a test suite given its path.
 # Config.yml
 # Required:
 Path: C:\Users\Thomas\SourceTree\TestUp2\tests\TestUp UI Tests
+
 # Optional: (By default, don't include a fixed seed!)
 Seed: 123 # The seed number for the random order of execution of the tests
+
+# Optional:
+# By default the results will be output to STDOUT. This can be redirected to a
+# file.
+Output: C:\Users\Thomas\SourceTree\TestUp2\tests\results.json
+
+# Optional:
+# Set to true to prevent SketchUp from closing. Useful for debugging purposes.
+# Note that if `Output` is used the results won't be written until SketchUp is
+# closed.
+KeepOpen: false
+
+# Optional:
 # List the set of sets you want to run.
 #   Run all tests in test case: TC_TestCaseName#
 #   Run specific test: TC_TestCaseName#test_testname

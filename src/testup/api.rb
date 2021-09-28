@@ -57,6 +57,7 @@ module TestUp
       }
       options[:seed] = config['Seed'].to_i if config['Seed']
       options[:verbose] = !!config['Verbose'] if config.key?('Verbose')
+      options[:ci_out] = config['Output'] if config.key?('Output')
       full_path = test_suite_path.expand_path.to_s
       test_suite = TestUp::API.discover_tests([full_path]).first
 

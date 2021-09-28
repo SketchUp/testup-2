@@ -24,6 +24,10 @@ module Minitest
     opts.on '--testup_ci', 'Generate JSON report to STDOUT.' do
       options[:testup_ci] = true
     end
+    opts.on '--testup_ci_out=PATH', 'Switch JSON report to file.' do |value|
+      # p [:plugin_testup_options, :testup_ci_out, value]
+      options[:testup_ci_out] = value
+    end
   end
 
   def self.plugin_testup_init(options)
