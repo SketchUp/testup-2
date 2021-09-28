@@ -107,7 +107,7 @@ Windows:
 
 macOS:
 ```
-open -a '/Applications/SketchUp 2021/SketchUp.app' --args -RubyStartupArg 'TestUp:CI:Path: C:/Users/Thomas/SourceTree/TestUp2/tests/TestUp UI Tests"' > results.json
+'/Applications/SketchUp 2021/SketchUp.app/Contents/MacOS/sketchup' -RubyStartupArg 'TestUp:CI:Path: C:/Users/Thomas/SourceTree/TestUp2/tests/TestUp UI Tests' > results.json
 ```
 
 In the example above TestUp will run a test suite given its path. The ` > results.json` will redirect the STDOUT to a file which will contain the JSON results of the test run.
@@ -145,12 +145,12 @@ Tests:
 
 Windows:
 ```sh
- "C:\Program Files\SketchUp\SketchUp 2021\SketchUp.exe" -RubyStartupArg "TestUp:CI:Config: \Full\Path\To\Config.yml"
+"C:\Program Files\SketchUp\SketchUp 2021\SketchUp.exe" -RubyStartupArg "TestUp:CI:Config: \Full\Path\To\Config.yml"
 ```
 
 macOS:
 ```sh
-open -a '/Applications/SketchUp 2021/SketchUp.app' --args -RubyStartupArg 'TestUp:CI:Config: /Full/Path/To/Config.yml'
+'/Applications/SketchUp 2021/SketchUp.app/Contents/MacOS/sketchup' -RubyStartupArg 'TestUp:CI:Config: /Full/Path/To/Config.yml'
 ```
 
 ## Troubleshooting
