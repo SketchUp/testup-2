@@ -153,6 +153,20 @@ macOS:
 '/Applications/SketchUp 2021/SketchUp.app/Contents/MacOS/sketchup' -RubyStartupArg 'TestUp:CI:Config: /Full/Path/To/Config.yml'
 ```
 
+### Configuration File Variables
+
+#### `%CONFIG_DIR%`
+
+Expands to the directory where the configuration file is located.
+
+Given a configuration file located at `C:/Users/Thomas/SourceTree/TestUp2/testup-ui-ci.yaml` then `%CONFIG_DIR%` will resolve to `C:/Users/Thomas/SourceTree/TestUp2`.
+
+```yml
+# testup-ui-ci.yaml
+Path: "%CONFIG_DIR%/tests/TestUp UI Tests"
+Output: "%CONFIG_DIR%/tests/ui-tests-results.json"
+```
+
 ## Troubleshooting
 
 ### MiniTest
