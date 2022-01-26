@@ -38,10 +38,10 @@ module Tests
       expected = Dir.glob("#{TESTUP_UI_TESTS_PATH}/*.rb").map { |filename|
         basename = File.basename(filename, '.*')
         "TestUp::Tests::#{basename}"
-      }
+      }.sort
       test_cases = suite.test_cases
       assert_equal(expected.size, test_cases.size, 'Number of test cases')
-      titles = test_cases.map(&:title)
+      titles = test_cases.map(&:title).sort
       assert_equal(expected, titles)
 
       test_cases.each { |test_case|
