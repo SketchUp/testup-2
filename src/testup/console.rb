@@ -5,6 +5,8 @@
 #
 #-------------------------------------------------------------------------------
 
+require 'delegate'
+
 # TODO(thomthom) These modifications should ideally be implemented officially
 # in our Ruby API.
 
@@ -12,9 +14,9 @@ module TestUp
 
   # TODO(thomthom): Add LayOut console class.
   if defined?(Sketchup)
-    BASE_CONSOLE_CLASS = Sketchup::Console
+    APP_CONSOLE = SKETCHUP_CONSOLE
   elsif defined?(Layout)
-    BASE_CONSOLE_CLASS = Layout::Console
+    APP_CONSOLE = LAYOUT_CONSOLE # TODO(thomthom): Correct?
   end
 
   # In order to run in the SketchUp Ruby console there needs to be more methods
@@ -23,7 +25,12 @@ module TestUp
   # NOTE: These should be removed if SketchUp and/or LayOut implements them
   # nativly. Both applications should be in sync for the capabilities of the
   # console.
-  class Console < BASE_CONSOLE_CLASS
+  class Console < SimpleDelegator
+
+    # @param [Sketchup::Console] console
+    def initialize(console = SKETCHUP_CONSOLE)
+      __setobj__(console)
+    end
 
     def print(*args)
       if args.empty?
@@ -68,6 +75,6 @@ module TestUp
 
   end # class Console
 
-  TESTUP_CONSOLE = Console.new
+  TESTUP_CONSOLE = Console.new(APP_CONSOLE)
 
 end # module TestUp
