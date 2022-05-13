@@ -5,8 +5,13 @@
 #
 #-------------------------------------------------------------------------------
 
-require 'set'
-
+# Ruby 3.x removed SortedSet (https://github.com/ruby/set/pull/2).
+# So, use the SortedSet implementation from Ruby 2.7.x.
+if RUBY_VERSION >= '3.0'
+  require 'testup/sorted_set'
+else
+  require 'set'
+end
 
 module TestUp
   module Report
