@@ -160,7 +160,7 @@ module TestUp
           line =~ /testup\/#{file_basename}:\d+:in `load'/i
         }
         filtered_backtrace = error.backtrace[0..index]
-        error.message << "\n" << filtered_backtrace.join("\n")
+        error.message.dup << "\n" << filtered_backtrace.join("\n")
       end
     end
 
