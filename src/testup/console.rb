@@ -32,6 +32,12 @@ module TestUp
       __setobj__(console)
     end
 
+    def write(*args)
+      args.each { |arg|
+        __getobj__.write(arg)
+      }
+    end
+
     def print(*args)
       if args.empty?
         write($_)
