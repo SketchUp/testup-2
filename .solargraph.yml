@@ -1,4 +1,6 @@
 require_paths:
+- "C:/Program Files/SketchUp/SketchUp 2022/Tools"
+- "C:/Program Files/SketchUp/SketchUp 2021/Tools"
 - "C:/Program Files/SketchUp/SketchUp 2020/Tools"
 - src
 

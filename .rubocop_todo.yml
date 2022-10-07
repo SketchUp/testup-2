@@ -19,7 +19,7 @@ Layout/AccessModifierIndentation:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
 # SupportedStyles: with_first_parameter, with_fixed_indentation
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   Exclude:
     - 'src/testup/sketchup_test_utilities.rb'
     - 'src/testup/win32.rb'
@@ -94,7 +94,7 @@ Layout/SpaceInsideParens:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: final_newline, final_blank_line
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Exclude:
     - 'src/testup/api.rb'
 
@@ -105,7 +105,7 @@ Lint/DuplicateCaseCondition:
     - 'src/testup/coverage_discoverer.rb'
 
 # Offense count: 4
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Exclude:
     - 'src/testup/core.rb'
     - 'src/testup/debug.rb'
@@ -490,5 +490,5 @@ Style/TernaryParentheses:
 # Offense count: 26
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
-Metrics/LineLength:
+Layout/LineLength:
   Max: 91
