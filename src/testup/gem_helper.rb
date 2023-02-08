@@ -57,6 +57,7 @@ module TestUp
       local_path = self.find_local_copy(gem_name, version)
       if local_path
         puts '> Installing from local copy...'
+        puts "> #{local_path}"
         Gem.install(local_path)
       else
         puts '> Installing from Ruby Gems...'
