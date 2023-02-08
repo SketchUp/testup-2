@@ -15,11 +15,31 @@ module AppFiles
   include SystemFiles
 
   def log_path
-    ensure_exist(app_data(PLUGIN_NAME, 'Logs'))
+    @log_path ||= default_log_path
+    ensure_exist(@log_path)
   end
 
+  def log_path=(path)
+    @log_path = path
+  end
+
+
   def saved_runs_path
-    ensure_exist(app_data(PLUGIN_NAME, 'Saved Runs'))
+    @saved_runs_path ||= default_saved_runs_path
+    ensure_exist(saved_runs_path)
+  end
+
+  def saved_runs_path=(path)
+    @saved_runs_path = path
+  end
+
+
+  def default_log_path
+    app_data(PLUGIN_NAME, 'Logs')
+  end
+
+  def default_saved_runs_path
+    app_data(PLUGIN_NAME, 'Saved Runs')
   end
 
 end # module
