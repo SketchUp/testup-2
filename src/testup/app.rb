@@ -44,7 +44,7 @@ module TestUp
       config = YAML.load_file(ci_config_path)
       config_dir = File.dirname(ci_config_path)
       # Expand config variables.
-      ['Path', 'Output'].each { |key|
+      ['Path', 'Output', 'LogPath', 'SavedRunsPath'].each { |key|
         value = config[key]
         value.gsub!('%CONFIG_DIR%', config_dir)
       }
