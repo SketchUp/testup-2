@@ -36,8 +36,8 @@ module TestUp
     # @param [String] ci_config_path Path to the configuration file to run.
     def self.ci_run_with_config(ci_config_path)
       config = self.read_config_file(ci_config_path)
-      log_path = config['LogPath'] if config.key?('LogPath')
-      saved_runs_path = config['SavedRunsPath'] if config.key?('SavedRunsPath')
+      self.log_path = config['LogPath'] if config.key?('LogPath')
+      self.saved_runs_path = config['SavedRunsPath'] if config.key?('SavedRunsPath')
       self.ci_run(config['Path'], config)
     end
 
