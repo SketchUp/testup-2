@@ -128,6 +128,14 @@ Seed: 123 # The seed number for the random order of execution of the tests
 Output: C:\Users\Thomas\SourceTree\TestUp2\tests\results.json
 
 # Optional:
+# Overriding where the .log files from a test run will be saved.
+LogPath: C:\Users\Thomas\SourceTree\TestUp2\logs
+
+# Optional:
+# Overriding where the .run files from a test run will be saved.
+SavedRunsPath: C:\Users\Thomas\SourceTree\TestUp2\logs
+
+# Optional:
 # Set to true to prevent SketchUp from closing. Useful for debugging purposes.
 # Note that if `Output` is used the results won't be written until SketchUp is
 # closed.
