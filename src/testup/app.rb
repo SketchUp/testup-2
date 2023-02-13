@@ -48,6 +48,8 @@ module TestUp
       # Expand config variables.
       ['Path', 'Output', 'LogPath', 'SavedRunsPath'].each { |key|
         value = config[key]
+        next unless value.is_a?(String)
+
         value.gsub!('%CONFIG_DIR%', config_dir)
       }
       config
