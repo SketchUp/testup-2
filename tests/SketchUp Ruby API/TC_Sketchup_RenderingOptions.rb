@@ -18,7 +18,7 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
   def self.setup_testcase
     discard_all_models
   end
-  
+
   def setup
     # ...
   end
@@ -445,6 +445,17 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
   def read_cpp_enum_names
     file = '../../../../skore/sketchup/model/renderingoptionsnotifications.h'
     file = File.expand_path(file, __dir__)
+
+    if !File.exist?(file)
+      project_file = File.expand_path('../../skippy.json', __dir__)
+      if File.exist?(project_file)
+        # This means the tests are coming from the TestUp git repository.
+        # We sync the tests to act as examples and allow our API users
+        # to contribute tests back to us.
+        skip('Can only run within SketchUp source code.')
+      end
+    end
+
     content = File.read(file)
     enum_content = content.match(ROP_ENUM_PATTERN).captures.first
     enum_names = enum_content.scan(ROP_ENUM_NAME_PATTERN)
@@ -473,7 +484,7 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
     # In case Ruby is missing an enum value defined in CPP.
     diff = expected_constants - actual_constants
     assert(diff.empty?, "missing constants (#{diff.size}): #{diff}")
-    
+
     # In case Ruby defines something that isn't in the CPP. (should be compile error)
     diff = actual_constants - expected_constants
     assert(diff.empty?, "unexpected constants (#{diff.size}): #{diff}")
