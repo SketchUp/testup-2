@@ -1,11 +1,10 @@
 # Copyright:: Copyright 2015 Trimble Navigation Ltd.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen (thomthom@sketchup.com)
 
 require 'testup/testcase'
 
 # module Sketchup::RegionalSettings
-# http://www.sketchup.com/intl/developer/docs/ourdoc/locale
 class TC_Sketchup_RegionalSettings < TestUp::TestCase
 
   # Technically this can be other values, but this is what 99.99% of locale
@@ -13,6 +12,9 @@ class TC_Sketchup_RegionalSettings < TestUp::TestCase
   EXPECTED_DECIMAL_SEPARATORS = ['.', ','].freeze
   EXPECTED_LIST_SEPARATORS    = [',', ';'].freeze
 
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -25,7 +27,6 @@ class TC_Sketchup_RegionalSettings < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RegionalSettings.decimal_separator
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/locale#decimal_separator
 
   def test_decimal_separator_api_example
     skip("Implemented in SU2016 M1") if Sketchup.version.to_i < 16
@@ -51,7 +52,6 @@ class TC_Sketchup_RegionalSettings < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RegionalSettings.list_separator
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/locale#list_separator
 
   def test_list_separator_api_example
     skip("Implemented in SU2016 M1") if Sketchup.version.to_i < 16

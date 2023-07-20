@@ -14,6 +14,10 @@ class TC_Geom_Point2d < TestUp::TestCase
   include TestUp::SketchUpTests::Frozen
   include TestUp::SketchUpTests::Length
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     # ...
   end

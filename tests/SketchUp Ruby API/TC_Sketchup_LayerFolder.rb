@@ -7,6 +7,10 @@ require "testup/testcase"
 # class Sketchup::LayerFolder
 class TC_Sketchup_LayerFolder < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
   end
@@ -190,7 +194,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
   def test_name_Set_empty_string
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     folder = Sketchup.active_model.layers.add_folder('Hello')
-    assert_raises(ArgumentError) do
+    assert_raises(ArgumentError) do 
       folder.name = ''
     end
     assert_equal('Hello', folder.name)
@@ -199,7 +203,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
   def test_name_Set_invalid_arguments_numeric
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     folder = Sketchup.active_model.layers.add_folder('Hello')
-    assert_raises(TypeError) do
+    assert_raises(TypeError) do 
       folder.name = 1
     end
     assert_equal('Hello', folder.name)
@@ -250,7 +254,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
   def test_visible_Query_invalid_arguments
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     folder = Sketchup.active_model.layers.add_folder('Hello')
-    assert_raises(ArgumentError) do
+    assert_raises(ArgumentError) do 
       folder.visible?(nil)
     end
   end
@@ -319,8 +323,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
   end
 
   def test_visible_Set_active_path
-    skip('TODO(thomthom): Pending common helper function')
-    skip('Testable in 2020.0') if Sketchup.version.to_f < 20.0
+    skip("Added in 2021.0") if Sketchup.version.to_f < 21.0
     model = Sketchup.active_model
     layers = model.layers
     bacon_layer = layers.add('World')
@@ -334,6 +337,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
     assert_raises(ArgumentError) do
       folder.visible = false
     end
+    assert(folder.visible?, "layer folder did not remain visible")
   end
 
 
@@ -400,7 +404,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
     skip("Added in 2021.0") if Sketchup.version.to_f < 21.0
     layers = Sketchup.active_model.layers
     folder = layers.add_folder('Hello')
-
+    
     assert_raises(TypeError) do
       folder.folder = 'World'
     end
@@ -410,7 +414,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
     skip("Added in 2021.0") if Sketchup.version.to_f < 21.0
     layers = Sketchup.active_model.layers
     folder = layers.add_folder('Hello')
-
+    
     assert_raises(TypeError) do
       folder.folder = 123
     end
@@ -697,7 +701,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     manager = Sketchup.active_model.layers
     folder1 = manager.add_folder('Hello')
-    folder2 = manager.add_folder('World')
+    folder2 = manager.add_folder('World') 
 
     assert_raises(ArgumentError) do
       folder1.remove_folder(folder2)
@@ -773,6 +777,21 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
     end
   end
 
+  # ========================================================================== #
+  # method Sketchup::LayerFolder#parent
+
+  def test_parent
+    skip('Added in 2023.0') if Sketchup.version.to_f < 23.0
+    model = Sketchup.active_model
+    folder1 = model.layers.add_folder("Folder1")
+    folder2 =  folder1.add_folder("Folder2")
+    manager = Sketchup.active_model.layers
+    assert_kind_of(Sketchup::Layers, folder1.parent)
+    assert_equal(manager, folder1.parent)
+    assert_kind_of(Sketchup::LayerFolder, folder2.parent)
+    assert_equal(folder1, folder2.parent)
+  end
+
 
   # ========================================================================== #
   # method Sketchup::LayerFolder#each (alias: #each_layer)
@@ -843,7 +862,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
   def test_each_layer_too_many_arguments
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     manager = Sketchup.active_model.layers
-
+    
     assert_raises(ArgumentError) do
       manager.each_layer(nil) {}
     end
@@ -910,7 +929,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     manager = Sketchup.active_model.layers
     folder = manager.add_folder('Hello')
-
+    
     assert_raises(ArgumentError) do
       folder.each_folder(nil) {}
     end
@@ -944,7 +963,7 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     manager = Sketchup.active_model.layers
     folder = manager.add_folder('Hello')
-
+    
     assert_raises(ArgumentError) do
       folder.size(nil) {}
     end
@@ -1000,10 +1019,74 @@ class TC_Sketchup_LayerFolder < TestUp::TestCase
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     manager = Sketchup.active_model.layers
     folder = manager.add_folder('Hello')
-
+    
     assert_raises(ArgumentError) do
       folder.count_folders(nil)
     end
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::LayerFolder.visible_on_new_pages?
+
+  def test_visible_on_new_pages_Query_default
+    skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
+    model = Sketchup.active_model
+    manager = model.layers
+    folder = manager.add_folder('Hello')
+    layer = manager.add_layer('World')
+    layer.folder = folder
+
+    result = folder.visible_on_new_pages?
+    assert_kind_of(TrueClass, result)
+
+    # Ensure the folder really is visible on new pages.
+    pages = model.pages
+    page = pages.add('TestUp')
+    refute_includes(page.layer_folders, folder)
+    pages.selected_page = page
+
+    edge = model.entities.add_line([0, 0, 0], [9, 9, 9])
+    edge.layer = layer
+    assert(model.drawing_element_visible?([edge]))
+  end
+
+  def test_visible_on_new_pages_Query_too_many_arguments
+    skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
+    manager = Sketchup.active_model.layers
+    folder = manager.add_folder('Hello')
+    
+    assert_raises(ArgumentError) do
+      folder.visible_on_new_pages?(nil)
+    end
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::LayerFolder.visible_on_new_pages=
+
+  def test_visible_on_new_pages_Set_default
+    skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
+    model = Sketchup.active_model
+    manager = model.layers
+    folder = manager.add_folder('Hello')
+    layer = manager.add_layer('World')
+    layer.folder = folder
+
+    folder.visible_on_new_pages = false
+
+    result = folder.visible_on_new_pages?
+    assert_kind_of(FalseClass, result)
+
+    # Ensure the folder really is hidden on new pages.
+    pages = model.pages
+    page = pages.add('TestUp')
+    assert_includes(page.layer_folders, folder)
+    pages.selected_page = page
+
+    edge = model.entities.add_line([0, 0, 0], [9, 9, 9])
+    edge.layer = layer
+    refute(model.drawing_element_visible?([edge]))
   end
 
 end

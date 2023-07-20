@@ -12,6 +12,10 @@ class TC_Geom_Vector2d < TestUp::TestCase
 
   include TestUp::SketchUpTests::Frozen
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     # ...
   end

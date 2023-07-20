@@ -12,6 +12,10 @@ class TC_Sketchup_View < TestUp::TestCase
 
   attr_accessor :temp_file
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     Sketchup.active_model.select_tool(nil)
     @temp_file = temp_filename('png')
@@ -41,6 +45,12 @@ class TC_Sketchup_View < TestUp::TestCase
     test_folder = File.basename(__FILE__, '.*')
     path = File.join(__dir__, test_folder, filename)
     Sketchup::ImageRep.new(path)
+  end
+
+  def load_test_style(model, style_filename, select: true)
+    path = File.join(__dir__, 'shared', style_filename)
+    assert(File.exist?(path), "Style file doesn't exist: #{path}")
+    model.styles.add_style(path, select)
   end
 
 
@@ -703,22 +713,72 @@ class TC_Sketchup_View < TestUp::TestCase
 
   def test_load_texture_with_ruby_tool
     skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    skip("Changed in SU2023.0") if Sketchup.version.to_f >= 23.0
+    model = Sketchup.active_model
     begin
-      model = Sketchup.active_model
       model.select_tool(TextureTool.new)
       image_rep = get_image_rep('test_small.jpg')
       texture_id = model.active_view.load_texture(image_rep)
+      assert_kind_of(Integer, texture_id)
+      refute_equal(0, texture_id)
     ensure
-      Sketchup.active_model.active_view.release_texture(texture_id)
+      model.active_view.release_texture(texture_id)
+    end
+    model.select_tool(nil)
+    assert_raises(RuntimeError) do
+      model.active_view.load_texture(image_rep)
     end
   end
 
   def test_load_texture_without_ruby_tool
     skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    skip("Changed in SU2023.0") if Sketchup.version.to_f >= 23.0
     image_rep = get_image_rep('test_small.jpg')
     assert_raises(RuntimeError) do
       Sketchup.active_model.active_view.load_texture(image_rep)
     end
+  end
+
+  def test_load_texture_with_ruby_tool_su2022_1
+    skip("Added in SU2020.0") if Sketchup.version.to_i < 20
+    model = Sketchup.active_model
+    begin
+      model.select_tool(TextureTool.new)
+      image_rep = get_image_rep('test_small.jpg')
+      texture_id = model.active_view.load_texture(image_rep)
+      assert_kind_of(Integer, texture_id)
+      refute_equal(0, texture_id)
+    ensure
+      model.active_view.release_texture(texture_id)
+    end
+    model.select_tool(nil)
+    texture_id = model.active_view.load_texture(image_rep)
+    model.active_view.release_texture(texture_id)
+  end
+
+  def test_load_texture_without_ruby_tool_su2022_1
+    skip("Changed in SU2023.0") if Sketchup.version.to_f < 23.0
+    model = Sketchup.active_model
+    begin
+      image_rep = get_image_rep('test_small.jpg')
+      texture_id = model.active_view.load_texture(image_rep)
+      assert_kind_of(Integer, texture_id)
+      refute_equal(0, texture_id)
+    ensure
+      model.active_view.release_texture(texture_id) if texture_id
+    end
+  end
+
+  def test_load_texture_auto_release_by_model_without_cleanup
+    skip("Changed in SU2023.0") if Sketchup.version.to_f < 23.0
+    # This test deliberately doesn't release the loaded texture in order to
+    # test the model clean up code.
+    model = Sketchup.active_model
+    image_rep = get_image_rep('test_small.jpg')
+    texture_id = model.active_view.load_texture(image_rep)
+    assert_kind_of(Integer, texture_id)
+    refute_equal(0, texture_id)
+    discard_all_models
   end
 
   def test_load_texture_invalid_image_rep
@@ -775,7 +835,6 @@ class TC_Sketchup_View < TestUp::TestCase
   # ========================================================================== #
   # method Sketchup::View.release_texture
 
-  # TODO(thomthom):
   def test_release_texture_valid_texture_id
     skip("Added in SU2020.0") if Sketchup.version.to_i < 20
     model = Sketchup.active_model
@@ -1184,6 +1243,7 @@ class TC_Sketchup_View < TestUp::TestCase
 
   def test_write_image_options_array
     model = start_with_empty_model
+    load_test_style(model, '07Architectural Design Style.style')
     model.rendering_options['DrawHorizon'] = false
     camera = Sketchup::Camera.new([0, 0, 10], ORIGIN, Y_AXIS)
     model.active_view.camera = camera
@@ -1198,7 +1258,7 @@ class TC_Sketchup_View < TestUp::TestCase
     assert_image_written(options) do |view, image|
       assert_equal(options[:width], image.width)
       assert_equal(options[:height], image.height)
-      assert_equal([0, 0, 0, 0], image.colors.first.to_a) # transparency
+      assert_equal([0, 0, 0, 0], image.colors.first.to_a, "Filename: #{temp_file}") # transparency
       # TODO(thomthom): Compression
       # TODO(thomthom): Antialias
     end
@@ -1214,6 +1274,7 @@ class TC_Sketchup_View < TestUp::TestCase
   def test_write_image_options_scale_factor
     skip('Fixed in SU2019.2') if Sketchup.version.to_f < 19.2
     model = start_with_empty_model
+    load_test_style(model, '07Architectural Design Style.style')
     model.rendering_options['DrawHorizon'] = false
     camera = Sketchup::Camera.new([0, 0, 10], ORIGIN, Y_AXIS)
     model.active_view.camera = camera
@@ -1228,7 +1289,7 @@ class TC_Sketchup_View < TestUp::TestCase
     assert_image_written(options) do |view, image|
       assert_equal(options[:width], image.width)
       assert_equal(options[:height], image.height)
-      assert_equal([0, 0, 0, 0], image.colors.first.to_a) # transparency
+      assert_equal([0, 0, 0, 0], image.colors.first.to_a, "Filename: #{temp_file}") # transparency
       # TODO(thomthom): Until we can reliably export a viewport across
       # platforms and viewport sizes, manually verify line scale.
     end

@@ -1,10 +1,14 @@
 # Copyright:: Copyright 2019 Trimble Inc.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 
 require "testup/testcase"
 
 # class Sketchup::Selection
 class TC_Sketchup_Selection < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def before_all
     start_with_empty_model

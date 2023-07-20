@@ -1,4 +1,4 @@
-# Copyright:: Copyright 2017 Trimble Inc.
+# Copyright:: Copyright 2017-2021 Trimble Inc.
 # License:: The MIT License (MIT)
 # Original Author:: Jin Yi
 
@@ -8,10 +8,15 @@ require "testup/testcase"
 
 # module Geom::PolygonMesh
 class TC_Geom_PolygonMesh < TestUp::TestCase
+
   MESH_POINTS = 0
   MESH_UVQ_FRONT = 1
   MESH_UVQ_BACK = 2
   MESH_NORMAL = 4
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -102,6 +107,16 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     File.join(__dir__, "TC_Geom_PolygonMesh", filename)
   end
 
+  def assert_uv_equal(uvq1, uvq2)
+    delta = 1.0e-10 # Same as SU's floating point tolerance.
+    assert_in_delta(uvq1.x, uvq2.x, delta)
+    assert_in_delta(uvq1.y, uvq2.y, delta)
+    assert_in_delta(uvq1.z, uvq2.z, delta)
+  end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.new
+
   def test_initialize
     polygonmesh = Geom::PolygonMesh.new
     assert_kind_of(Geom::PolygonMesh, polygonmesh)
@@ -175,6 +190,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     end
   end
 
+  # ========================================================================== #
+  # method Geom::PolygonMesh.add_point
+
   def test_add_point
     polygonmesh = Geom::PolygonMesh.new
     point = Geom::Point3d.new(0, 1, 2)
@@ -218,6 +236,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
       polygonmesh.add_point
     end
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.add_polygon
 
   def test_add_polygon
     polygonmesh = Geom::PolygonMesh.new
@@ -356,6 +377,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     end
   end
 
+  # ========================================================================== #
+  # method Geom::PolygonMesh.count_points
+
   def test_count_points
     polygonmesh = Geom::PolygonMesh.new
     polygonmesh.add_point([0, 1, 2])
@@ -379,6 +403,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
       polygonmesh.count_points(nil)
     end
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.count_polygons
 
   def test_count_polygons
     polygonmesh = Geom::PolygonMesh.new
@@ -409,6 +436,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
       polygonmesh.count_polygons(nil)
     end
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.normal_at
 
   def test_normal_at
     face = setup_face
@@ -464,6 +494,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
       polygonmesh.normal_at([1])
     end
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.point_at
 
   def test_point_at
     polygonmesh = setup_polygon_for_point_at
@@ -528,6 +561,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     end
   end
 
+  # ========================================================================== #
+  # method Geom::PolygonMesh.point_index
+
   def test_point_index
     polygonmesh = Geom::PolygonMesh.new
     point1 = Geom::Point3d.new(0, 1, 2)
@@ -583,6 +619,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     end
   end
 
+  # ========================================================================== #
+  # method Geom::PolygonMesh.points
+
   def test_points
     polygonmesh = Geom::PolygonMesh.new
     point1 = Geom::Point3d.new(0, 1, 2)
@@ -610,6 +649,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
       polygonmesh.points(nil)
     end
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.polygon_at
 
   def test_polygon_at
     polygonmesh = setup_polygon_for_polygon_at
@@ -699,11 +741,17 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     end
   end
 
+  # ========================================================================== #
+  # method Geom::PolygonMesh.polygon_points_at
+
   def test_polygon_points_at_index_zero
     polygonmesh = setup_polygon_for_polygon_at
     result = polygonmesh.polygon_points_at(0)
     assert_nil(result)
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.polygons
 
   def test_polygons
     polygonmesh = setup_polygon_for_polygon_at
@@ -726,6 +774,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     assert_kind_of(Array, result)
     assert_nil(result[0])
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.set_point
 
   def test_set_point
     polygonmesh = setup_polygon_for_polygon_at
@@ -781,6 +832,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
       polygonmesh.set_point(1, [point1])
     end
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.set_uv
 
   def test_set_uv
     polygonmesh = setup_polygon_for_uv
@@ -865,11 +919,14 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     assert_kind_of(Geom::Point3d, point2)
     assert_kind_of(Geom::Point3d, point3)
     assert_kind_of(Geom::Point3d, point4)
-    assert_equal([0, 0, 1.0], point1.to_a)
-    assert_equal([-0.1788854381999832, -0.21908902300206645, 1.0], point2.to_a)
-    assert_equal([0.1788854381999832, -0.3286335345030997, 1.0], point3.to_a)
-    assert_equal([-0.13416407864998742, 0.10954451150103323, 1.0], point4.to_a)
+    assert_uv_equal([0, 0, 1.0], point1.to_a)
+    assert_uv_equal([-0.1788854381999832, -0.21908902300206645, 1.0], point2.to_a)
+    assert_uv_equal([0.1788854381999832, -0.3286335345030997, 1.0], point3.to_a)
+    assert_uv_equal([-0.13416407864998742, 0.10954451150103323, 1.0], point4.to_a)
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.uv_at
 
   def test_uv_at
     polygonmesh = setup_polygon_for_uv
@@ -946,6 +1003,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
       polygonmesh.uv_at(nil, true)
     end
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.uvs
 
   def test_uvs
     polygonmesh = setup_polygon_for_uvs
@@ -1033,6 +1093,9 @@ class TC_Geom_PolygonMesh < TestUp::TestCase
     assert_equal([2, 2, 0], result[2].to_a)
     assert_equal([0, 2, 0], result[3].to_a)
   end
+
+  # ========================================================================== #
+  # method Geom::PolygonMesh.transform!
 
   def test_transform_Bang
     polygonmesh = setup_polygon_for_transform

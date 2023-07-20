@@ -5,11 +5,20 @@
 require "testup/testcase"
 
 # class Sketchup::PickHelper
-# http://www.sketchup.com/intl/en/developer/docs/ourdoc/pickhelper
 class TC_Sketchup_PickHelper < TestUp::TestCase
 
   # Set this to true to enable verbose debugging output.
   DEBUG_OUTPUT = false
+
+  def self.setup_testcase
+    discard_all_models
+    if Sketchup.respond_to?(:resize_viewport) # SU2023.0+
+      # Attempt to stabilize these tests by resizing the viewport
+      # to a fixed size.
+      model = Sketchup.active_model
+      Sketchup.resize_viewport(model, 1050, 600)
+    end
+  end
 
   def setup
     start_with_empty_model()
@@ -126,7 +135,6 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::PickHelper.window_pick
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/pickhelper#window_pick
 
   def test_window_pick_api_example
     entities = Sketchup.active_model.active_entities
@@ -225,7 +233,6 @@ class TC_Sketchup_PickHelper < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::PickHelper.boundingbox_pick
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/pickhelper#boundingbox_pick
   def test_boundingbox_pick_api_example
      boundingbox = Geom::BoundingBox.new
      boundingbox.add([1, 1, 1], [100, 100, 100])

@@ -1,16 +1,22 @@
-# Copyright:: Copyright 2016-2020 Trimble Inc.
+# Copyright:: Copyright 2016-2022 Trimble Inc.
 # License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen
 
 
 require "testup/testcase"
 require_relative "utils/image_helper"
+require_relative "utils/version_helper"
 
 
 # class Sketchup::Entities
 class TC_Sketchup_Entities < TestUp::TestCase
 
   include TestUp::SketchUpTests::ImageHelper
+  include TestUp::SketchUpTests::VersionHelper
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     start_with_empty_model
@@ -55,6 +61,33 @@ class TC_Sketchup_Entities < TestUp::TestCase
     mesh.add_point(Geom::Point3d.new(1, 1, 0))
     mesh.add_polygon([1, 2, 3])
     mesh
+  end
+
+  def create_test_mesh_with_two_faces(negative_indicies: true)
+    # 4 +--+ 3
+    #   | /|
+    #   |/ |
+    # 1 +--+ 2
+    indicies = if negative_indicies
+      [[1, 2, -3], [-1, 3, 4]]
+    else
+      [[1, 2, 3], [1, 3, 4]]
+    end
+    mesh = Geom::PolygonMesh.new
+    mesh.add_point(Geom::Point3d.new(0, 0, 0))
+    mesh.add_point(Geom::Point3d.new(1, 0, 0))
+    mesh.add_point(Geom::Point3d.new(1, 1, 0))
+    mesh.add_point(Geom::Point3d.new(0, 1, 0))
+    mesh.add_polygon(*indicies[0])
+    mesh.add_polygon(*indicies[1])
+    mesh
+  end
+
+  def create_test_material
+    model = Sketchup.active_model
+    material = model.materials.add('TestUp')
+    material.color = 'red'
+    material
   end
 
   def setup_instance_test
@@ -103,7 +136,7 @@ class TC_Sketchup_Entities < TestUp::TestCase
     entities.grep(Sketchup::Face)
   end
 
-  def sort_points (points)
+  def sort_points(points)
     return points.sort{ |p1,p2| p1.to_s <=> p2.to_s}
   end
 
@@ -202,15 +235,62 @@ class TC_Sketchup_Entities < TestUp::TestCase
   # ========================================================================== #
   # method Sketchup::Entities.erase_entities
 
-  def test_each_erase_entities_crash_run_by_itself
-    # Test was formed from a bug issued by beta testers in SU2018 (SU-37674)
-    # this test has the potential to crash sketchup, run it by itself
+  def test_erase_entities_each_loop_crash
+    # Test was formed from a bug issued by beta testers in SU2018 (SU-37674).
     start_with_empty_model
     add_test_face
     entities = Sketchup.active_model.entities
     assert_equal(5, entities.size)
-    entities.each {|e| entities.erase_entities(e)}
-    assert_equal(0, entities.size)
+    entities.each { |e| entities.erase_entities(e) }
+    # Erasing items while iterating is not something one should do. We try to
+    # avoid crashes, but there is no guaranty we'll iterate all the entities
+    # if something is added/removed. Some times you might get lucky and manage
+    # to erase everything, sometimes not.
+    assert(entities.size < 5)
+  end
+
+  def test_erase_entities
+    model = Sketchup.active_model
+    model.entities.add_face([0,0,0], [9,0,0], [9,9,0], [0,9,0])
+    group = model.entities.add_group
+    group.entities.add_line([0,0,0], [9,9,9])
+    model.entities.erase_entities(model.entities.to_a)
+    assert_equal(0, model.entities.size)
+  end
+
+  def test_erase_entities_active_entities
+    skip("Fixed in SU2023.0") if Sketchup.version.to_f < 23.0
+    model = Sketchup.active_model
+    group = model.entities.add_group
+    group.entities.add_line([0,0,0], [9,9,9])
+    model.active_path = [group]
+    assert_raises(ArgumentError) do
+      model.entities.erase_entities(group)
+    end
+    refute(group.deleted?)
+  ensure
+    model.active_path = nil if model
+  end
+
+  def test_erase_entities_active_entities_group_not_open
+    # SKEXT-3639: Regression introduced by SKEXT-3286.
+    # Fixed after first patch of SketchUp 2023.0.
+    skip("Fixed after SU2023.0.397") if sketchup_older_than_or_equal(23, 0, 397)
+    model = Sketchup.active_model
+
+    group1 = model.entities.add_group
+    group1.entities.add_line([0,0,0], [9,9,9])
+
+    group2 = model.entities.add_group
+    group2.entities.add_line([0,0,0], [9,9,9])
+
+    model.active_path = [group1]
+    model.entities.erase_entities(group2)
+
+    refute(group1.deleted?)
+    assert(group2.deleted?)
+  ensure
+    model.active_path = nil if model
   end
 
   # ========================================================================== #
@@ -953,6 +1033,220 @@ class TC_Sketchup_Entities < TestUp::TestCase
   # ========================================================================== #
   # method Sketchup::Entities.fill_from_mesh
 
+  def test_fill_from_mesh_no_materials
+    entities = Sketchup.active_model.active_entities
+    mesh = create_test_mesh
+    group = entities.add_group
+    result = group.entities.fill_from_mesh(mesh)
+    assert(result)
+    assert_equal(4, group.entities.size)
+    assert_equal(1, group.entities.grep(Sketchup::Face).size)
+    face = group.entities.grep(Sketchup::Face).first
+    assert_nil(face.material)
+    assert_nil(face.back_material)
+  end
+
+  def test_fill_from_mesh_front_material
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh
+    group = entities.add_group
+    result = group.entities.fill_from_mesh(mesh, true,
+      Geom::PolygonMesh::AUTO_SOFTEN, material)
+    assert(result)
+    assert_equal(4, group.entities.size)
+    assert_equal(1, group.entities.grep(Sketchup::Face).size)
+    face = group.entities.grep(Sketchup::Face).first
+    assert_equal(material, face.material)
+    assert_nil(face.back_material)
+  end
+
+  def test_fill_from_mesh_back_material
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh
+    group = entities.add_group
+    result = group.entities.fill_from_mesh(mesh, true,
+      Geom::PolygonMesh::AUTO_SOFTEN, nil, material)
+    assert(result)
+    assert_equal(4, group.entities.size)
+    assert_equal(1, group.entities.grep(Sketchup::Face).size)
+    face = group.entities.grep(Sketchup::Face).first
+    assert_nil(face.material)
+    assert_equal(material, face.back_material)
+  end
+
+   def test_fill_from_mesh_default_soft_flags
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces(negative_indicies: false)
+    group = entities.add_group
+    result = group.entities.fill_from_mesh(mesh)
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(1, soft_edges.size)
+    soft_edge = soft_edges.first
+    assert(soft_edge.soft?)
+    assert(soft_edge.smooth?)
+    refute(soft_edge.hidden?)
+  end
+
+  def test_fill_from_mesh_no_smooth_or_hide
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces
+    group = entities.add_group
+    result = group.entities.fill_from_mesh(mesh, true, Geom::PolygonMesh::NO_SMOOTH_OR_HIDE)
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(0, soft_edges.size)
+  end
+
+  def test_fill_from_mesh_auto_soften
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    # AUTO_SOFTEN will ignore negative indicies and always smoothen interior
+    # edges.
+    mesh = create_test_mesh_with_two_faces(negative_indicies: false)
+    group = entities.add_group
+    result = group.entities.fill_from_mesh(mesh)
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(1, soft_edges.size)
+    soft_edge = soft_edges.first
+    assert(soft_edge.soft?)
+    assert(soft_edge.smooth?)
+    refute(soft_edge.hidden?)
+  end
+
+  def test_fill_from_mesh_hide_based_on_index
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces
+    group = entities.add_group
+    result = group.entities.fill_from_mesh(mesh, true, Geom::PolygonMesh::HIDE_BASED_ON_INDEX)
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    hidden_edges = edges.select(&:hidden?)
+    assert_equal(1, hidden_edges.size)
+    hidden_edge = hidden_edges.first
+    refute(hidden_edge.soft?)
+    refute(hidden_edge.smooth?)
+    assert(hidden_edge.hidden?)
+  end
+
+  def test_fill_from_mesh_soften_based_on_index
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces
+    group = entities.add_group
+    result = group.entities.fill_from_mesh(mesh, true, Geom::PolygonMesh::SOFTEN_BASED_ON_INDEX)
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(1, soft_edges.size)
+    soft_edge = soft_edges.first
+    assert(soft_edge.soft?)
+    refute(soft_edge.smooth?)
+    refute(soft_edge.hidden?)
+  end
+
+  def test_fill_from_mesh_hide_based_on_index_override_soften_based_on_index
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces
+    group = entities.add_group
+    # HIDE_BASED_ON_INDEX overrides SOFTEN_BASED_ON_INDEX.
+    # But strangely SMOOTH_SOFT_EDGES still apply. 
+    result = group.entities.fill_from_mesh(mesh, true,
+      Geom::PolygonMesh::SOFTEN_BASED_ON_INDEX |
+      Geom::PolygonMesh::SMOOTH_SOFT_EDGES |
+      Geom::PolygonMesh::HIDE_BASED_ON_INDEX
+    )
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    hidden_edges = edges.select(&:hidden?)
+    assert_equal(1, hidden_edges.size)
+    hidden_edge = hidden_edges.first
+    refute(hidden_edge.soft?)
+    assert(hidden_edge.smooth?)
+    assert(hidden_edge.hidden?)
+  end
+
+  def test_fill_from_mesh_auto_soften_override_hide_based_on_index
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces(negative_indicies: false)
+    group = entities.add_group
+    # When no negative indicies are given, AUTO_SOFTEN works and
+    # HIDE_BASED_ON_INDEX have no effect.
+    result = group.entities.fill_from_mesh(mesh, true,
+      Geom::PolygonMesh::AUTO_SOFTEN |
+      Geom::PolygonMesh::SMOOTH_SOFT_EDGES |
+      Geom::PolygonMesh::HIDE_BASED_ON_INDEX
+    )
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(1, soft_edges.size)
+    soft_edge = soft_edges.first
+    assert(soft_edge.soft?)
+    assert(soft_edge.smooth?)
+    refute(soft_edge.hidden?)
+  end
+
+  def test_fill_from_mesh_all_flags
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces(negative_indicies: false)
+    group = entities.add_group
+    # When no negative indicies are given, AUTO_SOFTEN works and
+    # HIDE_BASED_ON_INDEX have no effect.
+    result = group.entities.fill_from_mesh(mesh, true,
+      Geom::PolygonMesh::AUTO_SOFTEN |
+      Geom::PolygonMesh::SOFTEN_BASED_ON_INDEX |
+      Geom::PolygonMesh::SMOOTH_SOFT_EDGES |
+      Geom::PolygonMesh::HIDE_BASED_ON_INDEX
+    )
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(1, soft_edges.size)
+    soft_edge = soft_edges.first
+    assert(soft_edge.soft?)
+    assert(soft_edge.smooth?)
+    refute(soft_edge.hidden?)
+  end
+
+  def test_fill_from_mesh_entities_must_be_empty
+    entities = Sketchup.active_model.active_entities
+    mesh = create_test_mesh
+    group = entities.add_group
+    group.entities.add_line([100, 100, 100], [100, 100, 200])
+    result = group.entities.fill_from_mesh(mesh)
+    refute(result)
+    assert_equal(1, group.entities.size)
+  end
+
   def test_fill_from_mesh_image_material
     skip('Fixed in SU2019.2') if Sketchup.version.to_f < 19.2
     entities = Sketchup.active_model.active_entities
@@ -972,6 +1266,222 @@ class TC_Sketchup_Entities < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Entities.add_faces_from_mesh
+
+  def test_add_faces_from_mesh_no_materials
+    entities = Sketchup.active_model.active_entities
+    mesh = create_test_mesh
+    group = entities.add_group
+    result = group.entities.add_faces_from_mesh(mesh)
+    assert(result)
+    assert_equal(4, group.entities.size)
+    assert_equal(1, group.entities.grep(Sketchup::Face).size)
+    face = group.entities.grep(Sketchup::Face).first
+    assert_nil(face.material)
+    assert_nil(face.back_material)
+  end
+
+  def test_add_faces_from_mesh_front_material
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh
+    group = entities.add_group
+    result = group.entities.add_faces_from_mesh(mesh,
+      Geom::PolygonMesh::AUTO_SOFTEN, material)
+    assert(result)
+    assert_equal(4, group.entities.size)
+    assert_equal(1, group.entities.grep(Sketchup::Face).size)
+    face = group.entities.grep(Sketchup::Face).first
+    assert_equal(material, face.material)
+    assert_nil(face.back_material)
+  end
+
+  def test_add_faces_from_mesh_back_material
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh
+    group = entities.add_group
+    result = group.entities.add_faces_from_mesh(mesh,
+      Geom::PolygonMesh::AUTO_SOFTEN, nil, material)
+    assert(result)
+    assert_equal(4, group.entities.size)
+    assert_equal(1, group.entities.grep(Sketchup::Face).size)
+    face = group.entities.grep(Sketchup::Face).first
+    assert_nil(face.material)
+    assert_equal(material, face.back_material)
+  end
+
+   def test_add_faces_from_mesh_default_soft_flags
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces(negative_indicies: false)
+    group = entities.add_group
+    result = group.entities.add_faces_from_mesh(mesh)
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(1, soft_edges.size)
+    soft_edge = soft_edges.first
+    assert(soft_edge.soft?)
+    assert(soft_edge.smooth?)
+    refute(soft_edge.hidden?)
+  end
+
+  def test_add_faces_from_mesh_no_smooth_or_hide
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces
+    group = entities.add_group
+    result = group.entities.add_faces_from_mesh(mesh, Geom::PolygonMesh::NO_SMOOTH_OR_HIDE)
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(0, soft_edges.size)
+  end
+
+  def test_add_faces_from_mesh_auto_soften
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    # AUTO_SOFTEN will ignore negative indicies and always smoothen interior
+    # edges.
+    mesh = create_test_mesh_with_two_faces(negative_indicies: false)
+    group = entities.add_group
+    result = group.entities.add_faces_from_mesh(mesh)
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(1, soft_edges.size)
+    soft_edge = soft_edges.first
+    assert(soft_edge.soft?)
+    assert(soft_edge.smooth?)
+    refute(soft_edge.hidden?)
+  end
+
+  def test_add_faces_from_mesh_hide_based_on_index
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces
+    group = entities.add_group
+    result = group.entities.add_faces_from_mesh(mesh, Geom::PolygonMesh::HIDE_BASED_ON_INDEX)
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    hidden_edges = edges.select(&:hidden?)
+    assert_equal(1, hidden_edges.size)
+    hidden_edge = hidden_edges.first
+    refute(hidden_edge.soft?)
+    refute(hidden_edge.smooth?)
+    assert(hidden_edge.hidden?)
+  end
+
+  def test_add_faces_from_mesh_soften_based_on_index
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces
+    group = entities.add_group
+    result = group.entities.add_faces_from_mesh(mesh, Geom::PolygonMesh::SOFTEN_BASED_ON_INDEX)
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(1, soft_edges.size)
+    soft_edge = soft_edges.first
+    assert(soft_edge.soft?)
+    refute(soft_edge.smooth?)
+    refute(soft_edge.hidden?)
+  end
+
+  def test_add_faces_from_mesh_hide_based_on_index_override_soften_based_on_index
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces
+    group = entities.add_group
+    # HIDE_BASED_ON_INDEX overrides SOFTEN_BASED_ON_INDEX.
+    # But strangely SMOOTH_SOFT_EDGES still apply. 
+    result = group.entities.add_faces_from_mesh(mesh,
+      Geom::PolygonMesh::SOFTEN_BASED_ON_INDEX |
+      Geom::PolygonMesh::SMOOTH_SOFT_EDGES |
+      Geom::PolygonMesh::HIDE_BASED_ON_INDEX
+    )
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    hidden_edges = edges.select(&:hidden?)
+    assert_equal(1, hidden_edges.size)
+    hidden_edge = hidden_edges.first
+    refute(hidden_edge.soft?)
+    assert(hidden_edge.smooth?)
+    assert(hidden_edge.hidden?)
+  end
+
+  def test_add_faces_from_mesh_auto_soften_override_hide_based_on_index
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces(negative_indicies: false)
+    group = entities.add_group
+    # When no negative indicies are given, AUTO_SOFTEN works and
+    # HIDE_BASED_ON_INDEX have no effect.
+    result = group.entities.add_faces_from_mesh(mesh,
+      Geom::PolygonMesh::AUTO_SOFTEN |
+      Geom::PolygonMesh::SMOOTH_SOFT_EDGES |
+      Geom::PolygonMesh::HIDE_BASED_ON_INDEX
+    )
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(1, soft_edges.size)
+    soft_edge = soft_edges.first
+    assert(soft_edge.soft?)
+    assert(soft_edge.smooth?)
+    refute(soft_edge.hidden?)
+  end
+
+  def test_add_faces_from_mesh_all_flags
+    entities = Sketchup.active_model.active_entities
+    material = create_test_material
+    mesh = create_test_mesh_with_two_faces(negative_indicies: false)
+    group = entities.add_group
+    # When no negative indicies are given, AUTO_SOFTEN works and
+    # HIDE_BASED_ON_INDEX have no effect.
+    result = group.entities.add_faces_from_mesh(mesh,
+      Geom::PolygonMesh::AUTO_SOFTEN |
+      Geom::PolygonMesh::SOFTEN_BASED_ON_INDEX |
+      Geom::PolygonMesh::SMOOTH_SOFT_EDGES |
+      Geom::PolygonMesh::HIDE_BASED_ON_INDEX
+    )
+    assert(result)
+    assert_equal(7, group.entities.size)
+    assert_equal(2, group.entities.grep(Sketchup::Face).size)
+    edges = group.entities.grep(Sketchup::Edge)
+    soft_edges = edges.select(&:soft?)
+    assert_equal(1, soft_edges.size)
+    soft_edge = soft_edges.first
+    assert(soft_edge.soft?)
+    assert(soft_edge.smooth?)
+    refute(soft_edge.hidden?)
+  end
+
+  def test_add_faces_from_mesh_entities_must_be_empty
+    entities = Sketchup.active_model.active_entities
+    mesh = create_test_mesh
+    group = entities.add_group
+    group.entities.add_line([100, 100, 100], [100, 100, 200])
+    result = group.entities.add_faces_from_mesh(mesh)
+    assert(result)
+    assert_equal(5, group.entities.size)
+    assert_equal(1, group.entities.grep(Sketchup::Face).size)
+    assert_equal(4, group.entities.grep(Sketchup::Edge).size)
+  end
 
   def test_add_faces_from_mesh_image_material
     skip('Fixed in SU2019.2') if Sketchup.version.to_f < 19.2
@@ -1077,6 +1587,166 @@ class TC_Sketchup_Entities < TestUp::TestCase
     face = group.entities.add_face([0, 0, 0], [9, 0, 0], [9, 9, 0], [0, 9, 0])
     assert_raises(ArgumentError) do
       entities.weld(face.edges)
+    end
+  end
+
+  # ========================================================================== #
+  # method Sketchup::Entities.add_face
+
+  def test_add_face_orientation_xy_on_ground
+    entities = Sketchup.active_model.active_entities
+    face = entities.add_face([1,1,0], [2,1,0], [2,2,0])
+    assert_equal(face.normal, [0,0,-1])
+  end
+
+  def test_add_face_orientation_xy_winding_counterclockwise
+    entities = Sketchup.active_model.active_entities
+    face = entities.add_face([1,1,10], [2,1,10], [2,2,10])
+    assert_equal(face.normal, [0,0,1])
+  end
+
+  def test_add_face_orientation_xy_winding_clockwise
+    entities = Sketchup.active_model.active_entities
+    face = entities.add_face([1,1,10], [2,2,10], [2,1,10])
+    assert_equal(face.normal, [0,0,-1])
+  end
+
+  def test_add_face_orientation_xz_winding_counterclockwise
+    entities = Sketchup.active_model.active_entities
+    face = entities.add_face([1,0,1], [2,0,1], [2,0,2])
+    assert_equal(face.normal, [0,-1,0])
+  end
+
+  def test_add_face_orientation_xz_winding_clockwise
+    entities = Sketchup.active_model.active_entities
+    face = entities.add_face([1,0,1], [2,0,2], [2,0,1])
+    assert_equal(face.normal, [0,1,0])
+  end
+
+  def test_add_face_orientation_yz_winding_counterclockwise
+    entities = Sketchup.active_model.active_entities
+    face = entities.add_face([0,1,1], [0,2,1], [0,2,2])
+    assert_equal(face.normal, [1,0,0])
+  end
+
+  def test_add_face_orientation_yz_winding_clockwise
+    entities = Sketchup.active_model.active_entities
+    face = entities.add_face([0,1,1], [0,2,2], [0,2,1])
+    assert_equal(face.normal, [-1,0,0])
+  end
+
+  # ========================================================================== #
+  # method Sketchup::Entities.build
+
+  def test_build
+    skip("Added in SU2022.0") if Sketchup.version.to_f < 22.0
+    cached_builder = nil
+    Sketchup.active_model.entities.build do |builder|
+      assert_kind_of(Sketchup::EntitiesBuilder, builder)
+      assert(builder.valid?, 'builder unexpectedly invalid')
+      cached_builder = builder
+    end
+    # Ensure it cannot be used outside of the scope of #build.
+    refute(cached_builder.valid?, 'builder unexpectedly valid')
+    assert_raises(RuntimeError) do
+      cached_builder.entities
+    end
+  end
+
+  class UserError < StandardError; end
+
+  def test_build_ensures_cleanup
+    skip("Added in SU2022.0") if Sketchup.version.to_f < 22.0
+    cached_builder = nil
+    assert_raises(UserError) do
+      Sketchup.active_model.entities.build do |builder|
+        cached_builder = builder
+        raise UserError, "oopsie!"
+      end
+    end
+    refute(cached_builder.valid?, 'builder unexpectedly valid')
+    assert_raises(RuntimeError) do
+      cached_builder.entities
+    end
+  end
+
+  def test_build_model_changes_without_operation
+    skip("Added in SU2022.0") if Sketchup.version.to_f < 22.0
+    entities = Sketchup.active_model.active_entities
+    entities.build { |builder|
+      face1 = builder.add_face([[0, 0, 0], [3, 0, 0], [3, 4, 0], [0, 4, 0]])
+      assert_kind_of(Sketchup::Face, face1)
+
+      face2 = entities.add_face([[3, 0, 0], [6, 0, 0], [6, 4, 0], [3, 4, 0]])
+      assert_kind_of(Sketchup::Face, face2)
+
+      face3 = builder.add_face([[6, 0, 0], [9, 0, 0], [9, 4, 0], [6, 4, 0]])
+      assert_kind_of(Sketchup::Face, face3)
+    }
+    assert_equal(10, entities.grep(Sketchup::Edge).size)
+    assert_equal(3, entities.grep(Sketchup::Face).size)
+  end
+
+  def test_build_model_changes_with_operation
+    skip("Added in SU2022.0") if Sketchup.version.to_f < 22.0
+    model = Sketchup.active_model
+    entities = model.active_entities
+    model.start_operation("TestUp - EntitiesBuilder")
+    cp1 = entities.add_cpoint([0, 0, 9])
+    entities.build { |builder|
+      face1 = builder.add_face([[0, 0, 0], [3, 0, 0], [3, 4, 0], [0, 4, 0]])
+      assert_kind_of(Sketchup::Face, face1)
+
+      face2 = entities.add_face([[3, 0, 0], [6, 0, 0], [6, 4, 0], [3, 4, 0]])
+      assert_kind_of(Sketchup::Face, face2)
+
+      face3 = builder.add_face([[6, 0, 0], [9, 0, 0], [9, 4, 0], [6, 4, 0]])
+      assert_kind_of(Sketchup::Face, face3)
+    }
+    cp2 = entities.add_cpoint([3, 0, 9])
+    model.commit_operation
+    assert_equal(10, entities.grep(Sketchup::Edge).size)
+    assert_equal(3, entities.grep(Sketchup::Face).size)
+    assert_equal(2, entities.grep(Sketchup::ConstructionPoint).size)
+  end
+
+  def test_build_nested_calls_without_operation
+    skip("Added in SU2022.0") if Sketchup.version.to_f < 22.0
+    entities = Sketchup.active_model.active_entities
+    entities.build { |builder1|
+      assert_raises(RuntimeError) do
+        entities.build { |builder2| }
+      end
+    }
+  end
+
+  def test_build_nested_calls_with_operation
+    skip("Added in SU2022.0") if Sketchup.version.to_f < 22.0
+    model = Sketchup.active_model
+    entities = model.active_entities
+    model.start_operation("TestUp - EntitiesBuilder")
+    entities.build { |builder1|
+      assert_raises(RuntimeError) do
+        entities.build { |builder2| }
+      end
+    }
+  ensure
+    model.commit_operation
+  end
+
+  def test_build_without_block
+    skip("Added in SU2022.0") if Sketchup.version.to_f < 22.0
+    entities = Sketchup.active_model.active_entities
+    assert_raises(LocalJumpError) do
+      entities.build
+    end
+  end
+
+  def test_build_with_too_many_arguments
+    skip("Added in SU2022.0") if Sketchup.version.to_f < 22.0
+    entities = Sketchup.active_model.active_entities
+    assert_raises(ArgumentError) do
+      entities.build(123) { |builder| }
     end
   end
 

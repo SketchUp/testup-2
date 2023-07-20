@@ -1,5 +1,5 @@
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen (thomthom@sketchup.com)
 
 
@@ -20,10 +20,13 @@ end # class
 
 
 # class Sketchup::Axes
-# http://www.sketchup.com/intl/developer/docs/ourdoc/axes
 class TC_Sketchup_Axes < TestUp::TestCase
 
   include TestUp::ObserverReceiver
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     start_with_empty_model
@@ -37,7 +40,6 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Axes.origin
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/axes#origin
 
   def test_origin_api_example
     point = Sketchup.active_model.axes.origin
@@ -57,7 +59,6 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Axes.axes
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/axes#axes
 
   def test_axes_api_example
     xaxis, yaxis, zaxis = Sketchup.active_model.axes.axes
@@ -81,7 +82,6 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Axes.xaxis
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/axes#xaxis
 
   def test_xaxis_api_example
     point = Sketchup.active_model.axes.xaxis
@@ -102,7 +102,6 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Axes.yaxis
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/axes#yaxis
 
   def test_yaxis_api_example
     point = Sketchup.active_model.axes.yaxis
@@ -123,7 +122,6 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Axes.zaxis
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/axes#zaxis
 
   def test_zaxis_api_example
     point = Sketchup.active_model.axes.zaxis
@@ -144,7 +142,6 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Axes.transformation
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/axes#transformation
 
   def test_transformation_api_example
     # Point for a rectangle.
@@ -175,7 +172,6 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Axes.sketch_plane
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/axes#sketch_plane
 
   def test_sketch_plane_api_example
     xaxis, yaxis, zaxis = Sketchup.active_model.axes.sketch_plane
@@ -200,7 +196,6 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Axes.set
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/axes#set
 
   def test_set_api_example
     xaxis = Geom::Vector3d.new(3, 5, 0)
@@ -291,7 +286,6 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Axes.to_a
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/axes#to_a
 
   def test_to_a_api_example
     xaxis, yaxis, zaxis = Sketchup.active_model.axes.to_a
@@ -316,7 +310,6 @@ class TC_Sketchup_Axes < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Axes.typename
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/axes#typename
 
   def test_typename_api_example
     xaxis, yaxis, zaxis = Sketchup.active_model.axes.typename

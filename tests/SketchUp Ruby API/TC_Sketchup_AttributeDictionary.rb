@@ -8,6 +8,10 @@ require "testup/testcase"
 # class Sketchup::AttributeDictionary
 class TC_Sketchup_AttributeDictionary < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     model = start_with_empty_model
     # start_with_empty_model doesn't remove attributes.

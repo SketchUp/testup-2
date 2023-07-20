@@ -1,5 +1,5 @@
 # Copyright:: Copyright 2014-2019 Trimble Inc.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 
 require "testup/testcase"
 require_relative "utils/frozen"
@@ -9,6 +9,10 @@ require_relative "utils/frozen"
 class TC_Length < TestUp::TestCase
 
   include TestUp::SketchUpTests::Frozen
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -333,7 +337,6 @@ class TC_Length < TestUp::TestCase
 
   # ========================================================================== #
   # method Length.==
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/length#==
 
   def test_Operator_Equal_api_example
     length1 = 20.to_l
@@ -438,7 +441,6 @@ class TC_Length < TestUp::TestCase
 
   # ========================================================================== #
   # method Length.>
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/length#>
 
   def test_Operator_GreaterThan_api_example
     length1 = 11.to_l
@@ -547,7 +549,6 @@ class TC_Length < TestUp::TestCase
 
   # ========================================================================== #
   # method Length.>=
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/length#>=
 
   def test_Operator_GreaterThanOrEqual_api_example
     length1 = 11.to_l
@@ -656,7 +657,6 @@ class TC_Length < TestUp::TestCase
 
   # ========================================================================== #
   # method Length.<
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/length#<
 
   def test_Operator_LessThan_api_example
     length1 = 12.to_l
@@ -765,7 +765,6 @@ class TC_Length < TestUp::TestCase
 
   # ========================================================================== #
   # method Length.<=
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/length#<=
 
   def test_Operator_LessThanOrEqual_api_example
     length1 = 11.to_l
@@ -874,7 +873,6 @@ class TC_Length < TestUp::TestCase
 
   # ========================================================================== #
   # method Length.<=>
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/length#<=>
 
   def test_Operator_Sort_api_example
     length1 = 20.to_l
@@ -973,7 +971,6 @@ class TC_Length < TestUp::TestCase
 
   # ========================================================================== #
   # method Length.inspect
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/length#inspect
 
   def test_inspect_api_example
     length = 55.to_l
@@ -990,7 +987,6 @@ class TC_Length < TestUp::TestCase
 
   # ========================================================================== #
   # method Length.to_s
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/length#to_s
 
   def test_to_s_api_example
     length = 55.to_l
@@ -1008,7 +1004,6 @@ class TC_Length < TestUp::TestCase
 
   # ========================================================================== #
   # method Length.to_f
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/length#to_f
 
   def test_to_f_api_example
     length = 55.to_l
@@ -1086,6 +1081,9 @@ class TC_Length < TestUp::TestCase
   # method Length.taint
 
   def test_taint
+    # As of Ruby 2.7 taint is deprecated and a noop.
+    # https://rubyreferences.github.io/rubychanges/2.7.html#safe-and-taint-concepts-are-deprecated-in-general
+    skip("taint was deprecated in Ruby 2.7") if RUBY_VERSION.to_f >= 2.7
     assert_raises FROZEN_ERROR do
       10.to_l.taint
     end
@@ -1104,6 +1102,9 @@ class TC_Length < TestUp::TestCase
   # method Length.untrust
 
   def test_untrust
+    # As of Ruby 2.7 untrust is deprecated and a noop.
+    # https://rubyreferences.github.io/rubychanges/2.7.html#safe-and-taint-concepts-are-deprecated-in-general
+    skip("untrust was deprecated in Ruby 2.7") if RUBY_VERSION.to_f >= 2.7
     assert_raises FROZEN_ERROR do
       10.to_l.untrust
     end

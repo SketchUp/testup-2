@@ -1,5 +1,5 @@
 # Copyright:: Copyright 2017 Trimble Inc.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen (thomthom@sketchup.com)
 
 require "testup/testcase"
@@ -7,6 +7,10 @@ require "testup/testcase"
 # class Sketchup::SectionPlane
 class TC_Sketchup_SectionPlane < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+  
   def setup
     start_with_empty_model
     create_test_cube

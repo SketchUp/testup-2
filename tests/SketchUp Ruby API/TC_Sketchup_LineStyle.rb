@@ -7,6 +7,10 @@ require "testup/testcase"
 # class Sketchup::LineStyle
 class TC_Sketchup_LineStyle < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
   end

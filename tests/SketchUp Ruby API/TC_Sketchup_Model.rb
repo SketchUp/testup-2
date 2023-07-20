@@ -1,15 +1,20 @@
-# Copyright:: Copyright 2014 Trimble Inc. All rights reserved.
+# Copyright:: Copyright 2014-2020 Trimble Inc. All rights reserved.
 # License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen
 
-
 require "testup/testcase"
+require_relative "utils/feature_switch"
 
 require "stringio"
 
-
 # class Sketchup::Model
 class TC_Sketchup_Model < TestUp::TestCase
+
+  include TestUp::SketchUpTests::FeatureSwitchHelper
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     model = start_with_empty_model()
@@ -108,7 +113,9 @@ class TC_Sketchup_Model < TestUp::TestCase
     # Layers
     model.layers.each { |entity| entities << entity }
     # LayerFolders
-    model.layers.each_folder { |entity| entities << entity }
+    if model.layers.respond_to?(:each_folder)
+      model.layers.each_folder { |entity| entities << entity }
+    end
     # Materials
     model.materials.each { |entity| entities << entity }
     # Scenes
@@ -186,7 +193,6 @@ class TC_Sketchup_Model < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Model.start_operation
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/model#start_operation
 
   def test_start_operation_warn_new_nested_operation
     original_mode = Sketchup.debug_mode?
@@ -208,7 +214,6 @@ class TC_Sketchup_Model < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Model.close
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/model#close
 
   def test_close_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -267,7 +272,6 @@ class TC_Sketchup_Model < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Model.find_entity_by_id
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/model#find_entity_by_id
 
   def test_find_entity_by_id_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -825,7 +829,7 @@ class TC_Sketchup_Model < TestUp::TestCase
   end
 
   def test_find_entity_by_persistent_id_scope_to_layer_folders
-    skip("Added in SU2020.2") if Sketchup.version.to_f < 20.2
+    skip("Added in SU2021.0") if Sketchup.version.to_f < 21.0
     model = Sketchup.active_model
     5.times { |i| model.layers.add_folder("TestUp #{i}") }
 
@@ -1135,10 +1139,14 @@ class TC_Sketchup_Model < TestUp::TestCase
     if Sketchup.version.to_i == 18
       assert_equal(1, definitions['jinyi.dwg'].entities.size)
       assert_equal(264, definitions['Component_1'].entities.size)
-    else
-      # SketchUp 2019+
+    elsif Sketchup.version.to_i <= 21
+      # SketchUp 2019-2021
       assert_equal(1, definitions['jinyi.dwg'].entities.size)
       assert_equal(169, definitions['Component_1'].entities.size)
+    else
+      # SketchUp 2022+
+      assert_equal(1, definitions['jinyi.dwg'].entities.size)
+      assert_equal(170, definitions['Component_1'].entities.size)
     end
   end
 
@@ -1181,8 +1189,13 @@ class TC_Sketchup_Model < TestUp::TestCase
     status = Sketchup.active_model.import(import_file, false)
     assert_kind_of(TrueClass, status)
     definition_list = Sketchup.active_model.definitions
-    assert_equal(6, definition_list.size)
-    assert_equal(824, definition_list.at(0).entities.size)
+    if Sketchup.version.to_f >= 23.0
+      assert_equal(7, definition_list.size)
+      assert_equal(250, definition_list['Component'].entities.size)
+    else
+      assert_equal(6, definition_list.size)
+      assert_equal(824, definition_list.at(0).entities.size)
+    end
   end
 
   def test_import_kmz_options
@@ -1855,6 +1868,21 @@ class TC_Sketchup_Model < TestUp::TestCase
     instance.remove_observer(observer)
   end
 
+  def test_active_path_Set_live_component
+    skip("Changed in SU2021") if Sketchup.version.to_i < 21
+    model = Sketchup.active_model
+    path = get_test_file("2021_lc.skp")
+    model.definitions.load(path)
+    definition = model.definitions["Exterior Sliding Door"]
+    instance = model.entities.add_instance(definition, IDENTITY)
+    instance_path = [instance]
+
+    assert_raises(ArgumentError) do
+      model.active_path = instance_path
+    end
+  end
+
+
   # ========================================================================== #
   # method Sketchup::Model.drawing_element_visible?
 
@@ -2010,7 +2038,7 @@ class TC_Sketchup_Model < TestUp::TestCase
   end
 
   def test_drawing_element_visible_Query_instance_folder_hidden
-    skip("Added in 2020.2") if Sketchup.version.to_f < 20.2
+    skip("Added in 2021.0") if Sketchup.version.to_f < 21.0
     model = Sketchup.active_model
     path = get_cube_instance_path
     folder1 = model.layers.add_folder('Hello')
@@ -2022,7 +2050,7 @@ class TC_Sketchup_Model < TestUp::TestCase
   end
 
   def test_drawing_element_visible_Query_instance_folder_with_hidden_objects
-    skip("Added in 2020.2") if Sketchup.version.to_f < 20.2
+    skip("Added in 2021.0") if Sketchup.version.to_f < 21.0
     model = Sketchup.active_model
     path = get_cube_instance_path
     folder1 = model.layers.add_folder('Hello')
@@ -2030,6 +2058,46 @@ class TC_Sketchup_Model < TestUp::TestCase
     path.root.layer.folder = folder2
     path.root.visible = false
     refute(model.drawing_element_visible?(path))
+  end
+
+  def test_drawing_element_visible_Query_invalid_arguments_array_invalid_leaf
+    skip("Crashes SU before 2021.1") if Sketchup.version.to_f < 21.1
+    model = Sketchup.active_model
+    layer = model.layers.first
+
+    assert_raises(ArgumentError) do
+      model.drawing_element_visible?([layer])
+    end
+  end
+
+  def test_drawing_element_visible_Query_invalid_arguments_instancepath_invalid_leaf
+    skip("Crashes SU before 2021.1") if Sketchup.version.to_f < 21.1
+    model = Sketchup.active_model
+    layer = model.layers.first
+
+    assert_raises(ArgumentError) do
+      model.drawing_element_visible?(Sketchup::InstancePath.new([layer]))
+    end
+  end
+
+  def test_drawing_element_visible_Query_invalid_arguments_array_non_leaf
+    model = Sketchup.active_model
+    layer = model.layers.first
+    drawingelement = model.entities.add_cpoint(ORIGIN)
+
+    assert_raises(ArgumentError) do
+      model.drawing_element_visible?([layer, drawingelement])
+    end
+  end
+
+  def test_drawing_element_visible_Query_invalid_arguments_instancepath_non_leaf
+    model = Sketchup.active_model
+    layer = model.layers.first
+    drawingelement = model.entities.add_cpoint(ORIGIN)
+
+    assert_raises(ArgumentError) do
+      model.drawing_element_visible?(Sketchup::InstancePath.new([layer, drawingelement]))
+    end
   end
 
 
@@ -2059,7 +2127,6 @@ class TC_Sketchup_Model < TestUp::TestCase
   # method Sketchup::Model.active_layer=
 
   def test_active_layer_Set
-    # skip("Removed in 2020.2") if Sketchup.version.to_f >= 20.2
     model = Sketchup.active_model
     layer0 = model.layers[0]
 
@@ -2076,7 +2143,6 @@ class TC_Sketchup_Model < TestUp::TestCase
   end
 
   def test_active_layer_Set_string
-    # skip("Removed in 2020.2") if Sketchup.version.to_f >= 20.2
     model = Sketchup.active_model
     layer = model.layers.add('Hello')
 
@@ -2085,7 +2151,6 @@ class TC_Sketchup_Model < TestUp::TestCase
   end
 
   def test_active_layer_Set_nil
-    # skip("Removed in 2020.2") if Sketchup.version.to_f >= 20.2
     model = Sketchup.active_model
     layer = model.layers.add('Hello')
     model.active_layer = layer
@@ -2096,10 +2161,20 @@ class TC_Sketchup_Model < TestUp::TestCase
   end
 
   def test_active_layer_Set_invalid_argument_number
-    # skip("Removed in 2020.2") if Sketchup.version.to_f >= 20.2
     assert_raises(ArgumentError) do
       Sketchup.active_model.active_layer = 123
     end
+  end
+
+  def test_create_attribute_dictionary_with_reserved_name
+    discard_model_changes
+    assert_raises(ArgumentError) do
+      Sketchup.active_model.attribute_dictionary('GSU_ContributorsInfo', true)
+    end
+  end
+
+  def test_read_attribute_dictionary_with_reserved_name
+    dic = Sketchup.active_model.attribute_dictionary('SU_DefinitionSet')
   end
 
   # We post-poned this to SU2021.
@@ -2113,5 +2188,22 @@ class TC_Sketchup_Model < TestUp::TestCase
   #   end
   # end
 
+
+  # ========================================================================== #
+  # method Sketchup::Model.overlays
+
+  def test_overlays
+    skip('Added in 2023.0') if Sketchup.version.to_f < 23.0
+    overlays = Sketchup.active_model.overlays
+    assert_kind_of(Sketchup::OverlaysManager, overlays)
+  end
+
+  def test_overlays_too_many_arguments
+    skip('Added in 2023.0') if Sketchup.version.to_f < 23.0
+    model = Sketchup.active_model
+    assert_raises(ArgumentError) do
+      Sketchup.active_model.overlays(123)
+    end
+  end
 
 end # class

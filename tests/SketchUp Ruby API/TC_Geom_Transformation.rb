@@ -9,6 +9,10 @@ require "testup/testcase"
 # class Geom::Transformation
 class TC_Geom_Transformation < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     # ...
   end

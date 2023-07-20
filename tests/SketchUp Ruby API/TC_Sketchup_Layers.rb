@@ -8,6 +8,10 @@ require "testup/testcase"
 # class Sketchup::Layers
 class TC_Sketchup_Layers < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     model = start_with_empty_model()
     5.times { |index|
@@ -347,7 +351,7 @@ class TC_Sketchup_Layers < TestUp::TestCase
     skip("Testable since SU2020") if Sketchup.version.to_i < 20
     model = Sketchup.active_model
     group = model.entities.grep(Sketchup::Group).first
-
+    
     layer0 = model.layers[0]
     group_layer = group.layer
     group_layer_name = group.layer.name
@@ -492,7 +496,7 @@ class TC_Sketchup_Layers < TestUp::TestCase
   def test_unique_name_across_folders
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     manager = Sketchup.active_model.layers
-
+    
     layer1 = manager.add('Hello')
 
     folder = manager.add_folder('Folder')
@@ -524,7 +528,7 @@ class TC_Sketchup_Layers < TestUp::TestCase
 
   def test_each_too_many_arguments
     layers = Sketchup.active_model.layers
-
+    
     assert_raises(ArgumentError) do
       layers.each(nil) {}
     end
@@ -543,7 +547,7 @@ class TC_Sketchup_Layers < TestUp::TestCase
     folder = layers.add_folder('Folder')
     folder.add_layer(layers[1])
     folder.add_layer(layers[2])
-
+    
     actual = []
     layers.each { |layer|
       assert_kind_of(Sketchup::Layer, layer)
@@ -593,7 +597,7 @@ class TC_Sketchup_Layers < TestUp::TestCase
     layers = Sketchup.active_model.layers
     folder1 = layers.add_folder('Hello')
     folder2 = folder1.add_folder('World')
-
+    
     layers.add_folder(folder2)
     assert(layers.folders.include?(folder2))
     refute(folder1.folders.include?(folder2))
@@ -656,7 +660,7 @@ class TC_Sketchup_Layers < TestUp::TestCase
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     manager = Sketchup.active_model.layers
     folder1 = manager.add_folder('Hello')
-    folder2 = folder1.add_folder('World')
+    folder2 = folder1.add_folder('World') 
 
     assert_raises(ArgumentError) do
       manager.remove_folder(folder2)
@@ -796,7 +800,7 @@ class TC_Sketchup_Layers < TestUp::TestCase
   def test_each_folder_too_many_arguments
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     manager = Sketchup.active_model.layers
-
+    
     assert_raises(ArgumentError) do
       manager.each_folder(nil) {}
     end
@@ -940,7 +944,7 @@ class TC_Sketchup_Layers < TestUp::TestCase
   def test_purge_unused_folders_too_many_arguments
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     layers = Sketchup.active_model.layers
-
+    
     assert_raises(ArgumentError) do
       layers.purge_unused_folders(nil)
     end
@@ -967,7 +971,7 @@ class TC_Sketchup_Layers < TestUp::TestCase
   def test_count_folders_too_many_arguments
     skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
     layers = Sketchup.active_model.layers
-
+    
     assert_raises(ArgumentError) do
       layers.count_folders(nil)
     end

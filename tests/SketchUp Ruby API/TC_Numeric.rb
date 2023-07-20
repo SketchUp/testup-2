@@ -1,10 +1,15 @@
 # Copyright 2018 Trimble Inc. All Rights Reserved.
+# License:: The MIT License (MIT)
 # Author: jinyi@sketchup.com (Jin Yi)
 
 
 require "testup/testcase"
 
 class TC_Numeric < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...

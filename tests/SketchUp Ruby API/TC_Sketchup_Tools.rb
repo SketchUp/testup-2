@@ -9,8 +9,11 @@ require "stringio"
 
 
 # class Sketchup::Tools
-# http://www.sketchup.com/intl/developer/docs/ourdoc/tools
 class TC_Sketchup_Tools < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     Sketchup.active_model.select_tool nil

@@ -8,6 +8,10 @@ require "testup/testcase"
 # class UI::Command
 class TC_UI_Command < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     # ...
   end
@@ -23,7 +27,7 @@ class TC_UI_Command < TestUp::TestCase
   end
 
   # ========================================================================== #
-  # method Sketchup::InputPoint.instance_path
+  # method UI::Command.initialize
 
   def test_initialize_subclass
     skip("Fixed in SU2019") if Sketchup.version.to_i < 19
@@ -41,6 +45,82 @@ class TC_UI_Command < TestUp::TestCase
     assert_kind_of(UI::Command, command3)
     assert_kind_of(CustomCommand, command3)
     assert_equal('Command3', command3.custom_menu_text)
+  end
+
+  # ========================================================================== #
+  # method UI::Command.proc
+
+  def test_proc
+    command1 = UI::Command.new('Command1') { 123 }
+    assert_kind_of(Proc, command1.proc)
+    assert_equal(123, command1.proc.call)
+  end
+
+  def test_proc_too_many_arguments
+    command1 = UI::Command.new('Command1') { 123 }
+    assert_raises(ArgumentError) do
+      command1.proc('nope!')
+    end
+  end
+
+  # ========================================================================== #
+  # method UI::Command.get_validation_proc
+
+  def test_get_validation_proc
+    command1 = UI::Command.new('Command1') { 123 }
+    command1.set_validation_proc { 456 }
+    assert_kind_of(Proc, command1.get_validation_proc)
+    assert_equal(456, command1.get_validation_proc.call)
+  end
+
+  def test_get_validation_proc_too_many_arguments
+    command1 = UI::Command.new('Command1') { 123 }
+    command1.set_validation_proc { 456 }
+    assert_raises(ArgumentError) do
+      command1.get_validation_proc('nope!')
+    end
+  end
+
+  # ========================================================================== #
+  # method UI::Command.extension
+
+  def test_extension
+    command1 = UI::Command.new('Command1') { 123 }
+    assert_nil(command1.extension)
+    extension = Sketchup.extensions[TestUp::EXTENSION[:name]]
+    refute_nil(extension)
+    command1.extension = extension
+    assert_kind_of(SketchupExtension, command1.extension)
+    assert_equal(extension, command1.extension)
+  end
+
+  def test_extension_too_many_arguments
+    command1 = UI::Command.new('Command1') { 123 }
+    assert_raises(ArgumentError) do
+      command1.extension('nope!')
+    end
+  end
+
+  # ========================================================================== #
+  # method UI::Command.extension=
+
+  def test_extension_Set
+    command1 = UI::Command.new('Command1') { 123 }
+    assert_nil(command1.extension)
+    extension = Sketchup.extensions[TestUp::EXTENSION[:name]]
+    refute_nil(extension)
+    command1.extension = extension
+    assert_kind_of(SketchupExtension, command1.extension)
+    assert_equal(extension, command1.extension)
+    command1.extension = nil
+    assert_nil(command1.extension)
+  end
+
+  def test_extension_invalid_arguments
+    command1 = UI::Command.new('Command1') { 123 }
+    assert_raises(TypeError) do
+      command1.extension = 123
+    end
   end
 
 end # class

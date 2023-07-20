@@ -8,10 +8,13 @@ require_relative "utils/length"
 
 
 # class Geom::Point3d
-# http://www.sketchup.com/intl/developer/docs/ourdoc/point3d
 class TC_Geom_Point3d < TestUp::TestCase
 
   include TestUp::SketchUpTests::Length
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -24,7 +27,6 @@ class TC_Geom_Point3d < TestUp::TestCase
 
   # ========================================================================== #
   # class Geom::Point3d
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/point3d
 
   def test_introduction_api_example
     # No arguments, creates a point at the origin [0, 0, 0]
@@ -41,7 +43,6 @@ class TC_Geom_Point3d < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::Point3d.vector_to
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/point3d#vector_to
 
   def test_vector_to
     point1 = Geom::Point3d.new(1, 2, 3)

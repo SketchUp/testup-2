@@ -1,4 +1,4 @@
-# Copyright:: Copyright 2019 Trimble Inc Ltd.
+# Copyright:: Copyright 2019-2022 Trimble Inc.
 # License:: The MIT License (MIT)
 
 require "testup/testcase"
@@ -9,6 +9,10 @@ require_relative "utils/image_helper"
 class TC_Sketchup_Drawingelement < TestUp::TestCase
 
   include TestUp::SketchUpTests::ImageHelper
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     start_with_empty_model
@@ -199,6 +203,32 @@ class TC_Sketchup_Drawingelement < TestUp::TestCase
     #assert_raises(TypeError) do
     #  face.material = nil
     #end
+  end
+
+  # ========================================================================== #
+  # method Sketchup::Drawingelement.erase!
+
+  def test_erase_Bang
+    model = Sketchup.active_model
+    group = model.entities.add_group
+    group.entities.add_line([0,0,0], [9,9,9])
+    group.erase!
+    assert(group.deleted?)
+    assert_equal(0, model.entities.size)
+  end
+
+  def test_erase_Bang_active_entities
+    skip("Fixed in SU2023.0") if Sketchup.version.to_f < 23.0
+    model = Sketchup.active_model
+    group = model.entities.add_group
+    group.entities.add_line([0,0,0], [9,9,9])
+    model.active_path = [group]
+    assert_raises(ArgumentError) do
+      group.erase!
+    end
+    refute(group.deleted?)
+  ensure
+    model.active_path = nil if model
   end
 
 end

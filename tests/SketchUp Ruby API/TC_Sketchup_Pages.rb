@@ -7,8 +7,11 @@ require "testup/testcase"
 
 
 # class Sketchup::Page
-# http://www.sketchup.com/intl/developer/docs/ourdoc/pages
 class TC_Sketchup_Pages < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     start_with_empty_model

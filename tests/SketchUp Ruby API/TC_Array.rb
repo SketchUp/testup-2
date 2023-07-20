@@ -6,10 +6,13 @@ require "testup/testcase"
 require_relative "utils/frozen"
 
 # class Array
-# http://www.sketchup.com/intl/developer/docs/ourdoc/array
 class TC_Array < TestUp::TestCase
 
   include TestUp::SketchUpTests::Frozen
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -30,10 +33,8 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # class Array
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array
 
   # ========================================================================== #
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array
   def test_introduction_api_example
     # An array of 3 values can represent a 1" long vector pointing straight
     # up in the z-direction.
@@ -57,7 +58,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.cross
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#cross
   def test_cross_api_example
     vector1 = Geom::Vector3d.new(0, 1, 0)
     array = [1, 0, 0]
@@ -127,7 +127,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.distance
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#distance
   def test_distance_api_example
     point = Geom::Point3d.new(10, 10, 10)
     array = [1, 1, 1]
@@ -223,7 +222,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.distance_to_line
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#distance_to_line
   def test_distance_to_line_api_example
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [10, 10, 10]
@@ -294,7 +292,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.distance_to_plane
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#distance_to_plane
   def test_distance_to_plane_api_example
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [10, 10, 10]
@@ -372,7 +369,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.dot
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#dot
   def test_dot_api_example
     vector = Geom::Vector3d.new(0, 1, 0)
     array = [1, 0, 0]
@@ -456,7 +452,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.normalize
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#normalize
   def test_normalize_api_example
     array = [1, 2, 3]
     # This will return a new Vector3d
@@ -505,7 +500,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.normalize!
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#normalize!
   def test_normalize_Bang_api_example
     array = [1, 2, 3]
     # This will modify 'array' in place
@@ -572,7 +566,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.offset
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#offset
   def test_offset_api_example
     array = [10, 10, 10]
     vector = Geom::Vector3d.new(0, 0, 1)
@@ -630,7 +623,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.offset!
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#offset!
   def test_offset_Bang_api_example
     array = [10, 10, 10]
     vector = Geom::Vector3d.new(0, 0, 1)
@@ -728,7 +720,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.on_line?
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array#on_line?
   def test_on_line_Query_api_example
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [10, 10, 10]
@@ -809,7 +800,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.on_plane?
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#on_plane?
   def test_on_plane_Query_api_example
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [10, 10, 10]
@@ -875,7 +865,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.project_to_line
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#project_to_line
   def test_project_to_line_api_example
     line = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [10, 10, 10]
@@ -938,7 +927,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.project_to_plane
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#project_to_plane
   def test_project_to_plane_api_example
     plane = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
     array = [10, 10, 10]
@@ -1001,7 +989,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.transform
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#transform
   def test_transform_api_example
     point1 = Geom::Point3d.new(10, 20, 30)
     transform = Geom::Transformation.new(point1)
@@ -1176,7 +1163,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.transform!
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#transform!
   def test_transform_Bang_api_example
     point = Geom::Point3d.new(10, 20, 30)
     transform = Geom::Transformation.new(point)
@@ -1225,7 +1211,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.vector_to
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#vector_to
   def test_vector_to_api_example
     point = Geom::Point3d.new(10, 20, 30)
     array = [1, 2, 3]
@@ -1273,7 +1258,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.x
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#x
   def test_x_api_example
     array = [1, 2, 3]
     # This will return a Fixnum, in this case 1
@@ -1291,7 +1275,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.x=
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#x=
   def test_x_Set_api_example
     array = [1, 2, 3]
     # This will initialize the x value as a Float
@@ -1316,7 +1299,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.y
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#y
   def test_y_api_example
     array = [1, 2, 3]
     # This will return a Fixnum, in this case 2
@@ -1334,7 +1316,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.y=
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#y=
   def test_y_Set_api_example
     array = [1, 2, 3]
     # This will initialize the y value as a Float
@@ -1359,7 +1340,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.z
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#z
   def test_z_api_example
     array = [1, 2, 3]
     # This will return a Fixnum, in this case 3
@@ -1377,7 +1357,6 @@ class TC_Array < TestUp::TestCase
 
   # ========================================================================== #
   # method Array.z=
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/array.php#z=
   def test_z_Set_api_example
     array = [1, 2, 3]
     # This will initialize the z value as a Float

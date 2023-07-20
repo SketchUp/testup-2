@@ -9,6 +9,10 @@ require "testup/testcase"
 # class Sketchup::ArcCurve
 class TC_Sketchup_ArcCurve < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
   end
@@ -47,6 +51,13 @@ class TC_Sketchup_ArcCurve < TestUp::TestCase
     edges.first.curve
   end
 
+  def create_arc(startAngle, endAngle)
+    model = Sketchup.active_model
+    entities = model.entities
+
+    edges = entities.add_arc(ORIGIN, X_AXIS, Z_AXIS, 500.mm, startAngle, endAngle, 16)
+    edges.first.curve
+  end
 
   # ========================================================================== #
   # method Sketchup::ArcCurve.end_angle
@@ -75,6 +86,38 @@ class TC_Sketchup_ArcCurve < TestUp::TestCase
     curve = create_circle(15.degrees)
 
     assert_equal_tol(360.degrees + 15.degrees, curve.end_angle)
+  end
+
+  def test_circular_Query
+    skip("Added in SU2023.1") if Sketchup.version.to_f < 23.1
+    curve = create_circle(0.degrees)
+    assert_kind_of(TrueClass, curve.circular?)
+  end
+
+  def test_circular_Query_for_noncircular_curve
+    skip("Added in SU2023.1") if Sketchup.version.to_f < 23.1
+    curve = create_arc(0.degrees, 15.degrees)
+    assert_kind_of(FalseClass, curve.circular?)
+  end
+
+  def test_circular_Query_for_broken_circle
+    skip("Added in SU2023.1") if Sketchup.version.to_f < 23.1
+    curve = create_arc(0.degrees, 360.degrees - 0.01)
+    assert_kind_of(FalseClass, curve.circular?)
+  end
+
+  def test_circular_QUery_for_broken_circle_within_tolerance
+    skip("Added in SU2023.1") if Sketchup.version.to_f < 23.1
+    curve = create_arc(0.degrees, 360.degrees - 1.0e-4)
+    assert_kind_of(TrueClass, curve.circular?)
+  end
+
+  def test_circular_Query_extra_argument    
+    skip("Added in SU2023.1") if Sketchup.version.to_f < 23.1
+    curve = create_arc(0.degrees, 15.degrees)
+    assert_raises(ArgumentError) do
+      curve.circular?(1234)
+    end
   end
 
 end # class

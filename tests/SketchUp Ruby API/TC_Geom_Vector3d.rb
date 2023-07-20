@@ -9,6 +9,10 @@ require "testup/testcase"
 # class Geom::Vector3d
 class TC_Geom_Vector3d < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     # ...
   end
