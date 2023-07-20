@@ -7,8 +7,11 @@ require "testup/testcase"
 
 
 # interface class Animation
-# http://www.sketchup.com/intl/developer/docs/ourdoc/animation
 class TC_Animation < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -60,7 +63,6 @@ class TC_Animation < TestUp::TestCase
 
   # ========================================================================== #
   # class Animation
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/animation
 
   def test_introduction_api_example_1
     # Methods cannot contain class definitions, so this code example must be
@@ -94,7 +96,6 @@ class TC_Animation < TestUp::TestCase
 
   # ========================================================================== #
   # method Animation.nextFrame
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/animation#nextFrame
 
   def test_nextFrame_api_example
     def nextFrame(view)
@@ -111,7 +112,6 @@ class TC_Animation < TestUp::TestCase
 
   # ========================================================================== #
   # method Animation.pause
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/animation#pause
 
   def test_pause_api_example
     def pause
@@ -130,7 +130,6 @@ class TC_Animation < TestUp::TestCase
 
   # ========================================================================== #
   # method Animation.resume
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/animation#resume
 
   def test_resume_api_example
     def resume
@@ -149,7 +148,6 @@ class TC_Animation < TestUp::TestCase
 
   # ========================================================================== #
   # method Animation.stop
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/animation#stop
 
   def test_stop_api_example
     def stop

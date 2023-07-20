@@ -6,6 +6,10 @@ require "testup/testcase"
 
 class TC_Sketchup_DimensionLinear < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
     @dim = setup_attached_to_test

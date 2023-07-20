@@ -5,6 +5,10 @@ require "testup/testcase"
 
 class TC_Sketchup_OptionsManager < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
   end

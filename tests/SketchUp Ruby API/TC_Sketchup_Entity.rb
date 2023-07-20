@@ -9,6 +9,10 @@ require "testup/testcase"
 # class Sketchup::Entity
 class TC_Sketchup_Entity < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
   end
@@ -143,6 +147,68 @@ class TC_Sketchup_Entity < TestUp::TestCase
     group.entities.add_face([0,0,0], [9,0,0], [9,9,0], [0,9,0])
     result = group.delete_attribute("SU_DefinitionSet", "hazoo")
     assert_equal(false, result)
+  end
+
+  def test_set_attribute_on_readonly_dictionary
+    start_with_empty_model
+    test_file = File.join(__dir__, 'misc_test_files', 'Laura.skp')
+    definition = Sketchup.active_model.definitions.load(test_file)
+    assert_raises(Sketchup.version.to_i < 21 ? RuntimeError : ArgumentError) {
+      definition.set_attribute('GSU_ContributorsInfo', 'some_key', 'some_value')
+    }
+  end
+
+  def test_delete_all_attributes_on_dynamic_property_dictionary
+    skip("Implemented in SU2020") if Sketchup.version.to_i < 20
+    start_with_empty_model
+    test_file = File.join(__dir__, 'misc_test_files', 'Laura.skp')
+    definition = Sketchup.active_model.definitions.load(test_file)
+    dict = definition.attribute_dictionary('SU_DefinitionSet')
+    dict.each_key{ |key|
+      definition.delete_attribute('SU_DefinitionSet', key)
+    }
+    # Dictionary shouldn't have been deleted even though we deleted its keys.
+    dict = definition.attribute_dictionary('SU_DefinitionSet')
+    assert(!dict.nil?)
+  end
+
+  def test_delete_attribute_on_readonly_dictionary
+    skip("Implemented in SU2021") if Sketchup.version.to_i < 21
+    start_with_empty_model
+    test_file = File.join(__dir__, 'misc_test_files', 'LiveComponent.skp')
+    definition = Sketchup.active_model.definitions.load(test_file)
+    assert_raises(ArgumentError) {
+      definition.delete_attribute('SU_LiveComponent', 'Parameters')
+    }
+  end
+
+  def test_delete_readonly_dictionary_from_entity
+    skip("Implemented in SU2021") if Sketchup.version.to_i < 21
+    start_with_empty_model
+    test_file = File.join(__dir__, 'misc_test_files', 'LiveComponent.skp')
+    definition = Sketchup.active_model.definitions.load(test_file)
+    assert_raises(ArgumentError) {
+      # Trying to delete the entire dictionary (without the second parameter)
+      definition.delete_attribute('SU_LiveComponent')
+    }
+  end
+
+  def test_delete_readonly_dictionary_from_attributes_collection
+    skip("Implemented in SU2021") if Sketchup.version.to_i < 21
+    start_with_empty_model
+    test_file = File.join(__dir__, 'misc_test_files', 'LiveComponent.skp')
+    definition = Sketchup.active_model.definitions.load(test_file)
+    assert_raises(ArgumentError) {
+      # Trying to delete the entire dictionary (without the second parameter)
+      # This deletes by name.
+      definition.attribute_dictionaries.delete('SU_LiveComponent')
+    }
+    assert_raises(ArgumentError) {
+      # Same thing but this time we try to delete by passing in the dictionary.
+      dicts = definition.attribute_dictionaries
+      dict = dicts['SU_LiveComponent']
+      dicts.delete(dict)
+    }
   end
 
 end # class

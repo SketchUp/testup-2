@@ -1,15 +1,19 @@
-# Copyright:: Copyright 2014 Trimble Navigation Ltd.
+# Copyright:: Copyright 2014-2022 Trimble Inc.
 # License:: The MIT License (MIT)
-# Original Author:: Thomas Thomassen
-
 
 require "testup/testcase"
+require_relative "utils/feature_switch"
+
 require "fileutils"
 
-
 # module UI
-# http://www.sketchup.com/intl/en/developer/docs/ourdoc/ui
 class TC_UI < TestUp::TestCase
+
+  include TestUp::SketchUpTests::FeatureSwitchHelper
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -22,7 +26,6 @@ class TC_UI < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup.select_directory
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/ui#select_directory
 
   def test_select_directory_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -159,6 +162,98 @@ class TC_UI < TestUp::TestCase
     skip("Needs manual testing until we can automate UI.")
     # Unknown options should be silently ignored.
     UI.select_directory(bogus: 123)
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup.inspector_names
+
+  def test_inspector_names
+    expected = %w[
+      Components
+      Fog
+      Instructor
+      Layers
+      MatchPhoto
+      Materials
+      Outliner
+      Scenes
+      Shadows
+      SoftenEdges
+      Styles
+    ]
+    expected << 'EntityInfo' if Sketchup.version.to_i >= 21
+    expected << 'Overlays' if Sketchup.version.to_f >= 23.0
+    expected.sort!
+    result =  UI.inspector_names
+    assert_kind_of(Array, result)
+    result.each { |item|
+      assert_kind_of(String, item)
+    }
+    sorted_result = result.sort
+    assert_equal(expected, sorted_result, expected.difference(sorted_result))
+  end
+
+  def test_inspector_names_incorrect_number_of_arguments
+    assert_raises(ArgumentError) do
+      UI.inspector_names(nil)
+    end
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup.get_clipboard_data
+
+  def test_get_clipboard_data
+    skip("Implemented in SU2023.1") if Sketchup.version.to_f < 23.1
+    expected = "Hello get_clipboard_data #{Time.now.to_i}"
+    UI.set_clipboard_data(expected)
+
+    text = UI.get_clipboard_data
+    assert_kind_of(String, text)
+    assert_equal(expected, text)
+  end
+
+  def test_get_clipboard_data_too_number_of_arguments
+    skip("Implemented in SU2023.1") if Sketchup.version.to_f < 23.1
+    assert_raises(ArgumentError) do
+      UI.get_clipboard_data(nil)
+    end
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup.set_clipboard_data
+
+  def test_set_clipboard_data
+    skip("Implemented in SU2023.1") if Sketchup.version.to_f < 23.1
+    expected = "Hello set_clipboard_data #{Time.now.to_i}"
+    result = UI.set_clipboard_data(expected)
+    assert_kind_of(TrueClass, result)
+
+    actual = UI.get_clipboard_data
+    assert_equal(expected, actual)
+  end
+
+  def test_set_clipboard_data_too_number_of_arguments
+    skip("Implemented in SU2023.1") if Sketchup.version.to_f < 23.1
+    assert_raises(ArgumentError) do
+      UI.set_clipboard_data('Hello', nil)
+    end
+  end
+
+  def test_set_clipboard_data_invalid_argument_nil
+    skip("Implemented in SU2023.1") if Sketchup.version.to_f < 23.1
+    assert_raises(TypeError) do
+      UI.set_clipboard_data(nil)
+    end
+  end
+
+  def test_set_clipboard_data_invalid_argument_number
+    skip("Implemented in SU2023.1") if Sketchup.version.to_f < 23.1
+    assert_raises(TypeError) do
+      UI.set_clipboard_data(123456)
+    end
   end
 
 end # class

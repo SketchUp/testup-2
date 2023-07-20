@@ -9,6 +9,10 @@ require "testup/testcase"
 # module Geom::UTM
 class TC_Geom_UTM < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     # ...
   end

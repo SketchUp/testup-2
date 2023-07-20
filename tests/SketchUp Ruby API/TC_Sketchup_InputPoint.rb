@@ -11,6 +11,10 @@ class TC_Sketchup_InputPoint < TestUp::TestCase
   # Set this to true to enable verbose debugging output.
   DEBUG_OUTPUT = false
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
     @path = create_test_instances

@@ -7,8 +7,11 @@ require "testup/testcase"
 
 
 # class Sketchup::Edge
-# http://www.sketchup.com/intl/en/developer/docs/ourdoc/edge
 class TC_Sketchup_Edge < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     entities = Sketchup.active_model.entities.to_a
@@ -38,7 +41,6 @@ class TC_Sketchup_Edge < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Edge.all_connected
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/edge#all_connected
 
   def test_all_connected_api_example
     entities = Sketchup.active_model.active_entities
@@ -91,7 +93,6 @@ class TC_Sketchup_Edge < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Edge.common_face
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/edge#common_face
 
   def test_common_face_api_example
     entities = Sketchup.active_model.active_entities
@@ -176,7 +177,6 @@ class TC_Sketchup_Edge < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Edge.curve
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/edge#curve
 
   def test_curve_api_example
     entities = Sketchup.active_model.active_entities
@@ -245,7 +245,6 @@ class TC_Sketchup_Edge < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Edge.end
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/edge#end
 
   def test_end_api_example
     entities = Sketchup.active_model.active_entities
@@ -289,7 +288,6 @@ class TC_Sketchup_Edge < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Edge.explode_curve
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/edge#explode_curve
 
   def test_explode_curve_api_example
     entities = Sketchup.active_model.active_entities
@@ -345,7 +343,6 @@ class TC_Sketchup_Edge < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Edge.faces
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/edge#faces
 
   def test_faces_api_example
     entities = Sketchup.active_model.active_entities
@@ -392,7 +389,6 @@ class TC_Sketchup_Edge < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Edge.find_faces
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/edge#find_faces
 
   def test_find_faces_api_example
     entities = Sketchup.active_model.active_entities
@@ -446,5 +442,88 @@ class TC_Sketchup_Edge < TestUp::TestCase
     end
   end
 
+  def test_find_faces_face_orientation_xy_on_ground
+    entities = Sketchup.active_model.active_entities
+    edge1 = entities.add_line([1,1,0], [2,1,0])
+    edge2 = entities.add_line([2,1,0], [2,2,0])
+    edge3 = entities.add_line([2,2,0], [1,1,0])
+
+    face_count = edge1.find_faces
+    assert_equal(1, face_count)
+    face = entities.grep(Sketchup::Face)[0]
+    assert_equal(face.normal, [0,0,-1])
+  end
+
+  def test_find_faces_face_orientation_xy_winding_counterclockwise
+    entities = Sketchup.active_model.active_entities
+    edge1 = entities.add_line([1,1,10], [2,1,10])
+    edge2 = entities.add_line([2,1,10], [2,2,10])
+    edge3 = entities.add_line([2,2,10], [1,1,10])
+
+    face_count = edge1.find_faces
+    assert_equal(1, face_count)
+    face = entities.grep(Sketchup::Face)[0]
+    assert_equal(face.normal, [0,0,1])
+  end
+
+  def test_find_faces_face_orientation_xy_winding_clockwise
+    entities = Sketchup.active_model.active_entities
+    edge1 = entities.add_line([1,1,10], [2,2,10])
+    edge2 = entities.add_line([2,2,10], [2,1,10])
+    edge3 = entities.add_line([2,1,10], [1,1,10])
+
+    face_count = edge1.find_faces
+    assert_equal(1, face_count)
+    face = entities.grep(Sketchup::Face)[0]
+    assert_equal(face.normal, [0,0,-1])
+  end
+
+  def test_find_faces_face_orientation_xz_winding_counterclockwise
+    entities = Sketchup.active_model.active_entities
+    edge1 = entities.add_line([1,0,1], [2,0,1])
+    edge2 = entities.add_line([2,0,1], [2,0,2])
+    edge3 = entities.add_line([2,0,2], [1,0,1])
+
+    face_count = edge1.find_faces
+    assert_equal(1, face_count)
+    face = entities.grep(Sketchup::Face)[0]
+    assert_equal(face.normal, [0,-1,0])
+  end
+
+  def test_find_faces_face_orientation_xz_winding_clockwise
+    entities = Sketchup.active_model.active_entities
+    edge1 = entities.add_line([1,0,1], [2,0,2])
+    edge2 = entities.add_line([2,0,2], [2,0,1])
+    edge3 = entities.add_line([2,0,1], [1,0,1])
+
+    face_count = edge1.find_faces
+    assert_equal(1, face_count)
+    face = entities.grep(Sketchup::Face)[0]
+    assert_equal(face.normal, [0,1,0])
+  end
+
+  def test_find_faces_face_orientation_yz_winding_counterclockwise
+    entities = Sketchup.active_model.active_entities
+    edge1 = entities.add_line([0,1,1], [0,2,1])
+    edge2 = entities.add_line([0,2,1], [0,2,2])
+    edge3 = entities.add_line([0,2,2], [0,1,1])
+
+    face_count = edge1.find_faces
+    assert_equal(1, face_count)
+    face = entities.grep(Sketchup::Face)[0]
+    assert_equal(face.normal, [1,0,0])
+  end
+
+  def test_find_faces_face_orientation_yz_winding_clockwise
+    entities = Sketchup.active_model.active_entities
+    edge1 = entities.add_line([0,1,1], [0,2,2])
+    edge2 = entities.add_line([0,2,2], [0,2,1])
+    edge3 = entities.add_line([0,2,1], [0,1,1])
+
+    face_count = edge1.find_faces
+    assert_equal(1, face_count)
+    face = entities.grep(Sketchup::Face)[0]
+    assert_equal(face.normal, [-1,0,0])
+  end
 
 end # class

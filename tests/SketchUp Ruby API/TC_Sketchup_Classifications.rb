@@ -1,5 +1,5 @@
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 # Original Author:: Bugra Barin (bugra@sketchup.com)
 
 
@@ -7,8 +7,11 @@ require 'testup/testcase'
 
 
 # class Sketchup::Classifications
-# http://www.sketchup.com/intl/developer/docs/ourdoc/classifications
 class TC_Sketchup_Classifications < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     disable_read_only_flag_for_test_models()
@@ -41,7 +44,6 @@ class TC_Sketchup_Classifications < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Classifications.[]
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classifications#[]
 
   def test_Operator_Get_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -105,7 +107,6 @@ class TC_Sketchup_Classifications < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Classifications.each
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classifications#each
 
   def test_each_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -141,7 +142,6 @@ class TC_Sketchup_Classifications < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Classifications.keys
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classifications#keys
 
   def test_keys_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -171,7 +171,6 @@ class TC_Sketchup_Classifications < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Classifications.length
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classifications#length
 
   def test_length_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -193,7 +192,6 @@ class TC_Sketchup_Classifications < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Classifications.load_schema
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classifications#load_schema
 
   def test_load_schema_api_example
     c = Sketchup.active_model.classifications
@@ -237,7 +235,6 @@ class TC_Sketchup_Classifications < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Classifications.size
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classifications#size
 
   def test_size_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -259,7 +256,6 @@ class TC_Sketchup_Classifications < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Classifications.unload_schema
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classifications#unload_schema
 
   def test_unload_schema_api_example
     c = Sketchup.active_model.classifications

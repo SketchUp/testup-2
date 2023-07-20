@@ -7,6 +7,10 @@ require "testup/testcase"
 # class Sketchup::Page
 class TC_Sketchup_Page < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
   end
@@ -71,7 +75,11 @@ class TC_Sketchup_Page < TestUp::TestCase
     assert_equal(1, page_method.arity)
   end
 
-  def test_page_set_drawingelement_invalid_arguments
+
+  # ========================================================================== #
+  # method Sketchup::Page.set_drawingelement_visibility
+
+  def test_set_drawingelement_visibility_invalid_arguments
     skip("Added in SU2020.0") if Sketchup.version.to_i < 20
     page = Sketchup.active_model.pages.add('FooBar')
     assert_raises(TypeError, "wrong argument type (expected Sketchup::Drawingelement).") do
@@ -79,7 +87,11 @@ class TC_Sketchup_Page < TestUp::TestCase
     end
   end
 
-  def test_page_get_drawingelement_invalid_arguments
+
+  # ========================================================================== #
+  # method Sketchup::Page.get_drawingelement_visibility
+
+  def test_get_drawingelement_visibility_invalid_arguments
     skip("Added in SU2020.0") if Sketchup.version.to_i < 20
     page = Sketchup.active_model.pages.add('FooBar')
     assert_raises(TypeError, "wrong argument type (expected Sketchup::Drawingelement).") do
@@ -87,7 +99,7 @@ class TC_Sketchup_Page < TestUp::TestCase
     end
   end
 
-  def test_page_get_drawingelement_get_and_set
+  def test_get_drawingelement_visibility_get_and_set
     skip("Added in SU2020.0") if Sketchup.version.to_i < 20
     entities = Sketchup.active_model.entities
     point1 = Geom::Point3d.new(10,0,0)
@@ -107,6 +119,7 @@ class TC_Sketchup_Page < TestUp::TestCase
     Sketchup.active_model.pages.selected_page = page2
     assert_equal(true, constpoint.hidden?)
   end
+
 
   # ========================================================================== #
   # method Sketchup::Page.use_hidden_geometry?
@@ -170,6 +183,7 @@ class TC_Sketchup_Page < TestUp::TestCase
     assert_equal(1, page_method.arity)
   end
 
+
   # ========================================================================== #
   # method Sketchup::Page.use_hidden_objects?
 
@@ -230,6 +244,175 @@ class TC_Sketchup_Page < TestUp::TestCase
     skip("Added in SU2020.1") if Sketchup.version.to_f < 20.1
     page_method = Sketchup::Page.instance_method(:use_hidden_objects=)
     assert_equal(1, page_method.arity)
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::Page.set_visibility
+
+  def test_set_visibility_layer
+    model = Sketchup.active_model
+    page = model.pages.add('TestUp')
+    layer = model.layers.add('Hello')
+
+    result = page.set_visibility(layer, false)
+    assert_equal(page, result)
+    assert_includes(page.layers, layer)
+
+    if Sketchup.version.to_i >= 20
+      model.pages.selected_page = page
+      edge = model.entities.add_line([0, 0, 0], [9, 9, 9])
+      edge.layer = layer
+      refute(model.drawing_element_visible?([edge]))
+    end
+  end
+
+  def test_set_visibility_layer_folder
+    skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
+    model = Sketchup.active_model
+    page = model.pages.add('TestUp')
+    folder = model.layers.add_folder('Hello')
+    layer = model.layers.add_layer('World')
+    layer.folder = folder
+
+    result = page.set_visibility(folder, false)
+    assert_equal(page, result)
+    assert_includes(page.layer_folders, folder)
+
+    model.pages.selected_page = page
+    edge = model.entities.add_line([0, 0, 0], [9, 9, 9])
+    edge.layer = layer
+    refute(model.drawing_element_visible?([edge]))
+  end
+
+  def test_set_visibility_too_many_arguments
+    model = Sketchup.active_model
+    pages = model.pages
+    page = pages.add('TestUp')
+    layer = model.layers.add('Hello')
+
+    assert_raises(ArgumentError) do
+      page.set_visibility(layer, false, nil)
+    end
+  end
+
+  def test_set_visibility_too_few_arguments
+    model = Sketchup.active_model
+    pages = model.pages
+    page = pages.add('TestUp')
+    layer = model.layers.add('Hello')
+
+    assert_raises(ArgumentError) do
+      page.set_visibility(layer)
+    end
+  end
+
+  def test_set_visibility_invalid_argument_nil
+    skip("Fixed in SU2021.0") if Sketchup.version.to_i < 21
+    model = Sketchup.active_model
+    pages = model.pages
+    page = pages.add('TestUp')
+
+    assert_raises(TypeError) do
+      page.set_visibility(nil, false)
+    end
+  end
+
+  def test_set_visibility_invalid_argument_string
+    skip("Fixed in SU2021.0") if Sketchup.version.to_i < 21
+    model = Sketchup.active_model
+    pages = model.pages
+    page = pages.add('TestUp')
+    model.layers.add('Hello')
+
+    assert_raises(TypeError) do
+      page.set_visibility("Hello", false)
+    end
+  end
+
+  def test_set_visibility_invalid_argument_integer
+    skip("Fixed in SU2021.0") if Sketchup.version.to_i < 21
+    model = Sketchup.active_model
+    pages = model.pages
+    page = pages.add('TestUp')
+    model.layers.add('Hello')
+
+    assert_raises(TypeError) do
+      page.set_visibility(1, false)
+    end
+  end
+
+  # ========================================================================== #
+  # method Sketchup::Page.layers
+
+  def test_layers
+    model = Sketchup.active_model
+    page = model.pages.add('TestUp')
+    layer = model.layers.add('Hello')
+    page.set_visibility(layer, false)
+
+    result = page.layers
+    assert_kind_of(Array, result)
+    result.each { |item|
+      assert_kind_of(Sketchup::Layer, item)
+    }
+    assert_includes(result, layer)
+
+    if Sketchup.version.to_i >= 20
+      model.pages.selected_page = page
+
+      edge = model.entities.add_line([0, 0, 0], [9, 9, 9])
+      edge.layer = layer
+      refute(model.drawing_element_visible?([edge]))
+    end
+  end
+
+  def test_layers_too_many_arguments
+    model = Sketchup.active_model
+    pages = model.pages
+    page = pages.add('TestUp')
+
+    assert_raises(ArgumentError) do
+      page.layers(nil)
+    end
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::Page.layer_folders
+
+  def test_layer_folders
+    skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
+    model = Sketchup.active_model
+    page = model.pages.add('TestUp')
+    folder = model.layers.add_folder('Hello')
+    layer = model.layers.add_layer('World')
+    layer.folder = folder
+    page.set_visibility(folder, false)
+
+    result = page.layer_folders
+    assert_kind_of(Array, result)
+    result.each { |item|
+      assert_kind_of(Sketchup::LayerFolder, item)
+    }
+    assert_includes(result, folder)
+
+    model.pages.selected_page = page
+
+    edge = model.entities.add_line([0, 0, 0], [9, 9, 9])
+    edge.layer = layer
+    refute(model.drawing_element_visible?([edge]))
+  end
+
+  def test_layer_folders_too_many_arguments
+    skip('Added in 2021.0') if Sketchup.version.to_f < 21.0
+    model = Sketchup.active_model
+    pages = model.pages
+    page = pages.add('TestUp')
+
+    assert_raises(ArgumentError) do
+      page.layer_folders(nil)
+    end
   end
 
 end # class

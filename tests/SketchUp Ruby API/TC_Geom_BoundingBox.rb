@@ -7,8 +7,11 @@ require "testup/testcase"
 
 
 # class Sketchup::Edge
-# http://www.sketchup.com/intl/en/developer/docs/ourdoc/edge
 class TC_Geom_BoundingBox < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -21,7 +24,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # class Geom::BoundingBox
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox
 
   def test_introduction_api_example_1
     # <setup>
@@ -46,7 +48,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.add
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#add
 
   def test_add_api_example
     model = Sketchup.active_model
@@ -286,7 +287,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.center
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#center
 
   def test_center_api_example
     boundingbox = Geom::BoundingBox.new
@@ -345,7 +345,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.clear
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#clear
 
   def test_clear_api_example
     boundingbox = Geom::BoundingBox.new
@@ -382,7 +381,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.contains?
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#contains
 
   def test_contains_Query_api_example
     boundingbox = Geom::BoundingBox.new
@@ -505,7 +503,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.corner
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#corner
 
   def test_corner_api_example
     boundingbox = Geom::BoundingBox.new
@@ -716,7 +713,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.depth
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#depth
 
   def test_depth_api_example
     boundingbox = Geom::BoundingBox.new
@@ -753,7 +749,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.diagonal
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#diagonal
 
   def test_diagonal_api_example
     boundingbox = Geom::BoundingBox.new
@@ -793,7 +788,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.empty?
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#empty
 
   def test_empty_Query_api_example
     boundingbox = Geom::BoundingBox.new
@@ -899,7 +893,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.height
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#height
 
   def test_height_api_example
     boundingbox = Geom::BoundingBox.new
@@ -936,7 +929,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.intersect
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#intersect
 
   def test_intersect_api_example
     boundingbox1 = Geom::BoundingBox.new
@@ -1194,7 +1186,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.max
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#max
 
   def test_max_api_example
     boundingbox = Geom::BoundingBox.new
@@ -1235,7 +1226,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.min
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#min
 
   def test_min_api_example
     boundingbox = Geom::BoundingBox.new
@@ -1276,7 +1266,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.new
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#new
 
   def test_initialize_api_example
     boundingbox = Geom::BoundingBox.new
@@ -1305,7 +1294,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.valid?
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#valid?
 
   def test_valid_Query_api_example
     boundingbox = Geom::BoundingBox.new
@@ -1411,7 +1399,6 @@ class TC_Geom_BoundingBox < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom::BoundingBox.width
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/boundingbox#width
 
   def test_width_api_example
     boundingbox = Geom::BoundingBox.new

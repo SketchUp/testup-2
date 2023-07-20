@@ -5,6 +5,10 @@ require "testup/testcase"
 
 class TC_String < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     # ...
     model = Sketchup.active_model

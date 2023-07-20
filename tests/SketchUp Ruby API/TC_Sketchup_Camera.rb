@@ -1,5 +1,5 @@
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen (thomthom@sketchup.com)
 
 
@@ -7,8 +7,11 @@ require "testup/testcase"
 
 
 # class Sketchup::Camera
-# http://www.sketchup.com/intl/developer/docs/ourdoc/camera
 class TC_Sketchup_Camera < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -22,7 +25,6 @@ class TC_Sketchup_Camera < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Camera.fov_is_height?
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/camera#fov_is_height?
 
   def test_fov_is_height_Query_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -63,7 +65,6 @@ class TC_Sketchup_Camera < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Camera.is_2d?
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/camera#is_2d?
 
   def test_is_2d_Query_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -101,7 +102,6 @@ class TC_Sketchup_Camera < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Camera.center_2d
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/camera#center_2d
 
   def test_center_2d_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -127,7 +127,6 @@ class TC_Sketchup_Camera < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Camera.scale_2d
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/camera#scale_2d
 
   def test_scale_2d_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15

@@ -1,14 +1,11 @@
-# Copyright:: Copyright 2014 Trimble Navigation Ltd.
+# Copyright:: Copyright 2014-2023 Trimble Inc.
 # License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen
-
 
 require "testup/testcase"
 require_relative "utils/image_helper"
 
-
 # class Sketchup::Material
-# http://www.sketchup.com/intl/developer/docs/ourdoc/material
 class TC_Sketchup_Material < TestUp::TestCase
 
   include TestUp::SketchUpTests::ImageHelper
@@ -23,21 +20,14 @@ class TC_Sketchup_Material < TestUp::TestCase
   end
 
 
-  # TODO(thomthom): Move to TestUp2 utility methods and merge with
-  # TC_Sketchup_Classifications.
   def open_test_model
     basename = File.basename(__FILE__, ".*")
     path = File.dirname(__FILE__)
     test_model = File.join(path, basename, "MaterialTests.skp")
-    # To speed up tests the model is reused is possible. Tests that modify the
-    # model should discard the model changes: close_active_model()
-    # TODO(thomthom): Add a Ruby API method to expose the `dirty` state of the
-    # model - whether it's been modified since last save/open.
-    # Model.path must be converted to Ruby style path as SketchUp returns an
-    # OS dependant path string.
-    model = Sketchup.active_model
-    if model.nil? || File.expand_path(model.path) != test_model
-      close_active_model()
+    discard_all_models
+    if Sketchup.version.to_i >= 21
+      Sketchup.open_file(test_model, with_status: true)
+    else
       Sketchup.open_file(test_model)
     end
     Sketchup.active_model
@@ -50,7 +40,6 @@ class TC_Sketchup_Material < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Material.colorize_deltas
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/material#colorize_deltas
 
   def test_colorize_deltas_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -119,7 +108,6 @@ class TC_Sketchup_Material < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Material.name
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/material#name
 
   def test_name
     materials = Sketchup.active_model.materials
@@ -136,7 +124,6 @@ class TC_Sketchup_Material < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Material.name=
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/material#name=
 
   def test_set_name
     materials = Sketchup.active_model.materials
@@ -146,8 +133,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal("test_name0", test_mat.name)
     test_mat.name = "Textured0"
     assert_equal("Textured0", test_mat.name)
-  ensure
-    discard_model_changes()
   end
 
   def test_set_name_duplicate_failure
@@ -156,8 +141,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_raises(ArgumentError) do
       material.name = "Textured"
     end
-  ensure
-    discard_model_changes()
   end
 
   def test_set_name_reuse_old_name
@@ -174,8 +157,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_raises(TypeError) do
       material.name = material
     end
-  ensure
-    discard_model_changes()
   end
 
   def test_set_name_to_same_name
@@ -186,13 +167,10 @@ class TC_Sketchup_Material < TestUp::TestCase
     returned_name = material.name = name
     assert_equal(returned_name, name)
     assert_equal(material.name, name)
-  ensure
-    discard_model_changes()
   end
 
   # ========================================================================== #
   # method Sketchup::Material.colorize_type
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/material#colorize_type
 
   def test_colorize_type_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -238,14 +216,11 @@ class TC_Sketchup_Material < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Material.colorize_type=
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/material#colorize_type=
 
   def test_colorize_type_Set_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
     material = Sketchup.active_model.materials[0]
     material.colorize_type = Sketchup::Material::COLORIZE_TINT
-  ensure
-    discard_model_changes()
   end
 
   def test_colorize_type_Set_solid_material
@@ -254,8 +229,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     material.colorize_type = Sketchup::Material::COLORIZE_TINT
     result = material.colorize_type
     assert_equal(Sketchup::Material::COLORIZE_TINT, result)
-  ensure
-    discard_model_changes()
   end
 
   def test_colorize_type_Set_textured_material
@@ -264,8 +237,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     material.colorize_type = Sketchup::Material::COLORIZE_TINT
     result = material.colorize_type
     assert_equal(Sketchup::Material::COLORIZE_TINT, result)
-  ensure
-    discard_model_changes()
   end
 
   def test_colorize_type_Set_colorized_textured_material_shifted
@@ -274,8 +245,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     material.colorize_type = Sketchup::Material::COLORIZE_TINT
     result = material.colorize_type
     assert_equal(Sketchup::Material::COLORIZE_TINT, result)
-  ensure
-    discard_model_changes()
   end
 
   def test_colorize_type_Set_colorized_textured_material_tinted
@@ -284,8 +253,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     material.colorize_type = Sketchup::Material::COLORIZE_SHIFT
     result = material.colorize_type
     assert_equal(Sketchup::Material::COLORIZE_SHIFT, result)
-  ensure
-    discard_model_changes()
   end
 
   def test_colorize_type_Set_invalid_argument_nil
@@ -293,8 +260,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_raises(TypeError) do
       material.colorize_type = nil
     end
-  ensure
-    discard_model_changes()
   end
 
   def test_colorize_type_Set_invalid_argument_point
@@ -302,8 +267,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_raises(TypeError) do
       material.colorize_type = ORIGIN
     end
-  ensure
-    discard_model_changes()
   end
 
   def test_colorize_type_Set_invalid_argument_string
@@ -311,8 +274,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_raises(TypeError) do
       material.colorize_type = "FooBar"
     end
-  ensure
-    discard_model_changes()
   end
 
   def test_colorize_type_Set_invalid_argument_negative_integer
@@ -320,8 +281,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_raises(RangeError) do
       material.colorize_type = -1
     end
-  ensure
-    discard_model_changes()
   end
 
   def test_colorize_type_Set_invalid_argument_invalid_enum
@@ -329,14 +288,11 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_raises(ArgumentError) do
       material.colorize_type = 3
     end
-  ensure
-    discard_model_changes()
   end
 
 
   # ========================================================================== #
   # method Sketchup::Material.materialType
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/material#materialType
 
   def test_materialType_api_example
     material = Sketchup.active_model.materials[0]
@@ -405,8 +361,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     material = materials.add("Hello World")
     material.color = 'red'
     material.save_as(filename)
-  ensure
-    discard_model_changes()
   end
 
   def test_save_as
@@ -470,8 +424,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal(0.4, material.alpha)
     material.alpha = 1.0
     assert_equal(1.0, material.alpha)
-  ensure
-    discard_model_changes()
   end
 
   def test_color
@@ -488,8 +440,6 @@ class TC_Sketchup_Material < TestUp::TestCase
 
     material.color = color
     assert_equal(color.to_a, material.color.to_a)
-  ensure
-    discard_model_changes()
   end
 
   def test_display_name
@@ -506,8 +456,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal("Joe", material.name)
     material.name = "Woof"
     assert_equal("Woof", material.name)
-  ensure
-    discard_model_changes()
   end
 
   def test_texture
@@ -524,8 +472,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal([190, 177, 168, 255], material.color.to_a)
     assert_equal(656, material.texture.image_width)
     assert_equal(337, material.texture.image_height)
-  ensure
-    discard_model_changes()
   end
 
   def test_texture_Set_properties
@@ -536,8 +482,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal([190, 177, 168, 255], material.color.to_a)
     assert_equal(1024, material.texture.width)
     assert_equal(768, material.texture.height)
-  ensure
-    discard_model_changes()
   end
 
   def test_texture_Set_image_rep
@@ -549,8 +493,6 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert_equal([190, 177, 168, 255], material.color.to_a)
     assert_equal(656, material.texture.image_width)
     assert_equal(337, material.texture.image_height)
-  ensure
-    discard_model_changes()
   end
 
   def test_use_alpha_Query
@@ -578,24 +520,18 @@ class TC_Sketchup_Material < TestUp::TestCase
     assert(material1 == material2)
     material2 = Sketchup.active_model.materials.add("Joe")
     refute(material1 == material2)
-  ensure
-    discard_model_changes()
   end
 
   def test_owner_type_normal_material
     skip('Added in SU2019.2') if Sketchup.version.to_f < 19.2
     model_material = Sketchup.active_model.materials.add('TestMaterialType')
     model_material.owner_type == Sketchup::Material::OWNER_MANAGER
-  ensure
-    discard_model_changes()
   end
 
   def test_owner_type_image_material
     skip('Added in SU2019.2') if Sketchup.version.to_f < 19.2
     image_material = create_image_material
     image_material.owner_type == Sketchup::Material::OWNER_IMAGE
-  ensure
-    discard_model_changes()
   end
 
   def test_owner_type_incorrect_number_of_arguments_one

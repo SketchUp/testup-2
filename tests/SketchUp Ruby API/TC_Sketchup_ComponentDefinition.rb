@@ -1,14 +1,17 @@
-# Copyright:: Copyright 2015 Trimble Navigation Ltd.
-# License:: All Rights Reserved.
-# Original Author:: Thomas Thomassen (thomthom@sketchup.com)
+# Copyright:: Copyright 2020 Trimble Inc.
+# License:: The MIT License (MIT)
+# Original Author:: Thomas Thomassen
 
 
 require "testup/testcase"
 
 
 # class Sketchup::ComponentDefinition
-# http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition
 class TC_Sketchup_ComponentDefinition < TestUp::TestCase
+
+ def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     start_with_empty_model()
@@ -42,9 +45,19 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
   end # class
 
 
+  def testcase_file(filename)
+    File.join(__dir__, File.basename(__FILE__, ".*"), filename)
+  end
+
+  def load_testcase_definition(filename)
+    model = Sketchup.active_model
+    path = testcase_file(filename)
+    model.definitions.load(path)
+  end
+
   def create_test_image
     entities = Sketchup.active_model.entities
-    filename = File.join(__dir__, File.basename(__FILE__, ".*"), "test.jpg")
+    filename = testcase_file("test.jpg")
     image = Sketchup.active_model.entities.add_image(filename, ORIGIN, 1.m)
     image
   end
@@ -88,7 +101,6 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::ComponentDefinition.count_used_instances
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition#count_used_instances
 
   def test_count_used_instances_api_example
     skip("Implemented in SU2016") if Sketchup.version.to_i < 16
@@ -142,7 +154,6 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::ComponentDefinition.load
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition#load
 
   def test_load_evil_definitions_observer_without_operation
     model = Sketchup.active_model
@@ -167,7 +178,6 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::ComponentDefinition.name=
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition#name=
 
   def test_name_Set_evil_entities_observer_without_operation
     model = Sketchup.active_model
@@ -213,8 +223,215 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
 
 
   # ========================================================================== #
+  # method Sketchup::ComponentDefinition.save_as
+
+  def test_save_as
+    definition = create_test_instance.definition
+
+    temp_dir = Sketchup.temp_dir
+    path = "#{temp_dir}/my component.skp"
+
+    assert(definition.save_as(path))
+    assert(File.exists?(path))
+    assert_equal(definition.path, path)
+  ensure
+    File.delete(path)
+  end
+
+  def test_save_as_invalid_path
+    definition = create_test_instance.definition
+
+    assert_raises(TypeError) do
+      definition.save_as(1234)
+    end
+  end
+
+  def test_save_as_custom_version
+    skip('Added in SU2022.0') if Sketchup.version.to_f < 22.0
+    definition = create_test_instance.definition
+
+    temp_dir = Sketchup.temp_dir
+    path = "#{temp_dir}/my component.skp"
+
+    assert(definition.save_as(path, Sketchup::Model::VERSION_2017))
+    assert(File.exists?(path))
+    assert_equal(definition.path, path)
+  ensure
+    File.delete(path)
+  end
+
+  def test_save_as_invalid_version
+    skip('Added in SU2022.0') if Sketchup.version.to_f < 22.0
+    definition = create_test_instance.definition
+
+    assert_raises(ArgumentError) do
+      definition.save_as("dir/file.skp", 1337)
+    end
+
+    assert_raises(TypeError) do
+      definition.save_as("dir/file.skp", "A string")
+    end
+  end
+
+  def test_save_as_too_few_arguments
+    definition = create_test_instance.definition
+    assert_raises(ArgumentError) do
+      definition.save_as
+    end
+  end
+
+  def test_save_as_too_many_arguments
+    definition = create_test_instance.definition
+    assert_raises(ArgumentError) do
+      definition.save_as("path", Sketchup::Model::VERSION_2017, true)
+    end
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::ComponentDefinition.save_copy
+
+  def test_save_copy
+    skip('Added in SU2022.0') if Sketchup.version.to_f < 22.0
+    definition = create_test_instance.definition
+
+    temp_dir = Sketchup.temp_dir
+    path = "#{temp_dir}/my component.skp"
+
+    assert(definition.save_copy(path))
+    assert(File.exists?(path))
+    assert(definition.path != path)
+  ensure
+    File.delete(path)
+  end
+
+  def test_save_copy_invalid_path
+    definition = create_test_instance.definition
+
+    assert_raises(TypeError) do
+      definition.save_copy(1234)
+    end
+  end
+
+  def test_save_copy_custom_version
+    skip('Added in SU2022.0') if Sketchup.version.to_f < 22.0
+    definition = create_test_instance.definition
+
+    temp_dir = Sketchup.temp_dir
+    path = "#{temp_dir}/my component.skp"
+
+    assert(definition.save_copy(path, Sketchup::Model::VERSION_2017))
+    assert(File.exists?(path))
+    assert(definition.path != path)
+  ensure
+    File.delete(path)
+  end
+
+  def test_save_copy_invalid_version
+    skip('Added in SU2022.0') if Sketchup.version.to_f < 22.0
+    definition = create_test_instance.definition
+
+    assert_raises(ArgumentError) do
+      definition.save_copy("dir/file.skp", 1337)
+    end
+
+    assert_raises(TypeError) do
+      definition.save_copy("dir/file.skp", "A string")
+    end
+  end
+
+  def test_save_copy_too_few_arguments
+    skip('Added in SU2022.0') if Sketchup.version.to_f < 22.0
+    definition = create_test_instance.definition
+    assert_raises(ArgumentError) do
+      definition.save_copy
+    end
+  end
+
+  def test_save_copy_too_many_arguments
+    skip('Added in SU2022.0') if Sketchup.version.to_f < 22.0
+    definition = create_test_instance.definition
+    assert_raises(ArgumentError) do
+      definition.save_copy("path", Sketchup::Model::VERSION_2017, true)
+    end
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::ComponentDefinition.thumbnail_camera
+
+  def test_thumbnail_camera
+    skip('Added in SU2023.0') if Sketchup.version.to_f < 23.0
+    model = Sketchup.active_model
+    definitions = model.definitions
+    # Make a test cube component
+    vertices = [
+      [-1 ,-1, 0], [1 ,-1, 0], [1 ,1, 0], [-1 ,1, 0],
+      [-1 ,-1, 2], [1 ,-1, 2], [1 ,1, 2], [-1 ,1, 2]
+    ]
+    faces = [
+      [3, 2, 1, 0], [0, 1, 5, 4], [2, 3, 7, 6],
+      [4, 5, 6, 7], [4, 7, 3, 0], [6, 5, 1, 2]
+    ]
+    definition = definitions.add
+    faces.each do |indices|
+      vts = indices.map { |i| vertices[i] }
+      face = definition.entities.add_face(vts)
+    end
+
+    try_count = 5
+    try_count.times do |i|
+      camera = Sketchup::Camera.new(3.times.map { rand(-0.5) }, [0, 0, 0], Z_AXIS)
+      definition.thumbnail_camera = camera
+      # Check if the thumbnails images are same
+      thumbnail_camera = definition.thumbnail_camera
+      assert_equal(thumbnail_camera.eye.to_a, camera.eye.to_a)
+      assert_equal(thumbnail_camera.target.to_a, camera.target.to_a)
+      assert_equal(thumbnail_camera.up.to_a, camera.up.to_a)
+    end
+
+  end
+
+ def test_thumbnail_camera_incorrect_arguments_type
+    skip('Added in SU2023.0') if Sketchup.version.to_f < 23.0
+    model = Sketchup.active_model
+    definition = Sketchup.active_model.definitions.add
+    assert_raises(TypeError) do
+      definition.thumbnail_camera = "Incorrect object type"
+    end
+ end
+
+ def test_thumbnail_camera_nil_argument_type
+    skip('Added in SU2023.0') if Sketchup.version.to_f < 23.0
+    model = Sketchup.active_model
+    definition = Sketchup.active_model.definitions.add
+    assert_raises(TypeError) do
+      definition.thumbnail_camera = nil
+    end
+ end
+
+ def test_thumbnail_camera_check_camera_ref
+     skip('Added in SU2023.0') if Sketchup.version.to_f < 23.0
+     model = Sketchup.active_model
+     definition = Sketchup.active_model.definitions.add
+     camera = Sketchup::Camera.new([1000, 1000, 1000], [0, 0, 0], [0, 0, 1])
+     # Set thumbnail camera.
+     definition.thumbnail_camera = camera
+     # Get thumbnail camera
+     camera1 = definition.thumbnail_camera
+     # Change the values of eye, target and up
+     camera1.set([2000, 2000, 2000], [0, 0, 2], [1, 0, 0])
+     # Get the thumbnail camera
+     camera2 = definition.thumbnail_camera
+     # Ensure that the attributes weren't modified for the thumbnail camera
+     # associated with the definition.
+     refute_equal(camera1.eye, camera2.eye)
+     refute_equal(camera1.target, camera2.target)
+     refute_equal(camera1.up, camera2.up)
+ end
+
+  # ========================================================================== #
   # method Sketchup::ComponentDefinition.add_classification
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition#add_classification
 
   def test_add_classification_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -333,7 +550,6 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::ComponentDefinition.get_classification_value
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition#get_classification_value
 
   def test_get_classification_value_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -434,7 +650,6 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::ComponentDefinition.remove_classification
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition#remove_classification
 
   def test_remove_classification_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -558,7 +773,6 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::ComponentDefinition.set_classification_value
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/componentdefinition#set_classification_value
 
   def test_set_classification_value_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -699,5 +913,69 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
     end
   end
 
+
+  # ========================================================================== #
+  # method Sketchup::ComponentDefinition.live_component?
+
+  def test_live_component_Query_is_not_live_component
+    skip("Implemented in SU2021.0") if Sketchup.version.to_i < 21
+    load_testcase_definition("2021_lc.skp")
+    model = Sketchup.active_model
+    definition = model.definitions['Laura']
+
+    refute(definition.live_component?)
+  end
+
+  def test_live_component_Query_is_live_component
+    skip("Implemented in SU2021.0") if Sketchup.version.to_i < 21
+    load_testcase_definition("2021_lc.skp")
+    model = Sketchup.active_model
+    definition = model.definitions['Exterior Sliding Door']
+
+    assert(definition.live_component?)
+  end
+
+  def test_live_component_Query_is_live_component_sub_component
+    skip("Implemented in SU2021.0") if Sketchup.version.to_i < 21
+    load_testcase_definition("2021_lc.skp")
+    model = Sketchup.active_model
+    definition = model.definitions["e11686e2-0c1b-4fe3-91c4-020887c23961:27"]
+
+    assert(definition.live_component?)
+  end
+
+  def test_live_component_Query_too_many_arguments
+    skip("Implemented in SU2021.0") if Sketchup.version.to_i < 21
+    model = Sketchup.active_model
+    definition = model.definitions.add('TestUp')
+
+    assert_raises(ArgumentError) do
+      definition.live_component?(123)
+    end
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup::ComponentDefinition.name=
+
+  def test_Set_name_enforce_unique_names
+    model = Sketchup.active_model
+
+    definition1 = model.definitions.add("Foo")
+    definition2 = model.definitions.add("Bar")
+    assert_equal("Foo", definition1.name)
+    assert_equal("Bar", definition2.name)
+
+    definition1.name = "TestUp"
+    definition2.name = "TestUp"
+    assert_equal("TestUp", definition1.name)
+    assert_equal("TestUp#1", definition2.name)
+
+    # Ensure that names a freed up once renamed.
+    definition1.name = "Foo"
+    definition2.name = "TestUp"
+    assert_equal("Foo", definition1.name)
+    assert_equal("TestUp", definition2.name)
+  end
 
 end # class

@@ -7,10 +7,13 @@ require_relative "utils/length"
 
 
 # module Sketchup
-# http://www.sketchup.com/intl/en/developer/docs/ourdoc/sketchup
 class TC_Sketchup < TestUp::TestCase
 
   include TestUp::SketchUpTests::Length
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -23,6 +26,14 @@ class TC_Sketchup < TestUp::TestCase
 
   def assert_boolean(value)
     assert(value.is_a?(TrueClass) || value.is_a?(FalseClass))
+  end
+
+  def get_test_case_file(filename)
+    File.join(__dir__, File.basename(__FILE__, '.*'), filename)
+  end
+
+  def enable_manual_tests?
+    ENV.include?('TESTUP_MANUAL_TESTS')
   end
 
 
@@ -308,7 +319,6 @@ class TC_Sketchup < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup.debug_mode?
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/sketchup#debug_mode?
 
   def test_debug_mode_Query_api_example
     skip("Implemented in SU2016") if Sketchup.version.to_i < 16
@@ -338,7 +348,6 @@ class TC_Sketchup < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup.is_64bit?
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/sketchup#is_64bit?
 
   def test_is_64bit_Query_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -370,7 +379,6 @@ class TC_Sketchup < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup.platform
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/sketchup#platform
 
   def test_platform
     skip("Implemented in SU2014") if Sketchup.version.to_i < 14
@@ -415,5 +423,149 @@ class TC_Sketchup < TestUp::TestCase
       Sketchup.template = orig_template
     end
   end
+
+
+  # ========================================================================== #
+  # method Sketchup.open_file
+
+  def test_open_file_success
+    open_new_model # Ensure we haven't already opened a model
+    filename = get_test_case_file('skp-v6.skp')
+    result = Sketchup.open_file(filename)
+    assert(result)
+    assert_equal(filename, File.expand_path(Sketchup.active_model.path))
+  ensure
+    close_active_model
+  end
+
+  def test_open_file_failure
+    skip('Failures display modal dialoges :(') unless enable_manual_tests?
+    open_new_model # Ensure we haven't already opened a model
+    result = Sketchup.open_file('fake-filename.skp')
+    refute(result)
+  ensure
+    close_active_model
+  end
+
+  def test_open_file_invalid_argument_nil
+    assert_raises(TypeError) do
+      Sketchup.open_file(nil)
+    end
+  end
+
+  def test_open_file_invalid_argument_numeric
+    assert_raises(TypeError) do
+      Sketchup.open_file(123)
+    end
+  end
+
+  def test_open_file_incorrect_number_of_arguments_too_few
+    assert_raises(ArgumentError) do
+      Sketchup.open_file
+    end
+  end
+
+  def test_open_file_incorrect_number_of_arguments_too_many
+    filename = get_test_case_file('skp-v6.skp')
+    assert_raises ArgumentError do
+      Sketchup.open_file(filename, 123)
+    end
+  end
+
+  def test_open_file_with_status_success
+    skip("Implemented in SU2021.0") if Sketchup.version.to_i < 21
+    open_new_model # Ensure we haven't already opened a model
+    filename = get_test_case_file('skp-v6.skp')
+    status = Sketchup.open_file(filename, with_status: true)
+    assert_equal(Sketchup::Model::LOAD_STATUS_SUCCESS, status)
+    assert_equal(filename, File.expand_path(Sketchup.active_model.path))
+  ensure
+    close_active_model
+  end
+
+  def test_open_file_warn_on_deprecated_overload
+    skip("Changed in SU2021.0") if Sketchup.version.to_i < 21
+    filename = get_test_case_file('skp-v6.skp')
+    assert_output(nil, /Deprecated overload, use with_status: true overload instead/) do
+      Sketchup.open_file(filename)
+    end
+  ensure
+    close_active_model
+  end
+
+  def test_open_file_legacy_overload_should_not_open_soft_block
+    skip("Changed in SU2021.0") if Sketchup.version.to_i < 21
+    filename = get_test_case_file('skp-vff-soft-block.skp')
+    status = Sketchup.open_file(filename)
+    refute(status, "Should not open soft blocked file")
+    refute_equal(filename, File.expand_path(Sketchup.active_model.path))
+  ensure
+    close_active_model
+  end
+
+  def test_open_file_with_status_success_more_recent
+    skip("Implemented in SU2021.0") if Sketchup.version.to_i < 21
+    skip('Soft-block display modal dialoges :(') unless enable_manual_tests?
+    open_new_model # Ensure we haven't already opened a model
+    filename = get_test_case_file('skp-vff-soft-block.skp')
+    status = Sketchup.open_file(filename, with_status: true)
+    assert_equal(Sketchup::Model::LOAD_STATUS_SUCCESS_MORE_RECENT, status)
+    assert_equal(filename, File.expand_path(Sketchup.active_model.path))
+  ensure
+    close_active_model
+  end
+
+  def test_open_file_with_status_failure
+    skip("Implemented in SU2021.0") if Sketchup.version.to_i < 21
+    skip('Failures display modal dialoges :(') unless enable_manual_tests?
+    filename = get_test_case_file('skp-vff-hard-block.skp')
+    status = Sketchup.open_file(filename, with_status: true)
+    refute(status)
+    refute_equal(filename, File.expand_path(Sketchup.active_model.path))
+  end
+
+
+  # ========================================================================== #
+  # method Sketchup.resize_viewport
+
+  # Successful cases tasted manually with SKEXT3295.rb.
+
+  def test_resize_viewport_invalid_argument_nil
+    skip("Added in SU2023.0") if Sketchup.version.to_f < 23.0
+    assert_raises(TypeError) do
+      Sketchup.resize_viewport(nil, 3048, 2870)
+    end
+  end
+
+  def test_resize_viewport_invalid_argument_numeric
+    skip("Added in SU2023.0") if Sketchup.version.to_f < 23.0
+
+    assert_raises(TypeError) do
+      Sketchup.resize_viewport(3000, 3048, 2870)
+    end
+
+    assert_raises(TypeError) do
+      Sketchup.resize_viewport(Sketchup.active_model, Sketchup::Face, 2870)
+    end
+
+    assert_raises(TypeError) do
+      Sketchup.resize_viewport(Sketchup.active_model, 3048, Sketchup::Face)
+    end
+  end
+
+  def test_resize_viewport_incorrect_number_of_arguments_too_few
+    skip("Added in SU2023.0") if Sketchup.version.to_f < 23.0
+    assert_raises(ArgumentError) do
+      Sketchup.resize_viewport
+    end
+  end
+
+  def test_resize_viewport_incorrect_number_of_arguments_too_many
+    skip("Added in SU2023.0") if Sketchup.version.to_f < 23.0
+    assert_raises ArgumentError do
+      Sketchup.resize_viewport(Sketchup.active_model, 3084, 4502, 3056)
+    end
+  end
+
 
 end # class

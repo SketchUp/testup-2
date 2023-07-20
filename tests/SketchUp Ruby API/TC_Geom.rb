@@ -8,6 +8,10 @@ require "testup/testcase"
 # module Geom
 class TC_Geom < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     # ...
   end
@@ -30,7 +34,6 @@ class TC_Geom < TestUp::TestCase
 
   # ========================================================================== #
   # module Geom
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/geom
 
   def test_introduction_api_example_1
     line1 = [Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1)]
@@ -45,7 +48,6 @@ class TC_Geom < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom.closest_points
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/geom#closest_points
 
   def test_closest_points_api_example
     line1 = [Geom::Point3d.new(0, 2, 0), Geom::Vector3d.new(1, 0, 0)]
@@ -163,7 +165,6 @@ class TC_Geom < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom.fit_plane_to_points
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/geom#fit_plane_to_points
 
   def test_fit_plane_to_points_api_example
     point1 = Geom::Point3d.new(0, 0, 0)
@@ -303,7 +304,6 @@ class TC_Geom < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom.intersect_line_line
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/geom#intersect_line_line
 
   def test_intersect_line_line_api_example
     # Defines a line parallell to the Y axis, offset 20 units.
@@ -393,7 +393,6 @@ class TC_Geom < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom.intersect_line_plane
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/geom#intersect_line_plane
 
   def test_intersect_line_plane_api_example
     # Defines a line parallell to the X axis, offset 20 units.
@@ -516,7 +515,6 @@ class TC_Geom < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom.intersect_plane_plane
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/geom#intersect_plane_plane
 
   def test_intersect_plane_plane_api_example
     # Defines a plane with it's normal parallel to the x axis.
@@ -606,7 +604,6 @@ class TC_Geom < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom.linear_combination
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/geom#linear_combination
 
   def test_linear_combination_api_example
     point1 = Geom::Point3d.new(1, 1, 1)
@@ -722,7 +719,6 @@ class TC_Geom < TestUp::TestCase
 
   # ========================================================================== #
   # method Geom.point_in_polygon_2D
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/geom#point_in_polygon_2D
 
   def test_point_in_polygon_2D_api_example
     # Create a point that we want to check. (Note that the 3rd coordinate,

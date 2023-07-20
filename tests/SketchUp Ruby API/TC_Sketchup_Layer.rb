@@ -7,6 +7,10 @@ require "testup/testcase"
 # class Sketchup::Layer
 class TC_Sketchup_Layer < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
   end
@@ -281,7 +285,7 @@ class TC_Sketchup_Layer < TestUp::TestCase
 
   def test_display_name_Layer0
     # This test is for pre SketchUp 2020, using Layer0 display name "Layer0"
-    skip("Added in 2020.0") if Sketchup.version.to_i >= 20
+    skip("Changed in 2020.0") if Sketchup.version.to_i >= 20
 
     layers = Sketchup.active_model.layers
     layer0 = layers[0] # the infamous layer0
@@ -394,6 +398,31 @@ class TC_Sketchup_Layer < TestUp::TestCase
     assert_equal(true, bacon_layer.visible?)
   end
 
+  def test_visible_Set_hide_active_layer
+    model = Sketchup.active_model
+    layers = model.layers
+    layer = layers.add('Active Layer')
+    model.active_layer = layer
+
+    layer.visible = false
+    refute(layer.visible?, "layer was not hidden")
+    layer0 = layers[0]
+    assert_equal(layer0, model.active_layer)
+  end
+
+  def test_visible_Set_hide_active_layer_zero
+    model = Sketchup.active_model
+    layers = model.layers
+    layer0 = layers[0]
+    layer = layers.add('Another Layer')
+    model.active_layer = layer0
+    assert_equal(layer0, model.active_layer)
+
+    layer0.visible = false
+    assert(layer.visible?, "layer did not remain visible")
+    assert_equal(layer0, model.active_layer)
+  end
+
   def test_visible_Set_integer
     layers = Sketchup.active_model.layers
     bacon_layer = layers.add('bacon')
@@ -422,7 +451,7 @@ class TC_Sketchup_Layer < TestUp::TestCase
 
   def test_visible_Set_deselect_hidden
     model = Sketchup.active_model
-    layer = model.layers.add_layer('World')
+    layer = model.layers.add('World')
     face = model.entities.add_face(
       [0, 0, 0], [9, 0, 0], [9, 9, 0], [0, 9, 0]
     )
@@ -439,8 +468,8 @@ class TC_Sketchup_Layer < TestUp::TestCase
   end
 
   def test_visible_Set_active_path
-    skip('TODO(thomthom): Pending common helper function')
     skip('Testable in 2020.0') if Sketchup.version.to_f < 20.0
+    skip('Fixed in 2021.0') if Sketchup.version.to_f < 21.0
     model = Sketchup.active_model
     layers = model.layers
     bacon_layer = layers.add('bacon')
@@ -452,6 +481,7 @@ class TC_Sketchup_Layer < TestUp::TestCase
     assert_raises(ArgumentError) do
       bacon_layer.visible = false
     end
+    assert(bacon_layer.visible?, "layer did not remain visible")
   end
 
 
@@ -571,7 +601,7 @@ class TC_Sketchup_Layer < TestUp::TestCase
     layers = Sketchup.active_model.layers
     folder = layers.add_folder('Hello')
     layer0 = layers[0]
-
+    
     assert_raises(ArgumentError) do
       layer0.folder = folder
     end
@@ -581,7 +611,7 @@ class TC_Sketchup_Layer < TestUp::TestCase
     skip("Added in 2021.0") if Sketchup.version.to_f < 21.0
     layers = Sketchup.active_model.layers
     layer = layers.add('World')
-
+    
     assert_raises(TypeError) do
       layer.folder = 'Hello'
     end
@@ -591,7 +621,7 @@ class TC_Sketchup_Layer < TestUp::TestCase
     skip("Added in 2021.0") if Sketchup.version.to_f < 21.0
     layers = Sketchup.active_model.layers
     layer = layers.add('World')
-
+    
     assert_raises(TypeError) do
       layer.folder = 123
     end

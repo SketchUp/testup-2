@@ -1,5 +1,5 @@
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen (thomthom@sketchup.com)
 
 
@@ -7,8 +7,11 @@ require 'testup/testcase'
 
 
 # class Sketchup::ClassificationSchema
-# http://www.sketchup.com/intl/developer/docs/ourdoc/classificationschema
 class TC_Sketchup_ClassificationSchema < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     disable_read_only_flag_for_test_models()
@@ -41,7 +44,6 @@ class TC_Sketchup_ClassificationSchema < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::ClassificationSchema.<=>
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classificationschema#<=>
 
   def test_Operator_Sort_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -93,7 +95,6 @@ class TC_Sketchup_ClassificationSchema < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::ClassificationSchema.==
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classificationschema#==
 
   def test_Operator_Equal_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -138,7 +139,6 @@ class TC_Sketchup_ClassificationSchema < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::ClassificationSchema.name
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classificationschema#name
 
   def test_name_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -165,7 +165,6 @@ class TC_Sketchup_ClassificationSchema < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::ClassificationSchema.namespace
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/classificationschema#namespace
 
   def test_namespace_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15

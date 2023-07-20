@@ -9,6 +9,10 @@ require "testup/testcase"
 # class Sketchup::Color
 class TC_Sketchup_Color < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     # ...
   end

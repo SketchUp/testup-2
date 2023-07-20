@@ -9,6 +9,10 @@ require "testup/testcase"
 # module Geom::LatLong
 class TC_Geom_LatLong < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     # ...
   end

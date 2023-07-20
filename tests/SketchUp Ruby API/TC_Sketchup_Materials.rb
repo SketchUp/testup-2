@@ -12,6 +12,10 @@ class TC_Sketchup_Materials < TestUp::TestCase
 
   include TestUp::SketchUpTests::ImageHelper
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
   end
@@ -73,6 +77,19 @@ class TC_Sketchup_Materials < TestUp::TestCase
     end
   end
 
+  def test_load_non_existing_file_with_existing_material
+    skip("Implemented in SU2017") if Sketchup.version.to_i < 17
+    materials = Sketchup.active_model.materials
+    # After SketchUp 2021.0 and before SketchUp 2021.1 there was a bug that made
+    # SU crash when trying to load a missing material file, if there were
+    # already materials in the model.
+    # See SKEXT-3070.
+    materials.add("Material Name")
+    assert_raises(RuntimeError) do
+      materials.load('no_such_file.skm')
+    end
+  end
+
   def test_load_invalid_argument_nil
     skip("Implemented in SU2017") if Sketchup.version.to_i < 17
     materials = Sketchup.active_model.materials
@@ -107,7 +124,6 @@ class TC_Sketchup_Materials < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Materials.unique_name
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/material#unique_name
 
   def test_unique_name
     # Prepopulate the empty model with a material

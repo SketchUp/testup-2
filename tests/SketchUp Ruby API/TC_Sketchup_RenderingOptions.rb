@@ -4,13 +4,21 @@
 
 
 require "testup/testcase"
+require_relative "utils/feature_switch"
+
 require "stringio"
 
-
 # class Sketchup::RenderingOptions
-# http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions
 class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
+  include TestUp::SketchUpTests::FeatureSwitchHelper
+
+  FEATURE_MODELING_GRID = "ModelingGrid".freeze
+
+  def self.setup_testcase
+    discard_all_models
+  end
+  
   def setup
     # ...
   end
@@ -31,7 +39,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.[]
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#[]
 
   def test_Operator_Get_api_example
     result = Sketchup.active_model.rendering_options["DisplayInstanceAxes"]
@@ -59,7 +66,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.[]=
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#[]=
 
   def test_Operator_Set_api_example
     options = Sketchup.active_model.rendering_options
@@ -85,7 +91,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.count
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#count
 
   def test_count_api_example
     skip("Implemented in SU2014") if Sketchup.version.to_i < 14
@@ -120,7 +125,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.length
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#length
 
   def test_length_api_example
     skip("Implemented in SU2014") if Sketchup.version.to_i < 14
@@ -145,7 +149,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.size
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#size
 
   def test_size_api_example
     skip("Implemented in SU2014") if Sketchup.version.to_i < 14
@@ -170,7 +173,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.each_key
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#each_key
 
   def test_each_key_api_example
     mute_puts_statements {
@@ -201,7 +203,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.each_pair
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#each_pair
 
   def test_each_pair_api_example
     mute_puts_statements {
@@ -232,7 +233,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.each
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#each
 
   def test_each_api_example
     mute_puts_statements {
@@ -263,7 +263,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.keys
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#keys
 
   def test_keys_api_example
     keys = Sketchup.active_model.rendering_options.keys
@@ -377,7 +376,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.add_observer
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#add_observer
 
   def test_add_observer_api_example
     observer = Sketchup::RenderingOptionsObserver.new # Dummy observer.
@@ -406,7 +404,6 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::RenderingOptions.remove_observer
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/renderingoptions#remove_observer
 
   def test_remove_observer_api_example
     observer = Sketchup::RenderingOptionsObserver.new # Dummy observer.
@@ -442,7 +439,7 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
 
   # ========================================================================== #
 
-  ROP_ENUM_PATTERN = /enum ERenderingOptionsChangeType {\s*^(.*),\s*}/m
+  ROP_ENUM_PATTERN = /enum ERenderingOptionsChangeType {\s*^([^}]*)\s*}/m
   ROP_ENUM_NAME_PATTERN = /^\s*k(\w+).*$/
 
   def read_cpp_enum_names
@@ -456,6 +453,14 @@ class TC_Sketchup_RenderingOptions < TestUp::TestCase
     enum_names.delete('ROPSetDisplayEdgeStippleByLayer')
     enum_names.delete('ROPSetFogType')
     enum_names.delete('ROPSetFogDensity')
+    # WIP (Feature not exposed to the API yet):
+    enum_names.delete('ROPSetHideCustomControlPoints')
+    # WIP Feature switched values:
+    if !feature_switch?(FEATURE_MODELING_GRID)
+      enum_names.delete('ROPSetModelingGridVisible')
+      enum_names.delete('ROPSetModelingGridSpacing')
+    end
+    enum_names.delete('ROPSetRenderModePBRChange')
     # Deprecated: (Used to be exposed to the API:)
     enum_names << 'ROPSetFaceColorMode'
     enum_names.sort

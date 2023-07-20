@@ -8,6 +8,10 @@ require "testup/testcase"
 
 class TC_Sketchup_InstancePath < TestUp::TestCase
 
+  def self.setup_testcase
+    discard_all_models
+  end
+
   def setup
     start_with_empty_model
     @path = create_test_instances

@@ -1,15 +1,18 @@
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 # Original Author:: Bugra Barin (bugra@sketchup.com)
 
 require 'testup/testcase'
 
 # class Sketchup::Licensing::ExtensionLicense
-# http://www.sketchup.com/intl/developer/docs/ourdoc/extensionlicense
 #
 # Licensing tests are not repeatable unless we find a way to mock the licensing
 # internals. So, just doing API example and parameter tests.
 class TC_Sketchup_Licensing_ExtensionLicense < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     ext_id = "4e215280-dd23-40c4-babb-b8a8dd29d5ee"
@@ -22,7 +25,6 @@ class TC_Sketchup_Licensing_ExtensionLicense < TestUp::TestCase
 
 # ========================================================================== #
   # method Sketchup::Licensing::ExtensionLicense.licensed?
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/extensionlicense#licensed?
 
   def test_licensed_Query_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -42,7 +44,6 @@ class TC_Sketchup_Licensing_ExtensionLicense < TestUp::TestCase
 
 # ========================================================================== #
   # method Sketchup::Licensing::ExtensionLicense.state
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/extensionlicense#state
 
   def test_state_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -62,7 +63,6 @@ class TC_Sketchup_Licensing_ExtensionLicense < TestUp::TestCase
 
 # ========================================================================== #
   # method Sketchup::Licensing::ExtensionLicense.days_remaining
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/extensionlicense#days_remaining
 
   def test_days_remaining_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15
@@ -84,7 +84,6 @@ class TC_Sketchup_Licensing_ExtensionLicense < TestUp::TestCase
 
 # ========================================================================== #
   # method Sketchup::Licensing::ExtensionLicense.error_description
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/extensionlicense#error_description
 
   def test_error_description_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15

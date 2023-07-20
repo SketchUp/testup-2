@@ -1,5 +1,5 @@
 # Copyright:: Copyright 2017 Trimble Inc.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 # Original Author:: Jin Yi (jinyi@sketchup.com)
 
 
@@ -11,6 +11,10 @@ class TC_Sketchup_ImageRep < TestUp::TestCase
 
   IS_WIN = Sketchup.platform == :platform_win
   IS_MAC = Sketchup.platform == :platform_osx
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     skip("Implemented in SU2018") if Sketchup.version.to_i < 18

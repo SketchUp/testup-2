@@ -8,8 +8,11 @@ require 'langhandler.rb'
 
 
 # Class LanguageHandler
-# http://www.sketchup.com/intl/developer/docs/ourdoc/languagehandler
 class TC_LanguageHandler < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     @sample_valid_file = 'valid.strings'

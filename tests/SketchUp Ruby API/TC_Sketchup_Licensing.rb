@@ -1,15 +1,18 @@
 # Copyright:: Copyright 2014 Trimble Navigation Ltd.
-# License:: All Rights Reserved.
+# License:: The MIT License (MIT)
 # Original Author:: Bugra Barin (bugra@sketchup.com)
 
 require 'testup/testcase'
 
 # module Sketchup::Licensing
-# http://www.sketchup.com/intl/developer/docs/ourdoc/licensing
 #
 # Licensing tests are not repeatable unless we find a way to mock the licensing
 # internals. So, just doing API example and parameter tests.
 class TC_Sketchup_Licensing < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     # ...
@@ -21,7 +24,6 @@ class TC_Sketchup_Licensing < TestUp::TestCase
 
   # ========================================================================== #
   # method Sketchup::Licensing.get_extension_license
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/licensing#get_extension_license
 
   def test_get_extension_license_api_example
     skip("Implemented in SU2015") if Sketchup.version.to_i < 15

@@ -1,7 +1,6 @@
-# Copyright:: Copyright 2015 Trimble Navigation Ltd.
+# Copyright:: Copyright 2015-2020 Trimble Inc.
 # License:: The MIT License (MIT)
 # Original Author:: Thomas Thomassen
-
 
 require "testup/testcase"
 
@@ -9,8 +8,11 @@ require 'fileutils'
 
 
 # class Sketchup::Texture
-# http://www.sketchup.com/intl/developer/docs/ourdoc/texture
 class TC_Sketchup_Texture < TestUp::TestCase
+
+  def self.setup_testcase
+    discard_all_models
+  end
 
   def setup
     start_with_empty_model
@@ -72,10 +74,13 @@ class TC_Sketchup_Texture < TestUp::TestCase
     material
   end
 
+  def get_test_case_file(filename)
+    File.join(__dir__, File.basename(__FILE__, '.*'), filename)
+  end
+
 
   # ========================================================================== #
   # method Sketchup::Texture.write
-  # http://www.sketchup.com/intl/developer/docs/ourdoc/texture#write
 
   def test_write_api_example
     skip('Implemented in SU2016') if Sketchup.version.to_i < 16
@@ -260,4 +265,59 @@ class TC_Sketchup_Texture < TestUp::TestCase
     assert_equal(191, color.green)
     assert_equal(183, color.blue)
   end
+
+
+  # ========================================================================== #
+  # method Sketchup::Texture.filename
+
+  def test_filename_empty
+    skip('Fixed in SU2021.0') if Sketchup.version.to_i < 21
+
+    model = Sketchup.active_model
+    image_rep = Sketchup::ImageRep::new
+    # An ImageRep not loaded from a file, but raw data set directly.
+    # SketchUp then picks a default file-format.
+    image_rep.set_data(2, 2, 8, 0, '1234')
+    material = model.materials.add('TestUp')
+    material.texture = image_rep
+    texture = material.texture
+
+    assert_equal('.jpg', texture.filename)
+  end
+
+  def test_filename_empty_format_from_imagerep
+    skip('Fixed in SU2021.0') if Sketchup.version.to_i < 21
+
+    model = Sketchup.active_model
+    filepath = get_test_case_file('test_small.jpg')
+    image_rep = Sketchup::ImageRep::new(filepath)
+    material = model.materials.add('TestUp')
+    material.texture = image_rep
+    texture = material.texture
+
+    assert_equal('.jpg', texture.filename)
+  end
+
+  def test_filename_without_extension
+    skip('Fixed in SU2021.0') if Sketchup.version.to_i < 21
+    discard_all_models
+    filepath = get_test_case_file('Hearst+Tower+(New+York)-su2020.skp')
+    Sketchup.open_file(filepath, with_status: true)
+    model = Sketchup.active_model
+
+    # Filepath with full path.
+    texture1 = model.find_entity_by_persistent_id(16466).texture
+    assert_equal("C:\\Users\\Sebastian\\Pictures\\Hearst Tower\\Hearst Tower by Sebastian S. Roof 01.jpg", texture1.filename)
+
+    # Filepath stored on texture is includes file extension.
+    texture2 = model.find_entity_by_persistent_id(16469).texture
+    assert_equal('Hearst Tower by Sebastian S#8.jpg', texture2.filename)
+
+    # Filepath stored on texture is missing file extension.
+    texture3 = model.find_entity_by_persistent_id(16465).texture
+    assert_equal('Hearst Tower by Sebastian S. 05.jpg', texture3.filename)
+  ensure
+    discard_all_models
+  end
+
 end # class
