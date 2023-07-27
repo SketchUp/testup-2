@@ -29,7 +29,7 @@ module TestUp
   # plugins has been loaded.
   def self.display_minitest_help
     TESTUP_CONSOLE.show
-    MiniTest.run(['--help'])
+    Minitest.run(['--help'])
   rescue SystemExit
   end
 

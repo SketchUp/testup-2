@@ -9,7 +9,7 @@ require 'testup/minitest_setup.rb'
 
 
 module TestUp
-# Doc comment from MiniTest::StatisticsReporter:
+# Doc comment from Minitest::StatisticsReporter:
 #
 #   A reporter that gathers statistics about a test run. Does not do
 #   any IO because meant to be used as a parent class for a reporter
@@ -17,7 +17,7 @@ module TestUp
 #
 #   If you want to create an entirely different type of output (eg,
 #   CI, HTML, etc), this is the place to start.
-class Reporter < MiniTest::StatisticsReporter
+class Reporter < Minitest::StatisticsReporter
 
   @@results = []
 

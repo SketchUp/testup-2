@@ -13,7 +13,7 @@ require 'testup/minitest_setup.rb'
 require 'testup/app_files.rb'
 
 
-# Patching MiniTest because we currently use 5.4.3 which doesn't have `prerecord`.
+# Patching Minitest because we currently use 5.4.3 which doesn't have `prerecord`.
 module Minitest
   class Runnable
 
@@ -63,7 +63,7 @@ end
 
 module TestUp
 # Based on Minitest::SummaryReporter
-class DebugReporter < MiniTest::StatisticsReporter
+class DebugReporter < Minitest::StatisticsReporter
 
   def initialize(options)
     io_null = StringIO.new

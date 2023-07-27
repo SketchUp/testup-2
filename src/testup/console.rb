@@ -67,7 +67,7 @@ module TestUp
 
     def sync=(value)
       # The SketchUp console always output immediately so setting to false is of
-      # no use. Currently raising an exception in case the MiniTest framework
+      # no use. Currently raising an exception in case the Minitest framework
       # should depend on setting sync to false.
       # However, it looks like it only tries to set it to true.
       unless value

@@ -51,7 +51,7 @@ module TestUp
       begin
         progress.set_state(TaskbarProgress::NORMAL)
         API.suppress_warning_dialogs {
-          MiniTest.run(arguments)
+          Minitest.run(arguments)
         }
       rescue SystemExit
         Log.warn 'Minitest called exit.'
@@ -78,7 +78,7 @@ module TestUp
         arguments << '--seed'
         arguments << options[:seed].to_s
       end
-      # When running TestUp from the UI, make sure to load the MiniTest plugin.
+      # When running TestUp from the UI, make sure to load the Minitest plugin.
       # arguments << '--testup' if options[:run_in_gui]
       arguments << '--testup' if options[:ui] # TODO:
       arguments << '--testup_ci' if options[:ci]
@@ -90,7 +90,7 @@ module TestUp
     # return [Array<String>]
     def parse(tests)
       # If tests end with a `#` it means the whole test case should be run.
-      # Automatically fix the regex so MiniTest pick it up correctly.
+      # Automatically fix the regex so Minitest pick it up correctly.
       tests.map { |pattern|
         pattern << '.+' if pattern =~ /\#$/
         pattern

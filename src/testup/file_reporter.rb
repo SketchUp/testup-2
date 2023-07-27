@@ -14,7 +14,7 @@ require 'testup/app_files.rb'
 
 module TestUp
 # Based on Minitest::SummaryReporter
-class FileReporter < MiniTest::StatisticsReporter
+class FileReporter < Minitest::StatisticsReporter
 
   include AppFiles
 
@@ -22,7 +22,7 @@ class FileReporter < MiniTest::StatisticsReporter
   attr_accessor :old_sync
 
   # Hack: Find a better way to pass test suite title and path to the reporter.
-  #       Maybe add custom options to the TestUp MiniTest plugin - and forward
+  #       Maybe add custom options to the TestUp Minitest plugin - and forward
   #       info via that?
   @@title = 'Untitled'
   @@path = nil

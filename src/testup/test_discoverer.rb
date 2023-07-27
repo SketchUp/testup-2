@@ -42,10 +42,10 @@ module TestUp
       Log.trace :discover, ">>> #{self.class}.discover"
       @errors.clear
 
-      # Reset list of runnables MiniTest knows about.
+      # Reset list of runnables Minitest knows about.
       # Undefine all TestUp::TestCase sub-classes and remove them from
       # Minitest's list of known runnables.
-      MiniTest::Runnable.runnables.reject! { |klass|
+      Minitest::Runnable.runnables.reject! { |klass|
         next unless Sandbox.valid_test_class?(klass)
         path = klass.name.split('::').map(&:to_sym)
         leaf = path.pop
@@ -148,7 +148,7 @@ module TestUp
         klass.ancestors[1..-1].include?(TestUp::TestCase)
       end
       def self.minitest_runnables
-        MiniTest::Runnable.runnables.select { |klass|
+        Minitest::Runnable.runnables.select { |klass|
           self.valid_test_class?(klass)
         }
       end
