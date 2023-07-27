@@ -14,8 +14,8 @@ $stdout = TestUp::TESTUP_CONSOLE
 $stderr = TestUp::TESTUP_CONSOLE
 
 
-# Load MiniTest. This is a modification from minitest/autoload.rb which doesn't
-# run the tests when SketchUp exits because MiniTest.autoload uses at_exit {}.
+# Load Minitest. This is a modification from minitest/autoload.rb which doesn't
+# run the tests when SketchUp exits because Minitest.autoload uses at_exit {}.
 
 require "rubygems"
 gem "minitest"
@@ -99,11 +99,11 @@ Minitest.parallel_executor = Minitest::Parallel::Executor.new(0)
 # Configure Ruby such that the TestUp reporter can be found without creating
 # gem for it.
 #
-# MiniTest uses Gem.find_files to look for extensions by globbing
+# Minitest uses Gem.find_files to look for extensions by globbing
 # { }"minitest/*_plugin.rb". To avoid making a gem that needs installing, make
 # use of the fact that by default Gem.find_files will search in $LOAD_PATH.
 #
-# Verify by checking after `MiniTest.run`:
+# Verify by checking after `Minitest.run`:
 # Minitest.extensions
 # > ["pride", "testup"]
 $LOAD_PATH << File.join(__dir__, 'minitest_plugins')
