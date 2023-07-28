@@ -1,7 +1,7 @@
 {
   "name": "testup",
   "version": "2.4.1",
-  "description": "MiniTest runner for SketchUp",
+  "description": "Minitest runner for SketchUp",
   "author": "Trimble Inc.",
   "license": "MIT",
   "private": true,

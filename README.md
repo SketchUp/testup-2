@@ -177,9 +177,9 @@ Output: "%CONFIG_DIR%/tests/ui-tests-results.json"
 
 ## Troubleshooting
 
-### MiniTest
+### Minitest
 
-If you should get errors that relate to failing to install MiniTest then you
+If you should get errors that relate to failing to install Minitest then you
 can attempt to install manually from a backup copy in this GitHub repository:
 
 ```ruby
