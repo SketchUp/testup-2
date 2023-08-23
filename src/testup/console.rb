@@ -54,11 +54,15 @@ module TestUp
       if args.empty?
         write $/
       else
-        for arg in args
-          line = arg.to_s
-          write(line)
-          if line.empty? || !line.end_with?($/)
-            write($/)
+        for arg in args # Why not 'args.each do |arg|' ?
+          if arg.is_a?(Array)
+            arg.each { |e| puts(e) }
+          else
+            line = arg.to_s
+            write(line)
+            if line.empty? || !line.end_with?($/)
+              write($/)
+            end
           end
         end
       end
