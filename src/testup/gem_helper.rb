@@ -12,9 +12,11 @@ module TestUp
     # @param [String] filename
     # @param [Gem::Requirement] version
     def self.require(gem_name, filename, version: Gem::Requirement.default)
+      # puts "GemHelper.require(#{gem_name}, #{filename}, #{version})"
       Kernel.require 'rubygems'
       begin
-        gem gem_name
+        # puts "> Try activating gem..."
+        gem gem_name, version
       rescue Gem::LoadError
         puts "Installing Gem: #{gem_name} (Please wait...)"
         begin
@@ -24,8 +26,10 @@ module TestUp
           # a bug. This pattern is probably not that common, to be
           # programmatically installing gems.
         end
-        gem gem_name
+        # puts "> Try activating installed gem..."
+        gem gem_name, version
       end
+      # puts "> Loading gem..."
       Kernel.require filename
     end
 
