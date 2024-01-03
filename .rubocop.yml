@@ -5,30 +5,20 @@ require:
   - rubocop-sketchup
 
 AllCops:
+  NewCops: disable
   DisabledByDefault: true # TODO: Reenable
   DisplayStyleGuide: true
   SuggestExtensions: false
   SketchUp:
     SourcePath: src
     TargetSketchUpVersion: 2014
-    SketchupPerformance:
-      Exclude:
-      - ruby-c-extension/**/*
-      - skippy/**/*
-      - tests/**/*
-      - tools/**/*
-    SketchupRequirements:
-      Exclude:
-      - ruby-c-extension/**/*
-      - skippy/**/*
-      - tests/**/*
-      - tools/**/*
-    SketchupSuggestions:
-      Exclude:
-      - ruby-c-extension/**/*
-      - skippy/**/*
-      - tests/**/*
-      - tools/**/*
+    Exclude:
+    - Gemfile
+    - ruby-c-extension/**/*
+    - skippy/**/*
+    - tests/**/*
+    - tools/**/*
+    - vendor/**/*
   TargetRubyVersion: 2.0
   Exclude:
   - archive/**/*
@@ -40,6 +30,7 @@ AllCops:
   - src/testup/third-party/**/*.rb
   - tests/**/*.rb # TODO - for now ignore.
   - tools/**/*.rb
+  - vendor/**/*.rb
 
 SketchupDeprecations:
   Enabled: true
@@ -183,6 +174,7 @@ Style/IfUnlessModifier:
 
 Style/MultilineIfModifier:
   Exclude:
+    - Gemfile
     - src/testup/file_reporter.rb
     - src/testup/ui.rb
     - src/testup/ui/adapters/htmldialog.rb
