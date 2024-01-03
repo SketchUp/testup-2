@@ -4,6 +4,7 @@
 name: Build Extension
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main", "dev/ci" ]
   pull_request:
