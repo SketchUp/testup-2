@@ -15,7 +15,7 @@ module TestUp
   # TODO(thomthom): Add LayOut console class.
   if defined?(Sketchup)
     APP_CONSOLE = SKETCHUP_CONSOLE
-  elsif defined?(Layout)
+  elsif defined?(Layout) # rubocop:disable SketchupSuggestions/Compatibility
     APP_CONSOLE = LAYOUT_CONSOLE # TODO(thomthom): Correct?
   end
 

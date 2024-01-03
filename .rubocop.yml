@@ -7,6 +7,7 @@ require:
 AllCops:
   DisabledByDefault: true # TODO: Reenable
   DisplayStyleGuide: true
+  SuggestExtensions: false
   SketchUp:
     SourcePath: src
     TargetSketchUpVersion: 2014
@@ -54,6 +55,19 @@ SketchupSuggestions:
 
 SketchupBugs:
   Enabled: true
+
+# TestUp relies on Minitest gem and need to install it.
+SketchupRequirements/GemInstall:
+  Enabled: false
+
+# Need to modify the load path for Minitest to work within SketchUp.
+SketchupRequirements/LoadPath:
+  Exclude:
+  - src/testup/minitest_setup.rb
+
+# Lots of monkey patching of Minitest required in order for it to operate within SketchUp.
+SketchupRequirements/RubyStdLibNamespace:
+  Enabled: false
 
 SketchupSuggestions/FileEncoding:
   Enabled: false

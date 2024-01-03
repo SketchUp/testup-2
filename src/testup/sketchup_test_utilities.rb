@@ -58,6 +58,7 @@ module TestUp
     SKETCHUP_RANGE_MAX = -1.0e30
     SKETCHUP_RANGE_MIN =  1.0e30
 
+    # rubocop:disable SketchupSuggestions/ModelEntities
     def start_with_empty_model
       model = Sketchup.active_model
       model.abort_operation # Incase any operation is left hanging open.
@@ -87,6 +88,7 @@ module TestUp
       model.commit_operation
       model
     end
+    # rubocop:enable SketchupSuggestions/ModelEntities
 
     def open_new_model
       model = Sketchup.active_model

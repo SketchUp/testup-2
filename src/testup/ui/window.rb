@@ -6,7 +6,7 @@
 #-------------------------------------------------------------------------------
 
 require 'testup/ui/adapters/webdialog'
-require 'testup/ui/adapters/htmldialog' if defined?(UI::HtmlDialog)
+require 'testup/ui/adapters/htmldialog' if defined?(UI::HtmlDialog) # rubocop:disable SketchupSuggestions/Compatibility
 require 'testup/config'
 require 'testup/log'
 

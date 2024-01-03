@@ -17,7 +17,7 @@ require 'testup/app_files.rb'
 module Minitest
   class Runnable
 
-    class << self
+    class << self # rubocop:disable Style/MultilineIfModifier
       puts "Alias old_run_one_method..."
       alias_method :old_run_one_method, :run_one_method
     end unless respond_to?(:old_run_one_method)

@@ -8,7 +8,7 @@
 if defined?(Sketchup)
   require 'sketchup.rb'
   require 'extensions.rb'
-elsif defined?(Layout)
+elsif defined?(Layout) # rubocop:disable SketchupSuggestions/Compatibility
   require 'layout.rb'
 end
 
