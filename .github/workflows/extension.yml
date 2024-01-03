@@ -1,0 +1,52 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Build Extension
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "dev/ci" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # node-version: [10.4, 14.x, 16.x, 18.x]
+        node-version: [10.4]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup variables
+      id: vars
+      run: echo "sha_short=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_OUTPUT
+    # - name: Check outputs
+    #   run: echo ${{ steps.vars.outputs.sha_short }}
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    # - run: npm ci
+    # - run: npm run build --if-present
+    # - run: npm test
+    - run: npm install
+    - run: npm run build
+    # - run: npm run package
+    - run: ruby ./tools/package.rb ${{ steps.vars.outputs.sha_short }}
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.0.0
+      with:
+        name: Extension
+        path: archive/*.rbz
+        if-no-files-found: error
+
