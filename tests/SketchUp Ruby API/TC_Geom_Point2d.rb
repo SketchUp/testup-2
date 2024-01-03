@@ -2,6 +2,7 @@
 # License:: The MIT License (MIT)
 # Original Author:: Adam Karkkainen
 
+if Geom.const_defined? :Point2d
 
 require "testup/testcase"
 require_relative "utils/frozen"
@@ -653,3 +654,5 @@ class TC_Geom_Point2d < TestUp::TestCase
     end
   end
 end # class
+
+end # if Geom.const_defined? :Point2d

@@ -2,6 +2,7 @@
 # License:: The MIT License (MIT)
 # Original Author:: Adam Karkkainen
 
+if Geom.const_defined? :Transformation2d
 
 require "testup/testcase"
 require_relative "utils/frozen"
@@ -485,3 +486,5 @@ class TC_Geom_Transformation2d < TestUp::TestCase
     end
   end
 end
+
+end # if Geom.const_defined? :Transformation2d
