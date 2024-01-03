@@ -5,6 +5,7 @@ require:
   - rubocop-sketchup
 
 AllCops:
+  NewCops: disable
   DisabledByDefault: true # TODO: Reenable
   DisplayStyleGuide: true
   SuggestExtensions: false
