@@ -34,11 +34,15 @@ extension_id = extension[:product_id]
 version = extension[:version]
 puts "Version: #{version}"
 
+# Useful for stuff like git sha.
+# ruby tools/package 02f5d6
+postfix = ARGV[0] ? "-#{ARGV[0]}" : ''
+
 
 build_version = version
 build_date = Time.now.strftime("%Y-%m-%d")
 
-archive_name = "#{extension_id}_#{build_version}_#{build_date}"
+archive_name = "#{extension_id}_#{build_version}_#{build_date}#{postfix}"
 archive = File.join(archive_path, "#{archive_name}.rbz")
 
 build_files_pattern = File.join(build_path, "**", "**")
