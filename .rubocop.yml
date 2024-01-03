@@ -12,27 +12,13 @@ AllCops:
   SketchUp:
     SourcePath: src
     TargetSketchUpVersion: 2014
-    SketchupPerformance:
-      Exclude:
-      - ruby-c-extension/**/*
-      - skippy/**/*
-      - tests/**/*
-      - tools/**/*
-      - vendor/**/*
-    SketchupRequirements:
-      Exclude:
-      - ruby-c-extension/**/*
-      - skippy/**/*
-      - tests/**/*
-      - tools/**/*
-      - vendor/**/*
-    SketchupSuggestions:
-      Exclude:
-      - ruby-c-extension/**/*
-      - skippy/**/*
-      - tests/**/*
-      - tools/**/*
-      - vendor/**/*
+    Exclude:
+    - Gemfile
+    - ruby-c-extension/**/*
+    - skippy/**/*
+    - tests/**/*
+    - tools/**/*
+    - vendor/**/*
   TargetRubyVersion: 2.0
   Exclude:
   - archive/**/*
@@ -188,6 +174,7 @@ Style/IfUnlessModifier:
 
 Style/MultilineIfModifier:
   Exclude:
+    - Gemfile
     - src/testup/file_reporter.rb
     - src/testup/ui.rb
     - src/testup/ui/adapters/htmldialog.rb
