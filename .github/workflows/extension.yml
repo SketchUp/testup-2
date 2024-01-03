@@ -33,3 +33,11 @@ jobs:
     - run: npm install
     - run: npm run build
     - run: npm run package
+        
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.0.0
+      with:
+        name: Extension
+        path: archive/*.rbz
+        if-no-files-found: error
+              
