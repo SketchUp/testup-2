@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 # of the unused groups have dependencies that cannot be resolved.
 # On Ruby 3.2 the Minitest 5.4.3 will fail, so applying this kludge to work
 # around that until Minitest is updated.
-CI_BUILD = ENV['ci']
+CI_BUILD = ENV['CI']
 
 group :development do
   gem 'colorize', '~> 0.8.1'
