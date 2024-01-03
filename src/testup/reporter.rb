@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2018 Trimble Inc.
+# Copyright 2013-2024 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ class Reporter < Minitest::StatisticsReporter
 
   def process_results(result)
     {
-      test_case_name: result.class.name,
+      test_case_name: result.klass,
       test_name:      result.name,
       run_time:       result.time,
       skipped:        result.skipped?,
