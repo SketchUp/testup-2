@@ -23,6 +23,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Find the short git sha.
+      id: vars
+      run: echo "sha_short=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_OUTPUT
+    # - name: Check outputs
+      # run: echo ${{ steps.vars.outputs.sha_short }}
+    # git_hash=$(git rev-parse --short "$GITHUB_SHA")
+    
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -34,6 +42,13 @@ jobs:
     - run: npm install
     - run: npm run build
     - run: npm run package
+
+    - shell: bash
+      run: |
+        cd $file_path && fVar=$(find -type f -name 'archive/*.rbz');
+        echo $fVar    # output is like ./file-1.2.0-SNAPSHOT.txt
+        fT=${fVar:2}  # removing first two characters'./'
+        echo "$fT"    # output is file-1.2.0-SNAPSHOT.txt
         
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4.0.0
