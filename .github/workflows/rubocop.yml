@@ -39,4 +39,4 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - run: bundle exec rubocop -V
     - name: Run RuboCop
-      run: bundle exec rubocop
+      run: bundle exec rubocop --debug
