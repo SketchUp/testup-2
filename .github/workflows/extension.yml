@@ -49,7 +49,7 @@ jobs:
         echo $fVar    # output is like ./file-1.2.0-SNAPSHOT.txt
         fT=${fVar:2}  # removing first two characters'./'
         echo "$fT"    # output is file-1.2.0-SNAPSHOT.txt
-        echo "File: $fVar" >> $GITHUB_OUTPUT
+        echo $fVar >> $GITHUB_OUTPUT
         
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4.0.0
