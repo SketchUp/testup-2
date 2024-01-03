@@ -3,7 +3,7 @@ name: RuboCop
 on:
   workflow_dispatch:
   push:
-    branches: [ "main", "dev/ci" ]
+    branches: [ "main", "dev/ci", "dev/ci-rubocop" ]
   pull_request:
     branches: [ "main" ]
 
