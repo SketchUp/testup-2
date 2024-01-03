@@ -14,7 +14,7 @@ module TestUp
     def self.require(gem_name, filename, version: Gem::Requirement.default)
       Kernel.require 'rubygems'
       begin
-        gem gem_name
+        gem gem_name, ">=#{version}"
       rescue Gem::LoadError
         puts "Installing Gem: #{gem_name} (Please wait...)"
         begin
@@ -24,7 +24,7 @@ module TestUp
           # a bug. This pattern is probably not that common, to be
           # programmatically installing gems.
         end
-        gem gem_name
+        gem gem_name, ">=#{version}"
       end
       Kernel.require filename
     end
