@@ -16,6 +16,7 @@
 /archive/
 /build/
 /tests_old/
+/vendor/
 Debug*/
 Release*/
 ipch/

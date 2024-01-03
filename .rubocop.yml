@@ -18,18 +18,21 @@ AllCops:
       - skippy/**/*
       - tests/**/*
       - tools/**/*
+      - vendor/**/*
     SketchupRequirements:
       Exclude:
       - ruby-c-extension/**/*
       - skippy/**/*
       - tests/**/*
       - tools/**/*
+      - vendor/**/*
     SketchupSuggestions:
       Exclude:
       - ruby-c-extension/**/*
       - skippy/**/*
       - tests/**/*
       - tools/**/*
+      - vendor/**/*
   TargetRubyVersion: 2.0
   Exclude:
   - archive/**/*
@@ -41,6 +44,7 @@ AllCops:
   - src/testup/third-party/**/*.rb
   - tests/**/*.rb # TODO - for now ignore.
   - tools/**/*.rb
+  - vendor/**/*.rb
 
 SketchupDeprecations:
   Enabled: true
