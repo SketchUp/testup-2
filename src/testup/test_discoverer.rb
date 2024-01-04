@@ -95,7 +95,15 @@ module TestUp
       # Log.debug ">>>> Sandbox.load(...)"
       testcase_source_files.each { |testcase_file|
         # Log.debug ">>>>   #{testcase_file}"
-        Sandbox.load(testcase_file)
+        begin
+          Sandbox.load(testcase_file)
+        rescue TestCaseLoadError => error
+          # TODO: Indicate in the UI that a test suite had loading errors.
+          testcase_name = File.basename(testcase_file, '.*')
+          warn "Failed to load test case: #{testcase_name} (#{testcase_file})"
+          warn error.original_error.inspect
+          warn error.original_error.backtrace.join("\n")
+        end
       }
       # Log.debug ">>>> Sandbox.test_classes(...)"
       Log.trace :discover, ">>>   test_cases: #{Sandbox.test_classes.size}"
@@ -125,9 +133,6 @@ module TestUp
         begin
           Kernel.load testcase_filename
         rescue ScriptError, StandardError => error
-          testcase_name = File.basename(testcase_filename, '.*')
-          warn "#{error.class} Loading #{testcase_name}"
-          warn self.format_load_backtrace(error)
           raise TestCaseLoadError.new(error)
         end
       end
