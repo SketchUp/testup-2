@@ -20,12 +20,12 @@ module TestUp
     ]
   end
   defaults = {
-    :editor_application => Editor.get_default[0],
-    :editor_arguments => Editor.get_default[1],
-    :seed => nil,
-    :run_in_gui => defined?(Sketchup),
-    :verbose_console_tests => true,
-    :paths_to_testsuites => test_suite_paths
+    editor_application: Editor.get_default[0],
+    editor_arguments: Editor.get_default[1],
+    seed: nil,
+    run_in_gui: defined?(Sketchup),
+    verbose_console_tests: true,
+    paths_to_testsuites: test_suite_paths
   }
 
   class << self
