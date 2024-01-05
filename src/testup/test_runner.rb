@@ -42,6 +42,8 @@ module TestUp
     # @param [Hash] options
     # return [nil]
     def run_tests(tests, options)
+      options[:verbose] = TestUp.settings[:verbose_console_tests]
+
       TestUp::FileReporter.set_run_info(@title, @path) # Hack!
       arguments = minitest_arguments(tests, options)
       # TODO: Update progressbar based on tests run.
