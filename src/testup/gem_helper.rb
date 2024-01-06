@@ -58,7 +58,8 @@ module TestUp
       if local_path
         puts '> Installing from local copy...'
         puts "> #{local_path}"
-        Gem.install(local_path)
+        Gem.install(local_path, nil, {domain: :local})
+        puts "> Installed #{gem_name}-#{version}"
       else
         puts '> Installing from Ruby Gems...'
         Gem.install(gem_name, version)
