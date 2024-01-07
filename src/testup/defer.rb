@@ -13,7 +13,7 @@ module TestUp
       UI.start_timer(seconds, false) do
         next if done
         done = true
-        block.call
+        yield
       end
     end
 

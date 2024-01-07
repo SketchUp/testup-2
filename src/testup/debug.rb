@@ -15,7 +15,7 @@ module TestUp
 
       def time(title = '', &block)
         start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        result = block.call
+        result = yield
         elapsed_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
         Log.trace :timing, "Timing #{title}: #{'%.5f' % elapsed_time}s"
         result
