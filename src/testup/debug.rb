@@ -14,10 +14,10 @@ module TestUp
     module Timing
 
       def time(title = '', &block)
-        start = Time.now
+        start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         result = block.call
-        lapsed_time = Time.now - start
-        Log.trace :timing, "Timing #{title}: #{lapsed_time}s"
+        elapsed_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+        Log.trace :timing, "Timing #{title}: #{'%.5f' % elapsed_time}s"
         result
       end
 
