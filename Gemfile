@@ -4,11 +4,13 @@ source 'https://rubygems.org'
 # of the unused groups have dependencies that cannot be resolved.
 # On Ruby 3.2 the Minitest 5.4.3 will fail, so applying this kludge to work
 # around that until Minitest is updated.
+# TODO: Look into removing this now that we're on Minitest 5.15. Though, does it
+# add much time for the CI run?
 CI_BUILD = ENV['CI']
 
 group :development do
   gem 'colorize', '~> 0.8.1'
-  gem 'minitest', '5.4.3'
+  gem 'minitest', '5.15.0'
   gem 'minitest-reporters-json_reporter'
   gem 'rubyzip', '~> 1.2'
   gem 'sketchup-api-stubs'

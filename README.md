@@ -6,7 +6,7 @@ TestUp is a wrapper on top of the [minitest](https://github.com/seattlerb/minite
 
 ## Requirements
 
-1. SketchUp 2014 or newer.
+1. SketchUp 2017 or newer. (For SketchUp 2014-2016, use [TestUp 2.4](https://github.com/SketchUp/testup-2/releases/tag/2.4.2))
 
 ## Setup for Extension Developers
 
@@ -22,7 +22,7 @@ Examples of extension projects implementing TestUp tests:
 
 ## Setup for Contributing/Running from Source
 
-TestUp require [NodeJS](https://nodejs.org) to build webdialog resources: https://nodejs.org/en/ (Version 10.4 was used to build TestUp 2.3)
+TestUp require [NodeJS](https://nodejs.org) to build webdialog resources: https://nodejs.org/en/ (Version 10.4 was used to build TestUp 2.3-2.5)
 
 1. Fork the project to your own GitHub account. This is important so that we can do code review on changes done.
 _Do **not** push directly to the main repository._
@@ -102,12 +102,12 @@ drop-down after choosing `Extensions > TestUp > Saved Runs > Set Re-play Run`.
 
 Windows:
 ```sh
- "C:\Program Files\SketchUp\SketchUp 2021\SketchUp.exe" -RubyStartupArg "TestUp:CI:Path: C:\Users\Thomas\SourceTree\TestUp2\tests\TestUp UI Tests" > results.json
+ "C:\Program Files\SketchUp\SketchUp 2023\SketchUp.exe" -RubyStartupArg "TestUp:CI:Path: C:\Users\Thomas\SourceTree\TestUp2\tests\TestUp UI Tests" > results.json
 ```
 
 macOS:
 ```
-'/Applications/SketchUp 2021/SketchUp.app/Contents/MacOS/sketchup' -RubyStartupArg 'TestUp:CI:Path: C:/Users/Thomas/SourceTree/TestUp2/tests/TestUp UI Tests' > results.json
+'/Applications/SketchUp 2023/SketchUp.app/Contents/MacOS/sketchup' -RubyStartupArg 'TestUp:CI:Path: C:/Users/Thomas/SourceTree/TestUp2/tests/TestUp UI Tests' > results.json
 ```
 
 In the example above TestUp will run a test suite given its path. The ` > results.json` will redirect the STDOUT to a file which will contain the JSON results of the test run.
@@ -153,12 +153,12 @@ Tests:
 
 Windows:
 ```sh
-"C:\Program Files\SketchUp\SketchUp 2021\SketchUp.exe" -RubyStartupArg "TestUp:CI:Config: \Full\Path\To\Config.yml"
+"C:\Program Files\SketchUp\SketchUp 2023\SketchUp.exe" -RubyStartupArg "TestUp:CI:Config: \Full\Path\To\Config.yml"
 ```
 
 macOS:
 ```sh
-'/Applications/SketchUp 2021/SketchUp.app/Contents/MacOS/sketchup' -RubyStartupArg 'TestUp:CI:Config: /Full/Path/To/Config.yml'
+'/Applications/SketchUp 2023/SketchUp.app/Contents/MacOS/sketchup' -RubyStartupArg 'TestUp:CI:Config: /Full/Path/To/Config.yml'
 ```
 
 ### Configuration File Variables
@@ -184,7 +184,7 @@ can attempt to install manually from a backup copy in this GitHub repository:
 
 ```ruby
 # From the SketchUp Ruby Console:
-Gem.install('/path/to/repo/testup-2/gems-backup/minitest-5.4.3.gem')
+Gem.install('/path/to/repo/testup-2/gems/minitest-5.15.0.gem')
 # Then restart SketchUp.
 ```
 

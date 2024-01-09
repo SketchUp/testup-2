@@ -4,16 +4,12 @@
   "namespace": "TestUp",
   "basename": "testup",
   "author": "Trimble Inc., SketchUp",
-  "copyright": "Copyright © 2010—2018",
+  "copyright": "Copyright © 2010—2024",
   "license": "MIT",
   "sources": [
     "github.com",
     "bitbucket.org"
   ],
-  "libraries": [
-
-  ],
-  "modules": [
-
-  ]
+  "libraries": [],
+  "modules": []
 }
