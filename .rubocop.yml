@@ -11,7 +11,7 @@ AllCops:
   SuggestExtensions: false
   SketchUp:
     SourcePath: src
-    TargetSketchUpVersion: 2014
+    TargetSketchUpVersion: 2016
     Exclude:
     - Gemfile
     - ruby-c-extension/**/*
@@ -19,7 +19,7 @@ AllCops:
     - tests/**/*
     - tools/**/*
     - vendor/**/*
-  TargetRubyVersion: 2.0
+  TargetRubyVersion: 2.2
   Exclude:
   - archive/**/*
   - build/**/*
