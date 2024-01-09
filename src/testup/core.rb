@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2018 Trimble Inc.
+# Copyright 2013-2024 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
@@ -9,7 +9,9 @@ require 'sketchup.rb'
 
 # TODO: Defer this to a point so it doesn't happen during SketchUp startup.
 require 'testup/gem_helper'
-TestUp::GemHelper.require('minitest', 'minitest', version: '5.4.3')
+
+# Minitest 5.15.0 is compatible with Ruby '>= 2.2, < 4.0', released 15-Dec-2021
+TestUp::GemHelper.require('minitest', 'minitest', version: '5.15.0')
 
 require 'testup/ui/runner' if defined?(UI::WebDialog)
 require 'testup/app'

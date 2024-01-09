@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2016 Trimble Inc.
+# Copyright 2013-2024 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ class FileReporter < Minitest::StatisticsReporter
 
   def record(result)
     super
-    io.puts "%s#%s = %.2f s = %s" % [result.class,
+    io.puts "%s#%s = %.2f s = %s" % [result.klass,
                                      result.name,
                                      result.time,
                                      result.result_code]
