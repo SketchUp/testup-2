@@ -61,6 +61,11 @@ module TestUp
     # rubocop:disable SketchupSuggestions/ModelEntities
     def start_with_empty_model
       model = Sketchup.active_model
+      # In case no model is open on mac.
+      if model.nil?
+        Sketchup.file_new
+        model = Sketchup.active_model
+      end
       model.abort_operation # Incase any operation is left hanging open.
       model.active_view.camera.aspect_ratio = 0.0
       model.start_operation('TestUp Empty Model', true)
