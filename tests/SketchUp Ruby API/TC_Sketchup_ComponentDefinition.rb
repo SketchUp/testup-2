@@ -232,7 +232,7 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
     path = "#{temp_dir}/my component.skp"
 
     assert(definition.save_as(path))
-    assert(File.exists?(path))
+    assert(File.exist?(path))
     assert_equal(definition.path, path)
   ensure
     File.delete(path)
@@ -254,7 +254,7 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
     path = "#{temp_dir}/my component.skp"
 
     assert(definition.save_as(path, Sketchup::Model::VERSION_2017))
-    assert(File.exists?(path))
+    assert(File.exist?(path))
     assert_equal(definition.path, path)
   ensure
     File.delete(path)
@@ -299,7 +299,7 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
     path = "#{temp_dir}/my component.skp"
 
     assert(definition.save_copy(path))
-    assert(File.exists?(path))
+    assert(File.exist?(path))
     assert(definition.path != path)
   ensure
     File.delete(path)
@@ -321,7 +321,7 @@ class TC_Sketchup_ComponentDefinition < TestUp::TestCase
     path = "#{temp_dir}/my component.skp"
 
     assert(definition.save_copy(path, Sketchup::Model::VERSION_2017))
-    assert(File.exists?(path))
+    assert(File.exist?(path))
     assert(definition.path != path)
   ensure
     File.delete(path)

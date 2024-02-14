@@ -5,7 +5,7 @@ module TestUp
       def create_test_image
         entities = Sketchup.active_model.entities
         filename = File.join(__dir__, "../shared/99bugs.jpg")
-        assert(File.exists?(filename), "File missing: #{filename}")
+        assert(File.exist?(filename), "File missing: #{filename}")
         image = Sketchup.active_model.entities.add_image(filename, ORIGIN, 1.m)
         image
       end
