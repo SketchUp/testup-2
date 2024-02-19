@@ -17,12 +17,11 @@ jobs:
 
     strategy:
       matrix:
-        # node-version: [10.4, 14.x, 16.x, 18.x]
-        node-version: [10.4]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/previous-releases
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup variables
       id: vars
@@ -44,7 +43,7 @@ jobs:
     - run: ruby ./tools/package.rb ${{ steps.vars.outputs.sha_short }}
 
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v4.0.0
+      uses: actions/upload-artifact@v4
       with:
         name: Extension
         path: archive/*.rbz
