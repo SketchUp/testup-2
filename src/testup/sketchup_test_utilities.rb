@@ -177,7 +177,7 @@ module TestUp
       stdout = $stdout
       $stdout = io_buffer
       set_verbose_mode(verbose) {
-        block.call
+        yield
       }
       io_buffer
     ensure
@@ -189,7 +189,7 @@ module TestUp
       stderr = $stderr
       $stderr = io_buffer
       set_verbose_mode(verbose) {
-        block.call
+        yield
       }
       io_buffer
     ensure
@@ -202,7 +202,7 @@ module TestUp
     def set_verbose_mode(mode, &block)
       verbose = $VERBOSE
       $VERBOSE = mode
-      block.call
+      yield
     ensure
       $VERBOSE = verbose
     end

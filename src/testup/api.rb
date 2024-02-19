@@ -170,7 +170,7 @@ module TestUp
         cache = ::Test.suppress_warnings?
         ::Test.suppress_warnings = true
       end
-      block.call
+      yield
     ensure
       if ::Test.respond_to?(:suppress_warnings=)
         ::Test.suppress_warnings = cache

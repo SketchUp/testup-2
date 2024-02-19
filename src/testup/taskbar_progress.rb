@@ -57,7 +57,7 @@ module TestUp
     set_state(NORMAL)
     result = collection.each_with_index { |object, index|
       set_value(index, total)
-      block.call(object)
+      yield object
     }
     result
   ensure
