@@ -116,7 +116,9 @@ module TestUp
     # @param [Hash] test_suite_json JSON data from JavaScript side.
     def event_run_tests(test_suite_json)
       Log.trace :callback, 'event_run_tests(...)'
-      options = {}
+      options = {
+        ui: TestUp.settings[:run_in_gui],
+      }
       test_suite = Report::TestSuite.from_hash(test_suite_json)
       TestUp::API.run_test_suite(test_suite, options: options) { |results|
         test_suite.merge_results(results)
@@ -131,7 +133,8 @@ module TestUp
       return unless run_file
       run_config = TestUp::Runs.read_config(run_file)
       options = {
-        seed: run_config[:seed]
+        seed: run_config[:seed],
+        ui: TestUp.settings[:run_in_gui],
       }
       tests = run_config[:tests]
       title = run_config[:test_suite]
