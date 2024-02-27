@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2018 Trimble Inc.
+# Copyright 2013-2024 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
@@ -27,6 +27,10 @@ module TestUp
     #
     # @param [TestUp::Report::TestSuite, Pathname, String] test_suite
     # @param [Hash] config
+    # @option config [String] 'Seed' Integer numeric for the Minitest random seed.
+    # @option config [String] 'Verbose' Turns on verbose reporting if key is present.
+    # @option config [String] 'Output' JSON file to output results to.
+    # @option config [Array] 'Tests'
     def self.run_suite_without_gui(test_suite, config = {})
       test_suite_path = if test_suite.is_a?(TestUp::Report::TestSuite)
                           Pathname.new(test_suite.path)
@@ -70,22 +74,33 @@ module TestUp
     end
 
     # @example Run a test case:
-    #   TestUp.run_tests(["TC_Sketchup_Edge#"])
+    #   TestUp::API.run_tests(["TC_Sketchup_Edge#"], path: path)
     #
     # @example Run single test:
-    #   TestUp.run_tests(["TC_Sketchup_Edge#start"])
+    #   TestUp::API.run_tests(["TC_Sketchup_Edge#start"], path: path)
     #
     # @example Run a set of test cases and/or tests:
     #   tests = [
     #     "TC_Sketchup_Face#",
     #     "TC_Sketchup_Edge#start", "TC_Sketchup_Edge#end"
     #   ]
-    #   TestUp.run_tests(tests)
+    #   path = "path/to/testsuite/"
+    #   TestUp::API.run_tests(tests, path: path)
+    #
+    # @todo The `path` parameter is not optional.
+    # @todo The `title` parameter should be extracted from the path.
     #
     # @param [Array<String>] tests list of tests or test cases to run.
     # @param [String] title Name of test_suite
     # @param [String] path Path to the test_suite
     # @param [Hash] options
+    # @option options [Boolean] :show_console Open the Ruby Console before running tests.
+    # @option options [Boolean] :clear_console Clear the Ruby Console before running tests.
+    # @option options [Boolean] :ci Generate JSON report to STDOUT.
+    # @option options [String] :ci_out Pipe JSON report to file.
+    # @option options [Boolean] :ui Update the TestUp dialog.
+    # @option options [Integer] :seed Set the randomization seed for Minitest.
+    # @option options [Boolean] :verbose
     # @yield [Report::TestSuite]
     # @return [Boolean]
     def self.run_tests(tests, title: 'Untitled', path: nil, options: {})
