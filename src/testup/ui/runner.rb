@@ -225,7 +225,7 @@ module TestUp
       nil
     end
 
-    # @param [Report::TestSuite] test_suite
+    # @param [Report::TestSuite] test_suites
     # @return [nil]
     def rediscover_tests(test_suites)
       Log.trace :discover, "rediscover_tests(...)"

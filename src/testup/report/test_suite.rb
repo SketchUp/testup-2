@@ -93,14 +93,14 @@ module TestUp
         self
       end
 
-      # @param [Report::TestCase, Symbol, String]
+      # @param [Report::TestCase, Symbol, String] test_case
       # @return [Report::TestCase]
       def test_case(test_case)
         @test_cases[test_case]
       end
       alias_method :[], :test_case
 
-      # @param [Report::TestCase, String]
+      # @param [Report::TestCase, String] test_case
       def test_case?(test_case)
         !test_case(test_case).nil?
       end

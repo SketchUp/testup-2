@@ -129,7 +129,7 @@ module TestUp
     # @param [String] title
     # @param [String] path
     # @param [Array<Hash>] results
-    # @result [Report::TestSuite]
+    # @return [Report::TestSuite]
     def self.test_suite_from_results(title, path, results)
       tests = {}
       results.each { |result|

@@ -75,3 +75,10 @@ Gemfile.lock
 
 src/testup/ui/js/*.*
 src/testup/ui/images/*
+
+############
+## Yard
+############
+
+.yardoc/
+doc/

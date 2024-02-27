@@ -25,7 +25,7 @@ module TestUp
 
     private
 
-    # @param [Array<Report::TestCase>] expected
+    # @param [Array<Report::TestCase>] expected_test_case
     # @param [Array<Report::TestCase>] missing
     # @return [Float]
     def compute_percentage(expected_test_case, missing)

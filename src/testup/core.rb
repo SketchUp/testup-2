@@ -83,7 +83,7 @@ module TestUp
   end
 
   # TODO(thomthom): Move this method. Maybe to the Reporter class if the
-  # @num_tests_being_run instance variable also can be moved there.
+  # `@num_tests_being_run`` instance variable also can be moved there.
   def self.update_testing_progress(num_tests_run)
     progress = TaskbarProgress.new
     progress.set_value(num_tests_run, @num_tests_being_run)
