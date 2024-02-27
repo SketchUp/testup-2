@@ -25,6 +25,11 @@ module TestUp
 
     # @param [Array<String>] tests
     # @param [Hash] options
+    # @option options [Boolean] :ci Generate JSON report to STDOUT.
+    # @option options [String] :ci_out Pipe JSON report to file.
+    # @option options [Boolean] :ui Update the TestUp dialog.
+    # @option options [Integer] :seed Set the randomization seed for Minitest.
+    # @option options [Boolean] :verbose
     # @yield [Array<Report::TestSuite>]
     # return [Boolean]
     def run(tests, options = {})
@@ -40,6 +45,11 @@ module TestUp
 
     # @param [Array<String>] tests
     # @param [Hash] options
+    # @option options [Boolean] :ci Generate JSON report to STDOUT.
+    # @option options [String] :ci_out Pipe JSON report to file.
+    # @option options [Boolean] :ui Update the TestUp dialog.
+    # @option options [Integer] :seed Set the randomization seed for Minitest.
+    # @option options [Boolean] :verbose
     # return [nil]
     def run_tests(tests, options)
       TestUp::FileReporter.set_run_info(@title, @path) # Hack!
@@ -64,6 +74,11 @@ module TestUp
 
     # @param [Array<String>] tests
     # @param [Hash] options
+    # @option options [Boolean] :ci Generate JSON report to STDOUT.
+    # @option options [String] :ci_out Pipe JSON report to file.
+    # @option options [Boolean] :ui Update the TestUp dialog.
+    # @option options [Integer] :seed Set the randomization seed for Minitest.
+    # @option options [Boolean] :verbose
     # return [Array<String>]
     def minitest_arguments(tests, options)
       arguments = []

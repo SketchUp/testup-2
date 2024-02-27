@@ -30,9 +30,10 @@ module Minitest
     end
   end
 
+  # @param [Hash] options Options provided by {.plugin_testup_options}
   def self.plugin_testup_init(options)
     TestUp::Log.trace :minitest, 'Minitest TestUp Extension loading...'
-    if TestUp.settings[:run_in_gui]
+    if options[:testup_gui]
       TestUp::Log.trace :minitest, 'Minitest TestUp Extension in GUI mode'
       # Disable the default reporters as otherwise they'll print lots of data to
       # the console while the test runs. No need for that.

@@ -116,7 +116,7 @@ module TestUp
       }
     end
 
-    # @param [Array<String>] testsuite_paths
+    # @param [Array<String>] testsuite_path
     # @return [Array<String>] Path to all test case files found.
     def discover_testcase_source_files(testsuite_path)
       # Log.debug ">>> #{self.class}.discover_testcase_source_files(...)"

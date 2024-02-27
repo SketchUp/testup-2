@@ -31,7 +31,7 @@ module TestUp
     end
 
     # @param [Symbol] category
-    # @param [Boolean]
+    # @return [Boolean]
     def self.tracing(category)
       @trace[category] || false
     end

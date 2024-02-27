@@ -17,7 +17,7 @@ module TestUp
   module Report
     class Collection < SortedSet
 
-      # @param [Integer, #hash]
+      # @param [Integer, #hash] value
       def [](value)
         # return @hash.keys[value] if value.is_a?(Integer)
         return each.to_a[value] if value.is_a?(Integer)

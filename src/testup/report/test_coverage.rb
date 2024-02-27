@@ -27,7 +27,7 @@ module TestUp
       end
 
       # @param [Float] percent
-      # @param [Hash, Array<Report::TestCase>]
+      # @param [Hash, Array<Report::TestCase>] missing
       def initialize(percent, missing)
         @percent = percent.to_f
         @missing = restructure(missing)

@@ -13,7 +13,7 @@ module TestUp
 
     attr_reader :filename
 
-    # @param [String] filename
+    # @param [String] manifest_filename
     def initialize(manifest_filename)
       @filename = manifest_filename
       @expected = parse_manifest(manifest_filename)

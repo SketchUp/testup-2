@@ -3,7 +3,7 @@ module TestUp
 # return a UI::Command object. So instead this module is used that will extend
 # the instance created with it's #create method.
 #
-# @example
+# @example Creating a Command object:
 #   cmd = Command.create('Hello World') {
 #     Extension.hello_world
 #   }

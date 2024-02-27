@@ -1,0 +1,7 @@
+--title "TestUp 2 for SketchUp - A GUI wrapper for running Minitest in SketchUp"
+--no-private
+--markup markdown
+src/**/*.rb
+-
+README.md
+LICENSE

@@ -11,7 +11,7 @@ module TestUp
 # TODO: Rename to CoverageDiscoverer
 class Coverage
 
-  # @param [String] settings_id
+  # @param [String] testsuite_path
   def initialize(testsuite_path)
     unless File.directory?(testsuite_path)
       raise ArgumentError, "Not a valid directory: #{testsuite_path}"
