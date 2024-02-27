@@ -47,7 +47,7 @@ module TestUp
         @id.hash
       end
 
-      # @param [Report::Test]
+      # @param [Report::Test] test
       # @return [Boolean]
       def merge_result(test)
         return false if test.result.nil?

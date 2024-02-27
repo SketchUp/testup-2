@@ -334,7 +334,7 @@ module TestUp
       end
 
       # @param [String] event
-      # @param [Integer] argument
+      # @param [Integer] argument_index
       # @param [Class] type
       # @param [Object] expected
       def assert_callback_data(event, argument_index, type, expected)
