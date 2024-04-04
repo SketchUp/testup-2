@@ -119,6 +119,9 @@ module TestUp
       options = {
         ui: TestUp.settings[:run_in_gui],
       }
+      if TestUp.settings[:seed] && TestUp.settings[:seed] >= 0
+        options[:seed] = TestUp.settings[:seed]
+      end
       test_suite = Report::TestSuite.from_hash(test_suite_json)
       TestUp::API.run_test_suite(test_suite, options: options) { |results|
         test_suite.merge_results(results)
