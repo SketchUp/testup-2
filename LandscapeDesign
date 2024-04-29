@@ -1,0 +1,116 @@
+require 'sketchup.rb'
+require 'extensions.rb'
+
+module LandscapeDesign
+  module AutomaticDesign
+
+    unless file_loaded?(__FILE__)
+      ex = SketchupExtension.new("Otomatik Peyzaj Tasarımı", "LandscapeDesign/main.rb")
+      ex.description = "Kullanıcı girdilerine dayalı otomatik 3D peyzaj tasarımı."
+      ex.version = "1.0.0"
+      ex.creator = "Adınız Buraya"
+      ex.sketchup_version = "20.0.0"
+      Sketchup.register_extension(ex, true)
+      file_loaded(__FILE__)
+    end
+
+    def self.launch_ui
+      prompts = ["Alan Büyüklüğü (m2)", "Peyzaj Öğeleri (Ağaçlar, Yollar, Su özellikleri)", "Fonksiyonel İhtiyaçlar", "Detay Seviyesi"]
+      defaults = ["100", "Ağaçlar:5, Yollar:20m-2m, Su özellikleri:5x5", "Dinlenme, Spor", "Yüksek"]
+      list = ["", "", "", "Yüksek|Düşük"]
+      input = UI.inputbox(prompts, defaults, list, "Peyzaj Tasarım Parametreleri")
+      if input
+        process_input(input)
+      else
+        UI.messagebox("İşlem iptal edildi veya eksik girdi.")
+      end
+    end
+
+    def self.process_input(input)
+      area, elements, needs, detail_level = input
+      area = area.to_f
+      model = Sketchup.active_model
+      entities = model.active_entities
+      model.start_operation('Create Landscape', true)
+      begin
+        elements_array = elements.split(',').map { |e| type, details = e.split(':'); { type: type.strip, details: details.strip } }
+        add_landscape_elements(entities, elements_array, area, detail_level)
+        costs = calculate_costs(entities)
+        create_technical_drawings(entities, detail_level)
+        model.commit_operation
+        UI.messagebox("Peyzaj tasarımı tamamlandı! Toplam Maliyet: #{costs}")
+      rescue => e
+        model.abort_operation
+        UI.messagebox("Hata: #{e.message}")
+      end
+    end
+
+    def self.add_landscape_elements(entities, elements, area, detail_level)
+      elements.each do |element|
+        case element[:type]
+        when "Ağaçlar"
+          add_trees(entities, area, element[:details], detail_level)
+        when "Yollar"
+          draw_paths(entities, element[:details], detail_level)
+        when "Su özellikleri"
+          add_water_features(entities, element[:details], detail_level)
+        end
+      end
+    end
+
+    def self.add_trees(entities, area, tree_details, detail_level)
+      species, count = tree_details.split(',')
+      count = count.to_i
+      spacing = calculate_spacing_for_trees(area, count)
+      tree_def = Sketchup.active_model.definitions.load("Trees/#{species}.skp")
+      count.times do
+        point = find_placement_point(area, spacing)
+        transformation = Geom::Transformation.new(point)
+        entities.add_instance(tree_def, transformation)
+      end
+    end
+
+    def self.draw_paths(entities, path_details, detail_level)
+      length, width = path_details.split('-')
+      points = [Geom::Point3d.new(0,0,0), Geom::Point3d.new(length.to_f,0,0), Geom::Point3d.new(length.to_f,width.to_f,0), Geom::Point3d.new(0,width.to_f,0)]
+      face = entities.add_face(points)
+      face.pushpull(-0.2)  # Yol kalınlığı için genel bir değer
+    end
+
+    def self.add_water_features(entities, water_feature_details, detail_level)
+      dimensions = water_feature_details.split('x').map(&:to_f)
+      water_feature_def = Sketchup.active_model.definitions.load("WaterFeatures/WaterFeature.skp")
+      scale = Geom::Transformation.scaling(dimensions[0], dimensions[1], 1)
+      entities.add_instance(water_feature_def, scale)
+    end
+
+    def self.calculate_costs(entities)
+      total_cost = entities.reduce(0) { |sum, entity| sum + (entity.definition.get_attribute('Costs', 'unit_cost', 0) * entity.count_instances) }
+      total_cost
+    end
+
+    def self.create_technical_drawings(entities, detail_level)
+      layers = Sketchup.active_model.layers
+      layer = layers.add("Technical Drawings")
+      entities.each do |entity|
+        next unless entity.is_a?(Sketchup::ComponentInstance)
+        bounds = entity.bounds
+        points = [bounds.corner(0), bounds.corner(1), bounds.corner(3), bounds.corner(2), bounds.corner(4), bounds.corner(5), bounds.corner(7), bounds.corner(6)]
+        face = entities.add_face(points)
+        face.layer = layer
+        face.material = "transparent"
+        add_dimensions(face)
+      end
+    end
+
+    def self.add_dimensions(face)
+      start_point = face.bounds.corner(0)
+      end_point = face.bounds.corner(1)
+      dimension = Sketchup.active_model.entities.add_dimension_linear(start_point, end_point, [0, 0, 100])
+      dimension.text = "Ölçü: #{(start_point.distance end_point).round(2)}m"
+    end
+
+  end
+end
+
+LandscapeDesign::AutomaticDesign.launch_ui
