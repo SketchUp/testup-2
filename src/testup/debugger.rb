@@ -32,11 +32,11 @@ module TestUp
 
     # Time the given block and output it to the system debugger.
     def self.time(title, &block)
-      start = Time.now
-      block.call
+      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      yield
     ensure
-      lapsed_time = Time.now - start
-      self.output("TestUp::Debugger.time: #{title} #{lapsed_time}s")
+      elapsed_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+      self.output("TestUp::Debugger.time: #{title} #{'%.5f' % elapsed_time}s")
       nil
     end
 

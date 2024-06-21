@@ -50,18 +50,23 @@ class FileReporter < Minitest::StatisticsReporter
     opts.delete(:io)
     opts_str = JSON.pretty_generate(opts)
 
-    io.puts "SketchUp: #{Sketchup.version}"
-    io.puts "    Ruby: #{RUBY_VERSION}"
-    io.puts "  TestUp: #{PLUGIN_VERSION}"
-    io.puts "Minitest: #{Minitest::VERSION}"
-    io.puts
-    io.puts "Platform: #{Sketchup.platform}"
-    io.puts "  Locale: #{Sketchup.get_locale}"
-    io.puts
-    io.puts "Run options: #{opts_str}"
-    io.puts
-    io.puts "# Running:"
-    io.puts
+    # use <<~HEADER and indent when minimum Ruby version is 2.5
+    header = <<-HEADER
+SketchUp: #{Sketchup.version}
+    Ruby: #{RUBY_VERSION}
+  TestUp: #{PLUGIN_VERSION}
+Minitest: #{Minitest::VERSION}
+
+Platform: #{Sketchup.platform}
+  Locale: #{Sketchup.get_locale}
+
+Run options: #{opts_str}
+
+# Running:
+
+    HEADER
+
+    io.puts header
 
     self.sync = io.respond_to? :"sync=" # stupid emacs
     self.old_sync, io.sync = io.sync, true if self.sync
@@ -73,10 +78,10 @@ class FileReporter < Minitest::StatisticsReporter
     io.sync = self.old_sync
 
     io.puts unless options[:verbose] # finish the dots
-    io.puts
-    io.puts statistics
-    io.puts aggregated_results
-    io.puts summary
+    io.puts '',
+      statistics,
+      aggregated_results,
+      summary
 
   ensure
     io.flush
@@ -110,10 +115,11 @@ class FileReporter < Minitest::StatisticsReporter
   alias to_s aggregated_results
 
   def summary
-    extra = ""
-
-    extra = "\n\nYou have skipped tests. Run with --verbose for details." if
-      results.any?(&:skipped?) unless options[:verbose] or ENV["MT_NO_SKIP_MSG"]
+    extra = if results.any?(&:skipped?) && !(options[:verbose] || ENV["MT_NO_SKIP_MSG"])
+      "\n\nYou have skipped tests. Run with --verbose for details."
+    else
+      ''
+    end
 
     "%d runs, %d assertions, %d failures, %d errors, %d skips%s" %
       [count, assertions, failures, errors, skips, extra]
@@ -124,7 +130,7 @@ class FileReporter < Minitest::StatisticsReporter
   def log_basename
     # File system friendly version of ISO 8601. Makes the logs be sortable in
     # the file browser.
-    version = Sketchup.version.split('.').first
+    version = Sketchup.version[/\A\d+/]
     timestamp = Time.now.strftime('%F_%H-%M-%S')
     "testup_#{timestamp}_su#{version}"
   end
@@ -137,15 +143,13 @@ class FileReporter < Minitest::StatisticsReporter
       seed: options[:seed],
       tests: tests
     }
-    filename = "su#{log_basename}.run"
-    filepath = File.join(log_path, filename)
+    filepath = "#{log_path}/su#{log_basename}.run"
     puts "Run log: #{filepath}"
     File.write(filepath, JSON.pretty_generate(log))
   end
 
   def create_log_file
-    filename = "#{log_basename}.log"
-    filepath = File.join(log_path, filename)
+    filepath = "#{log_path}/#{log_basename}.log"
     puts "Logging to: #{filepath}"
     File.open(filepath, 'w')
   end

@@ -36,7 +36,7 @@ module TestUp
             params_string = dialog.get_element_value('suBridge')
             params = params_string.empty? ? [] : JSON.parse(params_string)
           end
-          block.call(dialog, *params)
+          yield dialog, *params
         rescue JSON::ParserError
           p [callback_name, params_string]
           raise
