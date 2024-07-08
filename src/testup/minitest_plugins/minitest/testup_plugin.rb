@@ -50,6 +50,7 @@ module Minitest
     # self.reporter << TestUp::DebugReporter.new(options)
 
     if options[:testup_ci]
+      require 'testup/json_ci_reporter'
       self.reporter << TestUp::CIJsonReporter.new(options)
     end
   end
