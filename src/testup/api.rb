@@ -120,6 +120,7 @@ module TestUp
       Log.info "Running test suite: #{title}"
       Log.info "> Tests: #{tests.size}"
       Log.info "> Seed: #{options[:seed]}" if options[:seed]
+      Log.info "> Verbose: #{options[:verbose].inspect}"
 
       runner = TestRunner.new(title: title, path: path)
       runner.run(tests, options) { |results|
