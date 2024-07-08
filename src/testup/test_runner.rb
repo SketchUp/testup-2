@@ -86,7 +86,7 @@ module TestUp
       arguments << "-n /^(#{tests.join('|')})$/"
       # Enable for more verbose feedback.
       # arguments << '--verbose' if options[:verbose_console_tests]
-      arguments << '--verbose' if options[:verbose] # TODO:
+      arguments << '--verbose' if options[:verbose]
       # Allow tests to be run with a given seed, useful for replaying a test
       # that fails when run in a specific order.
       if options[:seed]

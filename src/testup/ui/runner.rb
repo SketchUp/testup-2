@@ -118,6 +118,7 @@ module TestUp
       Log.trace :callback, 'event_run_tests(...)'
       options = {
         ui: TestUp.settings[:run_in_gui],
+        verbose: TestUp.settings[:verbose_console_tests],
       }
       if TestUp.settings[:seed] && TestUp.settings[:seed] >= 0
         options[:seed] = TestUp.settings[:seed]
