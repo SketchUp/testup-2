@@ -45,10 +45,6 @@ module TestUp
               "Test suite path does not exist: #{test_suite_path.expand_path}"
       end
 
-      # GemHelper.require('minitest-reporters-json_reporter',
-      #                   'minitest/reporters/json_reporter')
-      # https://github.com/edhowland/minitest-reporters-json_reporter#usage
-      # Minitest::Reporters.use! [ Minitest::Reporters::JsonReporter.new ]
       # Loaded here on demand to defer gem installation.
       require 'testup/json_ci_reporter'
 
