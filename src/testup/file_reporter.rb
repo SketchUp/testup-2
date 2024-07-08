@@ -130,7 +130,7 @@ class FileReporter < Minitest::StatisticsReporter
   end
 
   def create_run_log(options)
-    tests = options[:filter].scan(/[(|]([A-za-z0-9#_]+)/).flatten.sort
+    tests = options[:filter].scan(/[(|]([A-za-z0-9#_:]+)/).flatten.sort
     log = {
       test_suite: @@title,
       path: @@path,
