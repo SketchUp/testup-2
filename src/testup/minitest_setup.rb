@@ -18,55 +18,73 @@ $stderr = TestUp::TESTUP_CONSOLE
 # run the tests when SketchUp exits because Minitest.autoload uses at_exit {}.
 
 require "rubygems"
+gem "minitest"
+require "minitest"
 require "minitest/spec"
 require "minitest/mock"
 
-module TestUp
-  module MinitestPrepend
-    def run_one_method(klass, method_name)
-      TestUp::Debugger.output("Running: #{klass.name}.#{method_name}")
-      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      result = super
-      elapsed_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
-      TestUp::Debugger.output("> Elapsed time: #{'%.5f' % elapsed_time}s")
-      result
-    end
-  end
 
-  module RunnablePrepend
-    def run(reporter, options = {})
-      filter = options[:filter] || '/./'
-      filter = Regexp.new $1 if filter =~ /\/(.*)\//
+# TestUp modifications of Minitest.
+module Minitest
 
-      filtered_methods = runnable_methods.find_all { |m|
-        filter === m || filter === "#{self}##{m}"
-      }
+  class << self
 
-      with_info_handler reporter do
-        # Custom TestUp hook
-        if !filtered_methods.empty? && self.respond_to?(:setup_testcase)
-          TestUp::Debugger.output("setup_testcase: #{self.name}")
-          setup_testcase
-        end
-
-        filtered_methods.each do |method_name|
-          run_one_method self, method_name, reporter
-        end
-
-        # Custom TestUp hook
-        if !filtered_methods.empty? && self.respond_to?(:teardown_testcase)
-          TestUp::Debugger.output("teardown_testcase: #{self.name}")
-          teardown_testcase
-        end
+    # In case some tests cause crashes it's nice if the name of the test is
+    # output to the debugger before the test is run.
+    # TODO(thomthom): Review if this can be done without overriding the method.
+    unless method_defined?(:testup_run_one_method)
+      alias :testup_run_one_method :run_one_method
+      def run_one_method(*args)
+        klass, method_name, reporter = args
+        TestUp::Debugger.output("Running: #{klass.name}.#{method_name}")
+        start_time = Time.now
+        result = self.testup_run_one_method(*args)
+        lapsed_time = Time.now - start_time
+        TestUp::Debugger.output("> Elapsed time: #{lapsed_time}s")
+        result
       end
-    end # def run
-  end
-end
+    end
 
-# TestUp modifications of Minitest
-Minitest.singleton_class.prepend TestUp::MinitestPrepend
+  end # class << self
 
-Minitest::Runnable.prepend TestUp::RunnablePrepend
+  class Runnable
+    class << self
+      unless method_defined?(:testup_run)
+        alias :testup_run :run
+        # This is mostly a copy+paste of Minitest::Runnable.run method from v5.4.3.
+        # It adds hooks called before and after a testcase is run.
+        # It's to allow setup or tests that might be slow to setup.
+        def run(reporter, options = {})
+          filter = options[:filter] || '/./'
+          filter = Regexp.new $1 if filter =~ /\/(.*)\//
+
+          filtered_methods = self.runnable_methods.find_all { |m|
+            filter === m || filter === "#{self}##{m}"
+          }
+
+          with_info_handler reporter do
+            # Custom TestUp hook
+            if !filtered_methods.empty? && self.respond_to?(:setup_testcase)
+              TestUp::Debugger.output("setup_testcase: #{self.name}")
+              self.setup_testcase
+            end
+
+            filtered_methods.each do |method_name|
+              run_one_method self, method_name, reporter
+            end
+
+            # Custom TestUp hook
+            if !filtered_methods.empty? && self.respond_to?(:teardown_testcase)
+              TestUp::Debugger.output("teardown_testcase: #{self.name}")
+              self.teardown_testcase
+            end
+          end
+        end # def run
+      end
+    end # class << self
+  end # class Runnable
+
+end # module Minitest
 
 
 # TODO(thomthom): Not sure if this is needed.
