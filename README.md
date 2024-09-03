@@ -132,6 +132,11 @@ Output: C:\Users\Thomas\SourceTree\TestUp2\tests\results.json
 LogPath: C:\Users\Thomas\SourceTree\TestUp2\logs
 
 # Optional:
+# Path to a .log file that will be used if TestUp itself runs into any errors
+# while running the tests.
+ErrorLogPath: C:\Users\Thomas\SourceTree\TestUp2\testup_errors.log
+
+# Optional:
 # Overriding where the .run files from a test run will be saved.
 SavedRunsPath: C:\Users\Thomas\SourceTree\TestUp2\logs
 

@@ -28,7 +28,17 @@ module TestUp
     # @param [Hash] config
     def self.ci_run(test_suite, config = {})
       Execution.delay(1.0) do
-        API.run_suite_without_gui(test_suite, config)
+        begin
+          API.run_suite_without_gui(test_suite, config)
+        rescue Exception => error
+          # Ensure we log the error to a file so the CI system can log it.
+          if config['ErrorLogPath']
+            File.open(config['ErrorLogPath'], 'w') { |file|
+              file.puts(error.inspect)
+              file.puts(error.backtrace.join("\n"))
+            }
+          end
+        end
         self.quit unless config['KeepOpen']
       end
     end
