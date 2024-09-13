@@ -6,13 +6,13 @@ TestUp is a wrapper on top of the [minitest](https://github.com/seattlerb/minite
 
 ## Requirements
 
-1. SketchUp 2017 or newer. (For SketchUp 2014-2016, use [TestUp 2.4](https://github.com/SketchUp/testup-2/releases/tag/2.4.2))
+1. SketchUp 2017 or newer. (For SketchUp 2014 - 2016, use [TestUp 2.4](https://github.com/SketchUp/testup-2/releases/tag/2.4.2))
 
 ## Setup for Extension Developers
 
 Easy: Download RBZ from the [Releases tab on GitHub](https://github.com/SketchUp/testup-2/releases).
 
-Latest: Install TestUp from `git` source (See Setup for Contributing). Requires [Node](https://nodejs.org) to build webdialog content before 2.3+ versions can be used.
+Latest: Install TestUp from `git` source (See Setup for Contributing). Requires [Node.js](https://nodejs.org) to build webdialog content before 2.3+ versions can be used.
 
 Check out the [wiki](https://github.com/SketchUp/testup-2/wiki) for details on creating tests. Make sure to also refer to [minitest documentation](http://docs.seattlerb.org/minitest/).
 
@@ -22,7 +22,7 @@ Examples of extension projects implementing TestUp tests:
 
 ## Setup for Contributing/Running from Source
 
-TestUp require [NodeJS](https://nodejs.org) to build webdialog resources: https://nodejs.org/en/ (Version 10.4 was used to build TestUp 2.3-2.5)
+TestUp require [Node.js](https://nodejs.org) to build webdialog resources: https://nodejs.org/en/. Node.js 16.20.2 is used currently, Node.js 10.4 was used to build TestUp 2.3 - 2.5.
 
 1. Fork the project to your own GitHub account. This is important so that we can do code review on changes done.
 _Do **not** push directly to the main repository._
