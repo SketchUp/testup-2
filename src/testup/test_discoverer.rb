@@ -101,7 +101,7 @@ module TestUp
           # TODO: Indicate in the UI that a test suite had loading errors.
           testcase_name = File.basename(testcase_file, '.*')
           warn "Failed to load test case: #{testcase_name} (#{testcase_file})"
-          warn error.original_error.inspect
+          warn error.original_error.to_s
           warn error.original_error.backtrace.join("\n")
         end
       }
