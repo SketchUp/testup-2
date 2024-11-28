@@ -180,6 +180,16 @@ Path: "%CONFIG_DIR%/tests/TestUp UI Tests"
 Output: "%CONFIG_DIR%/tests/ui-tests-results.json"
 ```
 
+## Running from Ruby Console
+
+```rb
+tests = [
+  "TC_Sketchup_Model#test_active_section_planes.+",
+]
+path = "C:/src/testup-2/tests/SketchUp Ruby API/"
+TestUp::API.run_tests(tests, path: path, options: { ui: false })
+```
+
 ## Troubleshooting
 
 ### Minitest
