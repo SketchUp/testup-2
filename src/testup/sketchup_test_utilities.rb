@@ -67,7 +67,7 @@ module TestUp
         model = Sketchup.active_model
       end
       model.abort_operation # Incase any operation is left hanging open.
-      model.active_view.camera.aspect_ratio = 0.0
+      model.active_view&.camera&.aspect_ratio = 0.0
       model.start_operation('TestUp Empty Model', true)
       while model.close_active; end
       for entity in model.entities.to_a
