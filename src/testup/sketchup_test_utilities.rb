@@ -58,6 +58,12 @@ module TestUp
     SKETCHUP_RANGE_MAX = -1.0e30
     SKETCHUP_RANGE_MIN =  1.0e30
 
+    def sketchup_mdi?
+      return Sketchup.mdi? if Sketchup.respond_to?(:mdi?)
+
+      Sketchup.platform == :platform_osx
+    end
+
     # rubocop:disable SketchupSuggestions/ModelEntities
     def start_with_empty_model
       model = Sketchup.active_model
@@ -95,12 +101,13 @@ module TestUp
     end
     # rubocop:enable SketchupSuggestions/ModelEntities
 
+    # TODO: Needed?
     def open_new_model
       model = Sketchup.active_model
       if model.respond_to?(:close)
         # Suppress dialog boxes due to model changes.
         model.close(true)
-        if Sketchup.platform == :platform_osx
+        if Sketchup.active_model.nil?
           Sketchup.file_new
         end
       else
@@ -108,25 +115,43 @@ module TestUp
       end
     end
 
+    # TODO: Needed?
     def discard_model_changes
       model = Sketchup.active_model
       if model.respond_to?(:close)
         model.close(true)
-        if Sketchup.platform == :platform_osx
+        if Sketchup.active_model.nil?
           Sketchup.file_new
         end
       end
     end
 
+    def discard_all_models_and_open_new
+      discard_all_models
+      Sketchup.file_new if Sketchup.active_model.nil?
+      Sketchup.active_model
+    end
+
+
+    def discard_all_models_and_open(filename)
+      discard_all_models
+      if Sketchup.version.to_i >= 21
+        Sketchup.open_file(filename, with_status: true)
+      else
+        Sketchup.open_file(filename)
+      end
+      Sketchup.active_model
+    end
+
     # Closes all open models and creates a new one.
     def discard_all_models
       model = Sketchup.active_model
-      if Sketchup.platform == :platform_osx
+      if sketchup_mdi?
         until model.nil?
-          model.close(true) if model
+          model.close(true)
           model = Sketchup.active_model
         end
-        Sketchup.file_new
+        Sketchup.file_new if Sketchup.active_model.nil?
         model = Sketchup.active_model
       else
         model.close(true) # On Windows this creates a new model.
@@ -141,6 +166,7 @@ module TestUp
       end
     end
 
+    # TODO: Needed?
     def disable_read_only_flag_for_test_models
       return false if Test.respond_to?(:suppress_warnings=)
       source = caller_locations(1,1)[0].absolute_path
@@ -158,6 +184,7 @@ module TestUp
       true
     end
 
+    # TODO: Needed?
     def restore_read_only_flag_for_test_models
       return false if Test.respond_to?(:suppress_warnings=)
       source = caller_locations(1,1)[0].absolute_path
