@@ -27,7 +27,7 @@ module AppFiles
 
     def self.saved_runs_path
       @saved_runs_path ||= default_saved_runs_path
-      ensure_exist(saved_runs_path)
+      ensure_exist(@saved_runs_path)
     end
 
     def self.saved_runs_path=(path)
