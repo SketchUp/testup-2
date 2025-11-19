@@ -110,6 +110,8 @@ module TestUp
 
   # Opens the Log directory in the system file explorer.
   def self.open_log_folder
+    puts log_path
+    path = "file:///#{log_path}"
     UI.openURL(log_path)
   end
 
