@@ -68,7 +68,16 @@ module TestUp
     def self.quit
       # Discard any model changes from the tests running, so we can exit
       # SketchUp without any dialog prompts.
-      Sketchup.active_model.close(true)
+      if Sketchup.respond_to?(:mdi?) && Sketchup.mdi?
+        model = Sketchup.active_model
+        until model.nil?
+          model.close(true)
+          model = Sketchup.active_model
+        end
+      else
+        # SDI code path. Assuming Windows build. macOS build were never SDI.
+        Sketchup.active_model.close(true)
+      end
 
       Execution.delay(1.0) do
         # Seems to get an Access Violation otherwise.
