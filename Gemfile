@@ -14,12 +14,12 @@ group :development do
   gem 'minitest-reporters-json_reporter'
   gem 'rubyzip', '~> 1.2'
   gem 'sketchup-api-stubs'
-  gem 'skippy', '~> 0.5.1.a'
+  gem 'skippy', '~> 0.5.2.a'
   gem 'solargraph'
 end unless CI_BUILD
 
 group :analytics do
-  gem 'rubocop', '>= 0.82', '< 2.0'
-  gem 'rubocop-sketchup', '~> 1.3.0'
-  gem 'rubocop-performance', '~> 1.15.0'
+  gem 'rubocop', '>= 1.72', '< 2.0'
+  gem 'rubocop-sketchup', '~> 2.1.1'
+  gem 'rubocop-performance', '~> 1.15'
 end
