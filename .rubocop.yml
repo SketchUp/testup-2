@@ -1,5 +1,7 @@
 # inherit_from: .rubocop_todo.yml
 
+require: []
+
 plugins:
   - rubocop-performance
   - rubocop-sketchup
@@ -30,7 +32,7 @@ AllCops:
   - src/testup/third-party/**/*.rb
   - tests/**/*.rb # TODO - for now ignore.
   - tools/**/*.rb
-  - vendor/**/*.rb
+  - vendor/**/*
 
 SketchupDeprecations:
   Enabled: true
