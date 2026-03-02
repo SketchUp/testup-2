@@ -44,9 +44,9 @@ jobs:
     - run: ruby ./tools/package.rb ${{ steps.vars.outputs.sha_short }}
 
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v4.0.0
+      uses: actions/upload-artifact@v7
       with:
         name: Extension
         path: archive/*.rbz
         if-no-files-found: error
-
+        archive: false
