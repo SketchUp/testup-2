@@ -95,7 +95,7 @@ if File.exist?(archive)
   File.delete(archive)
 end
 
-Zip::File.open(archive, Zip::File::CREATE) do |zipfile|
+Zip::File.open(archive, create: true) do |zipfile|
   build_files = Dir.glob(build_files_pattern)
   build_files.each { |file_item|
     next if File.directory?(file_item)
