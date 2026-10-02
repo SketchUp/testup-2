@@ -20,6 +20,9 @@ module Minitest
     opts.on '-t', '--testup', 'Run tests in TestUp GUI.' do
       options[:testup_gui] = true
     end
+    opts.on '--testup_quiet', 'Print nothing but what the tests print.' do
+      options[:testup_quiet] = true
+    end
     opts.on '--testup_ci', 'Generate JSON report to STDOUT.' do
       options[:testup_ci] = true
     end
@@ -34,12 +37,16 @@ module Minitest
     TestUp::Log.trace :minitest, 'Minitest TestUp Extension loading...'
     if options[:testup_gui]
       TestUp::Log.trace :minitest, 'Minitest TestUp Extension in GUI mode'
+    else
+      TestUp::Log.trace :minitest, 'Minitest TestUp Extension in console mode'
+    end
+    if options[:testup_gui] || options[:testup_quiet]
       # Disable the default reporters as otherwise they'll print lots of data to
       # the console while the test runs. No need for that.
       self.reporter.reporters.clear
+    end
+    if options[:testup_gui] && !options[:testup_quiet]
       self.reporter << TestUp::SummaryReporter.new($stdout, options)
-    else
-      TestUp::Log.trace :minitest, 'Minitest TestUp Extension in console mode'
     end
     # Always record the results, so API.run_tests can pass them on.
     self.reporter << TestUp::Reporter.new($stdout, options)

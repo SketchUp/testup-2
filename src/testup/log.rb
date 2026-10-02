@@ -37,7 +37,17 @@ module TestUp
     end
 
     def self.info(*args)
-      puts(*args)
+      puts(*args) unless @quiet
+    end
+
+    # Leaves out `info` messages while the block runs, if `quiet` is true.
+    # Warnings are still shown.
+    def self.quietly(quiet)
+      previous = @quiet
+      @quiet = quiet
+      yield
+    ensure
+      @quiet = previous
     end
 
     def self.debug(*args)

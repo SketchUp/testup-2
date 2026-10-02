@@ -10,6 +10,7 @@ require 'json'
 require 'pp'
 require 'testup/minitest_setup.rb'
 require 'testup/app_files.rb'
+require 'testup/log'
 
 
 module TestUp
@@ -139,14 +140,14 @@ class FileReporter < Minitest::StatisticsReporter
     }
     filename = "su#{log_basename}.run"
     filepath = File.join(log_path, filename)
-    puts "Run log: #{filepath}"
+    Log.info "Run log: #{filepath}"
     File.write(filepath, JSON.pretty_generate(log))
   end
 
   def create_log_file
     filename = "#{log_basename}.log"
     filepath = File.join(log_path, filename)
-    puts "Logging to: #{filepath}"
+    Log.info "Logging to: #{filepath}"
     File.open(filepath, 'w')
   end
 

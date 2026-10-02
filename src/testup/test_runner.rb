@@ -30,6 +30,7 @@ module TestUp
     # @option options [Boolean] :ui Update the TestUp dialog.
     # @option options [Integer] :seed Set the randomization seed for Minitest.
     # @option options [Boolean] :verbose
+    # @option options [Boolean] :quiet Print nothing but what the tests print.
     # @yield [Array<Report::TestSuite>]
     # @raise [ArgumentError] if any of the tests matches nothing in the suite.
     # return [Boolean]
@@ -98,6 +99,7 @@ module TestUp
       # When running TestUp from the UI, make sure to load the Minitest plugin.
       # arguments << '--testup' if options[:run_in_gui]
       arguments << '--testup' if options[:ui] # TODO:
+      arguments << '--testup_quiet' if options[:quiet]
       arguments << '--testup_ci' if options[:ci]
       arguments << "--testup_ci_out=#{options[:ci_out]}" if options[:ci_out]
       arguments

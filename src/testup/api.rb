@@ -97,6 +97,8 @@ module TestUp
     # @option options [Boolean] :ui Update the TestUp dialog.
     # @option options [Integer] :seed Set the randomization seed for Minitest.
     # @option options [Boolean] :verbose
+    # @option options [Boolean] :quiet Print nothing but what the tests
+    #   themselves print. The log files are still written.
     # @yield [Report::TestSuite] the results, whether or not :ui is set.
     # @raise [ArgumentError] if any of the tests matches nothing in the suite.
     # @return [Boolean]
@@ -111,18 +113,20 @@ module TestUp
         return false
       end
 
-      # Dump some test information that might be useful when reviewing test runs.
-      TestUp::Debugger.output("Minitest Version: #{Minitest::VERSION}")
-      Log.info "Minitest Version: #{Minitest::VERSION}"
-      Log.info "Running test suite: #{title}"
-      Log.info "> Tests: #{tests.size}"
-      Log.info "> Seed: #{options[:seed]}" if options[:seed]
-      Log.info "> Verbose: #{options[:verbose].inspect}"
+      Log.quietly(options[:quiet]) {
+        # Dump some test information that might be useful when reviewing test runs.
+        TestUp::Debugger.output("Minitest Version: #{Minitest::VERSION}")
+        Log.info "Minitest Version: #{Minitest::VERSION}"
+        Log.info "Running test suite: #{title}"
+        Log.info "> Tests: #{tests.size}"
+        Log.info "> Seed: #{options[:seed]}" if options[:seed]
+        Log.info "> Verbose: #{options[:verbose].inspect}"
 
-      runner = TestRunner.new(title: title, path: path)
-      runner.run(tests, options) { |results|
-        # TODO: TestRunner should carry forward title and path.
-        yield test_suite_from_results(title, path, results) if block_given?
+        runner = TestRunner.new(title: title, path: path)
+        runner.run(tests, options) { |results|
+          # TODO: TestRunner should carry forward title and path.
+          yield test_suite_from_results(title, path, results) if block_given?
+        }
       }
     end
 
