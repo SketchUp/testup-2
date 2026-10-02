@@ -37,11 +37,12 @@ module Minitest
       # Disable the default reporters as otherwise they'll print lots of data to
       # the console while the test runs. No need for that.
       self.reporter.reporters.clear
-      # Add the reporters needed for TestUp.
-      self.reporter << TestUp::Reporter.new($stdout, options)
+      self.reporter << TestUp::SummaryReporter.new($stdout, options)
     else
       TestUp::Log.trace :minitest, 'Minitest TestUp Extension in console mode'
     end
+    # Always record the results, so API.run_tests can pass them on.
+    self.reporter << TestUp::Reporter.new($stdout, options)
     # Always log to file.
     # TODO(thomthom): Will this add multiple FileReporters?
     self.reporter << TestUp::FileReporter.new(options)

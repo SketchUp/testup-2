@@ -97,7 +97,7 @@ module TestUp
     # @option options [Boolean] :ui Update the TestUp dialog.
     # @option options [Integer] :seed Set the randomization seed for Minitest.
     # @option options [Boolean] :verbose
-    # @yield [Report::TestSuite]
+    # @yield [Report::TestSuite] the results, whether or not :ui is set.
     # @return [Boolean]
     def self.run_tests(tests, title: 'Untitled', path: nil, options: {})
       if options[:show_console]

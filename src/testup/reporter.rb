@@ -17,6 +17,10 @@ module TestUp
 #
 #   If you want to create an entirely different type of output (eg,
 #   CI, HTML, etc), this is the place to start.
+#
+# Records the result of each test, for {API.run_tests} to pass on. Used in
+# every run, whether or not it is shown in the TestUp window, and prints
+# nothing.
 class Reporter < Minitest::StatisticsReporter
 
   @@results = []
@@ -29,23 +33,6 @@ class Reporter < Minitest::StatisticsReporter
     super
     # TODO(thomthom): Make this into an instance variable.
     @@results = []
-  end
-
-  def report
-    super
-    io.puts separator
-    io.puts
-    io.puts 'TestUp Results'.center(40)
-    io.puts
-    io.puts separator
-    io.puts
-    io.puts "     Tests: #{self.count}"
-    io.puts "Assertions: #{self.assertions}"
-    io.puts "  Failures: #{self.failures}"
-    io.puts "    Errors: #{self.errors}"
-    io.puts "     Skips: #{self.skips}"
-    io.puts
-    io.puts separator
   end
 
   def record(result)
@@ -75,6 +62,31 @@ class Reporter < Minitest::StatisticsReporter
       }
     }
   end
+
+end # class
+
+# Prints a summary of the run to the console, in place of Minitest's own
+# output, which is turned off when tests run in the TestUp window.
+class SummaryReporter < Minitest::StatisticsReporter
+
+  def report
+    super
+    io.puts separator
+    io.puts
+    io.puts 'TestUp Results'.center(40)
+    io.puts
+    io.puts separator
+    io.puts
+    io.puts "     Tests: #{self.count}"
+    io.puts "Assertions: #{self.assertions}"
+    io.puts "  Failures: #{self.failures}"
+    io.puts "    Errors: #{self.errors}"
+    io.puts "     Skips: #{self.skips}"
+    io.puts
+    io.puts separator
+  end
+
+  private
 
   def separator
     '-' * 40
