@@ -63,11 +63,15 @@ module TestUp
         self
       end
 
+      # Tests that are missing, because they were removed from the test case
+      # after it was discovered, are left out, since they can't be run.
+      #
       # @return [Array<String>]
       def selected_tests
         tests = []
         test_cases.each { |test_case|
           test_case.tests.each { |test|
+            next if test.missing?
             tests << "#{test_case.title}##{test.title}" if test.enabled?
           }
         }

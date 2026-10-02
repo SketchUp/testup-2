@@ -98,6 +98,7 @@ module TestUp
     # @option options [Integer] :seed Set the randomization seed for Minitest.
     # @option options [Boolean] :verbose
     # @yield [Report::TestSuite] the results, whether or not :ui is set.
+    # @raise [ArgumentError] if any of the tests matches nothing in the suite.
     # @return [Boolean]
     def self.run_tests(tests, title: 'Untitled', path: nil, options: {})
       if options[:show_console]

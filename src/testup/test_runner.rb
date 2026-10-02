@@ -31,11 +31,13 @@ module TestUp
     # @option options [Integer] :seed Set the randomization seed for Minitest.
     # @option options [Boolean] :verbose
     # @yield [Array<Report::TestSuite>]
+    # @raise [ArgumentError] if any of the tests matches nothing in the suite.
     # return [Boolean]
     def run(tests, options = {})
       return false if tests.empty?
-      API.discover_tests([@path])
+      test_suite = API.discover_tests([@path]).first
       test_pattern = parse(tests)
+      check_tests_exist(tests, test_pattern, test_suite)
       run_tests(test_pattern, options)
       yield Reporter.results
       true
@@ -110,6 +112,28 @@ module TestUp
       tests.map { |pattern|
         pattern.end_with?('#') ? "#{pattern}.+" : pattern
       }
+    end
+
+    # Minitest runs nothing for a pattern that matches no test, without saying
+    # so. Checking first turns a mistyped or outdated name into an error.
+    #
+    # @param [Array<String>] tests as given by the caller.
+    # @param [Array<String>] patterns from {#parse}.
+    # @param [Report::TestSuite, nil] test_suite
+    # @raise [ArgumentError]
+    def check_tests_exist(tests, patterns, test_suite)
+      test_cases = test_suite ? test_suite.test_cases : []
+      available = test_cases.flat_map { |test_case|
+        test_case.tests.map { |test| "#{test_case.title}##{test.title}" }
+      }
+      unmatched = tests.zip(patterns).map { |test, pattern|
+        regex = /\A(?:#{pattern})\z/
+        test unless available.any? { |name| regex.match?(name) }
+      }.compact
+      return if unmatched.empty?
+
+      raise ArgumentError, "No tests match: #{unmatched.join(', ')}. " \
+                           "Test cases in #{@path}: #{test_cases.map(&:title).join(', ')}"
     end
 
   end # class

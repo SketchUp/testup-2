@@ -257,6 +257,18 @@ module Tests
     end
 
 
+    def test_selected_tests
+      tests = [
+        TestUp::Report::Test.new('test_enabled'),
+        TestUp::Report::Test.new('test_disabled', enabled: false),
+        TestUp::Report::Test.new('test_missing', missing: true),
+      ]
+      test_cases = [TestUp::Report::TestCase.new('TC_Foo', tests)]
+      suite = TestUp::Report::TestSuite.new('Example Suite', FAKE_PATH, test_cases)
+      assert_equal(['TC_Foo#test_enabled'], suite.selected_tests)
+    end
+
+
     def test_test_cases_sorted
       test_cases = [
         TestUp::Report::TestCase.new('TC_Foo'),
