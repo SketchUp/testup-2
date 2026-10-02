@@ -106,9 +106,9 @@ module TestUp
     def parse(tests)
       # If tests end with a `#` it means the whole test case should be run.
       # Automatically fix the regex so Minitest pick it up correctly.
+      # New strings, so the caller's are left as they were.
       tests.map { |pattern|
-        pattern << '.+' if pattern =~ /\#$/
-        pattern
+        pattern.end_with?('#') ? "#{pattern}.+" : pattern
       }
     end
 
