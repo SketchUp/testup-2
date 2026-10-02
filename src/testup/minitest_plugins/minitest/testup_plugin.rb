@@ -18,7 +18,6 @@ module Minitest
 
   def self.plugin_testup_options opts, options # :nodoc:
     opts.on '-t', '--testup', 'Run tests in TestUp GUI.' do
-      TestUp.settings[:run_in_gui] = true
       options[:testup_gui] = true
     end
     opts.on '--testup_ci', 'Generate JSON report to STDOUT.' do
