@@ -106,9 +106,9 @@ module TestUp
       TESTUP_CONSOLE.clear
       window_visible = @window && @window.visible?
       @window.close if window_visible
-      @window = TestUpWindow.new
-      @window.show if window_visible
       puts "Reloaded #{self.reload} files!"
+      @window = TestRunnerWindow.new
+      @window.show if window_visible
     }
     cmd.tooltip = 'Reload TestUp'
     cmd.small_icon = File.join(PATH_IMAGES, 'arrow_refresh.png')
