@@ -6,6 +6,7 @@
         "noImplicitReturns": true,
         "module": "es2015",
         "moduleResolution": "node",
+        "typeRoots": ["./node_modules/@types"],
         "lib": ["dom", "es2015", "es2016.array.include"],
         "target": "es5"
     },

@@ -1,8 +1,9 @@
 var path = require('path')
 var webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
-module.exports = {
+const baseConfig = {
   entry: {
     // https://github.com/webpack/docs/wiki/multiple-entry-points
     // Add new dialogs here:
@@ -80,18 +81,24 @@ module.exports = {
   ]
 }
 
-// console.log('NODE_ENV', process.env.NODE_ENV);
-if (process.env.NODE_ENV === 'production') {
-  // https://webpack.js.org/guides/production/#source-mapping
-  module.exports.devtool = '#source-map'
-  // http://vue-loader.vuejs.org/en/workflow/production.html
-  module.exports.plugins = (module.exports.plugins || []).concat([
-    // https://webpack.js.org/guides/production/#specify-the-environment
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
-  ])
+module.exports = function(env, argv) {
+  const config = Object.assign({}, baseConfig)
+  if (argv.mode === 'production' || process.env.NODE_ENV === 'production') {
+    // https://webpack.js.org/guides/production/#source-mapping
+    config.devtool = '#source-map'
+    config.optimization = {
+      minimizer: [new TerserPlugin({ cache: false, parallel: true, sourceMap: true })]
+    }
+    // http://vue-loader.vuejs.org/en/workflow/production.html
+    config.plugins = (config.plugins || []).concat([
+      // https://webpack.js.org/guides/production/#specify-the-environment
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production')
+      }),
+      new webpack.LoaderOptionsPlugin({
+        minimize: true
+      })
+    ])
+  }
+  return config
 }
